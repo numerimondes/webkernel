@@ -5,7 +5,7 @@ namespace Webkernel\Commands;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class LoadToMainComposerCommand extends Command
+class InstallerSyncComposer extends Command
 {
     protected $signature = 'webkernel:sync-composer';
     protected $description = 'Adds Webkernel and its local dependencies to the main composer.json';
@@ -30,18 +30,12 @@ class LoadToMainComposerCommand extends Command
             $this->info('Global synchronization in progress...');
             $this->displayComposerHeader();
             $this->syncGlobalComposer();
-        } elseif ($choice === 'webkernel') {
-            $this->displayComposerHeader();
-            $this->info('This action is not yet supported...');
         }
     }
 
     public function rootConfiguration(): array
     {
         return [
-            'packages' => [
-                "webkernel/webkernel" => "dev-main"
-            ],
             'paths' => [
                 './packages/webkernel'
             ],

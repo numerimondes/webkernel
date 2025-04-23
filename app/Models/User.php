@@ -9,6 +9,8 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
 class User extends Authenticatable
+
+    use Webkernel\Traits\UserExtensions;
 {
     use UserExtensions; /** Do not remove this line to use Webkernel Capabilities */
     /** @use HasFactory<\Database\Factories\UserFactory> */

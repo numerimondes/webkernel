@@ -196,29 +196,6 @@ function prompt(string $message): string
     return trim(fgets(STDIN));
 }
 
-function checkMysqlCredentials()
-{
-    if (getEnvValue('DB_CONNECTION') !== 'mysql') {
-        echo "DB_CONNECTION n'est pas 'mysql'. Opération annulée.\n";
-        return;
-    }
-
-    $keys = ['DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'];
-    foreach ($keys as $key) {
-        $value = getEnvValue($key);
-        echo "$key actuel: $value\n";
-        $confirm = strtolower(prompt("Est-ce que cette valeur est correcte ? (o/N)"));
-
-        if ($confirm !== 'o') {
-            $newValue = prompt("Entrez la nouvelle valeur pour $key:");
-            setEnvValue($key, $newValue);
-            echo "$key mis à jour à: $newValue\n";
-        } else {
-            echo "$key conservé.\n";
-        }
-    }
-}
-
 /**
  * Modify composer.json to include WebKernel package
  */
@@ -444,6 +421,92 @@ function runComposerCommands(): void
     consoleOutput("🎉 All Composer commands have been executed", 'success');
 }
 
+
+function chooseDatabaseType() {
+    echo "Choose your database type:\n";
+    echo "  [0] sqlite\n";
+    echo "  [1] mysql\n";
+    echo "  [2] mariadb\n";
+    echo "  [3] pgsql\n";
+    echo "  [4] sqlsrv\n";
+
+    $choice = prompt("Enter your choice (0–4):");
+
+    $options = [
+        '0' => 'sqlite',
+        '1' => 'mysql',
+        '2' => 'mariadb',
+        '3' => 'pgsql',
+        '4' => 'sqlsrv',
+    ];
+
+    if (!isset($options[$choice])) {
+        echo "Invalid choice. Please choose a valid option.\n";
+        return;
+    }
+
+    $driver = $options[$choice];
+    setEnvValue('DB_CONNECTION', $driver);
+    echo "Selected DB_CONNECTION: {$driver}\n";
+
+    if ($driver === 'sqlite') {
+        $projectRoot = realpath(__DIR__ . '/../../../'); // racine du projet
+        $sqlitePath = $projectRoot . '/database/database.sqlite';
+
+        // Création du dossier s'il n'existe pas
+        if (!is_dir(dirname($sqlitePath))) {
+            mkdir(dirname($sqlitePath), 0755, true);
+        }
+
+        // Création du fichier s'il n'existe pas
+        if (!file_exists($sqlitePath)) {
+            echo "SQLite database file not found. Creating database at: {$sqlitePath}\n";
+            if (file_put_contents($sqlitePath, '') !== false) {
+                echo "SQLite database file created successfully!\n";
+            } else {
+                echo "Failed to create SQLite database file.\n";
+                echo "Please check the permissions and path.\n";
+                exit(1);
+            }
+        } else {
+            echo "SQLite database file already exists at: {$sqlitePath}\n";
+        }
+
+        // Mise à jour du .env pour SQLite
+        setEnvValue('DB_DATABASE', $sqlitePath);
+        setEnvValue('DB_HOST', '');
+        setEnvValue('DB_PORT', '');
+        setEnvValue('DB_USERNAME', '');
+        setEnvValue('DB_PASSWORD', '');
+    }
+
+    return $driver;
+}
+
+function checkMysqlCredentials()
+{
+    if (getEnvValue('DB_CONNECTION') !== 'mysql') {
+        echo "DB_CONNECTION n'est pas 'mysql'. Opération annulée.\n";
+        return;
+    }
+
+    $keys = ['DB_DATABASE', 'DB_USERNAME', 'DB_PASSWORD'];
+
+    foreach ($keys as $key) {
+        $value = getEnvValue($key);
+        echo "$key actuel: $value\n";
+
+        $confirm = strtolower(trim(prompt("Est-ce que cette valeur est correcte ? (o/N)")));
+        if ($confirm !== 'o') {
+            $newValue = prompt("Entrez la nouvelle valeur pour $key:");
+            setEnvValue($key, $newValue);
+            echo "$key mis à jour à: $newValue\n";
+        } else {
+            echo "$key conservé.\n";
+        }
+    }
+}
+
 /**
  * Display database ASCII art
  */
@@ -538,109 +601,58 @@ function importInitialData(): void
                 // Split SQL into individual statements
                 $statements = array_filter(
                     array_map('trim',
-                        explode(';', $sql)
-                    ),
-                    function($statement) {
-                        return !empty($statement) && strpos($statement, '--') !== 0;
-                    }
+                        explode(";", $sql)
+                    )
                 );
 
-                // Execute each statement without dropping existing tables
-                $tablesImported = [];
-
+                // Execute each statement
                 foreach ($statements as $statement) {
-                    // Skip DROP TABLE statements to preserve existing data
-                    if (preg_match('/DROP\s+TABLE\s+IF\s+EXISTS\s+`([^`]+)`/i', $statement, $matches)) {
-                        $tableName = $matches[1];
-                        echo "Skipping DROP TABLE for {$tableName}\n";
-                        continue;
-                    }
-
-                    // Check if it's a CREATE TABLE statement
-                    if (preg_match('/CREATE\s+TABLE\s+(?:IF\s+NOT\s+EXISTS\s+)?`([^`]+)`/i', $statement, $matches)) {
-                        $tableName = $matches[1];
-
-                        // Only create table if it doesn't exist
-                        if (!Schema::hasTable($tableName)) {
-                            DB::unprepared($statement);
-                            echo "Created table: {$tableName}\n";
-                            $tablesImported[] = $tableName;
-                        } else {
-                            echo "Table {$tableName} already exists, preserving data\n";
-                            $tablesImported[] = $tableName;
-                        }
-                        continue;
-                    }
-
-                    // For INSERT statements, check if the table name is mentioned
-                    if (preg_match('/INSERT\s+INTO\s+`([^`]+)`/i', $statement, $matches)) {
-                        $tableName = $matches[1];
-
-                        // Only run inserts if the table is empty
-                        $count = DB::table($tableName)->count();
-                        if ($count == 0) {
-                            DB::unprepared($statement);
-                            echo "Inserted data into {$tableName}\n";
-                        } else {
-                            echo "Table {$tableName} already has data, skipping insert\n";
-                        }
-                        continue;
-                    }
-
-                    // Other SQL statements can be run directly
-                    DB::unprepared($statement);
+                    DB::statement($statement);
                 }
 
-                echo "Data import completed successfully!\n";
-                echo "Tables processed: " . implode(', ', $tablesImported) . "\n";
+                echo "Initial data imported successfully!\n";
             } else {
-                echo "SQL file not found: {$sqlFile}\n";
+                echo "No SQL file found for initial data import.\n";
             }
 
         } catch (Exception $e) {
-            echo "Error: " . $e->getMessage() . "\n";
-            exit(1);
+            echo "❌ Error: " . $e->getMessage() . "\n";
         }
-
-        echo "Import process completed!\n";
-        exit(0);
         PHP;
 
         file_put_contents($importScript, $scriptContent);
-        chmod($importScript, 0755);
 
         // Step 3: Execute the Laravel bootstrap script
-        $command = "php " . escapeshellarg($importScript);
-        $output = [];
-        $returnVal = 0;
+        echo "Running the Laravel import script...\n";
+        include $importScript;
 
-        exec($command, $output, $returnVal);
-
-        // Print output from script
-        echo implode("\n", $output) . "\n";
-
-        if ($returnVal === 0) {
-            consoleOutput("✅ Data import completed successfully!", 'success');
-        } else {
-            consoleOutput("❌ Data import encountered issues", 'error');
-        }
-
-        // Clean up temporary script
-        if (file_exists($importScript)) {
-            unlink($importScript);
-        }
-
-    } catch (\Exception $e) {
-        consoleOutput("❌ An error occurred: " . $e->getMessage(), 'error');
+    } catch (Exception $e) {
+        consoleOutput("❌ Error during import: " . $e->getMessage(), 'error');
         exit(1);
     }
 }
 
-// Database path helper function
-function database_path($path = ''): string
-{
-    return base_path('database/' . ltrim($path, '/'));
+// Database path function
+function database_path($file = '') {
+    return base_path('database/' . $file);
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 // Execute the installation steps in the proper order
 // First, run the environment check and install Filament if needed (already done at the start)
@@ -660,6 +672,7 @@ runComposerCommands();
 
 consoleOutput("\n>>> Seeding database with languages (FR/EN/AR) and default settings...\n", 'info');
 displayDatabaseArt();
+chooseDatabaseType();
 checkMysqlCredentials();
 importInitialData();
 exec('composer dump-autoload');

@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "0609162dcd17f94a561b706c31d88f04",
+    "content-hash": "6a5acf25c87e0ad09f2f0d7a3d4c2a34",
     "packages": [
         {
             "name": "anourvalar/eloquent-serialize",
@@ -7400,54 +7400,6 @@
             "time": "2024-11-21T01:49:47+00:00"
         },
         {
-            "name": "webkernel/webkernel",
-            "version": "dev-main",
-            "dist": {
-                "type": "path",
-                "url": "packages/webkernel",
-                "reference": "7db5cd99554f7a6da08ca75aef488174341735f2"
-            },
-            "require": {
-                "php": "^8.2"
-            },
-            "type": "library",
-            "extra": {
-                "laravel": {
-                    "providers": [],
-                    "aliases": {
-                        "Webkernel": "Webkernel\\Facades\\Webkernel"
-                    }
-                }
-            },
-            "autoload": {
-                "psr-4": {
-                    "Webkernel\\": "src/"
-                }
-            },
-            "scripts": {
-                "post-autoload-dump": []
-            },
-            "license": [
-                "MPL-2.0"
-            ],
-            "authors": [
-                {
-                    "name": "Numerimondes",
-                    "email": "info@numerimondes.com",
-                    "role": "company"
-                },
-                {
-                    "name": "El Moumen Yassine",
-                    "email": "yassine@numerimondes.com",
-                    "role": "developer"
-                }
-            ],
-            "description": "A reusable Laravel and FilamentPHP-based library offering foundational services out of the box. Designed to accelerate the development of robust, scalable, and interconnected systems. By Numerimondes.",
-            "transport-options": {
-                "relative": true
-            }
-        },
-        {
             "name": "webmozart/assert",
             "version": "1.11.0",
             "source": {
@@ -9794,9 +9746,7 @@
     ],
     "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "webkernel/webkernel": 20
-    },
+    "stability-flags": {},
     "prefer-stable": true,
     "prefer-lowest": false,
     "platform": {

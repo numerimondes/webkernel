@@ -1,19 +1,22 @@
 {
     "$schema": "https://getcomposer.org/schema.json",
-    "name": "laravel/laravel",
+    "name": "webkernel/webkernel",
     "type": "project",
-    "description": "The skeleton application for the Laravel framework.",
+    "description": "A Laravel and FilamentPHP-based Starter-Kit offering foundational services out of the box. Designed to accelerate the development of robust, scalable, and interconnected systems. By Numerimondes.",
     "keywords": [
         "laravel",
-        "framework"
+        "framework",
+        "filament",
+        "Webkernel",
+        "StarterKit"
     ],
-    "license": "MIT",
+    "license": "MPL-2.0",
     "require": {
         "php": "^8.2",
         "filament/filament": "^3.3",
         "laravel/framework": "^12.0",
         "laravel/tinker": "^2.10.1",
-        "webkernel/webkernel": "*"
+        "webkernel/webkernel": "dev-main"
     },
     "require-dev": {
         "fakerphp/faker": "^1.23",
@@ -29,8 +32,13 @@
             "App\\": "app/",
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
-            "Webkernel\\": "packages/webkernel/src/"
-        }
+            "Webkernel\\": "packages/webkernel/src/",
+            "Webkernel\\Database\\Factories\\": "packages/webkernel/src/database/factories/",
+            "Webkernel\\Database\\Seeders\\": "packages/webkernel/src/database/seeders/"
+        },
+        "files": [
+            "packages/webkernel/src/Helpers/helpers.php"
+        ]
     },
     "autoload-dev": {
         "psr-4": {
@@ -82,6 +90,10 @@
         {
             "type": "path",
             "url": "packages/webkernel"
+        },
+        {
+            "type": "path",
+            "url": "./packages/webkernel"
         }
     ]
 }
