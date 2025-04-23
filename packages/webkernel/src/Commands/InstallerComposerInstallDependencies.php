@@ -16,14 +16,14 @@ class InstallerComposerInstallDependencies extends Command
 
     protected function runComposerCommands(): void
     {
-        $this->info('⚡ Running Composer install...');
+        $this->info('[✓] Running Composer install...');
         exec('composer install --no-interaction --prefer-dist', $output, $returnValue);
         $this->line(implode("\n", $output));
 
         if ($returnValue === 0) {
-            $this->info('✅ Composer install completed.');
+            $this->info('[✓] Composer install completed.');
         } else {
-            $this->error('❌ Composer install failed.');
+            $this->error('[! ERROR !] Composer install failed.');
         }
     }
 }

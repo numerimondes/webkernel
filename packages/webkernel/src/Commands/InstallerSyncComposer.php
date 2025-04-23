@@ -36,6 +36,8 @@ class InstallerSyncComposer extends Command
     public function rootConfiguration(): array
     {
         return [
+            'packages' => [
+            ],
             'paths' => [
                 './packages/webkernel'
             ],
@@ -62,7 +64,7 @@ class InstallerSyncComposer extends Command
         $mainComposerPath = base_path('composer.json');
 
         if (!file_exists($mainComposerPath)) {
-            $error('❌ composer.json not found at the root of the Laravel project.');
+            $error('/!\ composer.json not found at the root of the project.');
             return 1;
         }
 
@@ -98,12 +100,12 @@ class InstallerSyncComposer extends Command
         copy($mainComposerPath, base_path('composer.json.backup'));
         file_put_contents($mainComposerPath, json_encode($json, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
 
-        $log('✅ composer.json updated.');
-        $log('⚙️ Running composer dump-autoload...');
+        $log('[✓] composer.json updated.');
+        $log('[✓] Running composer dump-autoload...');
         exec('composer dump-autoload', $output);
         $line(implode("\n", $output));
 
-        $log('⚙️ Running composer update...');
+        $log('[✓] Running composer update...');
         exec('composer update', $updateOutput);
         $line(implode("\n", $updateOutput));
 
@@ -112,15 +114,15 @@ class InstallerSyncComposer extends Command
 
     public function displayManualConfigurationWarning()
     {
-        $this->info(PHP_EOL);
-        $this->line("\033[31mWARNING: BEWARE OF THIS MANUAL CONFIGURATION\033[0m");
-        $this->info(PHP_EOL);
-        $this->line("\033[31mThis action is based on the file\033[0m");
-        $this->line("\033[31mpackages/webkernel/src/Commands/LoadToMainComposerCommand.php,\033[0m");
-        $this->line("\033[31mwhich is manually configured. This action will add these\033[0m");
-        $this->line("\033[31mpackages if they are not already present in the composer at\033[0m");
-        $this->line("\033[31mthe root of " . base_path() . "...\033[0m");
-        $this->info(PHP_EOL);
+       // $this->info(PHP_EOL);
+       // $this->line("\033[31mWARNING: BEWARE OF THIS MANUAL CONFIGURATION\033[0m");
+       // $this->info(PHP_EOL);
+       // $this->line("\033[31mThis action is based on the file\033[0m");
+       // $this->line("\033[31mpackages/webkernel/src/Commands/LoadToMainComposerCommand.php,\033[0m");
+       // $this->line("\033[31mwhich is manually configured. This action will add these\033[0m");
+       // $this->line("\033[31mpackages if they are not already present in the composer at\033[0m");
+       // $this->line("\033[31mthe root of " . base_path() . "...\033[0m");
+       // $this->info(PHP_EOL);
 
         $config = $this->rootConfiguration();
         $this->info('The following packages will be added:');

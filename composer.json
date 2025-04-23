@@ -2,7 +2,7 @@
     "$schema": "https://getcomposer.org/schema.json",
     "name": "webkernel/webkernel",
     "type": "project",
-    "description": "A Laravel and FilamentPHP-based Starter-Kit offering foundational services out of the box. Designed to accelerate the development of robust, scalable, and interconnected systems. By Numerimondes.",
+    "description": " A ready-to-start foundation with pre-configured services and seamless modularity, enabling the rapid development of interconnected systems built on top of Laravel and FilamentPHP. By Numerimondes.",
     "keywords": [
         "laravel",
         "framework",
@@ -90,6 +90,10 @@
         {
             "type": "path",
             "url": "packages/webkernel"
+        },
+        {
+            "type": "path",
+            "url": "./packages/webkernel"
         }
     ]
 }
