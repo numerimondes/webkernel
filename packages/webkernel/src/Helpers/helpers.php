@@ -137,18 +137,16 @@ if (!function_exists('shouldShowTranslationKey')) {
 
 
 if (!function_exists('lang_i')) {
-   // function lang_i($key = null, $replace = [], $locale = null)
-   // {
-   //     static $doc_description = 'Returns the translation wrapped in single quotes, useful for inline display in forms and other components.';
-   //     static $doc_usage = 'lang_i("hello");';
-   //     static $doc_output = '\'Hello\'';
-   //     static $doc_basedonfunction = '';
-   //     static $doc_relatedfile = '';
-//
-   //     $translation = lang($key, $replace, $locale);
-//
-   //     return "'{$translation}'";
-   // }
+ function lang_i($key = null, $replace = [], $locale = null)
+ {
+     static $doc_description = 'Returns the translation wrapped in single quotes, useful for inline display in forms and other components.';
+     static $doc_usage = 'lang_i("hello");';
+     static $doc_output = '\'Hello\'';
+     static $doc_basedonfunction = '';
+     static $doc_relatedfile = '';
+     $translation = lang($key, $replace, $locale);
+     return "'{$translation}'";
+ }
 }
 
 if (!function_exists('HelperCurrentYear')) {

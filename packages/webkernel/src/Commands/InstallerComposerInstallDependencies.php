@@ -8,7 +8,7 @@ class InstallerComposerInstallDependencies extends Command
 {
     protected $signature = 'webkernel:install-composer-dependencies';
     protected $description = 'Install Composer dependencies for Webkernel';
-
+    protected $hidden = true;
     public function handle(): void
     {
         $this->runComposerCommands();

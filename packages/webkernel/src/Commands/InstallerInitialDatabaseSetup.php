@@ -11,10 +11,11 @@ use function Laravel\Prompts\text;
 use function Laravel\Prompts\password;
 
 class InstallerInitialDatabaseSetup extends Command
+
 {
     protected $signature = 'webkernel:install-initial-db-setup {--database=}';
     protected $description = 'Webkernel Installer Initial Database Setup';
-
+    protected $hidden = true;
     public function handle(): void
     {
         $this->displayDatabaseArt();

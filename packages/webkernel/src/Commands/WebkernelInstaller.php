@@ -6,8 +6,16 @@ use Illuminate\Console\Command;
 
 class WebkernelInstaller extends Command
 {
-    protected $signature = 'webkernel:install {--no-db}';
-    protected $description = 'Executes all Webkernel installation steps, with optional skipping of database setup using --no-db.';
+    // Signature with options and arguments
+    protected $signature = 'webkernel:init
+                            {--install : To perform the full installation of Webkernel.}
+                            {--db-seed : To run database setup and seeding.}
+                            {--no-db : To skip the database installation step.}
+                            {--update : To perform only an update.}
+                            {--force : To force the installation even if files already exist.}';
+
+    protected $description = 'Executes all Webkernel installation steps with various options.';
+
     public function __construct()
     {
         parent::__construct();
@@ -15,28 +23,58 @@ class WebkernelInstaller extends Command
 
     public function handle()
     {
-        $this->info('Starting Webkernel installation...');
-
-        // Execute each installation step
-        $this->displayWebkernelHeaderAsCiiLogo();
-        $this->call('webkernel:install-check-env');
-        $this->call('key:generate');
-        $this->call('webkernel:install-update-composer');
-        $this->call('webkernel:install-register-providers');
-        $this->call('webkernel:install-update-user-model');
-        $this->call('webkernel:install-composer-dependencies');
-
-        // Check if the --no-db argument is not passed
-        if (!$this->option('no-db')) {
-            // Only call the database setup if --no-db is not provided
-            $this->call('webkernel:install-initial-db-setup');
+        // Check if no argument is provided
+        if (!$this->hasArgument('install') && !$this->hasArgument('update')) {
+            $this->info('Available arguments:');
+            $this->info('--install    : To perform the full installation of Webkernel.');
+            $this->info('--db-seed    : To run database setup and seeding.');
+            $this->info('--no-db      : To skip the database installation step.');
+            $this->info('--update     : To perform only an update.');
+            $this->info('--force      : To force the installation even if files already exist.');
+            return;
         }
 
-        $this->call('webkernel:install-check-env');
-        $this->call('webkernel:sync-composer');
+        // Proceed with installation only if --install is passed
+        if ($this->option('install')) {
+            $this->info('Starting Webkernel installation...');
+            $this->displayWebkernelHeaderAsCiiLogo();
+            $this->call('webkernel:install-check-env');
+            $this->call('key:generate');
+            $this->call('webkernel:install-update-composer');
+            $this->call('webkernel:install-register-providers');
+            $this->call('webkernel:install-update-user-model');
+            $this->call('webkernel:install-composer-dependencies');
 
-        $this->displayWebkernelHeaderAsCiiLogo();
-        $this->info('Installation completed successfully!');
+            // If --no-db is not passed, perform the database installation
+            if (!$this->option('no-db')) {
+                $this->info('Initializing database...');
+                $this->call('webkernel:install-initial-db-setup');
+
+                // If --db-seed is passed, perform database seeding
+                if ($this->option('db-seed')) {
+                    $this->info('Running database seeding...');
+                    $this->call('db:seed');
+                }
+            }
+
+            $this->call('webkernel:sync-composer');
+            $this->info('Installation completed successfully!');
+        }
+
+        // If --update option is specified
+        if ($this->option('update')) {
+            $this->info('Updating Webkernel...');
+            $this->call('composer update');
+            $this->call('webkernel:sync-composer');
+            $this->info('Update completed successfully!');
+        }
+
+        // If --force is specified
+        if ($this->option('force')) {
+            $this->info('Forcing installation even if files already exist...');
+            // Add specific actions if needed
+        }
+
         $this->info(str_repeat(PHP_EOL, 3));
     }
 

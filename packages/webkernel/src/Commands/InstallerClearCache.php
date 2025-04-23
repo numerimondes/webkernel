@@ -9,7 +9,7 @@ class InstallerClearCache extends Command
 {
     protected $signature = 'webkernel:install-clear-cache';
     protected $description = 'Webkernel Installer Environment Checker';
-
+    protected $hidden = true;
     public function handle(): void
     {
         $this->clearCaches();

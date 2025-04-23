@@ -9,7 +9,7 @@ class InstallerSyncComposer extends Command
 {
     protected $signature = 'webkernel:sync-composer';
     protected $description = 'Adds Webkernel and its local dependencies to the main composer.json';
-
+    protected $hidden = true;
     public function handle()
     {
         $this->displayManualConfigurationWarning();

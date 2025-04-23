@@ -9,7 +9,7 @@ class InstallerUpdateComposers extends Command
 {
     protected $signature = 'webkernel:install-update-composer';
     protected $description = 'Webkernel Installer Composer Updater';
-
+    protected $hidden = true;
     public function __construct()
     {
         parent::__construct();

@@ -11,7 +11,7 @@ class InstallerCheckEnvironmentVariables extends Command
 {
     protected $signature = 'webkernel:install-check-env';
     protected $description = 'Webkernel Installer Environment Checker';
-
+    protected $hidden = true;
     public function __construct()
     {
         parent::__construct();

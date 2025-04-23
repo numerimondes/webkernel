@@ -8,7 +8,7 @@ class InstallerUpdateUserModelWithUserExtensions extends Command
 {
     protected $signature = 'webkernel:install-update-user-model';
     protected $description = 'Webkernel Update User Model with Adding UserExtensions (Trait)';
-
+    protected $hidden = true;
     public function __construct()
     {
         parent::__construct();
