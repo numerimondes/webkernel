@@ -6,9 +6,8 @@ use Illuminate\Console\Command;
 
 class WebkernelInstaller extends Command
 {
-    protected $signature = 'webkernel:install';
-    protected $description = 'Executes all Webkernel installation steps';
-
+    protected $signature = 'webkernel:install {--no-db}';
+    protected $description = 'Executes all Webkernel installation steps, with optional skipping of database setup using --no-db.';
     public function __construct()
     {
         parent::__construct();
@@ -26,7 +25,13 @@ class WebkernelInstaller extends Command
         $this->call('webkernel:install-register-providers');
         $this->call('webkernel:install-update-user-model');
         $this->call('webkernel:install-composer-dependencies');
-        $this->call('webkernel:install-initial-db-setup');
+
+        // Check if the --no-db argument is not passed
+        if (!$this->option('no-db')) {
+            // Only call the database setup if --no-db is not provided
+            $this->call('webkernel:install-initial-db-setup');
+        }
+
         $this->call('webkernel:install-check-env');
         $this->call('webkernel:sync-composer');
 

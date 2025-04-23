@@ -3,14 +3,15 @@
 namespace App\Models;
 
 
-use Webkernel\Models\Traits\UserExtensions;// use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
-class User extends Authenticatable
 
-    use Webkernel\Traits\UserExtensions;
+
+use Webkernel\Models\Traits\UserExtensions;
+
+class User extends Authenticatable
 {
     use UserExtensions; /** Do not remove this line to use Webkernel Capabilities */
     /** @use HasFactory<\Database\Factories\UserFactory> */

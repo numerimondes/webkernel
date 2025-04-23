@@ -1,5 +1,4 @@
 <?php
-
 namespace Webkernel\Commands;
 
 use Illuminate\Console\Command;
@@ -17,30 +16,115 @@ class InstallerUpdateUserModelWithUserExtensions extends Command
 
     public function handle()
     {
-        // Call the method to add the UserExtensions trait
-        $this->putUserExtensionsTraitInUserModel();
+        $filePath = base_path('app/Models/User.php');
+
+        // Define what needs to be inserted
+        $headCode = 'use Webkernel\Models\Traits\UserExtensions;';
+        $insideClassCode = 'use UserExtensions; /** Do not remove this line to use Webkernel Capabilities */';
+
+        $this->injectCodeIntoLaravelModelFile($filePath, $headCode, $insideClassCode);
     }
 
-    protected function putUserExtensionsTraitInUserModel(): void
+    /**
+     * Inject code into a PHP file at specific locations
+     *
+     * @param string $filePath Path to the PHP file
+     * @param string $headCode Code to add at the imports/namespace section
+     * @param string $insideClassCode Code to add inside the class definition
+     * @return void
+     */
+    protected function injectCodeIntoLaravelModelFile(string $filePath, string $headCode, string $insideClassCode): void
     {
-        $filePath = base_path('app/Models/User.php');
-        $traitDeclaration = "use Webkernel\Traits\UserExtensions;\n";
-        $classDeclaration = "class User extends Authenticatable\n";
-
+        // Check if file exists
         if (!File::exists($filePath)) {
-            $this->error('❌ app/Models/User.php not found.');
-            exit(1);
+            $this->error("❌ File not found: {$filePath}");
+            return;
         }
 
         $contents = File::get($filePath);
+        $originalContents = $contents;
+        $modified = false;
 
-        // Check if the trait is already added, if not add it
-        if (strpos($contents, $traitDeclaration) === false) {
-            $contents = preg_replace("/$classDeclaration/", "$classDeclaration\n    $traitDeclaration", $contents);
-            File::put($filePath, $contents);
-            $this->info('[✓] Added UserExtensions trait to User model');
+        // Process the head code (import statements)
+        if (!empty($headCode) && strpos($contents, $headCode) === false) {
+            $contents = $this->addCodeToImportSection($contents, $headCode);
+            $modified = true;
+            $this->info("[✓] Added to imports: {$headCode}");
         } else {
-            $this->info('[✓] UserExtensions trait already present in User model');
+            $this->info("[✓] Import already exists: {$headCode}");
         }
+
+        // Process the inside class code
+        if (!empty($insideClassCode) && strpos($contents, $insideClassCode) === false) {
+            $contents = $this->addCodeInsideClass($contents, $insideClassCode);
+            if ($contents !== $originalContents) {
+                $modified = true;
+                $this->info("[✓] Added inside class: {$insideClassCode}");
+            } else {
+                $this->error("❌ Failed to add code inside class. Class structure not recognized.");
+            }
+        } else {
+            $this->info("[✓] Inside class code already exists: {$insideClassCode}");
+        }
+
+        // Save changes if needed
+        if ($modified) {
+            try {
+                File::put($filePath, $contents);
+                $this->info("[✓] Successfully updated {$filePath}");
+            } catch (\Exception $e) {
+                $this->error("❌ Error writing to file: " . $e->getMessage());
+            }
+        } else {
+            $this->info("[✓] No modifications needed for {$filePath}");
+        }
+    }
+
+    /**
+     * Add code to the import section of a PHP file
+     *
+     * @param string $contents File contents
+     * @param string $code Code to add
+     * @return string Modified contents
+     */
+    protected function addCodeToImportSection(string $contents, string $code): string
+    {
+        // Find the last import statement
+        preg_match_all('/^use\s+.+;$/m', $contents, $useMatches);
+
+        if (!empty($useMatches[0])) {
+            // Add after the last use statement
+            $lastUse = end($useMatches[0]);
+            return str_replace($lastUse, $lastUse . "\n" . $code, $contents);
+        }
+
+        // If no use statements found, add after namespace
+        preg_match('/^namespace\s+.+;$/m', $contents, $namespaceMatch);
+        if (!empty($namespaceMatch[0])) {
+            return str_replace($namespaceMatch[0], $namespaceMatch[0] . "\n\n" . $code, $contents);
+        }
+
+        // If no namespace found, add at the beginning after <?php
+        return preg_replace('/^(<\?php)/i', "$1\n\n" . $code, $contents);
+    }
+
+    /**
+     * Add code inside the class definition
+     *
+     * @param string $contents File contents
+     * @param string $code Code to add
+     * @return string Modified contents
+     */
+    protected function addCodeInsideClass(string $contents, string $code): string
+    {
+        // More generic approach to find class declaration and opening brace
+        preg_match('/^class\s+\w+.*?\s*{/ms', $contents, $matches);
+
+        if (!empty($matches[0])) {
+            // Insert code after the opening brace
+            return str_replace($matches[0], $matches[0] . "\n    " . $code, $contents);
+        }
+
+        return $contents; // Return unchanged if class structure not found
     }
 }
