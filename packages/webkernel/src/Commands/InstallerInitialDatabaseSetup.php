@@ -18,10 +18,15 @@ class InstallerInitialDatabaseSetup extends Command
     public function handle(): void
     {
         $this->displayDatabaseArt();
-
-        $this->warn('Note: SQLite may have limitations for production environments.');
-        $this->warn('We recommend using MySQL, PostgreSQL, or MariaDB for production.');
-        $this->warn('PostgreSQL hasn\'t been fully tested yet.');
+        $this->warn('/** Note: SQLite may have limitations for production environments, especially with high traffic and concurrency.');
+        $this->warn(' *  SQLite is designed as a lightweight, serverless database, but it lacks advanced features such ');
+        $this->warn(' *  as full ACID compliance, foreign key support (by default), and complex join optimizations.');
+        $this->warn(' *  We avoid using it due to limitations in SQL syntax (e.g., missing support for certain complex queries/stored procedures)');
+        $this->warn(' *  and dynamic type handling, which can lead to inconsistencies when migrating to other DBMS.');
+        $this->warn(' *  We recommend using MySQL, PostgreSQL, or MariaDB for production environments,');
+        $this->warn(' *  as they are designed to handle high concurrency, complex queries, and large-scale applications more efficiently.');
+        $this->warn(' *  Note: PostgreSQL, while robust and highly recommended, hasn\'t been fully tested yet in all scenarios, especially for specific edge cases or advanced configurations.');
+        $this->warn(' */');
 
         [$database, $migrate] = $this->promptForDatabaseOptions();
 
