@@ -4,7 +4,7 @@ namespace Webkernel\Commands;
 
 use Illuminate\Console\Command;
 
-class WebkernelInstaller extends Command
+class WebkernelInit extends Command
 {
     // Signature with options and arguments
     protected $signature = 'webkernel:init
@@ -23,7 +23,7 @@ class WebkernelInstaller extends Command
 
     public function handle()
     {
-        // Check if no argument is provided
+        // Are arguments provided
         if (!$this->hasArgument('install') && !$this->hasArgument('update')) {
             $this->info('Available arguments:');
             $this->info('--install    : To perform the full installation of Webkernel.');
@@ -72,7 +72,7 @@ class WebkernelInstaller extends Command
         // If --force is specified
         if ($this->option('force')) {
             $this->info('Forcing installation even if files already exist...');
-            // Add specific actions if needed
+            // Not required yet
         }
 
         $this->info(str_repeat(PHP_EOL, 3));
