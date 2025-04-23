@@ -18,16 +18,29 @@ class WebkernelCommandServiceProvider extends ServiceProvider
      * Register commands if in console mode.
      */
     protected function registerWebkernelCommands(): void
-    {
-        if ($this->app->runningInConsole()) {
-            $commandNamespace = 'Webkernel\\Commands\\';
-            $commandPath = base_path('packages/webkernel/src/Commands');
-            $commandClasses = collect(glob("{$commandPath}/*.php"))
-                ->map(fn($file) => $commandNamespace . basename($file, '.php'))
-                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class))
-                ->toArray();
+{
+    if ($this->app->runningInConsole()) {
 
-            $this->commands($commandClasses);
-        }
+        $commandNamespace = 'Webkernel\\Commands\\';
+        $commandPath = base_path('packages/webkernel/src/Commands');
+
+        $mainCommands = collect(glob("{$commandPath}/*.php"))
+            ->map(fn($file) => $commandNamespace . basename($file, '.php'))
+            ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class));
+
+
+        $subCommandPath = "{$commandPath}/composer/PostCreateProjectCmd";
+        $subCommandNamespace = $commandNamespace . 'composer\\PostCreateProjectCmd\\';
+
+        $subCommands = collect(glob("{$subCommandPath}/*.php"))
+            ->map(fn($file) => $subCommandNamespace . basename($file, '.php'))
+            ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class));
+
+
+        $allCommands = $mainCommands->merge($subCommands)->toArray();
+
+
+        $this->commands($allCommands);
     }
+}
 }

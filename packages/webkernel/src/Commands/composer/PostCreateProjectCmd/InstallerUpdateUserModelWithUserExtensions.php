@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Commands;
+namespace Webkernel\Commands\composer\PostCreateProjectCmd;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
