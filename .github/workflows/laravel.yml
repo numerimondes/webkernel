@@ -31,8 +31,6 @@ jobs:
         mkdir -p database
         touch database/database.sqlite
         chmod 777 database/database.sqlite  # Permissions SQLite
-    - name: Run migrations
-      run: php artisan migrate --env=testing --force  # Exécute les migrations
     - name: Execute tests (Unit and Feature tests) via PHPUnit/Pest
       env:
         DB_CONNECTION: sqlite
