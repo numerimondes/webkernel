@@ -26,7 +26,7 @@ class TestDbCo extends Command
      *
      * @return void
      */
-    public function handle()
+    public function handle():bool
     {
         try {
             DB::connection()->getPdo();

@@ -1,6 +1,10 @@
 <?php
 
 /**
+ *
+ * Initial installer --- DO NOT USE IT
+ *
+ *
  * WebKernel Package Installer
  *
  * To install WebKernel, run:
@@ -172,7 +176,8 @@ function getEnvValue(string $key): ?string
     $envPath = base_path('.env');
     $lines = file($envPath, FILE_IGNORE_NEW_LINES | FILE_SKIP_EMPTY_LINES);
     foreach ($lines as $line) {
-        if (strpos(trim($line), '#') === 0) continue;
+        if (strpos(trim($line), '#') === 0)
+            continue;
         if (str_starts_with($line, $key . '=')) {
             return trim(substr($line, strlen($key) + 1));
         }
@@ -422,7 +427,8 @@ function runComposerCommands(): void
 }
 
 
-function chooseDatabaseType() {
+function chooseDatabaseType()
+{
     echo "Choose your database type:\n";
     echo "  [0] sqlite\n";
     echo "  [1] mysql\n";
@@ -633,7 +639,8 @@ function importInitialData(): void
 }
 
 // Database path function
-function database_path($file = '') {
+function database_path($file = '')
+{
     return base_path('database/' . $file);
 }
 
@@ -657,39 +664,40 @@ function database_path($file = '') {
 // Execute the installation steps in the proper order
 // First, run the environment check and install Filament if needed (already done at the start)
 
-modifyComposerJson();
-exec('composer update');
-registerServiceProviders();
-putUserExtensionsTraitinUserModel();
-exec('composer dump-autoload');
-
-// Clear Laravel caches using artisan
-exec('php artisan config:clear');
-exec('php artisan cache:clear');
-exec('php artisan view:clear');
-
-runComposerCommands();
-
-consoleOutput("\n>>> Seeding database with languages (FR/EN/AR) and default settings...\n", 'info');
-displayDatabaseArt();
-chooseDatabaseType();
-checkMysqlCredentials();
-importInitialData();
-exec('composer dump-autoload');
-
-// Clear Laravel caches using artisan
-exec('php artisan config:clear');
-exec('php artisan cache:clear');
-exec('php artisan view:clear');
-
-consoleOutput("🎉 Installation completed successfully!", 'success');
-consoleOutput(">>> Running composer synchronization...", 'info');
-
-exec('php artisan webkernel:sync-composer');
-exec('php artisan filament:assets');
-exec('php artisan config:clear');
-exec('php artisan cache:clear');
-exec('php artisan view:clear');
-
-displayLogo();
-consoleOutput("✨ WebKernel is now installed and ready to use!", 'success');
+//modifyComposerJson();
+//exec('composer update');
+//registerServiceProviders();
+//putUserExtensionsTraitinUserModel();
+//exec('composer dump-autoload');
+//
+//// Clear Laravel caches using artisan
+//exec('php artisan config:clear');
+//exec('php artisan cache:clear');
+//exec('php artisan view:clear');
+//
+//runComposerCommands();
+//
+//consoleOutput("\n>>> Seeding database with languages (FR/EN/AR) and default settings...\n", 'info');
+//displayDatabaseArt();
+//chooseDatabaseType();
+//checkMysqlCredentials();
+//importInitialData();
+//exec('composer dump-autoload');
+//
+//// Clear Laravel caches using artisan
+//exec('php artisan config:clear');
+//exec('php artisan cache:clear');
+//exec('php artisan view:clear');
+//
+//consoleOutput("🎉 Installation completed successfully!", 'success');
+//consoleOutput(">>> Running composer synchronization...", 'info');
+//
+//exec('php artisan webkernel:sync-composer');
+//exec('php artisan filament:assets');
+//exec('php artisan config:clear');
+//exec('php artisan cache:clear');
+//exec('php artisan view:clear');
+//
+//displayLogo();
+//consoleOutput("✨ WebKernel is now installed and ready to use!", 'success');
+//
