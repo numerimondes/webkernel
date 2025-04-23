@@ -102,4 +102,3 @@ If you discover a security vulnerability within WebKernel, please send an email 
 
 WebKernel is open-source software licensed under the [MPL-2.0](https://opensource.org/licenses/MPL-2.0) license.
 
-<img style="width:100%" src="https://raw.githubusercontent.com/numerimondes/webkernel/refs/heads/main/packages/webkernel/src/docs/assets/og-webkernel.png">
