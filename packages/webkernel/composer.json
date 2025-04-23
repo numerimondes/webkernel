@@ -1,0 +1,41 @@
+{
+    "name": "webkernel/webkernel",
+    "description": "A reusable Laravel and FilamentPHP-based library offering foundational services out of the box. Designed to accelerate the development of robust, scalable, and interconnected systems. By Numerimondes.",
+    "type": "library",
+    "license": "MPL-2.0",
+    "authors": [
+        {
+            "name": "Numerimondes",
+            "email": "info@numerimondes.com",
+            "role": "company"
+        },
+        {
+            "name": "El Moumen Yassine",
+            "email": "yassine@numerimondes.com",
+            "role": "developer"
+        }
+    ],
+    "require": {
+        "php": "^8.2"
+    },
+    "autoload": {
+        "psr-4": {
+            "Webkernel\\": "src/"
+        }
+    },
+    "extra": {
+        "laravel": {
+            "providers": [
+            ],
+            "aliases": {
+                "Webkernel": "Webkernel\\Facades\\Webkernel"
+            }
+        }
+    },
+    "scripts": {
+        "post-autoload-dump": [
+        ]
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

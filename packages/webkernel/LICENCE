@@ -1,0 +1,349 @@
+LICENSE AGREEMENT FOR WEBKERNEL
+
+This License Agreement (hereinafter referred to as the "Agreement") governs the terms
+under which the software framework WebKernel, developed and maintained by Numerimondes,
+may be used. By utilizing WebKernel, the Licensee (defined below) acknowledges and agrees
+to comply with the terms and conditions laid out in this Agreement.
+
+[TEMPLATE] IF YOU USE WEBKERNEL, A PREMADE LICENSE TEMPLATE IS PROVIDED
+FOR RESELLING OR REDISTRIBUTING SOFTWARE DEVELOPED BASED ON WEBKERNEL.
+FIND IT IN WEBKERNEL/END-LICENSOR-TEMPLATE-LICENSE. [/TEMPLATE]
+
+1. INTRODUCTION
+
+This License Agreement applies to the software framework known as WebKernel. WebKernel
+is designed to serve as a modular foundation for the development of large-scale,
+structured, and extensible web applications. This Agreement sets forth the terms of
+usage, obligations, and restrictions associated with the software. The Licensee’s use
+of WebKernel constitutes their full acceptance of all terms and conditions stipulated
+herein. Should the Licensee disagree with any provision in this Agreement, they are
+advised not to use WebKernel.
+
+2. DEFINITIONS
+
+For the purpose of this Agreement, the following definitions shall apply:
+
+2.1 WebKernel
+
+Refers to the software framework known as WebKernel, which is an application kernel
+based on the Laravel framework and FilamentPHP. It encompasses all associated source
+code, binaries, documentation, and any related materials distributed under this
+Agreement. This software is owned and maintained by Numerimondes.
+
+2.2 Licensee
+
+Refers to the individual, company, or legal entity that is granted permission to use
+WebKernel under the terms and conditions set forth in this Agreement. The Licensee is
+granted certain rights as outlined in this document. For the purpose of this Agreement,
+the Licensee is the party authorized to use WebKernel.
+
+2.3 Numerimondes
+
+Refers to Numerimondes, the company that owns, maintains, and distributes WebKernel,
+providing the Licensee with the rights to use the software as detailed in this
+Agreement. For the purpose of this Agreement, Numerimondes is the entity responsible
+for the software’s distribution and licensing.
+
+2.4 End-Licensor
+
+Refers to the Licensee who integrates or reuses WebKernel in their own projects. The
+End-Licensor may redistribute or sublicense WebKernel under the terms of the Mozilla
+Public License (MPL-2.0) as specified in this Agreement. The End-Licensor may also
+assign a different license to the files and components they develop, provided such
+files are located outside the "webkernel" folder. These developed components are not
+bound by the terms of the MPL-2.0 license, but must comply with any applicable
+licenses granted under this Agreement.
+
+2.5 Licensing Header Conventions
+
+Any components or modules based on WebKernel and located outside the core "webkernel"
+folder, unless explicitly stated otherwise, are considered free and open-source. These
+parts are governed by the Mozilla Public License v2.0 (MPL-2.0) and may be used,
+modified, and distributed in accordance with this license.
+
+3. LICENSE GRANT
+
+3.1 Grant of License
+
+Numerimondes hereby grants the Licensee a non-exclusive, non-transferable, non-revocable
+license to use WebKernel, subject to the terms and conditions of this Agreement. The
+Licensee may not sublicense, assign, or otherwise transfer the rights granted under
+this Agreement to any third party without prior written consent from Numerimondes.
+
+3.2 Scope of License
+
+The rights granted under this Agreement are limited to the core WebKernel software,
+specifically the contents within the "webkernel" folder. Components or modules
+developed outside of this core may be subject to separate commercial licensing terms,
+at the discretion of Numerimondes. These components are not covered by the terms of
+this Agreement and may be used under different licenses, including commercial
+licenses, as specified by Numerimondes.
+
+The End-Licensor, who integrates or reuses WebKernel in their own projects, may also
+redistribute or sublicense such components, provided they adhere to the applicable
+licensing terms and comply with the conditions set forth by Numerimondes.
+
+4. LICENSE TYPE
+
+WebKernel is licensed under the Mozilla Public License v2.0 (MPL-2.0). The Licensee is
+granted the right to use, modify, and distribute WebKernel in accordance with the terms
+and conditions specified in the MPL-2.0 license.
+
+5. RIGHTS AND OBLIGATIONS
+
+5.1 Rights of the Licensee
+
+The Licensee is entitled to use WebKernel for both personal and commercial projects.
+
+The Licensee may modify the source code of WebKernel to meet their specific
+requirements. Additionally, the Licensee is permitted to distribute WebKernel, along
+with any modifications made to it, provided that such distribution adheres to the terms
+of the MPL-2.0 license.
+
+5.2 Obligations of the Licensee
+
+The Licensee must comply with the terms of the MPL-2.0 license. All copyright notices
+and license headers included in the source files of WebKernel must be retained. The
+Licensee is prohibited from using WebKernel for any unlawful activities and must not
+distribute WebKernel or any derivative works unless such distribution complies with the
+MPL-2.0 license.
+
+6. MODIFICATIONS AND DISTRIBUTION
+
+The Licensee is allowed to modify WebKernel’s core components and distribute the
+modified version of the software. However, any modifications made to WebKernel’s core
+must be made available under the same MPL-2.0 license. This ensures that all modified
+versions of WebKernel remain open and freely accessible, in compliance with the
+open-source nature of the software.
+
+7. COMMERCIAL USE
+
+The Licensee is authorized to use WebKernel for commercial purposes, including the
+development of commercial applications. This is permissible as long as the Licensee
+continues to adhere to the terms of the MPL-2.0 license. There are no additional
+restrictions on commercial use beyond compliance with the aforementioned license.
+
+8. LIABILITY
+
+8.1 Limitation of Liability
+
+Under no circumstances shall Numerimondes or its authors be held liable for any damages,
+including but not limited to direct, indirect, incidental, special, exemplary, or
+consequential damages. This includes damages resulting from the procurement of substitute
+goods or services, loss of data, loss of profits, or business interruption, regardless
+of the cause. Furthermore, this liability exclusion applies even if Numerimondes has
+been advised of the possibility of such damages.
+
+9. TERMINATION
+
+9.1 Termination
+
+This Agreement will automatically terminate if the Licensee breaches any provision of
+this Agreement. In the event of termination, the Licensee must cease using WebKernel
+and destroy all copies of the software in their possession. Any continued use of
+WebKernel after termination constitutes a violation of the Agreement.
+
+10. GOVERNING LAW
+
+10.1 Governing Law
+
+This Agreement shall be governed by and construed in accordance with the laws of
+Morocco. Any legal disputes arising from or relating to this Agreement shall be subject
+to the jurisdiction of Casablanca.
+
+11. ENTIRE AGREEMENT
+
+11.1 Entire Agreement
+
+This document represents the complete and exclusive Agreement between Numerimondes and
+the Licensee concerning the use of WebKernel. It supersedes all prior agreements,
+understandings, or communications, whether written or oral, related to the subject
+matter of this Agreement.
+
+12. INDEPENDENCE FROM FUTURE FEATURES
+
+12.1 No Dependency on Future Features
+
+The Licensee acknowledges that the adoption or use of WebKernel is not contingent on the
+delivery or availability of any future features, updates, or functionalities. Numerimondes
+does not make any guarantees regarding the timeline for or availability of future updates
+or new features.
+
+12.2 Future Roadmap
+
+While Numerimondes may provide a roadmap or outline future plans for WebKernel, such
+information is provided for informational purposes only. It does not constitute a
+binding commitment to deliver any specific features, updates, or changes to WebKernel.
+
+13. SUPPORT AND MAINTENANCE
+
+13.1 Support
+
+Numerimondes may provide support services for WebKernel, but such support is not guaranteed
+and may be subject to separate terms and conditions. The availability of support may be
+dependent on the Licensee’s adherence to other requirements, such as payment or
+subscription terms.
+
+13.2 Maintenance
+
+Numerimondes will endeavor to maintain WebKernel and provide updates to address security,
+performance, and stability issues. However, Numerimondes makes no guarantees regarding the
+frequency or scope of such updates, and the Licensee acknowledges that updates may not be
+provided on a fixed schedule.
+
+14. THIRD-PARTY COMPONENTS
+
+14.1 Third-Party Licenses
+
+WebKernel may contain third-party components or libraries that are governed by separate
+licenses. The Licensee is responsible for ensuring that they comply with the terms and
+conditions of those third-party licenses when using or distributing WebKernel.
+
+14.2 No Endorsement
+
+The inclusion of third-party components in WebKernel does not imply any endorsement or
+recommendation of those components by Numerimondes. Numerimondes does not assume any
+responsibility or liability for third-party components included in WebKernel.
+
+15. SECURITY
+
+15.1 Security Measures
+
+Numerimondes employs various security mechanisms to protect user access and safeguard
+sensitive data within WebKernel. However, in cases where third-party software is used,
+WebKernel may become dependent on the security measures of that third-party
+software. Therefore, Numerimondes strives to minimize dependencies on third-party
+software to maintain the highest level of security. The Licensee is responsible
+for implementing additional security measures appropriate for their own use of WebKernel.
+
+15.2 Reporting Vulnerabilities
+
+The Licensee agrees to promptly report any security vulnerabilities discovered in
+WebKernel to Numerimondes, enabling the company to address and resolve potential issues
+in a timely manner.
+
+16. CONFIDENTIALITY
+
+16.1 Confidential Information
+
+The Licensee agrees to maintain the confidentiality of any non-public information
+disclosed by Numerimondes, pertaining to WebKernel. This confidentiality obligation
+extends unless the disclosure is required by law or if Numerimondes provides prior
+written consent for disclosure.
+
+17. AUDIT RIGHTS
+
+17.1 Audit Rights
+
+Numerimondes reserves the right to audit the Licensee’s use of WebKernel to ensure
+compliance with the terms of this Agreement. The Licensee agrees to cooperate with such
+audits and provide any necessary information requested by Numerimondes.
+
+18. EXPORT CONTROL
+
+18.1 Export Control
+
+The Licensee agrees to comply with all applicable export control laws and regulations in
+their use of WebKernel. This includes ensuring that WebKernel is not exported to any
+jurisdictions or individuals prohibited under the relevant export laws.
+
+19. AMENDMENTS
+
+19.1 Amendments
+
+Numerimondes reserves the right to amend this Agreement at its discretion. In the event of
+any amendments, the Licensee will be notified of such changes, and continued use of
+WebKernel after notification will be deemed acceptance of the modified terms.
+
+20. SEVERABILITY
+
+20.1 Severability
+
+If any provision of this Agreement is found to be invalid or unenforceable by a court of
+competent jurisdiction, that provision shall be removed or modified in such a way that
+the remaining provisions of the Agreement shall continue in full force and effect.
+
+21. ASSIGNMENT
+
+21.1 Assignment
+
+The Licensee may not assign or transfer their rights or obligations under this Agreement
+to any third party without the prior written consent of Numerimondes.
+
+22. NOTICES
+
+22.1 Notices
+
+All notices required or permitted under this Agreement must be in writing and delivered
+to the contact information provided within this document. Notices may be delivered by
+email or other forms of written communication as agreed by the parties.
+
+23. NO WAIVER
+
+23.1 No Waiver
+
+The failure of Numerimondes to enforce any provision of this Agreement shall not be deemed
+a waiver of such provision or any other provision of this Agreement. A waiver of any term
+or condition of this Agreement will not be deemed a waiver of any future breach of that
+term or any other term.
+
+24. FORCE MAJEURE
+
+24.1 Force Majeure
+
+Numerimondes shall not be held liable for any delay or failure to perform its obligations
+under this Agreement due to circumstances beyond its reasonable control, including but
+not limited to natural disasters, wars, work stoppages, or other events of force majeure,
+or any discontinuity in our activities.
+
+25. CONTACT INFORMATION
+
+For any inquiries or further information regarding this Agreement, the Licensee may contact
+Numerimondes at the following email address: license@numerimondes.com.
+
+26. EXAMPLE OF FREE AND OPEN SOURCE LICENSE HEADER
+
+It is important to mention and not alter the free and open source license header to
+ensure compliance with the licensing terms and to acknowledge the original authors
+and contributors.
+
+```php
+/*
+|--------------------------------------------------------------------------
+| Software Architect: El Moumen Yassine
+|--------------------------------------------------------------------------
+| Project: Numerimondes Web Kernel
+| Copyright (c) Numerimondes Web Kernel
+| License: MPL-2.0 (SPDX-License-Identifier: MPL-2.0)
+| This software is provided "AS IS". Contributions are welcome.
+|--------------------------------------------------------------------------
+| Website: https://www.numerimondes.com
+|--------------------------------------------------------------------------
+*/
+```
+
+27. EXAMPLE OF COMMERCIAL AND OPEN SOURCE LICENSE HEADER
+
+It is important to mention and not alter the commercial and open source
+license header to ensure compliance with the licensing terms and to acknowledge
+the original authors, contributors, and the End-Licensor's commercial terms.
+
+```php
+/*
+|--------------------------------------------------------------------------
+| Software Architect: $End-Licensor
+|--------------------------------------------------------------------------
+| Project: Name of the End-Licensor commercial or FOSS project
+| Based on the FOSS project Numerimondes Web Kernel
+| Copyright (c) End-Licensor Company or Developer
+| Copyright (c) Numerimondes Web Kernel
+| License: MPL-2.0 (SPDX-License-Identifier: MPL-2.0)
+|--------------------------------------------------------------------------
+| Website: https://www.end-licensor-website.com
+| Commercial License: End-Licensor Used Licence
+|--------------------------------------------------------------------------
+*/
+```
+
+By using WebKernel, you acknowledge that you have read, understood, and agreed
+to the terms and conditions of this License Agreement.
