@@ -11,7 +11,7 @@ class Application extends LaravelApplication
      *
      * @var string
      */
-    const WEBKERNEL_VERSION = '1.0.0';
+    const WEBKERNEL_VERSION = '0.9.0';
 
     /**
      * The Webkernel stable version.
