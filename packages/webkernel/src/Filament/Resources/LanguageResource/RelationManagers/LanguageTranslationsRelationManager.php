@@ -520,7 +520,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                             };
                         });
                     }),
-                ],layout: FiltersLayout::AboveContent)
+                ],layout: FiltersLayout::AboveContentCollapsible)
             ->filtersFormWidth(MaxWidth::FourExtraLarge)
             ->filtersFormColumns(5)
             ->persistFiltersInSession();

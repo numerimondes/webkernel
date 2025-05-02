@@ -27,7 +27,8 @@ class RenderHookSettingPolicy
     {
         // Si le `view_path` est vide, on autorise l'édition
         // Si le `view_path` est rempli, on autorise l'édition seulement si le fichier de vue réel n'existe pas sur le disque
-        return empty($renderHookSetting->view_path) || !File::exists(self::getFullViewPath($renderHookSetting));
+        //return empty($renderHookSetting->view_path) || !File::exists(self::getFullViewPath($renderHookSetting));
+        return false;
     }
 
     public function delete(User $user, RenderHookSetting $renderHookSetting): bool

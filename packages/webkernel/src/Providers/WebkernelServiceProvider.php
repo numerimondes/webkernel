@@ -29,6 +29,7 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelRouteServiceProvider::class);
         $this->app->register(WebkernelLivewireServiceProvider::class);
         $this->app->register(WebkernelPoliciesServiceProvider::class);
+        $this->app->register(WebkernelWidgetServiceProvider::class);
     }
 
     /**
@@ -36,6 +37,9 @@ class WebkernelServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Booting services from all the registered providers
+        $this->publishes([
+            __DIR__ . '/../config/webkernel.php' => config_path('webkernel.php'),
+            //php artisan vendor:publish --provider="Webkernel\Providers\WebkernelServiceProvider" --tag="config"
+        ], 'config');
     }
 }

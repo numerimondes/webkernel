@@ -7,6 +7,7 @@ use Livewire\Component;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
+use Pages\ListRenderHookSettings;
 use BladeUI\Icons\Components\Icon;
 use Illuminate\Support\HtmlString;
 use Filament\Tables\Actions\Action;
@@ -19,6 +20,7 @@ use Illuminate\Support\Facades\Blade;
 use Symfony\Component\Process\Process;
 use Filament\Forms\Components\Textarea;
 use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Webkernel\Models\RenderHookSetting;
@@ -85,6 +87,7 @@ class RenderHookSettingResource extends Resource
             ])
             ->filters([])
             ->actions([
+                  //  ViewAction::make(),
                 self::getCustomizeViewAction(),
                 self::getEditCustomViewAction(),
                 self::getDeleteCustomViewAction(),
@@ -234,22 +237,6 @@ class RenderHookSettingResource extends Resource
             });
     }
 
-    public static function getRelations(): array
-    {
-        return [
-            // Relation managers
-        ];
-    }
-
-    public static function getPages(): array
-    {
-        return [
-            'index' => Pages\ListRenderHookSettings::route('/'),
-            'create' => Pages\CreateRenderHookSetting::route('/create'),
-            'edit' => Pages\EditRenderHookSetting::route('/{record}/edit'),
-        ];
-    }
-
     public static function getViewPathFromHookKey(string $key): string
     {
         $hookSettings = RenderHookSetting::all();
@@ -345,4 +332,21 @@ class RenderHookSettingResource extends Resource
         }
     }
 
+
+    public static function getRelations(): array
+    {
+        return [
+            // Relation managers
+        ];
+    }
+
+    public static function getPages(): array
+    {
+        return [
+            'index' => Pages\ListRenderHookSettings::route('/'),
+            'create' => Pages\CreateRenderHookSetting::route('/create'),
+            'view' => Pages\ViewRenderHookSetting::route('/{record}'),
+            'edit' => Pages\EditRenderHookSetting::route('/{record}/edit'),
+        ];
+    }
 }

@@ -4,6 +4,13 @@ namespace Webkernel\Filament\Pages;
 
 use Illuminate\Contracts\View\View;
 use Filament\Pages\Page;
+use Filament\Facades\Filament;
+use Filament\Support\Facades\FilamentIcon;
+use Filament\Widgets\Widget;
+use Filament\Widgets\WidgetConfiguration;
+use Illuminate\Contracts\Support\Htmlable;
+use Webkernel\Filament\Widgets\AccountWidget;
+use Webkernel\Filament\Widgets\WebkernelInfoWidget;
 
 class TestPage extends Page
 {
@@ -20,7 +27,6 @@ class TestPage extends Page
      */
     public static function setTitle(): void
     {
-        // Définir le titre de manière statique à partir d'une fonction de traduction personnalisée
        static::$title = __('available_languages');
     }
 
@@ -32,12 +38,14 @@ class TestPage extends Page
         // Initialise dynamiquement le titre
         self::setTitle();
 
-        // Exemple de debug (commenté)
-        // $languageId = auth()->check()
-        //     ? \App\Models\Language::where('code', auth()->user()->user_lang)->value('id')
-        //     : null;
-        // dd($languageId, 'No user or not authenticated');
-
-        // Si tu veux afficher un composant ou inclure une vue, fais-le dans la vue Blade `filament.pages.test-page`
     }
+
+    /**
+     * @return int | string | array<string, int | string | null>
+     */
+    public function getColumns(): int | string | array
+    {
+        return 2;
+    }
+
 }

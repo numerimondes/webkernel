@@ -73,7 +73,7 @@ class SystemPanelProvider extends PanelProvider
             ->discoverResources(in: base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
             ->discoverPages(in: base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
             ->pages([
-                Pages\Dashboard::class,
+                \Webkernel\Filament\Pages\Dashboard::class,
             ])
             //->resources([
             // \Webkernel\Filament\Resources\UserResource::class,
