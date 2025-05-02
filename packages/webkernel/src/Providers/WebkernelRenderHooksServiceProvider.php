@@ -69,16 +69,23 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             );
         }
         */
-
     }
 
     protected function isRenderHookEnabled(string $key): bool
     {
-        if (!Schema::hasTable('render_hook_settings')) {
-            return true; // Fallback before migration
-        }
+        try {
+            // Vérification de la connexion DB avant toute opération
+            \DB::connection()->getPdo();
 
-        return (bool) optional(RenderHookSetting::where('hook_key', $key)->first())->enabled ?? true;
+            if (!Schema::hasTable('render_hook_settings')) {
+                return true; // Fallback si la table n'existe pas
+            }
+
+            return (bool) optional(RenderHookSetting::where('hook_key', $key)->first())->enabled ?? true;
+
+        } catch (\Exception $e) {
+            return true; // Fallback si la DB n'est pas accessible
+        }
     }
 
     protected function forceSidebarCollapsible(): void
