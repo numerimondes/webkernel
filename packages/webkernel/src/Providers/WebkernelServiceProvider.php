@@ -9,8 +9,10 @@ use Webkernel\Providers\WebkernelViewServiceProvider;
 use Webkernel\Providers\WebkernelCommandServiceProvider;
 use Webkernel\Providers\WebkernelHelperServiceProvider;
 use Webkernel\Providers\WebkernelRouteServiceProvider;
+use Webkernel\Providers\WebkernelLivewireServiceProvider;
 use Webkernel\Providers\WebkernelUserServiceProvider;
 use Webkernel\Providers\WebkernelFactoryServiceProvider;
+use Illuminate\Support\Facades\Route;
 
 class WebkernelServiceProvider extends ServiceProvider
 {
@@ -25,6 +27,8 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelCommandServiceProvider::class);
         $this->app->register(WebkernelHelperServiceProvider::class);
         $this->app->register(WebkernelRouteServiceProvider::class);
+        $this->app->register(WebkernelLivewireServiceProvider::class);
+        $this->app->register(WebkernelPoliciesServiceProvider::class);
     }
 
     /**

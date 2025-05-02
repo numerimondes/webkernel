@@ -14,16 +14,17 @@ class HelpCommand extends Command
 
     /**
      * Configure the command and add aliases
+     *
+     * protected $aliases = ['webkernel:cc'];
+     *
+     *    protected function configure()
+     *    {
+     *        $this->setAliases ($this->aliases);
+     *        parent::configure();
+     *    }
+     *
      */
-    protected $aliases = ['webkernel:cc'];
 
-    protected function configure()
-    {
-        // Set additional aliases
-        $this->setAliases ($this->aliases);
-
-        parent::configure();
-    }
 
     /**
      * Execute the console command.

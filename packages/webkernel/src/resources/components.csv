@@ -3,3 +3,6 @@ Date,Time,Component Type,Section,Role,Complexity,File Type,Component Name,FilePa
 2025-04-22,11:59:05,ui,webkernel,none,atoms,blade,currentuserdatetime,/packages/webkernel/src/resources/views/components/webkernel/ui/atoms/currentuserdatetime.blade.php
 2025-04-22,12:01:51,ui,webkernel,none,molecules,blade,language-selector,/packages/webkernel/src/resources/views/components/webkernel/ui/molecules/language-selector.blade.php
 2025-04-22,12:16:02,rolebased,webkernel,common,molecules,blade,profile-header,/packages/webkernel/src/resources/views/components/webkernel/rolebased/common/profile-header.blade.php
+2025-05-01,11:54:31,ui,webkernel,none,atoms,blade,search-hide,/packages/webkernel/src/resources/views/components/webkernel/ui/atoms/search-hide.blade.php
+2025-05-01,11:56:14,ui,webkernel,none,molecules,blade,user-panels,/packages/webkernel/src/resources/views/components/webkernel/ui/molecules/user-panels.blade.php
+2025-05-01,18:22:00,page,filament,none,molecules,blade,test-page,/packages/webkernel/src/resources/views/filament/pages/test-page.blade.php

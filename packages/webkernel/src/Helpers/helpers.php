@@ -463,3 +463,18 @@ function consoleColor($message, $type = 'info')
     // Output the message with the chosen color
     echo $color . $message . "\033[0m\n"; // Reset color after message
 }
+
+if (!function_exists('customizable_render_hook_view')) {
+    function customizable_render_hook_view(string $view, array $data = []): \Illuminate\Contracts\View\View
+    {
+        // Convert name to Laravel path
+        // Ex: webkernel::components.webkernel.ui.atoms.search-hide => components.webkernel.ui.atoms.search-hide
+        $customView = str_replace('webkernel::', '', $view);
+
+        if (view()->exists($customView)) {
+            return view($customView, $data);
+        }
+
+        return view($view, $data); // fallback to the original package view
+    }
+}

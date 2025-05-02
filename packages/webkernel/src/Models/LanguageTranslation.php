@@ -17,7 +17,6 @@ class LanguageTranslation extends Model
         'translation',
         'app',
         'theme',
-        'belongs_to',
     ];
     protected $casts = [
         'created_at' => 'datetime',

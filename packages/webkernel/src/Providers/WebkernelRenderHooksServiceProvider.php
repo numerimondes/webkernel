@@ -5,113 +5,94 @@ namespace Webkernel\Providers;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
-use Filament\FilamentManager;
-use Webkernel\Observers\LanguageTranslationObserver;
+use Illuminate\Support\Facades\Schema;
+use Webkernel\Models\RenderHookSetting;
 
 class WebkernelRenderHooksServiceProvider extends ServiceProvider
 {
-    /**
-     * Register additional services if needed.
-     *
-     * @return void
-     */
     public function register(): void
     {
         // You may bind services or perform registrations here in the future.
     }
 
-    /**
-     * Bootstrap the service provider.
-     *
-     * @return void
-     */
     public function boot(): void
     {
-        // Register render hooks used by Filament.
         $this->registerPanelsRenderHooks();
-
-        // Ensure the sidebar is collapsible on desktop devices.
         $this->forceSidebarCollapsible();
     }
 
-    /**
-     * Register all Filament render hooks needed for customization.
-     *
-     * @return void
-     */
     protected function registerPanelsRenderHooks(): void
     {
-        // Store page load start time for performance monitoring.
         if (!app()->runningInConsole()) {
             app()->singleton('page_start_time', fn () => microtime(true));
         }
 
-        // Inject custom head CSS into the <head> section of the page.
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_START,
-            fn () => view('webkernel::components.webkernel.assets.head-css')->render()
+            fn () => customizable_render_hook_view('webkernel::components.webkernel.assets.head-css')->render()
         );
 
-        // Register observer for the LanguageTranslation model.
-        //  \Webkernel\Models\LanguageTranslation::observe(LanguageTranslationObserver::class);
+        if ($this->isRenderHookEnabled('current_user_datetime')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+                fn () => customizable_render_hook_view('webkernel::components.webkernel.ui.atoms.currentuserdatetime')
+            );
+        }
 
-         FilamentView::registerRenderHook(
-             PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-             fn () => view('webkernel::components.webkernel.ui.atoms.currentuserdatetime')
-         );
+        if ($this->isRenderHookEnabled('language_selector')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::USER_MENU_BEFORE,
+                fn () => customizable_render_hook_view('webkernel::components.webkernel.ui.molecules.language-selector')
+            );
+        }
 
-         FilamentView::registerRenderHook(
-             PanelsRenderHook::USER_MENU_BEFORE,
-             fn () => view('webkernel::components.webkernel.ui.molecules.language-selector')
-         );
+        if ($this->isRenderHookEnabled('search_hide')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
+                fn () => customizable_render_hook_view('webkernel::components.webkernel.ui.atoms.search-hide')
+            );
+        }
 
-        // Optional: Hide global search via a custom component.
-        // FilamentView::registerRenderHook(
-        //     PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
-        //     fn () => view('components.search-hide')
-        // );
+        // Optional hooks (commentés volontairement)
+        /*
+        if ($this->isRenderHookEnabled('footer_partial')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::FOOTER,
+                fn () => customizable_render_hook_view('components.partials.footer')
+            );
+        }
 
-        // Optional: Inject custom footer partial.
-        // FilamentView::registerRenderHook(
-        //     PanelsRenderHook::FOOTER,
-        //     fn () => view('components.partials.footer')
-        // );
+        if ($this->isRenderHookEnabled('tenant_menu_after')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::TENANT_MENU_AFTER,
+                fn () => customizable_render_hook_view('components.userpanels')
+            );
+        }
+        */
 
-        // Optional: Add user panels after the tenant menu.
-        // FilamentView::registerRenderHook(
-        //     PanelsRenderHook::TENANT_MENU_AFTER,
-        //     fn () => view('components.userpanels')
-        // );
     }
 
-    /**
-     * Make sure the sidebar is collapsible on desktop devices.
-     *
-     * @return void
-     */
+    protected function isRenderHookEnabled(string $key): bool
+    {
+        if (!Schema::hasTable('render_hook_settings')) {
+            return true; // Fallback before migration
+        }
+
+        return (bool) optional(RenderHookSetting::where('hook_key', $key)->first())->enabled ?? true;
+    }
+
     protected function forceSidebarCollapsible(): void
     {
-        // Get the current Filament panel.
         $currentPanel = filament()->getCurrentPanel();
 
-        // Apply sidebar settings if the panel exists.
         if ($currentPanel) {
             $this->forceSidebarSettings($currentPanel);
         }
     }
 
-    /**
-     * Apply sidebar settings to the given Filament panel.
-     *
-     * @param \Filament\Panel $currentPanel
-     * @return void
-     */
     protected function forceSidebarSettings($currentPanel): void
     {
-        // Enable collapsible sidebar on desktop.
         $currentPanel->sidebarCollapsibleOnDesktop(true);
-
-        // Enable fully collapsible sidebar on desktop.
         $currentPanel->sidebarFullyCollapsibleOnDesktop(true);
     }
 }

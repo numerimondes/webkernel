@@ -9,10 +9,10 @@ class TestPage extends Page
 {
     protected static ?string $title = null;
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
-    protected static string $view = 'webkernel::filament.dev.pages.test-page';
+    protected static string $view = 'webkernel::filament.pages.test-page';
     public function getHeader(): ?View
     {
-        return view('webkernel::filament.dev.pages.test-page');
+        return view('webkernel::filament.pages.test-page');
     }
 
     /**
