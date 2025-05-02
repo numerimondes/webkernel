@@ -23,9 +23,7 @@ class Application extends LaravelApplication
     /**
      * Additional packages to update when updating webkernel
      * Comma-separated list of package names
-     *
      * Example: const ADDITIONAL_PACKAGES = 'webkernel-blog,webkernel-commerce,webkernel-crm';
-     *
      * @var string
      */
     const ADDITIONAL_PACKAGES = '';
@@ -40,3 +38,4 @@ class Application extends LaravelApplication
         return 'webkernel';
     }
 }
+
