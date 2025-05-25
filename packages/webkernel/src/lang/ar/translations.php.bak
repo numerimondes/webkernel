@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'direction' => 'rtl',
+    'actions' => [
+        'Users' => [
+            'label' => '                                           المستخدمون',
+        ],
+    ],
+];

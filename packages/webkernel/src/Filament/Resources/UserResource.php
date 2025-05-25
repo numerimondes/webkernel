@@ -15,7 +15,10 @@ class UserResource extends Resource
     protected static ?string $model = User::class;
     protected static ?string $navigationIcon = 'heroicon-o-users';
     protected static ?string $recordTitleAttribute = 'name';
-
+    public static function getNavigationLabel(): string
+    {
+        return __('filament-panels::layout.actions.open_user_menu.label');
+    }
     public static function form(Form $form): Form
     {
         return $form
@@ -26,7 +29,7 @@ class UserResource extends Resource
                             ->schema([
                                 Forms\Components\Tabs::make('User Tabs')
                                     ->tabs([
-                                        Forms\Components\Tabs\Tab::make(__('User Information'))
+                                        Forms\Components\Tabs\Tab::make(lang('User Information'))
                                             ->schema([
                                                 Forms\Components\TextInput::make('name')
                                                     ->required()
@@ -57,48 +60,47 @@ class UserResource extends Resource
                                             ])
                                             ->columns(3),
 
-                                        Forms\Components\Tabs\Tab::make(__('User Status'))
+                                        Forms\Components\Tabs\Tab::make(lang('User Status'))
                                             ->schema([
                                                 Forms\Components\Toggle::make('is_active')
                                                     ->default(true)
-                                                    ->label(__('Active')),
+                                                    ->label(lang('Active')),
 
                                                 Forms\Components\Toggle::make('force_password_override')
-                                                    ->label(__('Manually set a password'))
-                                                    ->reactive(), // pour rendre cela réactif
+                                                    ->label(lang('Manually set a password'))
+                                                    ->reactive(),
 
-                                                // Champ mot de passe, apparaissant seulement si 'force_password_override' est activé
                                                 Forms\Components\TextInput::make('password')
-                                                    ->label(__('New password'))
+                                                    ->label(lang('New password'))
                                                     ->password()
                                                     ->revealable(true)
-                                                    ->required(fn($get) => $get('force_password_override')) // requis uniquement si le toggle est activé
-                                                    ->visible(fn($get) => $get('force_password_override')), // visible uniquement si 'force_password_override' est activé
+                                                    ->required(fn($get) => $get('force_password_override'))
+                                                    ->visible(fn($get) => $get('force_password_override')),
 
                                                 Forms\Components\Toggle::make('is_banned')
                                                     ->default(false)
-                                                    ->label(__('Banned')),
+                                                    ->label(lang('Banned')),
 
                                                 Forms\Components\Toggle::make('forceChangePassword')
                                                     ->default(true)
-                                                    ->label(__('Force Password Change'))
-                                                    ->helperText(__('Cette action forcera le changement de mot de passe de l\'utilisateur lors de la prochaine connexion')),
+                                                    ->label(lang('Force Password Change'))
+                                                    ->helperText(lang('Cette action forcera le changement de mot de passe de l\'utilisateur lors de la prochaine connexion')),
                                             ])
                                             ->columns(3),
 
-                                        Forms\Components\Tabs\Tab::make(__('Marketing & Subscription Settings'))
+                                        Forms\Components\Tabs\Tab::make(lang('Marketing & Subscription Settings'))
                                             ->schema([
                                                 Forms\Components\Toggle::make('marketing_callable')
                                                     ->default(true)
-                                                    ->label(__('Consent to receive phone calls')),
+                                                    ->label(lang('Consent to receive phone calls')),
 
                                                 Forms\Components\Toggle::make('marketing_whatsappable')
                                                     ->default(true)
-                                                    ->label(__('Consent to receive WhatsApp messages')),
+                                                    ->label(lang('Consent to receive WhatsApp messages')),
 
                                                 Forms\Components\Toggle::make('marketing_smsable')
                                                     ->default(true)
-                                                    ->label(__('Consent to receive SMS messages')),
+                                                    ->label(lang('Consent to receive SMS messages')),
 
                                             ])
                                             ->columns(2),
@@ -107,10 +109,10 @@ class UserResource extends Resource
                             ])
                             ->columnSpan(['sm' => 2]),
 
-                        // Meta Data Section (non modifié)
+                        // Meta Data Section
                         Forms\Components\Group::make()
                             ->schema([
-                                Forms\Components\Section::make(__('Meta Data'))
+                                Forms\Components\Section::make(lang('Meta Data'))
                                     ->schema([
                                         Forms\Components\TextInput::make('belongs_to')
                                             ->required()
@@ -118,22 +120,22 @@ class UserResource extends Resource
                                             ->default(1),
 
                                         Forms\Components\Placeholder::make('created_at')
-                                            ->label(__('Created At'))
+                                            ->label(lang('Created At'))
                                             ->content(fn(?User $record) => $record?->created_at?->diffForHumans()),
 
                                         Forms\Components\Placeholder::make('updated_at')
-                                            ->label(__('Updated At'))
+                                            ->label(lang('Updated At'))
                                             ->content(fn(?User $record) => $record?->updated_at?->diffForHumans()),
 
                                         Forms\Components\Placeholder::make('email_verified_at')
-                                            ->label(__('Email Verified At'))
+                                            ->label(lang('Email Verified At'))
                                             ->content(fn(?User $record) => $record?->email_verified_at?->diffForHumans()),
 
                                         Forms\Components\Placeholder::make('created_by')
-                                            ->label(__('Created By'))
+                                            ->label(lang('Created By'))
                                             ->content(
                                                 fn($record) =>
-                                                $record ? $record->createdBy?->name : (auth()->user()->name ?? __('Unknown'))
+                                                $record ? $record->createdBy?->name : (auth()->user()->name ?? lang('Unknown'))
                                             ),
                                     ])
                                     ->columns(1),

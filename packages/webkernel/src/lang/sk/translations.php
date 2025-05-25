@@ -1,0 +1,13 @@
+<?php
+
+return [
+    'direction' => 'ltr',
+    'actions' => [
+        'Settings' => [
+            'label' => 'Nastavenia',
+        ],
+        'Users' => [
+            'label' => 'Užívatelia',
+        ],
+    ],
+];
