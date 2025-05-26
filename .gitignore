@@ -11,6 +11,7 @@
 .env
 .env.backup
 .env.production
+composer.json.backup
 composer.lock
 .phpactor.json
 .phpunit.result.cache
