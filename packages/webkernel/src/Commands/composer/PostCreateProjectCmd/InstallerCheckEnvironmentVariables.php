@@ -109,16 +109,28 @@ class InstallerCheckEnvironmentVariables extends Command
     }
 
     public function handle()
-    {
-        // Run environment check
-        $status = $this->checkEnvironmentVariables();
-
-        // Check if Filament is missing and install it
-        if (!$status['filament']) {
-            $this->installFilamentIfMissing($status['filament']);
+{
+    // Create .env if missing
+    if (!File::exists(base_path('.env'))) {
+        if (File::exists(base_path('.env.example'))) {
+            File::copy(base_path('.env.example'), base_path('.env'));
+            $this->info('📄 .env file was missing and has been created from .env.example.');
+        } else {
+            $this->error('❌ Both .env and .env.example are missing. Cannot create .env.');
+            return;
         }
-
-        // Update the .env file for APP_NAME
-        $this->updateEnvFile();
     }
+
+    // Run environment check
+    $status = $this->checkEnvironmentVariables();
+
+    // Check if Filament is missing and install it
+    if (!$status['filament']) {
+        $this->installFilamentIfMissing($status['filament']);
+    }
+
+    // Update the .env file for APP_NAME
+    $this->updateEnvFile();
+}
+
 }
