@@ -3,7 +3,10 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'components_display_settings' => [
+        'components_display_settings_subheading' => [
+            'label' => 'Anpassa hur olika vissa gränssnittskomponenter beter sig och visas över plattformen.',
+        ],
+        'components_display_settings_heading' => [
             'label' => 'Komponenter Displayinställningar',
         ],
     ],

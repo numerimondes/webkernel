@@ -3,7 +3,10 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'components_display_settings' => [
+        'components_display_settings_subheading' => [
+            'label' => 'Προσαρμόστε πόσο διαφορετικά συμπεριφέρονται ορισμένα εξαρτήματα διεπαφής και εμφανίζονται σε όλη την πλατφόρμα.',
+        ],
+        'components_display_settings_heading' => [
             'label' => 'Ρυθμίσεις εμφάνισης εξαρτημάτων',
         ],
     ],

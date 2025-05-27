@@ -3,7 +3,10 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'components_display_settings' => [
+        'components_display_settings_subheading' => [
+            'label' => 'Přizpůsobte si, jak se některé komponenty rozhraní chovají a objevují se napříč platformou.',
+        ],
+        'components_display_settings_heading' => [
             'label' => 'Komponenty zobrazení nastavení',
         ],
     ],

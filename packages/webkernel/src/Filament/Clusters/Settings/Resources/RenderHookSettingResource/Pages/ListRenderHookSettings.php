@@ -3,19 +3,21 @@
 namespace Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages;
 
 use Filament\Actions;
+use Illuminate\Support\HtmlString;
+use Filament\Tables\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource;
-use Filament\Tables\Actions\Action;
+
 class ListRenderHookSettings extends ListRecords
 {
     protected static string $resource = RenderHookSettingResource::class;
     public function getHeading(): string
     {
-        return lang('components_display_settings');
-    }
+        return lang('components_display_settings_heading');
+   }
     public function getSubheading(): string
     {
-        return lang('ds');
+        return lang('components_display_settings_subheading');
     }
     protected function getHeaderActions(): array
     {

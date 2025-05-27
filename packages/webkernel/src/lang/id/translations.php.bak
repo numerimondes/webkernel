@@ -1,0 +1,10 @@
+<?php
+
+return [
+    'direction' => 'ltr',
+    'actions' => [
+        'components_display_settings_heading' => [
+            'label' => 'Pengaturan Tampilan Komponen',
+        ],
+    ],
+];

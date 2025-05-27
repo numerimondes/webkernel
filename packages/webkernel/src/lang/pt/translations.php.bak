@@ -3,7 +3,7 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'components_display_settings' => [
+        'components_display_settings_heading' => [
             'label' => 'Definições de visualização dos componentes',
         ],
     ],

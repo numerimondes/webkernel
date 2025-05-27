@@ -1,7 +1,5 @@
 <?php
 
-//Customize how different some interface components behave and appear across the platform.
-
 use Illuminate\Support\Facades\Auth;
 use Webkernel\Models\Language;
 use Webkernel\Models\LanguageTranslation;

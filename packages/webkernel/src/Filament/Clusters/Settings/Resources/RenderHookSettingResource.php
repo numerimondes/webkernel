@@ -74,7 +74,7 @@ class RenderHookSettingResource extends Resource
                     ->icon(fn($record) => $record->icon)
                     ->size(IconColumn\IconColumnSize::Medium),
                 TextColumn::make('hook_key')
-                    ->label('Action')
+                    ->label(lang('action'))
                     ->description(fn($record) => nl2br($record->hook_key))
                     ->html()
                     ->wrap()
