@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => '設定',
-        ],
-        'Users' => [
-            'label' => '用戶',
+        'components_display_settings' => [
+            'label' => '組件顯示設置',
         ],
     ],
 ];

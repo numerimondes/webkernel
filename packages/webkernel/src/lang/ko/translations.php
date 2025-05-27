@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => '설정',
-        ],
-        'Users' => [
-            'label' => '사용자',
+        'components_display_settings' => [
+            'label' => '구성 요소는 설정을 표시합니다',
         ],
     ],
 ];

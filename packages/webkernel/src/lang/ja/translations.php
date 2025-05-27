@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => '設定',
-        ],
-        'Users' => [
-            'label' => 'ユーザー',
+        'components_display_settings' => [
+            'label' => 'コンポーネントは設定を表示します',
         ],
     ],
 ];

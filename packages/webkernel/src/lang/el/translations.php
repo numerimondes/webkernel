@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Ρυθμίσεις',
-        ],
-        'Users' => [
-            'label' => 'Χρήστες',
+        'components_display_settings' => [
+            'label' => 'Ρυθμίσεις εμφάνισης εξαρτημάτων',
         ],
     ],
 ];

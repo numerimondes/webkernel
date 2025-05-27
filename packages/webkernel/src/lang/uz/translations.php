@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Sozlash',
-        ],
-        'Users' => [
-            'label' => 'Foydalanuvchilar',
+        'components_display_settings' => [
+            'label' => 'Komponentlar displey sozlamalari',
         ],
     ],
 ];

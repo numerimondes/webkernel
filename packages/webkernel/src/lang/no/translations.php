@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Innstillinger',
-        ],
-        'Users' => [
-            'label' => 'Brukere',
+        'components_display_settings' => [
+            'label' => 'Komponenter viser innstillinger',
         ],
     ],
 ];

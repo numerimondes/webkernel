@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Ayarlar',
-        ],
-        'Users' => [
-            'label' => 'Kullanıcılar',
+        'components_display_settings' => [
+            'label' => 'Bileşenler Ayarları Görüntüle',
         ],
     ],
 ];

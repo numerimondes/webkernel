@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'সেটিংস',
-        ],
-        'Users' => [
-            'label' => 'ব্যবহারকারীরা',
+        'components_display_settings' => [
+            'label' => 'উপাদানগুলি সেটিংস প্রদর্শন করে',
         ],
     ],
 ];

@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Cài đặt',
-        ],
-        'Users' => [
-            'label' => 'Người dùng',
+        'components_display_settings' => [
+            'label' => 'Thành phần hiển thị cài đặt',
         ],
     ],
 ];

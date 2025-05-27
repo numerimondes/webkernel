@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Тохиргоо',
-        ],
-        'Users' => [
-            'label' => 'Хэрэглэгчид',
+        'components_display_settings' => [
+            'label' => 'Бүрэлдэхүүн хэсгүүд харуулах тохиргоо',
         ],
     ],
 ];

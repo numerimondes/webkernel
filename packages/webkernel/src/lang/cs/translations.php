@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Nastavení',
-        ],
-        'Users' => [
-            'label' => 'Uživatelé',
+        'components_display_settings' => [
+            'label' => 'Komponenty zobrazení nastavení',
         ],
     ],
 ];

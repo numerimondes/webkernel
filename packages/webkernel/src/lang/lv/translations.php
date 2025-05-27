@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Iestatījumi',
-        ],
-        'Users' => [
-            'label' => 'Lietotāji',
+        'components_display_settings' => [
+            'label' => 'Komponenti Displeja iestatījumi',
         ],
     ],
 ];

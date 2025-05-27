@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Parametrlər',
-        ],
-        'Users' => [
-            'label' => 'İstifadəçilər',
+        'components_display_settings' => [
+            'label' => 'Komponentlər parametrləri göstərir',
         ],
     ],
 ];

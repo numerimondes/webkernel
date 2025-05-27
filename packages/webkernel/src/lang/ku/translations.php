@@ -3,11 +3,8 @@
 return [
     'direction' => 'rtl',
     'actions' => [
-        'Settings' => [
-            'label' => 'Mîhengan',
-        ],
-        'Users' => [
-            'label' => 'Bikarhêner',
+        'components_display_settings' => [
+            'label' => 'Mîhengên ji',
         ],
     ],
 ];

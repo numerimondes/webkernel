@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'ဆက်တင်များ',
-        ],
-        'Users' => [
-            'label' => 'အသုံးပြုသူများ',
+        'components_display_settings' => [
+            'label' => 'အစိတ်အပိုင်းများပြထားတဲ့ settings ကို',
         ],
     ],
 ];

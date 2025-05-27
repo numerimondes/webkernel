@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Կարգավորումներ',
-        ],
-        'Users' => [
-            'label' => 'Սուլիչ',
+        'components_display_settings' => [
+            'label' => 'Բաղադրիչների ցուցադրման պարամետրերը',
         ],
     ],
 ];

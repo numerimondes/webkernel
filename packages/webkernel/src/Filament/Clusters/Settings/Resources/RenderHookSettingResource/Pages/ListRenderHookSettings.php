@@ -11,7 +11,7 @@ class ListRenderHookSettings extends ListRecords
     protected static string $resource = RenderHookSettingResource::class;
     public function getHeading(): string
     {
-        return lang('ds');
+        return lang('components_display_settings');
     }
     public function getSubheading(): string
     {

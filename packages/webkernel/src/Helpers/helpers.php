@@ -1,11 +1,193 @@
 <?php
-
-
 use Illuminate\Support\Facades\Auth;
 use Webkernel\Models\Language;
 use Webkernel\Models\LanguageTranslation;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+/*
+|--------------------------------------------------------------------------
+| Translation Helper lang('') @Numerimondes Web Kernel
+|--------------------------------------------------------------------------
+| Author : El Moumen Yassine   ➜   www.numerimondes.com
+|--------------------------------------------------------------------------
+| Requires only two tables for all custom translations:
+| - webkernel_lang (Model: Language)
+| - webkernel_lang_words (Model: LanguageTranslation)
+|--------------------------------------------------------------------------
+*/
+if (!function_exists('lang')) {
+    function lang($key = null, $replace = [], $locale = null)
+    {
+        static $doc_description = 'Returns the translated string for a given key using the current user\'s language, falling back to the default language if not available.';
+        static $doc_usage = 'lang("payment_notice", ["name" => "Yassine", "amount" => "99 MAD", "date" => "17 April 2025"]);';
+        static $doc_output = '"Hello, Yassine! Your payment of 99 MAD is due on 17 April 2025."';
+        static $doc_basedonfunction = 'trans()';
+        static $doc_relatedfile = 'Observers/LanguageTranslationObserver.php';
+
+        if (is_null($key)) {
+            return $key;
+        }
+
+        if (!is_array($replace)) {
+            $replace = [];
+        }
+
+        // Get user language code
+        $userLangCode = 'en';
+        if (Auth::check() && Auth::user()->user_lang) {
+            $userLangCode = Auth::user()->user_lang;
+        }
+
+        // Search in ALL packages/*/src/lang directories FIRST
+        $packageDirs = glob(base_path('packages/*/src/lang'));
+
+        foreach ($packageDirs as $packageDir) {
+            $filePath = $packageDir . '/' . $userLangCode . '/translations.php';
+
+            // Debug: Vérifier si le fichier existe
+            if (file_exists($filePath)) {
+                try {
+                    $translations = include $filePath;
+
+                    // Vérifier si $translations est un array valide
+                    if (is_array($translations)) {
+                        // Structure flexible: chercher dans plusieurs niveaux
+                        $translationValue = null;
+
+                        // Essayer différentes structures possibles
+                        if (isset($translations['actions'][$key]['label'])) {
+                            $translationValue = $translations['actions'][$key]['label'];
+                        } elseif (isset($translations['actions'][$key])) {
+                            $translationValue = $translations['actions'][$key];
+                        } elseif (isset($translations[$key]['label'])) {
+                            $translationValue = $translations[$key]['label'];
+                        } elseif (isset($translations[$key])) {
+                            $translationValue = $translations[$key];
+                        }
+
+                        if ($translationValue) {
+                            $message = $translationValue;
+                            foreach ($replace as $search => $replaceValue) {
+                                $message = str_replace(':' . $search, $replaceValue, $message);
+                            }
+                            return $message;
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Log l'erreur pour debug
+                    error_log("Erreur lors du chargement du fichier de traduction: " . $filePath . " - " . $e->getMessage());
+                    continue;
+                }
+            }
+        }
+
+        // Fallback: essayer avec la langue par défaut si différente
+        if ($userLangCode !== 'en') {
+            foreach ($packageDirs as $packageDir) {
+                $filePath = $packageDir . '/en/translations.php';
+
+                if (file_exists($filePath)) {
+                    try {
+                        $translations = include $filePath;
+
+                        if (is_array($translations)) {
+                            $translationValue = null;
+
+                            if (isset($translations['actions'][$key]['label'])) {
+                                $translationValue = $translations['actions'][$key]['label'];
+                            } elseif (isset($translations['actions'][$key])) {
+                                $translationValue = $translations['actions'][$key];
+                            } elseif (isset($translations[$key]['label'])) {
+                                $translationValue = $translations[$key]['label'];
+                            } elseif (isset($translations[$key])) {
+                                $translationValue = $translations[$key];
+                            }
+
+                            if ($translationValue) {
+                                $message = $translationValue;
+                                foreach ($replace as $search => $replaceValue) {
+                                    $message = str_replace(':' . $search, $replaceValue, $message);
+                                }
+                                return $message;
+                            }
+                        }
+                    } catch (\Exception $e) {
+                        continue;
+                    }
+                }
+            }
+        }
+
+        // Search in app/lang as second option
+        $appLangPath = app_path('lang/' . $userLangCode . '/translations.php');
+        if (file_exists($appLangPath)) {
+            try {
+                $translations = include $appLangPath;
+                if (is_array($translations) && isset($translations['actions'][$key]['label'])) {
+                    $message = $translations['actions'][$key]['label'];
+                    foreach ($replace as $search => $replaceValue) {
+                        $message = str_replace(':' . $search, $replaceValue, $message);
+                    }
+                    if (function_exists('shouldShowTranslationKey') && shouldShowTranslationKey($key)) {
+                        return "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                    }
+                    return $message;
+                }
+            } catch (\Exception $e) {
+                // Continue to database search
+            }
+        }
+
+        // Search in database as fallback
+        $userLangId = 1; // Default
+        if (Auth::check()) {
+            if (class_exists('Webkernel\Models\Language')) {
+                $userLangId = \Webkernel\Models\Language::where('code', Auth::user()->user_lang)->value('id') ?? 1;
+            }
+        }
+
+        if (class_exists('Webkernel\Models\LanguageTranslation')) {
+            try {
+                $translations = \Webkernel\Models\LanguageTranslation::getTranslationsForKey($key);
+                $translation = $translations->firstWhere('lang', $userLangId);
+
+                if ($translation) {
+                    $message = $translation->translation;
+                    foreach ($replace as $search => $replaceValue) {
+                        $message = str_replace(':' . $search, $replaceValue, $message);
+                    }
+                    // Future feature: Show translation key for authorized users
+                    if (function_exists('shouldShowTranslationKey') && shouldShowTranslationKey($key)) {
+                        return "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                    }
+                    return $message;
+                }
+            } catch (\Exception $e) {
+                // Continue to final fallback
+            }
+        }
+
+        // Final fallback to Laravel's built-in translation
+        return __($key, $replace, $locale);
+    }
+}
+
+if (!function_exists('shouldShowTranslationKey')) {
+    function shouldShowTranslationKey($key = null): bool
+    {
+        // Smart logic placeholder – to be extended later
+        if (!Auth::check()) return false;
+
+        $user = Auth::user();
+
+        // Example: allow only superadmins and when special session is active
+        return $user->is_admin
+            && session()->has('can_edit_translations'); // or any dynamic condition
+    }
+}
+
+
+
 
 /*
 |--------------------------------------------------------------------------
@@ -73,68 +255,6 @@ if (!function_exists('CurrentUserTimezone')) {
             : config('app.timezone');
     }
 }
-
-/*
-|--------------------------------------------------------------------------
-| Translation Helper lang('') @Numerimondes Web Kernel
-|--------------------------------------------------------------------------
-| Author : El Moumen Yassine   ➜   www.numerimondes.com
-|--------------------------------------------------------------------------
-| Requires only two tables for all custom translations:
-| - webkernel_lang (Model: Language)
-| - webkernel_lang_words (Model: LanguageTranslation)
-|--------------------------------------------------------------------------
-*/
-
-if (!function_exists('lang')) {
- function lang($key = null, $replace = [], $locale = null)
- {
-     static $doc_description = 'Returns the translated string for a given key using the current user\'s language, falling back to the default language if not available.';
-     static $doc_usage = 'lang("payment_notice", ["name" => "Yassine", "amount" => "99 MAD", "date" => "17 April 2025"]);';
-     static $doc_output = '"Hello, Yassine! Your payment of 99 MAD is due on 17 April 2025."';
-     static $doc_basedonfunction = 'trans()';
-     static $doc_relatedfile = 'Observers/LanguageTranslationObserver.php';
-      if (is_null($key)) {
-         return $key;
-     }
-      if (!is_array($replace)) {
-         $replace = [];
-     }
-      $userLangId = Auth::check()
-         ? Language::where('code', Auth::user()->user_lang)->value('id') ?? 1
-         : 1;
-      $translations = LanguageTranslation::getTranslationsForKey($key);
-     $translation = $translations->firstWhere('lang', $userLangId);
-      if ($translation) {
-         $message = $translation->translation;
-          foreach ($replace as $search => $replaceValue) {
-             $message = str_replace(':' . $search, $replaceValue, $message);
-         }
-          // 🧠 FUTURE FEATURE: Show translation key for authorized users
-         if (shouldShowTranslationKey($key)) {
-             return "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
-         }
-          return $message;
-     }
-      return __($key, $replace, $locale);
- }
-}
-
-if (!function_exists('shouldShowTranslationKey')) {
-    function shouldShowTranslationKey($key = null): bool
-    {
-        // 🧠 Smart logic placeholder – to be extended later
-        if (!Auth::check()) return false;
-
-        $user = Auth::user();
-
-        // Example: allow only superadmins and when special session is active
-        return $user->is_admin
-            && session()->has('can_edit_translations'); // or any dynamic condition
-    }
-}
-
-
 
 if (!function_exists('lang_i')) {
  function lang_i($key = null, $replace = [], $locale = null)

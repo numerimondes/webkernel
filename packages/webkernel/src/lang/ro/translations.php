@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Setări',
-        ],
-        'Users' => [
-            'label' => 'Utilizatori',
+        'components_display_settings' => [
+            'label' => 'Componente afișează setări',
         ],
     ],
 ];

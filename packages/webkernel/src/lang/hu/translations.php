@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Beállítások',
-        ],
-        'Users' => [
-            'label' => 'Felhasználók',
+        'components_display_settings' => [
+            'label' => 'Alkatrészek megjelenítési beállításai',
         ],
     ],
 ];

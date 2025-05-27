@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Nustatymai',
-        ],
-        'Users' => [
-            'label' => 'Vartotojai',
+        'components_display_settings' => [
+            'label' => 'Komponentai rodomi nustatymai',
         ],
     ],
 ];

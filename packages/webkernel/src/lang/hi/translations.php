@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'सेटिंग',
-        ],
-        'Users' => [
-            'label' => 'उपयोगकर्ताओं',
+        'components_display_settings' => [
+            'label' => 'घटक प्रदर्शित सेटिंग्स',
         ],
     ],
 ];

@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Cilësimet',
-        ],
-        'Users' => [
-            'label' => 'Përdorues',
+        'components_display_settings' => [
+            'label' => 'Përbërësit e shfaqjes së cilësimeve',
         ],
     ],
 ];

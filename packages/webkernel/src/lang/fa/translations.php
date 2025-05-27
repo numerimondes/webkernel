@@ -3,11 +3,8 @@
 return [
     'direction' => 'rtl',
     'actions' => [
-        'Settings' => [
-            'label' => '                                                 تنظیمات',
-        ],
-        'Users' => [
-            'label' => '                                                 کاربران',
+        'components_display_settings' => [
+            'label' => 'تنظیمات برای',
         ],
     ],
 ];

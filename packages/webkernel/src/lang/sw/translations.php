@@ -3,11 +3,8 @@
 return [
     'direction' => 'ltr',
     'actions' => [
-        'Settings' => [
-            'label' => 'Mipangilio',
-        ],
-        'Users' => [
-            'label' => 'Watumiaji',
+        'components_display_settings' => [
+            'label' => 'Vipengele vinaonyesha mipangilio',
         ],
     ],
 ];
