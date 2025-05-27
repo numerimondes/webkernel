@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Models\Traits;
+namespace Webkernel\Traits;
 
 use Webkernel\Models\Language;
 use Illuminate\Database\Eloquent\Relations\HasMany;

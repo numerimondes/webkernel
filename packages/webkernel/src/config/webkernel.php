@@ -23,6 +23,43 @@
 */
 
 return [
+
+
+
+    /*
+    |--------------------------------------------------------------------------
+    | Webkernel Laravel Core Functionalities
+    |--------------------------------------------------------------------------
+    |
+    | This section configures core Laravel functionalities modified by Webkernel,
+    | such as prohibiting destructive commands to protect the application.
+    |
+    */
+
+    'prohibit_commands' => [
+        'db:wipe' => [
+            'class' => \Illuminate\Database\Console\WipeCommand::class,
+            'prohibited' => false,
+        ],
+        'migrate:fresh' => [
+            'class' => \Illuminate\Database\Console\Migrations\FreshCommand::class,
+            'prohibited' => false,
+        ],
+        'migrate:reset' => [
+            'class' => \Illuminate\Database\Console\Migrations\ResetCommand::class,
+            'prohibited' => false,
+        ],
+        'migrate:refresh' => [
+            'class' => \Illuminate\Database\Console\Migrations\RefreshCommand::class,
+            'prohibited' => false,
+        ],
+        'migrate:rollback' => [
+            'class' => \Illuminate\Database\Console\Migrations\RollbackCommand::class,
+            'prohibited' => false,
+        ],
+    ],
+
+
     /*
     |--------------------------------------------------------------------------
     | Webkernel Repository & System Information
