@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Burada platformdaki belirli arayüz bileşenlerinin davranışını ve görünümünü özelleştirebilirsiniz.',
+            'label' => 'Uygulama arayüzünün bazı bölümlerinin davranışını ve görünümünü değiştirebilirsiniz.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Kullanıcının güncel tarih ve saati',
+            'label' => 'Kullanıcının mevcut tarih ve saati',
+            'protected' => true,
         ],
     ],
 ];

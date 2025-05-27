@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Դուք կարող եք փոխել դիմումի միջերեսի որոշ մասերի պահվածքը եւ տեսքը:',
+            'label' => 'Դու կարող ես փոփոխել application\'s interface-ի որոշ հատվածների վարքը և տեսքը.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Օգտագործողի ընթացիկ ամսաթիվը եւ ժամը',
+            'label' => 'Օրվա և ժամի նշանակում',
+            'protected' => true,
         ],
     ],
 ];

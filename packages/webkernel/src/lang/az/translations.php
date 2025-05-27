@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Tətbiq interfeysinin bəzi hissələrinin davranışını və görünüşünü dəyişə bilərsiniz.',
+            'label' => 'Siz tətbiq interfeysinin bəzi hissələrinin davranışını və görünüşünü dəyişə bilərsiniz.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'İstifadəçinin cari tarixi və vaxtı',
+            'label' => 'İstifadəçinin hal-hazırkı tarixi və vaxtı',
+            'protected' => true,
         ],
     ],
 ];

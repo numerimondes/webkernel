@@ -4,10 +4,12 @@ return [
     'direction' => 'rtl',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Li vir hûn dikarin behsê û xuyangkirina hin pêkhateyên navbeynkar ên li ser platformê xweş bikin.',
+            'label' => 'Hûn dikarin hem fonksîyonê hem jî xuyakirina hin hêmanên navrûya sepanê biguherînin.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Dîrok û wextê heyî ya bikarhêner',
+            'label' => 'Dîrok û dema bikarhêneran a niha',
+            'protected' => true,
         ],
     ],
 ];

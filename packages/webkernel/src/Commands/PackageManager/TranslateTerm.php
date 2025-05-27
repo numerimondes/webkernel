@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Console\Commands;
+namespace Webkernel\Commands\PackageManager;
 
 use Illuminate\Console\Command;
 use Exception;
@@ -14,16 +14,23 @@ class TranslateTerm extends Command
                           '{--restore : Restore from backup} ' .
                           '{--validate-only : Only validate existing files} ' .
                           '{--repair : Repair syntax errors in existing files} ' .
-                          '{--retranslate : Retranslate all existing entries from English}';
+                          '{--retranslate : Retranslate all existing entries from English} ' .
+                          '{--lang= : Target specific language for retranslation (e.g., --lang=fr)} ' .
+                          '{--protect : Mark keys as protected (interactive or with keys)} ' .
+                          '{--keys= : Specify keys for --protect (comma-separated, e.g., --keys=key1,key2)} ' .
+                          '{--all-langs : Apply protection to all languages (use with --protect)}';
 
     protected $description = 'Add translation or change key - robust translation management with auto-repair';
 
     protected $baseDir = 'packages/webkernel/src/lang';
 
     protected $languageMap = [
-        'ar' => 'ar', 'az' => 'az', 'bg' => 'bg', 'bn' => 'bn', 'ha' => 'ha', 'ca' => 'ca',
-        'ckb' => 'ku', 'cs' => 'cs', 'da' => 'da', 'de' => 'de', 'el' => 'el', 'en' => 'en',
-        'es' => 'es', 'fa' => 'fa', 'fi' => 'fi', 'fr' => 'fr', 'he' => 'he', 'hi' => 'hi',
+        // Priority languages first
+        'en' => 'en', 'ar' => 'ar', 'fr' => 'fr',
+        // Other languages
+        'az' => 'az', 'bg' => 'bg', 'bn' => 'bn', 'ha' => 'ha', 'ca' => 'ca',
+        'ckb' => 'ku', 'cs' => 'cs', 'da' => 'da', 'de' => 'de', 'el' => 'el',
+        'es' => 'es', 'fa' => 'fa', 'fi' => 'fi', 'he' => 'he', 'hi' => 'hi',
         'hr' => 'hr', 'hu' => 'hu', 'hy' => 'hy', 'id' => 'id', 'it' => 'it', 'ja' => 'ja',
         'ka' => 'ka', 'km' => 'km', 'ko' => 'ko', 'ku' => 'ku', 'lt' => 'lt', 'lv' => 'lv',
         'mn' => 'mn', 'ms' => 'ms', 'my' => 'my', 'nl' => 'nl', 'no' => 'no', 'np' => 'ne',
@@ -32,23 +39,32 @@ class TranslateTerm extends Command
         'tr' => 'tr', 'uk' => 'uk', 'uz' => 'uz', 'vi' => 'vi', 'zh_CN' => 'zh-CN', 'zh_TW' => 'zh-TW'
     ];
 
+    // Language names for display
+    protected $languageNames = [
+        'en' => 'English', 'ar' => 'Arabic', 'fr' => 'French',
+        'az' => 'Azerbaijani', 'bg' => 'Bulgarian', 'bn' => 'Bengali', 'ha' => 'Hausa', 'ca' => 'Catalan',
+        'ckb' => 'Kurdish (Sorani)', 'cs' => 'Czech', 'da' => 'Danish', 'de' => 'German', 'el' => 'Greek',
+        'es' => 'Spanish', 'fa' => 'Persian', 'fi' => 'Finnish', 'he' => 'Hebrew', 'hi' => 'Hindi',
+        'hr' => 'Croatian', 'hu' => 'Hungarian', 'hy' => 'Armenian', 'id' => 'Indonesian', 'it' => 'Italian', 'ja' => 'Japanese',
+        'ka' => 'Georgian', 'km' => 'Khmer', 'ko' => 'Korean', 'ku' => 'Kurdish', 'lt' => 'Lithuanian', 'lv' => 'Latvian',
+        'mn' => 'Mongolian', 'ms' => 'Malay', 'my' => 'Myanmar', 'nl' => 'Dutch', 'no' => 'Norwegian', 'np' => 'Nepali',
+        'pl' => 'Polish', 'pt_BR' => 'Portuguese (Brazil)', 'pt' => 'Portuguese', 'ro' => 'Romanian', 'ru' => 'Russian',
+        'sk' => 'Slovak', 'sl' => 'Slovenian', 'sq' => 'Albanian', 'sv' => 'Swedish', 'sw' => 'Swahili', 'th' => 'Thai',
+        'tr' => 'Turkish', 'uk' => 'Ukrainian', 'uz' => 'Uzbek', 'vi' => 'Vietnamese', 'zh_CN' => 'Chinese (Simplified)', 'zh_TW' => 'Chinese (Traditional)'
+    ];
+
     protected $rtlLanguages = ['ar', 'fa', 'he', 'ku', 'ckb'];
 
-    protected $preferredEngines = ['google', 'bing', 'deepl', 'yandex'];
-
-    protected $selectedEngine = null;
-
-    protected $backupDir = null;
-
-    protected $errorLog = [];
+    protected $preferredEngines = ['bing', 'google', 'yandex', 'deepl'];
 
     protected $retryAttempts = 3;
+    protected $selectedEngine;
+    protected $backupDir;
+    protected $errorLog = [];
 
     public function handle()
     {
-        // JAMAIS d'exit() - toujours retourner un code d'erreur
         try {
-            // Initialize backup directory
             $this->initializeBackupDir();
 
             // Set up signal handler for Ctrl+C
@@ -56,7 +72,7 @@ class TranslateTerm extends Command
                 pcntl_signal(SIGINT, function () {
                     $this->error('Operation interrupted by user.');
                     $this->cleanup();
-                    return 1; // Au lieu d'exit(1)
+                    exit(0); // Force immediate exit on Ctrl+C
                 });
             }
 
@@ -70,28 +86,33 @@ class TranslateTerm extends Command
                 return $this->handleRetranslate();
             }
 
+            // Handle protect option
+            if ($this->option('protect')) {
+                return $this->handleProtect();
+            }
+
             // Handle restore option
             if ($this->option('restore')) {
                 return $this->handleRestore();
             }
 
-            // Handle validate-only option
+            // Handle validation only
             if ($this->option('validate-only')) {
                 return $this->handleValidateOnly();
             }
 
-            // Check if change-key mode
+            // Handle change key option
             if ($this->option('change-key')) {
                 return $this->handleChangeKey();
             }
 
-            // Normal add translation mode
+            // Normal translation flow
             return $this->handleAddTranslation();
 
         } catch (Exception $e) {
             $this->error('Critical error: ' . $e->getMessage());
             $this->logError('Critical error in handle()', $e);
-            return 1; // Jamais d'exit()
+            return 1; // Never use exit()
         }
     }
 
@@ -125,24 +146,29 @@ class TranslateTerm extends Command
                 $this->line("Checking {$locale}...");
 
                 if (!$this->validatePhpSyntax($filePath)) {
-                    $this->warn("  Syntax error detected in {$locale}");
+                    $this->line("  Found syntax errors, attempting repair...");
 
-                    if ($this->repairSyntaxErrors($filePath, $locale)) {
+                    // Create backup before repair
+                    $backupPath = $this->backupDir . "/{$locale}_before_repair.php";
+                    copy($filePath, $backupPath);
+
+                    if ($this->repairTranslationFile($filePath, $locale)) {
                         $repairedFiles++;
                         $repairedLocales[] = $locale;
-                        $this->info("  Repaired {$locale}");
+                        $this->info("  Successfully repaired {$locale}");
                     } else {
                         $failedRepairs[] = $locale;
-                        $this->error("  Could not repair {$locale}");
+                        $this->error("  Failed to repair {$locale}");
                     }
                 } else {
-                    $this->line("  {$locale} is valid");
+                    $this->line("  {$locale}: No issues found");
                 }
             }
         }
 
+        // Summary
         $this->newLine();
-        $this->info("Repair complete:");
+        $this->info("Repair complete!");
         $this->line("Total files checked: {$totalFiles}");
         $this->line("Files repaired: {$repairedFiles}");
 
@@ -150,63 +176,44 @@ class TranslateTerm extends Command
             $this->warn("Failed repairs: " . implode(', ', $failedRepairs));
         }
 
-        // Propose retranslation for repaired files
-        if (!empty($repairedLocales) && $repairedFiles > 0) {
+        // Offer retranslation for repaired files
+        if (!empty($repairedLocales)) {
             $this->newLine();
-            $this->info("Translation Recovery:");
-
-            // Check if English file exists and has translations
-            $englishTranslations = $this->getEnglishTranslations();
-
-            if (!empty($englishTranslations)) {
-                $this->line("Found " . count($englishTranslations) . " English translations that can be retranslated.");
-
-                if ($this->confirm('Do you want to retranslate from English to the repaired languages?', true)) {
-                    // Use the same translation engine selection process as normal mode
-                    $this->selectTranslationEngine();
-                    return $this->retranslateRepairedFiles($repairedLocales, $englishTranslations);
-                }
-            } else {
-                $this->warn("No English translations found to retranslate from.");
-                $this->line("Add translations first using: php artisan webkernel:lang-add 'Your text'");
+            $this->info("Repaired files may have incomplete translations.");
+            if ($this->confirm('Would you like to retranslate the repaired files now?', true)) {
+                return $this->retranslateRepairedFiles($repairedLocales, $this->getEnglishTranslations());
             }
         }
 
-        if (!empty($failedRepairs)) {
-            return 1;
-        }
-
-        $this->info("All files are now valid!");
-        return 0;
+        return empty($failedRepairs) ? 0 : 1;
     }
 
-    protected function repairSyntaxErrors($filePath, $locale)
+    protected function repairTranslationFile($filePath, $locale)
     {
         try {
-            // Create backup first
-            $backupPath = $this->backupDir . '/' . basename($filePath) . '.backup';
-            copy($filePath, $backupPath);
+            // Try to load with error suppression
+            $content = file_get_contents($filePath);
 
-            // Try to load and extract valid data
-            $validData = $this->extractValidDataFromCorruptedFile($filePath);
+            // Basic syntax repair attempts
+            $repairedContent = $this->basicSyntaxRepair($content);
 
-            if ($validData === false) {
-                $this->warn("Could not extract data from {$locale}, creating minimal file");
-                $validData = [];
-            }
+            // Test the repaired content
+            $testFile = tempnam(sys_get_temp_dir(), 'repair_test_');
+            file_put_contents($testFile, $repairedContent);
 
-            // Create a clean file with valid data
-            $direction = in_array($locale, $this->rtlLanguages) ? 'rtl' : 'ltr';
-            $this->createCleanTranslationFile($filePath, $validData, $direction);
-
-            // Validate the repaired file
-            if ($this->validatePhpSyntax($filePath)) {
+            if ($this->validatePhpSyntax($testFile)) {
+                file_put_contents($filePath, $repairedContent);
+                unlink($testFile);
                 return true;
-            } else {
-                // Restore backup if repair failed
-                copy($backupPath, $filePath);
-                return false;
             }
+
+            unlink($testFile);
+
+            // If basic repair fails, create minimal valid structure
+            $direction = in_array($locale, $this->rtlLanguages) ? 'rtl' : 'ltr';
+            $this->createMinimalValidFile($filePath, $direction);
+
+            return $this->validatePhpSyntax($filePath);
 
         } catch (Exception $e) {
             $this->logError("Repair failed for {$locale}", $e);
@@ -214,403 +221,130 @@ class TranslateTerm extends Command
         }
     }
 
-    protected function extractValidDataFromCorruptedFile($filePath)
+    protected function basicSyntaxRepair($content)
     {
-        try {
-            $content = file_get_contents($filePath);
-
-            // Try to extract translations using regex
-            $validData = [];
-
-            // Pattern pour extraire les entrées de traduction valides
-            $pattern = "/'([^']+)'\s*=>\s*\[\s*'label'\s*=>\s*'([^']*)'\s*\]/";
-
-            if (preg_match_all($pattern, $content, $matches, PREG_SET_ORDER)) {
-                foreach ($matches as $match) {
-                    $key = $match[1];
-                    $translation = $match[2];
-                    $validData[$key] = ['label' => $translation];
-                }
-            }
-
-            // Fallback: essayer d'exécuter le fichier dans un environnement isolé
-            if (empty($validData)) {
-                $tempFile = tempnam(sys_get_temp_dir(), 'translation_test_');
-
-                // Nettoyer le contenu et essayer de l'évaluer
-                $cleanContent = $this->cleanCorruptedPhpContent($content);
-                file_put_contents($tempFile, $cleanContent);
-
-                if ($this->validatePhpSyntax($tempFile)) {
-                    $data = include $tempFile;
-                    if (is_array($data) && isset($data['actions'])) {
-                        $validData = $data['actions'];
-                    }
-                }
-
-                unlink($tempFile);
-            }
-
-            return $validData;
-
-        } catch (Exception $e) {
-            $this->logError("Data extraction failed", $e);
-            return false;
-        }
-    }
-
-    protected function cleanCorruptedPhpContent($content)
-    {
-        // Enlever les caractères problématiques et réparer les erreurs communes
-
-        // 1. Réparer les guillemets non échappés
-        $content = preg_replace("/(?<!\\\\)'(?=\w)/", "\\'", $content);
-
-        // 2. Réparer les doubles quotes problématiques
-        $content = preg_replace('/(\w)"(\w)/', '$1\\"$2', $content);
-
-        // 3. Enlever les caractères de contrôle invalides
+        // Remove obvious syntax issues
         $content = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $content);
 
-        // 4. Réparer les concaténations de strings cassées
-        $content = preg_replace("/'\.?'([^',\]]+)'/", "'$1'", $content);
+        // Fix common quote issues
+        $content = preg_replace("/(?<!\\\\)'/", "\\'", $content);
+        $content = str_replace('\\\\\'', '\\\'', $content); // Fix double escaping
 
-        // 5. Enlever les duplicatas de strings dans les valeurs
-        $content = preg_replace("/'([^']*)'([^']*)'([^']*)'/", "'$1$2$3'", $content);
+        // Ensure proper PHP tags
+        if (!preg_match('/^<\?php/', $content)) {
+            $content = "<?php\n\n" . ltrim($content, "<?php \n\r\t");
+        }
 
         return $content;
     }
 
-    protected function createCleanTranslationFile($filePath, $data, $direction)
-    {
-        $content = "<?php\n\nreturn [\n";
-        $content .= "    'direction' => '{$direction}',\n";
-        $content .= "    'actions' => [\n";
-
-        foreach ($data as $key => $value) {
-            $cleanKey = $this->safePhpEscape($key);
-            $cleanValue = $this->safePhpEscape($value['label'] ?? '');
-            $content .= "        {$cleanKey} => [\n";
-            $content .= "            'label' => {$cleanValue},\n";
-            $content .= "        ],\n";
-        }
-
-        $content .= "    ],\n";
-        $content .= "];\n";
-
-        file_put_contents($filePath, $content);
-    }
-
     protected function handleValidateOnly()
     {
-        $this->info('🔍 Validating all translation files...');
+        $this->info('VALIDATION MODE: Checking syntax of all translation files...');
         $totalFiles = 0;
-        $validFiles = 0;
         $invalidFiles = [];
 
         foreach ($this->languageMap as $locale => $translationCode) {
             $filePath = $this->getLanguageFilePath($locale);
             if (file_exists($filePath)) {
                 $totalFiles++;
-                if ($this->validatePhpSyntax($filePath)) {
-                    $validFiles++;
-                    $this->line("✅ {$locale}: Valid");
-                } else {
+                $this->line("Validating {$locale}...");
+
+                if (!$this->validatePhpSyntax($filePath)) {
                     $invalidFiles[] = $locale;
-                    $this->error("❌ {$locale}: Invalid syntax");
+                    $this->error("  {$locale}: Syntax errors found");
+                } else {
+                    $this->line("  {$locale}: Valid");
                 }
             }
         }
 
         $this->newLine();
-        $this->info("📊 Validation complete:");
+        $this->info("Validation complete!");
         $this->line("Total files: {$totalFiles}");
-        $this->line("Valid files: {$validFiles}");
-        $this->line("Invalid files: " . count($invalidFiles));
+        $this->line("Valid files: " . ($totalFiles - count($invalidFiles)));
 
         if (!empty($invalidFiles)) {
-            $this->warn("Files with syntax errors: " . implode(', ', $invalidFiles));
-            $this->line("💡 Run with --repair option to fix these files automatically");
+            $this->warn("Invalid files: " . implode(', ', $invalidFiles));
+            $this->line("Run with --repair to fix syntax errors automatically.");
+        }
+
+        return empty($invalidFiles) ? 0 : 1;
+    }
+
+    protected function handleRestore()
+    {
+        $this->info('RESTORE MODE: Restoring from backup...');
+
+        $backupDirs = glob(storage_path('translation_backups/*'), GLOB_ONLYDIR);
+
+        if (empty($backupDirs)) {
+            $this->warn('No backups found.');
             return 1;
         }
 
-        $this->info("🎉 All files have valid syntax!");
-        return 0;
+        $this->info('Available backups:');
+        foreach ($backupDirs as $i => $dir) {
+            $this->line(($i + 1) . '. ' . basename($dir));
+        }
+
+        $choice = $this->ask('Enter backup number to restore (or "cancel")');
+
+        if ($choice === 'cancel' || !is_numeric($choice)) {
+            $this->info('Restore cancelled.');
+            return 0;
+        }
+
+        $selectedBackup = $backupDirs[$choice - 1] ?? null;
+
+        if (!$selectedBackup || !is_dir($selectedBackup)) {
+            $this->error('Invalid backup selection.');
+            return 1;
+        }
+
+        if (!$this->confirm("Restore from backup: " . basename($selectedBackup) . "?", false)) {
+            $this->info('Restore cancelled.');
+            return 0;
+        }
+
+        return $this->performRestore($selectedBackup);
     }
 
-    protected function validatePhpSyntax($filePath)
+    protected function performRestore($backupDir)
     {
-        if (!file_exists($filePath)) {
-            return false;
-        }
+        $restored = 0;
+        $failed = 0;
 
-        // Method 1: Use php -l for syntax check
-        $output = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
-        if ($output && strpos($output, 'No syntax errors') !== false) {
-            return true;
-        }
+        $files = glob($backupDir . '/*.php');
 
-        // Method 2: Try to include in isolated environment
-        try {
-            $tempFile = tempnam(sys_get_temp_dir(), 'syntax_check_');
-            $checkCode = "<?php\nerror_reporting(E_ALL);\ntry {\n    \$result = include " . var_export($filePath, true) . ";\n    echo 'VALID';\n} catch (Throwable \$e) {\n    echo 'INVALID: ' . \$e->getMessage();\n}\n";
-            file_put_contents($tempFile, $checkCode);
+        foreach ($files as $backupFile) {
+            $filename = basename($backupFile);
+            $locale = str_replace(['_before_repair.php', '.php'], '', $filename);
 
-            $output = shell_exec("php " . escapeshellarg($tempFile) . " 2>&1");
-            unlink($tempFile);
+            if (isset($this->languageMap[$locale])) {
+                $targetPath = $this->getLanguageFilePath($locale);
 
-            return strpos($output, 'VALID') === 0;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    protected function writeTranslationSafely($locale, $key, $translation, $direction)
-    {
-        $filePath = $this->getLanguageFilePath($locale);
-        $maxAttempts = 3;
-
-        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
-            try {
-                // Create backup if file exists
-                if (file_exists($filePath)) {
-                    $backupPath = $filePath . '.backup.' . time();
-                    copy($filePath, $backupPath);
+                try {
+                    copy($backupFile, $targetPath);
+                    $this->line("Restored {$locale}");
+                    $restored++;
+                } catch (Exception $e) {
+                    $this->error("Failed to restore {$locale}: " . $e->getMessage());
+                    $failed++;
                 }
-
-                // Load or create array structure
-                $translations = $this->loadTranslationsArray($filePath, $direction);
-
-                // Add/update the translation
-                $translations['actions'][$key] = ['label' => $translation];
-
-                // Write the file with safe escaping
-                $this->writeTranslationFile($filePath, $translations);
-
-                // Validate syntax
-                if ($this->validatePhpSyntax($filePath)) {
-                    // Clean up backup on success
-                    if (isset($backupPath) && file_exists($backupPath)) {
-                        unlink($backupPath);
-                    }
-                    return true;
-                } else {
-                    throw new Exception("Syntax validation failed after write");
-                }
-
-            } catch (Exception $e) {
-                $this->logError("Write attempt {$attempt} failed for {$locale}", $e);
-
-                // Restore backup if it exists
-                if (isset($backupPath) && file_exists($backupPath)) {
-                    copy($backupPath, $filePath);
-                    unlink($backupPath);
-                }
-
-                if ($attempt === $maxAttempts) {
-                    // Last attempt: create minimal valid file
-                    $this->createMinimalValidFile($filePath, $direction);
-                    return false;
-                }
-
-                // Try with more aggressive escaping on next attempt
-                $translation = $this->aggressiveEscape($translation);
             }
-        }
-
-        return false;
-    }
-
-    protected function loadTranslationsArray($filePath, $direction)
-    {
-        if (file_exists($filePath)) {
-            try {
-                // First validate syntax
-                if ($this->validatePhpSyntax($filePath)) {
-                    $data = include $filePath;
-                    if (is_array($data)) {
-                        // Ensure structure
-                        if (!isset($data['direction'])) {
-                            $data['direction'] = $direction;
-                        }
-                        if (!isset($data['actions'])) {
-                            $data['actions'] = [];
-                        }
-                        return $data;
-                    }
-                } else {
-                    // Try to repair and reload
-                    $this->warn("Syntax error in {$filePath}, attempting repair...");
-                    if ($this->repairSyntaxErrors($filePath, basename(dirname($filePath)))) {
-                        $data = include $filePath;
-                        if (is_array($data)) {
-                            return $data;
-                        }
-                    }
-                }
-            } catch (Exception $e) {
-                $this->logError("Failed to load {$filePath}", $e);
-            }
-        }
-
-        // Return default structure
-        return [
-            'direction' => $direction,
-            'actions' => []
-        ];
-    }
-
-    protected function writeTranslationFile($filePath, $translations)
-    {
-        // Ensure directory exists
-        $dir = dirname($filePath);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-
-        $content = "<?php\n\nreturn [\n";
-        $content .= "    'direction' => " . $this->safePhpEscape($translations['direction']) . ",\n";
-        $content .= "    'actions' => [\n";
-
-        foreach ($translations['actions'] as $key => $value) {
-            $safeKey = $this->safePhpEscape($key);
-            $safeValue = $this->safePhpEscape($value['label']);
-            $content .= "        {$safeKey} => [\n";
-            $content .= "            'label' => {$safeValue},\n";
-            $content .= "        ],\n";
-        }
-
-        $content .= "    ],\n";
-        $content .= "];\n";
-
-        file_put_contents($filePath, $content);
-    }
-
-    protected function safePhpEscape($value)
-    {
-        if (!is_string($value)) {
-            return var_export($value, true);
-        }
-
-        // Try different escaping strategies
-
-        // Strategy 1: Simple single quotes with escaping
-        $escaped = "'" . str_replace(['\\', "'"], ['\\\\', "\\'"], $value) . "'";
-        if ($this->testEscaping($escaped)) {
-            return $escaped;
-        }
-
-        // Strategy 2: Double quotes with escaping
-        $escaped = '"' . str_replace(['\\', '"', '$'], ['\\\\', '\\"', '\\$'], $value) . '"';
-        if ($this->testEscaping($escaped)) {
-            return $escaped;
-        }
-
-        // Strategy 3: Heredoc syntax
-        $marker = 'EOD' . mt_rand(1000, 9999);
-        $escaped = "<<<'{$marker}'\n{$value}\n{$marker}";
-        if ($this->testEscaping($escaped)) {
-            return $escaped;
-        }
-
-        // Strategy 4: Base64 fallback
-        $base64 = base64_encode($value);
-        return "base64_decode('" . $base64 . "')";
-    }
-
-    protected function testEscaping($escapedValue)
-    {
-        try {
-            $testCode = "<?php\n\$test = {$escapedValue};\necho 'OK';\n";
-            $tempFile = tempnam(sys_get_temp_dir(), 'escape_test_');
-            file_put_contents($tempFile, $testCode);
-
-            $output = shell_exec("php " . escapeshellarg($tempFile) . " 2>&1");
-            unlink($tempFile);
-
-            return strpos($output, 'OK') !== false;
-        } catch (Exception $e) {
-            return false;
-        }
-    }
-
-    protected function aggressiveEscape($value)
-    {
-        // Remove problematic characters and normalize
-        $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
-        $value = str_replace(['<?', '?>', '${', '`'], ['&lt;?', '?&gt;', '$\\{', '\\`'], $value);
-        return trim($value);
-    }
-
-    protected function cleanTranslation($translation)
-    {
-        if (!is_string($translation)) {
-            return '';
-        }
-
-        // Remove duplicated content patterns
-        $translation = preg_replace('/(.+)\1+/', '$1', $translation);
-
-        // Clean up spacing
-        $translation = preg_replace('/\s+/', ' ', $translation);
-        $translation = trim($translation);
-
-        // Remove obvious artifacts
-        $translation = preg_replace('/\b(apparence|interface)\b.*?\b(apparence|interface)\b/', 'apparence', $translation);
-
-        return $translation;
-    }
-
-    protected function createMinimalValidFile($filePath, $direction = 'ltr')
-    {
-        $dir = dirname($filePath);
-        if (!is_dir($dir)) {
-            mkdir($dir, 0755, true);
-        }
-
-        $content = "<?php\n\nreturn [\n    'direction' => '{$direction}',\n    'actions' => [\n    ],\n];\n";
-        file_put_contents($filePath, $content);
-    }
-
-    protected function getLanguageFilePath($locale)
-    {
-        return $this->baseDir . '/' . $locale . '/translations.php';
-    }
-
-    protected function logError($message, $exception = null)
-    {
-        $this->errorLog[] = [
-            'message' => $message,
-            'exception' => $exception ? $exception->getMessage() : null,
-            'time' => date('Y-m-d H:i:s')
-        ];
-    }
-
-    protected function cleanup()
-    {
-        // Cleanup temporary files if any
-        if (!empty($this->errorLog)) {
-            $this->displayErrorLog();
-        }
-    }
-
-    protected function displayErrorLog()
-    {
-        if (empty($this->errorLog)) {
-            return;
         }
 
         $this->newLine();
-        $this->warn('Error Log:');
-        foreach ($this->errorLog as $entry) {
-            $this->line("[{$entry['time']}] {$entry['message']}");
-            if ($entry['exception']) {
-                $this->line("  Exception: {$entry['exception']}");
-            }
-        }
-    }
+        $this->info("Restore complete!");
+        $this->line("Files restored: {$restored}");
 
-    // ... [Rest of the methods like handleChangeKey, translateTerm, etc. remain the same but with error handling improvements]
+        if ($failed > 0) {
+            $this->warn("Failed restorations: {$failed}");
+        }
+
+        return $failed > 0 ? 1 : 0;
+    }
 
     protected function handleAddTranslation()
     {
@@ -618,74 +352,38 @@ class TranslateTerm extends Command
             $text = $this->argument('text');
             $key = $this->argument('key');
 
-            // Interactive input if missing
-            while (empty($text)) {
-                $this->info('Enter English text to translate:');
-                $this->line('(Use Ctrl+A to go to start, Ctrl+E to go to end, or arrow keys)');
-
-                if (function_exists('pcntl_signal_dispatch')) {
-                    pcntl_signal_dispatch();
-                }
-
-                $text = readline('> ');
-                if ($text === false) {
-                    $this->info('Input cancelled.');
+            // Get text if not provided
+            if (!$text) {
+                $text = $this->ask('Enter the English text to translate');
+                if (!$text) {
+                    $this->error('Text is required for translation.');
                     return 1;
-                }
-
-                $text = trim($text);
-                if (empty($text)) {
-                    $this->error('Text cannot be empty!');
                 }
             }
 
-            // Clean the input text
-            $text = $this->cleanTranslation($text);
+            // Generate or get key
+            if (!$key) {
+                $key = $this->option('key') ?: $this->generateKeyFromText($text);
 
-            // Select translation engine
-            $this->selectTranslationEngine();
-
-            // Select target directory
-            $this->selectTargetDirectory();
-
-            // Handle key generation or validation
-            if (empty($key)) {
-                $key = $this->generateUniqueKey($text);
-                $this->info("Generated key: {$key}. Keep it? (y/n) or type your custom key [y]");
-
-                $keepKey = readline('> ') ?: 'y';
-                if ($keepKey === false) {
-                    $this->info('Input cancelled.');
-                    return 1;
-                }
-
-                $keepKey = trim($keepKey);
-                if (strtolower($keepKey) === 'n' || strtolower($keepKey) === 'no') {
-                    while (empty($key)) {
-                        $this->info('Enter your custom key:');
-                        $key = readline('> ');
-                        if ($key === false) {
-                            $this->info('Input cancelled.');
-                            return 1;
-                        }
-                        $key = trim($key);
-                        if (empty($key)) {
-                            $this->error('Key cannot be empty!');
-                        }
-                    }
-                } elseif (!in_array(strtolower($keepKey), ['y', 'yes']) && !empty($keepKey)) {
-                    $key = $keepKey;
-                    $this->info("Using custom key: {$key}");
+                $customKey = $this->ask("Generated key: '{$key}'. Press Enter to use, or enter custom key", '');
+                if ($customKey) {
+                    $key = $customKey;
                 }
             }
 
-            // Check if key exists and handle
+            // Validate key
+            if (!$this->isValidKey($key)) {
+                $this->error('Invalid key. Use only letters, numbers, and underscores.');
+                return 1;
+            }
+
+            // Check for existing key
             if ($this->keyExists($key)) {
-                $choice = $this->choice("Key '{$key}' exists. What to do?", [
-                    'overwrite' => 'Overwrite existing',
-                    'unique' => 'Make unique key',
-                    'cancel' => 'Cancel'
-                ], 'unique');
+                $choice = $this->choice(
+                    "Key '{$key}' already exists. What would you like to do?",
+                    ['overwrite', 'cancel', 'unique'],
+                    'unique'
+                );
 
                 if ($choice === 'cancel') {
                     $this->info('Cancelled.');
@@ -698,9 +396,12 @@ class TranslateTerm extends Command
                 }
             }
 
+            // Select translation engine
+            $this->selectTranslationEngine();
+
             // Final confirmation
             $this->newLine();
-            $this->info("📋 Summary:");
+            $this->info("SUMMARY:");
             $this->line("Text: " . $text);
             $this->line("Key: {$key}");
             $this->line("Location: {$this->baseDir}");
@@ -772,378 +473,282 @@ class TranslateTerm extends Command
         return $errorCount > 0 ? 1 : 0;
     }
 
-    protected function selectTranslationEngine()
+    protected function writeTranslationSafely($locale, $key, $translation, $direction = 'ltr')
     {
-        $this->info('Testing translation engines...');
+        $filePath = $this->getLanguageFilePath($locale);
+        $maxAttempts = 3;
 
-        foreach ($this->preferredEngines as $engine) {
-            if ($this->isTranslatorAvailable($engine)) {
-                $this->selectedEngine = $engine;
-                $this->info("Using {$engine} translation engine");
-                return;
-            }
+        for ($attempt = 1; $attempt <= $maxAttempts; $attempt++) {
+            try {
+                // Create backup before each attempt
+                $backupPath = null;
+                if (file_exists($filePath)) {
+                    $backupPath = $this->backupDir . "/{$locale}_attempt_{$attempt}.php";
+                    copy($filePath, $backupPath);
+                }
 
-            $this->line("{$engine} not available");
-        }
+                // Load or create array structure
+                $translations = $this->loadTranslationsArray($filePath, $direction);
 
-        $this->selectedEngine = 'google';
-        $this->warn("Using default engine (google) - quality may vary");
-    }
+                // Add/update the translation with metadata
+                $translations['actions'][$key] = [
+                    'label' => $translation,
+                    'auto_generated' => true,
+                    'engine_used' => $this->selectedEngine ?? 'unknown',
+                    'generated_at' => date('Y-m-d H:i:s'),
+                    'protected' => false
+                ];
 
-    protected function isTranslatorAvailable($engine = 'google')
-    {
-        $testTerm = 'Hello';
-        $expected = 'Bonjour'; // Expected French translation
-        $cmd = "trans -e {$engine} -brief en:fr " . escapeshellarg($testTerm) . " 2>/dev/null";
-        $output = trim(shell_exec($cmd));
+                // Write the file with safe escaping
+                $this->writeTranslationFile($filePath, $translations);
 
-        return stripos($output, $expected) !== false;
-    }
+                // Validate syntax
+                if ($this->validatePhpSyntax($filePath)) {
+                    // Clean up backup on success
+                    if (isset($backupPath) && file_exists($backupPath)) {
+                        unlink($backupPath);
+                    }
+                    return true;
+                } else {
+                    throw new Exception("Syntax validation failed after write attempt {$attempt}");
+                }
 
-    protected function selectTargetDirectory()
-    {
-        // Keep default for now
-        $this->info("Target directory: {$this->baseDir}");
-    }
+            } catch (Exception $e) {
+                $this->logError("Write attempt {$attempt} failed for {$locale}", $e);
 
-    protected function translateTerm($translationCode, $text)
-    {
-        // Get configured engines from config
-        $configuredEngines = config('webkernel.translation.engine_priority', ['google', 'bing', 'yandex']);
-        $enableAI = config('webkernel.translation.quality.prefer_ai_engines', false);
+                // Restore backup if it exists
+                if (isset($backupPath) && file_exists($backupPath)) {
+                    copy($backupPath, $filePath);
+                    unlink($backupPath);
+                }
 
-        // Future: Check AI engines first if enabled
-        if ($enableAI) {
-            $aiTranslation = $this->tryAiTranslation($translationCode, $text);
-            if ($aiTranslation !== null) {
-                return $aiTranslation;
-            }
-        }
+                if ($attempt === $maxAttempts) {
+                    // Last attempt: create minimal valid file
+                    $this->createMinimalValidFile($filePath, $direction);
+                    return false;
+                }
 
-        // Use traditional engines
-        return $this->translateWithTraditionalEngines($configuredEngines, $translationCode, $text);
-    }
-
-    protected function translateWithTraditionalEngines($engines, $translationCode, $text)
-    {
-        $translations = [];
-
-        foreach ($engines as $engine) {
-            // Skip AI engines in traditional method
-            if (in_array($engine, ['openai', 'claude', 'gemini', 'local_llama', 'ollama'])) {
-                continue;
-            }
-
-            $escapedText = escapeshellarg($text);
-            $cmd = "trans -e {$engine} -brief en:{$translationCode} {$escapedText} 2>/dev/null";
-            $translation = trim(shell_exec($cmd));
-
-            if (!empty($translation) && $translation !== $text && strlen($translation) > 3) {
-                $translations[$engine] = $translation;
+                // Try with more aggressive escaping on next attempt
+                $translation = $this->aggressiveEscape($translation);
             }
         }
 
-        // If we have multiple translations, pick the best one
-        if (count($translations) > 1) {
-            return $this->selectBestTranslation($translations, $text);
-        } elseif (count($translations) === 1) {
-            return array_values($translations)[0];
+        return false;
+    }
+
+    protected function loadTranslationsArray($filePath, $direction = 'ltr')
+    {
+        if (file_exists($filePath)) {
+            try {
+                $translations = include $filePath;
+                if (is_array($translations) && isset($translations['actions'])) {
+                    return $translations;
+                }
+            } catch (Exception $e) {
+                $this->logError("Failed to load translations from {$filePath}", $e);
+            }
         }
 
-        // Fallback to selected engine if others failed
-        if (empty($this->selectedEngine)) {
-            $this->selectedEngine = 'google';
+        // Return default structure
+        return [
+            'direction' => $direction,
+            'actions' => []
+        ];
+    }
+
+    protected function writeTranslationFile($filePath, $translations)
+    {
+        // Ensure directory exists
+        $dir = dirname($filePath);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
         }
 
-        $escapedText = escapeshellarg($text);
-        $cmd = "trans -e {$this->selectedEngine} -brief en:{$translationCode} {$escapedText} 2>/dev/null";
-        $translation = trim(shell_exec($cmd));
+        $content = "<?php\n\nreturn [\n";
+        $content .= "    'direction' => " . $this->safePhpEscape($translations['direction']) . ",\n";
+        $content .= "    'actions' => [\n";
 
-        if (empty($translation) || $translation === $text) {
-            $this->warn("Translation service unavailable for: {$text}");
-            return $text;
+        foreach ($translations['actions'] as $key => $value) {
+            $safeKey = $this->safePhpEscape($key);
+            $safeValue = $this->safePhpEscape($value['label']);
+            $content .= "        {$safeKey} => [\n";
+            $content .= "            'label' => {$safeValue},\n";
+
+            // Add metadata if present
+            if (isset($value['auto_generated'])) {
+                $content .= "            'auto_generated' => " . ($value['auto_generated'] ? 'true' : 'false') . ",\n";
+            }
+            if (isset($value['engine_used'])) {
+                $content .= "            'engine_used' => " . $this->safePhpEscape($value['engine_used']) . ",\n";
+            }
+            if (isset($value['generated_at'])) {
+                $content .= "            'generated_at' => " . $this->safePhpEscape($value['generated_at']) . ",\n";
+            }
+            if (isset($value['protected']) && $value['protected']) {
+                $content .= "            'protected' => true,\n";
+            }
+
+            $content .= "        ],\n";
         }
+
+        $content .= "    ],\n";
+        $content .= "];\n";
+
+        file_put_contents($filePath, $content);
+    }
+
+    protected function validatePhpSyntax($filePath)
+    {
+        if (!file_exists($filePath)) {
+            return false;
+        }
+
+        $output = shell_exec("php -l " . escapeshellarg($filePath) . " 2>&1");
+        return strpos($output, 'No syntax errors detected') !== false;
+    }
+
+    protected function safePhpEscape($value)
+    {
+        if (!is_string($value)) {
+            return var_export($value, true);
+        }
+
+        // Try different escaping methods
+        $methods = [
+            function($v) { return "'" . addslashes($v) . "'"; },
+            function($v) { return '"' . addslashes($v) . '"'; },
+            function($v) { return $this->base64Escape($v); }
+        ];
+
+        foreach ($methods as $method) {
+            $escaped = $method($value);
+            if ($this->testEscaping($escaped)) {
+                return $escaped;
+            }
+        }
+
+        // Fallback to base64
+        return $this->base64Escape($value);
+    }
+
+    protected function base64Escape($value)
+    {
+        $base64 = base64_encode($value);
+        return "base64_decode('" . $base64 . "')";
+    }
+
+    protected function testEscaping($escapedValue)
+    {
+        try {
+            $testCode = "<?php\n\$test = {$escapedValue};\necho 'OK';\n";
+            $tempFile = tempnam(sys_get_temp_dir(), 'escape_test_');
+            file_put_contents($tempFile, $testCode);
+
+            $output = shell_exec("php " . escapeshellarg($tempFile) . " 2>&1");
+            unlink($tempFile);
+
+            return strpos($output, 'OK') !== false;
+        } catch (Exception $e) {
+            return false;
+        }
+    }
+
+    protected function aggressiveEscape($value)
+    {
+        // Remove problematic characters and normalize
+        $value = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $value);
+        $value = str_replace(['<?', '?>', '${', '`'], ['&lt;?', '?&gt;', '$\\{', '\\`'], $value);
+        return trim($value);
+    }
+
+    protected function cleanTranslation($translation)
+    {
+        if (!is_string($translation)) {
+            return '';
+        }
+
+        // Clean up spacing only - DO NOT modify actual translation content
+        $translation = preg_replace('/\s+/', ' ', $translation);
+        $translation = trim($translation);
+
+        // Remove only control characters that could break PHP syntax
+        $translation = preg_replace('/[\x00-\x08\x0B\x0C\x0E-\x1F\x7F]/', '', $translation);
 
         return $translation;
     }
 
-    /*
-    |--------------------------------------------------------------------------
-    | Future AI Translation Methods (Not yet implemented)
-    |--------------------------------------------------------------------------
-    | These methods are prepared for future AI engine integration
-    */
-
-    protected function tryAiTranslation($translationCode, $text)
+    protected function generateKeyFromText($text)
     {
-        // Future implementation: Try AI engines based on configuration
-        $aiEngines = config('webkernel.translation.ai_engines', []);
-
-        foreach ($aiEngines as $engineName => $config) {
-            if (!$config['enabled']) {
-                continue;
-            }
-
-            try {
-                switch ($engineName) {
-                    case 'openai':
-                        return $this->translateWithOpenAI($translationCode, $text, $config);
-                    case 'claude':
-                        return $this->translateWithClaude($translationCode, $text, $config);
-                    case 'gemini':
-                        return $this->translateWithGemini($translationCode, $text, $config);
-                    case 'local_llama':
-                        return $this->translateWithLocalLlama($translationCode, $text, $config);
-                    case 'ollama':
-                        return $this->translateWithOllama($translationCode, $text, $config);
-                }
-            } catch (Exception $e) {
-                $this->logError("AI translation failed for {$engineName}", $e);
-                continue;
-            }
-        }
-
-        return null;
-    }
-
-    protected function translateWithOpenAI($translationCode, $text, $config)
-    {
-        // Future implementation for OpenAI translation
-        // Will use OpenAI API with configured model and settings
-        throw new Exception("OpenAI translation not yet implemented");
-    }
-
-    protected function translateWithClaude($translationCode, $text, $config)
-    {
-        // Future implementation for Claude translation
-        // Will use Anthropic API with configured model and settings
-        throw new Exception("Claude translation not yet implemented");
-    }
-
-    protected function translateWithGemini($translationCode, $text, $config)
-    {
-        // Future implementation for Google Gemini translation
-        // Will use Google AI API with configured model and settings
-        throw new Exception("Gemini translation not yet implemented");
-    }
-
-    protected function translateWithLocalLlama($translationCode, $text, $config)
-    {
-        // Future implementation for local Llama model translation
-        // Will connect to local Llama server or use direct model inference
-        throw new Exception("Local Llama translation not yet implemented");
-    }
-
-    protected function translateWithOllama($translationCode, $text, $config)
-    {
-        // Future implementation for Ollama translation
-        // Will connect to local Ollama server with configured model
-        throw new Exception("Ollama translation not yet implemented");
-    }
-
-    protected function selectBestTranslation($translations, $originalText)
-    {
-        // Scoring criteria for translation quality
-        $scores = [];
-
-        foreach ($translations as $engine => $translation) {
-            $score = 0;
-
-            // 1. Length similarity (prefer reasonable length)
-            $lengthRatio = strlen($translation) / strlen($originalText);
-            if ($lengthRatio >= 0.8 && $lengthRatio <= 2.0) {
-                $score += 20;
-            } elseif ($lengthRatio >= 0.5 && $lengthRatio <= 3.0) {
-                $score += 10;
-            }
-
-            // 2. No repeated words (detect poor translations)
-            $words = str_word_count($translation, 1, 'àáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ');
-            $uniqueWords = array_unique($words);
-            if (count($words) > 0) {
-                $uniqueRatio = count($uniqueWords) / count($words);
-                $score += $uniqueRatio * 15;
-            }
-
-            // 3. Contains meaningful characters (not just punctuation)
-            if (preg_match('/[a-zA-Zàáâãäåæçèéêëìíîïðñòóôõöøùúûüýþÿ]/', $translation)) {
-                $score += 15;
-            }
-
-            // 4. Proper capitalization
-            if (preg_match('/^[A-ZÀÁÂÃÄÅÆÇÈÉÊËÌÍÎÏÐÑÒÓÔÕÖØÙÚÛÜÝÞŸ]/', $translation)) {
-                $score += 10;
-            }
-
-            // 5. Penalize if translation contains original text (usually poor translation)
-            if (stripos($translation, $originalText) !== false) {
-                $score -= 30;
-            }
-
-            // 6. Penalize obvious errors or artifacts
-            $errorPatterns = [
-                '/\s{2,}/',           // Multiple spaces
-                '/[a-z][A-Z]/',       // Improper capitalization
-                '/\.\s*[a-z]/',       // Sentence not starting with capital
-                '/[^\s]\.[^\s]/',     // Missing spaces around periods
-            ];
-
-            foreach ($errorPatterns as $pattern) {
-                if (preg_match($pattern, $translation)) {
-                    $score -= 5;
-                }
-            }
-
-            // 7. Engine preference (Google usually better for common languages)
-            if ($engine === 'google') {
-                $score += 5;
-            } elseif ($engine === 'bing') {
-                $score += 3;
-            }
-
-            $scores[$engine] = $score;
-        }
-
-        // Select the highest scoring translation
-        arsort($scores);
-        $bestEngine = array_key_first($scores);
-        $bestTranslation = $translations[$bestEngine];
-
-        // Log the decision for debugging
-        $this->line("  Engines: " . implode(', ', array_keys($translations)));
-        $this->line("  Selected: {$bestEngine} (score: {$scores[$bestEngine]})");
-
-        return $bestTranslation;
-    }
-
-    protected function generateUniqueKey($text)
-    {
-        $key = strtolower(trim($text));
-        $key = preg_replace('/[^a-z0-9\s]/', '', $key);
-        $key = preg_replace('/\s+/', '_', $key);
+        // Convert to lowercase and replace spaces/special chars with underscores
+        $key = strtolower($text);
+        $key = preg_replace('/[^a-z0-9]+/', '_', $key);
         $key = trim($key, '_');
+
+        // Limit length
         if (strlen($key) > 50) {
             $key = substr($key, 0, 50);
         }
-        return $key ?: 'generated_' . time();
+
+        return $key ?: 'translation_' . time();
     }
 
-    protected function makeUniqueKey($key)
+    protected function isValidKey($key)
     {
-        $counter = 1;
-        $originalKey = $key;
-
-        while ($this->keyExists($key)) {
-            $key = $originalKey . '_' . $counter;
-            $counter++;
-        }
-
-        return $key;
+        return preg_match('/^[a-zA-Z0-9_]+$/', $key) && strlen($key) <= 100;
     }
 
     protected function keyExists($key)
     {
-        // Check if key exists in any language file
-        foreach ($this->languageMap as $locale => $translationCode) {
-            $filePath = $this->getLanguageFilePath($locale);
-            if (file_exists($filePath)) {
-                try {
-                    if ($this->validatePhpSyntax($filePath)) {
-                        $data = include $filePath;
-                        if (is_array($data) && isset($data['actions'][$key])) {
-                            return true;
-                        }
-                    }
-                } catch (Exception $e) {
-                    // Continue checking other files
-                }
-            }
+        $englishFile = $this->getLanguageFilePath('en');
+        if (!file_exists($englishFile)) {
+            return false;
         }
-        return false;
+
+        try {
+            $translations = include $englishFile;
+            return isset($translations['actions'][$key]);
+        } catch (Exception $e) {
+            return false;
+        }
     }
 
-    protected function handleChangeKey()
+    protected function makeUniqueKey($baseKey)
     {
-        // Implementation for changing keys
-        $this->info('Change key functionality - to be implemented');
-        return 0;
-    }
+        $counter = 1;
+        $newKey = $baseKey;
 
-    protected function handleRetranslate()
-    {
-        $this->info('RETRANSLATE MODE: Retranslating all existing entries from English...');
-
-        // Select target directory
-        $this->selectTargetDirectory();
-
-        // Get English translations
-        $englishTranslations = $this->getEnglishTranslations();
-
-        if (empty($englishTranslations)) {
-            $this->warn("No English translations found to retranslate from.");
-            $this->line("Add translations first using: php artisan webkernel:lang-add 'Your text'");
-            return 1;
+        while ($this->keyExists($newKey)) {
+            $newKey = $baseKey . '_' . $counter;
+            $counter++;
         }
 
-        $this->info("Found " . count($englishTranslations) . " English translations to retranslate.");
-
-        // Get all languages except English
-        $targetLocales = array_filter(array_keys($this->languageMap), function($locale) {
-            return $locale !== 'en';
-        });
-
-        if (!$this->confirm("This will retranslate " . count($englishTranslations) . " entries to " . count($targetLocales) . " languages. Continue?", true)) {
-            $this->info('Retranslation cancelled.');
-            return 0;
-        }
-
-        // Create backup
-        $this->createBackup();
-
-        // Select translation engine
-        $this->selectTranslationEngine();
-
-        return $this->retranslateRepairedFiles($targetLocales, $englishTranslations);
+        return $newKey;
     }
 
     protected function createBackup()
     {
-        $this->line("Creating backup...");
-        foreach ($this->languageMap as $locale => $translationCode) {
+        $this->info('Creating backup...');
+
+        foreach ($this->languageMap as $locale => $code) {
             $filePath = $this->getLanguageFilePath($locale);
             if (file_exists($filePath)) {
-                $backupPath = $this->backupDir . '/' . $locale . '_translations.php';
+                $backupPath = $this->backupDir . "/{$locale}.php";
                 copy($filePath, $backupPath);
             }
         }
+
         $this->info("Backup created in: {$this->backupDir}");
-    }
-
-    protected function handleRestore()
-    {
-        // Implementation for restore functionality
-        $this->info('Restore functionality - to be implemented');
-        return 0;
-    }
-
-    protected function displayWrappedText($text, $width = 80)
-    {
-        $this->line(wordwrap($text, $width));
     }
 
     protected function getEnglishTranslations()
     {
-        $englishFile = $this->baseDir . '/en/translations.php';
-
-        if (!file_exists($englishFile)) {
-            return [];
-        }
+        $englishFile = $this->getLanguageFilePath('en');
 
         try {
-            if ($this->validatePhpSyntax($englishFile)) {
-                $data = include $englishFile;
-                if (is_array($data) && isset($data['actions'])) {
-                    return $data['actions'];
+            if (file_exists($englishFile)) {
+                $translations = include $englishFile;
+                if (isset($translations['actions']) && is_array($translations['actions'])) {
+                    return $translations['actions'];
                 }
             }
         } catch (Exception $e) {
@@ -1167,7 +772,8 @@ class TranslateTerm extends Command
             }
 
             $translationCode = $this->languageMap[$locale];
-            $this->line("Retranslating to {$locale}...");
+            $languageName = $this->languageNames[$locale] ?? $locale;
+            $this->line("Retranslating to {$locale} ({$languageName})...");
 
             foreach ($englishTranslations as $key => $englishData) {
                 $totalTranslations++;
@@ -1177,7 +783,19 @@ class TranslateTerm extends Command
                     continue;
                 }
 
+                // Check if this translation is protected for this specific language
+                if ($this->isTranslationProtected($locale, $key)) {
+                    $this->line("  {$key}: PROTECTED - skipping");
+                    $successfulTranslations++; // Count as success since it's intentionally skipped
+                    continue;
+                }
+
                 try {
+                    // Check for Ctrl+C between each translation
+                    if (function_exists('pcntl_signal_dispatch')) {
+                        pcntl_signal_dispatch();
+                    }
+
                     // Translate from English
                     $translation = $this->translateTermWithRetry($translationCode, $englishText);
                     $translation = $this->cleanTranslation($translation);
@@ -1240,5 +858,528 @@ class TranslateTerm extends Command
         // If all retries failed, return original text with a note
         $this->warn("Translation failed for '{$text}', using original text");
         return $text;
+    }
+
+    protected function selectTranslationEngine()
+    {
+        $this->info('Testing translation engines...');
+
+        foreach ($this->preferredEngines as $engine) {
+            $this->line("-> Testing {$engine}...");
+            if ($this->isTranslatorAvailable($engine)) {
+                $this->selectedEngine = $engine;
+                $this->info("SUCCESS: Using {$engine} translation engine");
+                return;
+            }
+
+            $this->line("FAILED: {$engine} not available");
+        }
+
+        $this->selectedEngine = 'google';
+        $this->warn("Using default engine (google) - quality may vary");
+    }
+
+    protected function isTranslatorAvailable($engine = 'google')
+    {
+        $testTerm = 'Hello';
+        $expected = 'Bonjour'; // Expected French translation
+
+        $this->line("  Testing '{$testTerm}' -> French...");
+        $cmd = "timeout 5s trans -e {$engine} -brief en:fr " . escapeshellarg($testTerm) . " 2>/dev/null";
+        $output = trim(shell_exec($cmd));
+
+        $this->line("  Got: '{$output}'");
+        $available = stripos($output, $expected) !== false;
+
+        if ($available) {
+            $this->line("  SUCCESS: Engine working correctly");
+        } else {
+            $this->line("  FAILED: Engine failed or returned unexpected result");
+        }
+
+        return $available;
+    }
+
+    protected function selectTargetDirectory()
+    {
+        // Keep default for now
+        $this->info("Target directory: {$this->baseDir}");
+    }
+
+    protected function translateTerm($translationCode, $text)
+    {
+        // Get configured engines from config
+        $configuredEngines = config('webkernel.translation.engine_priority', ['bing', 'google', 'yandex']);
+        $enableAI = config('webkernel.translation.quality.prefer_ai_engines', false);
+
+        // Future: Check AI engines first if enabled
+        if ($enableAI) {
+            $aiTranslation = $this->tryAiTranslation($translationCode, $text);
+            if (!empty($aiTranslation) && $aiTranslation !== $text) {
+                return $aiTranslation;
+            }
+        }
+
+        // Preprocess text for better semantic language translation
+        $optimizedText = $this->optimizeTextForTranslation($text, $translationCode);
+
+        // Use traditional engines
+        return $this->translateWithTraditionalEngines($configuredEngines, $translationCode, $optimizedText);
+    }
+
+    protected function translateWithTraditionalEngines($engines, $translationCode, $text)
+    {
+        // Try engines in order, stop at first good result
+        foreach ($engines as $engine) {
+            // Skip AI engines in traditional method
+            if (in_array($engine, ['openai', 'claude', 'gemini', 'local_llama', 'ollama'])) {
+                continue;
+            }
+
+            $this->line("  Trying {$engine}...");
+
+            $escapedText = escapeshellarg($text);
+            $cmd = "timeout 8s trans -e {$engine} -brief en:{$translationCode} {$escapedText} 2>/dev/null";
+            $translation = trim(shell_exec($cmd));
+
+            if (!empty($translation) && $translation !== $text && strlen($translation) > 3) {
+                // Quick quality check
+                if ($this->isGoodTranslation($translation, $text)) {
+                    $this->line("  SUCCESS with {$engine}: {$translation}");
+                    return $translation;
+                }
+                $this->line("  POOR QUALITY from {$engine}, trying next...");
+            } else {
+                $this->line("  FAILED/TIMEOUT with {$engine}, trying next...");
+            }
+        }
+
+        // If no good translation found, try again with less strict criteria
+        $this->line("  -> Retrying with relaxed quality checks...");
+        foreach ($engines as $engine) {
+            if (in_array($engine, ['openai', 'claude', 'gemini', 'local_llama', 'ollama'])) {
+                continue;
+            }
+
+            $escapedText = escapeshellarg($text);
+            $cmd = "timeout 6s trans -e {$engine} -brief en:{$translationCode} {$escapedText} 2>/dev/null";
+            $translation = trim(shell_exec($cmd));
+
+            if (!empty($translation) && $translation !== $text) {
+                $this->line("  FALLBACK SUCCESS with {$engine}: {$translation}");
+                return $translation;
+            }
+        }
+
+        $this->warn("Translation service unavailable for: {$text}");
+        return $text;
+    }
+
+    protected function isTranslationProtected($locale, $key)
+    {
+        $filePath = "{$this->baseDir}/{$locale}/translations.php";
+
+        if (!file_exists($filePath)) {
+            return false;
+        }
+
+        try {
+            $translations = include $filePath;
+            $translation = $translations['actions'][$key] ?? null;
+
+            if (!$translation) {
+                return false;
+            }
+
+            // Check if explicitly protected
+            if (isset($translation['protected']) && $translation['protected']) {
+                return true;
+            }
+
+            // Auto-protection rules
+            return $this->shouldAutoProtect($translation);
+
+        } catch (Exception $e) {
+            return false; // If we can't read the file, don't protect
+        }
+    }
+
+    protected function shouldAutoProtect($translation)
+    {
+        // Protection Rule 1: Manual translations (not auto-generated)
+        if (!isset($translation['auto_generated']) || !$translation['auto_generated']) {
+            return true; // Protect manual translations
+        }
+
+        // Protection Rule 2: High-quality Bing translations older than 24h
+        if (isset($translation['engine_used']) && $translation['engine_used'] === 'bing') {
+            if (isset($translation['generated_at'])) {
+                $generatedTime = strtotime($translation['generated_at']);
+                $dayAgo = time() - (24 * 60 * 60);
+
+                if ($generatedTime < $dayAgo) {
+                    return true; // Protect stable Bing translations
+                }
+            }
+        }
+
+        // Protection Rule 3: Translations that look manually corrected
+        // (This could be enhanced with more sophisticated detection)
+
+        return false; // Don't protect by default
+    }
+
+    protected function optimizeTextForTranslation($text, $targetLanguage)
+    {
+        // Define Semitic and Arabic-script languages
+        $semiticLanguages = ['ar', 'he', 'fa', 'ku', 'ckb'];
+
+        if (in_array($targetLanguage, $semiticLanguages)) {
+            // Optimize logical connectors for better Semitic language translation
+            $optimizations = [
+                // Add emphasis to logical connectors
+                ' and ' => ' AND ',
+                ' or ' => ' OR ',
+                ' with ' => ' WITH ',
+                ' by ' => ' BY ',
+                ' from ' => ' FROM ',
+                ' to ' => ' TO ',
+                ' of ' => ' OF ',
+                ' in ' => ' IN ',
+                ' on ' => ' ON ',
+                ' at ' => ' AT ',
+                ' for ' => ' FOR ',
+                // Handle contractions properly
+                "can't" => 'cannot',
+                "won't" => 'will not',
+                "don't" => 'do not',
+                "it's" => 'it is',
+                "you're" => 'you are',
+                "we're" => 'we are',
+                "they're" => 'they are',
+            ];
+
+            foreach ($optimizations as $search => $replace) {
+                $text = str_ireplace($search, $replace, $text);
+            }
+        }
+
+        return $text;
+    }
+
+    /*
+    |--------------------------------------------------------------------------
+    | Future AI Translation Methods (Not yet implemented)
+    |--------------------------------------------------------------------------
+    | These methods are prepared for future AI engine integration
+    */
+
+    protected function tryAiTranslation($translationCode, $text)
+    {
+        // Future implementation: Try AI engines based on configuration
+        $aiEngines = config('webkernel.translation.ai_engines', []);
+
+        foreach ($aiEngines as $engineName => $config) {
+            if (!$config['enabled']) {
+                continue;
+            }
+
+            try {
+                switch ($engineName) {
+                    case 'openai':
+                        return $this->translateWithOpenAI($translationCode, $text, $config);
+                    case 'claude':
+                        return $this->translateWithClaude($translationCode, $text, $config);
+                    case 'gemini':
+                        return $this->translateWithGemini($translationCode, $text, $config);
+                    default:
+                        break;
+                }
+            } catch (Exception $e) {
+                $this->logError("AI translation failed with {$engineName}", $e);
+                continue;
+            }
+        }
+
+        return null;
+    }
+
+    protected function translateWithOpenAI($translationCode, $text, $config)
+    {
+        // Future implementation for OpenAI
+        return null;
+    }
+
+    protected function translateWithClaude($translationCode, $text, $config)
+    {
+        // Future implementation for Claude
+        return null;
+    }
+
+    protected function translateWithGemini($translationCode, $text, $config)
+    {
+        // Future implementation for Gemini
+        return null;
+    }
+
+    protected function isGoodTranslation($translation, $originalText)
+    {
+        // Basic quality checks
+        if (empty($translation) || $translation === $originalText) {
+            return false;
+        }
+
+        // Check for obvious translation failures
+        if (strlen($translation) < 2) {
+            return false;
+        }
+
+        // Check for untranslated content (still in English)
+        $englishWords = ['the', 'and', 'or', 'in', 'on', 'at', 'to', 'from', 'with', 'by'];
+        $foundEnglishWords = 0;
+
+        foreach ($englishWords as $word) {
+            if (stripos($translation, ' ' . $word . ' ') !== false) {
+                $foundEnglishWords++;
+            }
+        }
+
+        // If too many English words found, quality is poor
+        if ($foundEnglishWords > 2) {
+            return false;
+        }
+
+        return true;
+    }
+
+    protected function handleProtect()
+    {
+        $this->info('PROTECT MODE: Marking translations as protected...');
+
+        // Get keys to protect
+        $keysOption = $this->option('keys');
+        $allLangs = $this->option('all-langs');
+
+        $keysToProtect = [];
+
+        if ($keysOption) {
+            $keysToProtect = array_map('trim', explode(',', $keysOption));
+        } else {
+            // Interactive mode
+            $this->info('Enter keys to protect (one per line, empty line to finish):');
+            while (true) {
+                $key = $this->ask('Key to protect');
+                if (empty($key)) {
+                    break;
+                }
+                $keysToProtect[] = trim($key);
+            }
+        }
+
+        if (empty($keysToProtect)) {
+            $this->warn('No keys specified for protection.');
+            return 1;
+        }
+
+        // Determine target languages
+        $targetLanguages = [];
+        if ($allLangs) {
+            $targetLanguages = array_keys($this->languageMap);
+            $this->info('Applying protection to ALL languages: ' . implode(', ', $targetLanguages));
+        } else {
+            // Interactive language selection
+            $this->info('Available languages: ' . implode(', ', array_keys($this->languageMap)));
+            $langInput = $this->ask('Languages to protect (comma-separated, or "all" for all languages)', 'all');
+
+            if ($langInput === 'all') {
+                $targetLanguages = array_keys($this->languageMap);
+            } else {
+                $targetLanguages = array_map('trim', explode(',', $langInput));
+
+                // Validate languages
+                foreach ($targetLanguages as $lang) {
+                    if (!isset($this->languageMap[$lang])) {
+                        $this->error("Language '{$lang}' not supported.");
+                        return 1;
+                    }
+                }
+            }
+        }
+
+        $this->info('Keys to protect: ' . implode(', ', $keysToProtect));
+        $this->info('Target languages: ' . implode(', ', $targetLanguages));
+
+        if (!$this->confirm('Apply protection to these keys and languages?', true)) {
+            $this->info('Protection cancelled.');
+            return 0;
+        }
+
+        return $this->applyProtection($keysToProtect, $targetLanguages);
+    }
+
+    protected function applyProtection($keys, $languages)
+    {
+        $successCount = 0;
+        $errorCount = 0;
+
+        foreach ($languages as $locale) {
+            $filePath = $this->getLanguageFilePath($locale);
+
+            if (!file_exists($filePath)) {
+                $this->line("  {$locale}: File not found, skipping");
+                continue;
+            }
+
+            try {
+                $translations = include $filePath;
+                $modified = false;
+
+                foreach ($keys as $key) {
+                    if (isset($translations['actions'][$key])) {
+                        $translations['actions'][$key]['protected'] = true;
+                        $translations['actions'][$key]['protected_at'] = date('Y-m-d H:i:s');
+                        $modified = true;
+                        $this->line("  {$locale}: Protected '{$key}'");
+                    } else {
+                        $this->warn("  {$locale}: Key '{$key}' not found");
+                    }
+                }
+
+                if ($modified) {
+                    $direction = $translations['direction'] ?? 'ltr';
+                    $this->writeTranslationFile($filePath, $translations);
+                    $successCount++;
+                } else {
+                    $this->line("  {$locale}: No changes needed");
+                }
+
+            } catch (Exception $e) {
+                $this->error("  {$locale}: Failed to apply protection - " . $e->getMessage());
+                $errorCount++;
+            }
+        }
+
+        $this->newLine();
+        $this->info('Protection applied!');
+        $this->line("Success: {$successCount} languages");
+        if ($errorCount > 0) {
+            $this->warn("Errors: {$errorCount} languages");
+        }
+
+        return $errorCount > 0 ? 1 : 0;
+    }
+
+    protected function handleChangeKey()
+    {
+        // Implementation for changing keys
+        $this->info('Change key functionality - to be implemented');
+        return 0;
+    }
+
+    protected function handleRetranslate()
+    {
+        $targetLang = $this->option('lang');
+
+        if ($targetLang) {
+            $this->info("RETRANSLATE MODE: Retranslating to {$targetLang} only...");
+        } else {
+            $this->info('RETRANSLATE MODE: Retranslating all existing entries from English...');
+        }
+
+        // Select target directory
+        $this->selectTargetDirectory();
+
+        // Get English translations
+        $englishTranslations = $this->getEnglishTranslations();
+
+        if (empty($englishTranslations)) {
+            $this->warn("No English translations found to retranslate from.");
+            $this->line("Add translations first using: php artisan webkernel:lang-add 'Your text'");
+            return 1;
+        }
+
+        $this->info("Found " . count($englishTranslations) . " English translations to process.");
+
+        // Get target languages
+        if ($targetLang) {
+            if (!isset($this->languageMap[$targetLang])) {
+                $this->error("Language '{$targetLang}' not supported.");
+                $this->line("Supported languages: " . implode(', ', array_keys($this->languageMap)));
+                return 1;
+            }
+            $targetLocales = [$targetLang];
+            $languageName = $this->languageNames[$targetLang] ?? $targetLang;
+            $this->info("Target: {$targetLang} ({$languageName})");
+        } else {
+            // Get all languages except English
+            $targetLocales = array_filter(array_keys($this->languageMap), function($locale) {
+                return $locale !== 'en';
+            });
+        }
+
+        $this->info("Protected translations will be automatically skipped.");
+
+        if (!$this->confirm("This will retranslate entries to " . count($targetLocales) . " languages (respecting protections). Continue?", true)) {
+            $this->info('Retranslation cancelled.');
+            return 0;
+        }
+
+        // Create backup
+        $this->createBackup();
+
+        // Select translation engine
+        $this->selectTranslationEngine();
+
+        // Perform retranslation
+        return $this->retranslateRepairedFiles($targetLocales, $englishTranslations);
+    }
+
+    protected function createMinimalValidFile($filePath, $direction = 'ltr')
+    {
+        $dir = dirname($filePath);
+        if (!is_dir($dir)) {
+            mkdir($dir, 0755, true);
+        }
+
+        $content = "<?php\n\nreturn [\n    'direction' => '{$direction}',\n    'actions' => [\n    ],\n];\n";
+        file_put_contents($filePath, $content);
+    }
+
+    protected function getLanguageFilePath($locale)
+    {
+        return $this->baseDir . '/' . $locale . '/translations.php';
+    }
+
+    protected function logError($message, $exception = null)
+    {
+        $this->errorLog[] = [
+            'message' => $message,
+            'exception' => $exception ? $exception->getMessage() : null,
+            'time' => date('Y-m-d H:i:s')
+        ];
+    }
+
+    protected function cleanup()
+    {
+        // Cleanup temporary files if any
+        if (!empty($this->errorLog)) {
+            $this->displayErrorLog();
+        }
+    }
+
+    protected function displayErrorLog()
+    {
+        if (empty($this->errorLog)) {
+            return;
+        }
+
+        $this->newLine();
+        $this->warn('Error Log:');
+        foreach ($this->errorLog as $entry) {
+            $this->line("[{$entry['time']}] {$entry['message']}");
+            if ($entry['exception']) {
+                $this->line("  Exception: {$entry['exception']}");
+            }
+        }
     }
 }

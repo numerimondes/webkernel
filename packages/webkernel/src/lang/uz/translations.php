@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Bu erda siz platformadagi ba\'zi interfeys komponentlarining xatti-harakati va ko\'rinishini sozlashingiz mumkin.',
+            'label' => 'Ba\'zi ilova interfeysi qismlarining xatti-harakatini va ko\'rinishini o\'zgartirishingiz mumkin.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Foydalanuvchi joriy sana va vaqt',
+            'label' => 'Foydalanuvchining joriy sanasi va vaqti',
+            'protected' => true,
         ],
     ],
 ];

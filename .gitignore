@@ -3,7 +3,8 @@
 /public/build/
 /config/webkernel.php
 packages/*/src/lang/*/translations.php.bak
-webkernel/backups/webkernel/lang/*
+backups/webkernel/lang/*
+storage/translation_backups/*
 /public/hot
 /public/storage/
 /storage/*.key

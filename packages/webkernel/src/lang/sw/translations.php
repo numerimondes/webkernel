@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Hapa unaweza kubadilisha tabia na kuonekana kwa vifaa fulani vya kiufundi kwenye jukwaa.',
+            'label' => 'Unaweza kubadilisha tabia na mwonekano wa baadhi ya sehemu za kiolesura cha programu.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Tarehe ya sasa ya mtumiaji na wakati',
+            'label' => 'Tarehe na wakati wa mtumiaji sasa',
+            'protected' => true,
         ],
     ],
 ];

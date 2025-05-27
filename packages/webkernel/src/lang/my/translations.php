@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'ဤနေရာတွင်သင်ပလက်ဖောင်းတွင်အချို့သော interface အစိတ်အပိုင်းများ၏အပြုအမူနှင့်အသွင်အပြင်ကိုစိတ်ကြိုက်ပြုပြင်နိုင်သည်။',
+            'label' => 'သင်သည် အက်ပ် interface ၏ အစိတ်အပိုင်းအချို့၏ အပြုအမူနှင့် ရှုထFormattingကို အစားထိုးနိုင်ပါသည်။',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'အသုံးပြုသူလက်ရှိနေ့ရက်နှင့်အချိန်',
+            'label' => 'အသုံးပြုသူ၏ လက်ရှိရက်စွဲနှင့်အချိန်',
+            'protected' => true,
         ],
     ],
 ];

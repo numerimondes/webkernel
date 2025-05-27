@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Här kan du anpassa beteendet och utseendet på vissa gränssnittskomponenter på plattformen.',
+            'label' => 'Du kan ändra beteendet och utseendet på vissa delar av dess gränssnitt.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Användarens nuvarande datum och tid',
+            'label' => 'Användarens aktuella datum och tid',
+            'protected' => true,
         ],
     ],
 ];

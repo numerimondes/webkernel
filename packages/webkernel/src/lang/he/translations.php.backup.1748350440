@@ -1,0 +1,13 @@
+<?php
+
+return [
+    'direction' => 'rtl',
+    'actions' => [
+        'components_display_settings_subheading' => [
+            'label' => 'אתה יכול לשנות את התנהגות ואת המראה של חלקים מסוימים במשק הישום.',
+        ],
+        'current_user_datetime' => [
+            'label' => 'התאריך והשעה הנוכחים של המשתמש',
+        ],
+    ],
+];

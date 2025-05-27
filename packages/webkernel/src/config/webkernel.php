@@ -173,8 +173,8 @@ return [
         */
 
         'engine_priority' => [
-            'google',
             'bing',
+            'google',
             'yandex',
             // 'deepl',  // Requires API key
 

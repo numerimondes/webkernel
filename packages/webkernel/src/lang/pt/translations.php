@@ -4,10 +4,12 @@ return [
     'direction' => 'ltr',
     'actions' => [
         'components_display_settings_subheading' => [
-            'label' => 'Aqui você pode personalizar o comportamento e a aparência de certos componentes da interface na plataforma.',
+            'label' => 'Pode alterar o comportamento e a aparência de algumas partes da interface da aplicação.',
+            'protected' => true,
         ],
         'current_user_datetime' => [
-            'label' => 'Data e hora atuais do usuário',
+            'label' => 'Data e hora atual do utilizador',
+            'protected' => true,
         ],
     ],
 ];
