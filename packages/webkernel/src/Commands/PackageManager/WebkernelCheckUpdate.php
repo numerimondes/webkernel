@@ -43,7 +43,7 @@ class WebkernelCheckUpdate extends Command
             return $this->handleAutomatic();
         }
 
-        $this->info('🔄 Webkernel Updater');
+        $this->info('[INFO] Webkernel Updater');
         $this->newLine();
 
         // Get paths
@@ -55,13 +55,13 @@ class WebkernelCheckUpdate extends Command
                      ?? env('WEBKERNEL_REMOTE_REPO')
                      ?? self::DEFAULT_REMOTE_REPO;
 
-        $this->line("📂 Local path: {$localPath}");
-        $this->line("🌐 Remote repository: {$remoteRepo}");
+        $this->line("Local path: {$localPath}");
+        $this->line("Remote repository: {$remoteRepo}");
         $this->newLine();
 
         // Check local directory
         if (!File::exists(base_path($localPath))) {
-            $this->error("❌ Local webkernel directory not found: {$localPath}");
+            $this->error("[ERROR] Local webkernel directory not found: {$localPath}");
             $this->error("Make sure you're running this from the correct directory");
             return Command::FAILURE;
         }
@@ -69,22 +69,22 @@ class WebkernelCheckUpdate extends Command
         $applicationPhpPath = base_path($localPath . '/src/constants/Application.php');
 
         // Extract local versions
-        $this->line('📖 Reading local versions...');
+        $this->line('[INFO] Reading local versions...');
         $localVersions = $this->extractVersionsFromFile($applicationPhpPath);
 
         if (!$localVersions) {
-            $this->error('❌ Could not extract versions from local file');
+            $this->error('[ERROR] Could not extract versions from local file');
             return Command::FAILURE;
         }
 
-        $this->info("📦 Local WEBKERNEL_VERSION: {$localVersions['webkernel']}");
-        $this->info("🔒 Local STABLE_VERSION: {$localVersions['stable']}");
+        $this->info("Local WEBKERNEL_VERSION: {$localVersions['webkernel']}");
+        $this->info("Local STABLE_VERSION: {$localVersions['stable']}");
         $this->newLine();
 
         // Fetch remote Application.php
-        $this->line('🌐 Fetching remote Application.php...');
+        $this->line('[INFO] Fetching remote Application.php...');
         $remoteApplicationUrl = "https://raw.githubusercontent.com/numerimondes/webkernel/refs/heads/main/packages/webkernel/src/constants/Application.php";
-        $this->line("🔗 URL: {$remoteApplicationUrl}");
+        $this->line("URL: {$remoteApplicationUrl}");
 
         try {
             $response = Http::timeout(30)
@@ -96,37 +96,37 @@ class WebkernelCheckUpdate extends Command
                 ->get($remoteApplicationUrl);
 
             if (!$response->successful()) {
-                $this->error('❌ Failed to fetch remote Application.php file');
+                $this->error('[ERROR] Failed to fetch remote Application.php file');
                 $this->error('Check your internet connection or remote repository URL');
                 $this->line("Response status: {$response->status()}");
                 return Command::FAILURE;
             }
 
             $remoteContent = $response->body();
-            $this->line("📄 Content preview: " . substr($remoteContent, 0, 200) . "...");
+            $this->line("Content preview: " . substr($remoteContent, 0, 200) . "...");
         } catch (\Exception $e) {
-            $this->error("❌ Error fetching remote file: {$e->getMessage()}");
+            $this->error("[ERROR] Error fetching remote file: {$e->getMessage()}");
             return Command::FAILURE;
         }
 
         // Extract remote versions
-        $this->line('📖 Reading remote versions...');
+        $this->line('[INFO] Reading remote versions...');
         $remoteVersions = $this->extractVersionsFromContent($remoteContent);
 
         if (!$remoteVersions) {
-            $this->error('❌ Could not extract versions from remote file');
+            $this->error('[ERROR] Could not extract versions from remote file');
             return Command::FAILURE;
         }
 
-        $this->info("📦 Remote WEBKERNEL_VERSION: {$remoteVersions['webkernel']}");
-        $this->info("🔒 Remote STABLE_VERSION: {$remoteVersions['stable']}");
+        $this->info("Remote WEBKERNEL_VERSION: {$remoteVersions['webkernel']}");
+        $this->info("Remote STABLE_VERSION: {$remoteVersions['stable']}");
         $this->newLine();
 
         // Compare versions and update if needed
         $needsUpdate = $this->checkIfUpdateNeeded($localVersions, $remoteVersions);
 
         if ($needsUpdate) {
-            $this->warn('🔄 Update available!');
+            $this->warn('[UPDATE] Update available!');
             $this->newLine();
 
             // Determine version type and display update info
@@ -134,10 +134,10 @@ class WebkernelCheckUpdate extends Command
             $this->line("Update: {$versionInfo['from']} → {$versionInfo['to']} {$versionInfo['type']}");
 
             $this->newLine();
-            $this->line('⚠️ This will:');
-            $this->line('  • Create a backup in packages/webkernel/.trash/');
-            $this->line('  • Replace your entire packages/webkernel directory');
-            $this->line('  • Download and install the latest version from the repository');
+            $this->line('[WARNING] This will:');
+            $this->line('  * Create a backup in packages/webkernel/.trash/');
+            $this->line('  * Replace your entire packages/webkernel directory');
+            $this->line('  * Download and install the latest version from the repository');
 
             $this->newLine();
             $confirm = $this->confirm('Do you want to proceed with the update?', false);
@@ -150,7 +150,7 @@ class WebkernelCheckUpdate extends Command
             $this->newLine();
             return $this->performUpdate($localPath, $remoteRepo);
         } else {
-            $this->info('✅ Your Webkernel installation is up to date!');
+            $this->info('[SUCCESS] Your Webkernel installation is up to date!');
             return Command::SUCCESS;
         }
     }
@@ -216,24 +216,24 @@ class WebkernelCheckUpdate extends Command
         $webkernelComparison = $this->compareVersions($remoteVersions['webkernel'], $localVersions['webkernel']);
         $stableComparison = $this->compareVersions($remoteVersions['stable'], $localVersions['stable']);
 
-        $this->line('🔍 Comparing versions...');
+        $this->line('[INFO] Comparing versions...');
 
-        $this->line("📦 WEBKERNEL_VERSION: {$localVersions['webkernel']} vs {$remoteVersions['webkernel']}");
+        $this->line("WEBKERNEL_VERSION: {$localVersions['webkernel']} vs {$remoteVersions['webkernel']}");
         if ($webkernelComparison === 1) {
-            $this->warn('   → Update available');
+            $this->warn('   -> Update available');
         } elseif ($webkernelComparison === 0) {
-            $this->info('   → Up to date');
+            $this->info('   -> Up to date');
         } else {
-            $this->line('   → Local version is newer');
+            $this->line('   -> Local version is newer');
         }
 
-        $this->line("🔒 STABLE_VERSION: {$localVersions['stable']} vs {$remoteVersions['stable']}");
+        $this->line("STABLE_VERSION: {$localVersions['stable']} vs {$remoteVersions['stable']}");
         if ($stableComparison === 1) {
-            $this->warn('   → Update available');
+            $this->warn('   -> Update available');
         } elseif ($stableComparison === 0) {
-            $this->info('   → Up to date');
+            $this->info('   -> Up to date');
         } else {
-            $this->line('   → Local version is newer');
+            $this->line('   -> Local version is newer');
         }
 
         $this->newLine();
@@ -246,16 +246,16 @@ class WebkernelCheckUpdate extends Command
      */
     private function performUpdate(string $localPath, string $remoteRepo): int
     {
-        $this->line('🔄 Starting Webkernel update process...');
+        $this->line('[INFO] Starting Webkernel update process...');
 
         try {
             // Create backup
-            $this->line('📁 Creating backup...');
+            $this->line('[INFO] Creating backup...');
             $backupPath = $this->createBackupSimple($localPath);
-            $this->info("✅ Backup created: " . basename($backupPath));
+            $this->info("[SUCCESS] Backup created: " . basename($backupPath));
 
             // Use git to clone only the specific directory
-            $this->line('📥 Downloading latest Webkernel files...');
+            $this->line('[INFO] Downloading latest Webkernel files...');
             $tempDir = sys_get_temp_dir() . '/webkernel_update_' . uniqid();
 
             // Clone with sparse checkout to get only packages/webkernel
@@ -266,7 +266,7 @@ class WebkernelCheckUpdate extends Command
             ];
 
             foreach ($commands as $cmd) {
-                $this->line("🔧 " . explode(' && ', $cmd)[count(explode(' && ', $cmd)) - 1]);
+                $this->line("[EXEC] " . explode(' && ', $cmd)[count(explode(' && ', $cmd)) - 1]);
                 $result = shell_exec($cmd . " 2>&1");
                 if (strpos($result, 'fatal') !== false || strpos($result, 'error') !== false) {
                     throw new \Exception("Git command failed: {$result}");
@@ -274,7 +274,7 @@ class WebkernelCheckUpdate extends Command
             }
 
             // Replace local files
-            $this->line('🔄 Replacing local files...');
+            $this->line('[INFO] Replacing local files...');
             $sourcePath = $tempDir . '/packages/webkernel';
             $targetPath = base_path($localPath);
 
@@ -284,25 +284,25 @@ class WebkernelCheckUpdate extends Command
 
             // Remove old installation
             if (File::exists($targetPath)) {
-                $this->line('🗑️ Removing old files...');
+                $this->line('[INFO] Removing old files...');
                 File::deleteDirectory($targetPath);
             }
 
             // Copy new files
-            $this->line('📂 Installing new files...');
+            $this->line('[INFO] Installing new files...');
             $this->copyDirectorySimple($sourcePath, $targetPath);
 
             // Cleanup
             $this->deleteDirectory($tempDir);
 
             $this->newLine();
-            $this->info('✅ Webkernel update completed successfully!');
-            $this->line("📁 Backup available at: " . basename($backupPath));
+            $this->info('[SUCCESS] Webkernel update completed successfully!');
+            $this->line("Backup available at: " . basename($backupPath));
 
             return Command::SUCCESS;
 
         } catch (\Exception $e) {
-            $this->error("❌ Update failed: {$e->getMessage()}");
+            $this->error("[ERROR] Update failed: {$e->getMessage()}");
             return Command::FAILURE;
         }
     }
@@ -820,18 +820,18 @@ class WebkernelCheckUpdate extends Command
         $source = base_path($localPath);
 
         // Show what we're doing
-        $this->line("📋 Copying from: {$source}");
-        $this->line("📁 Copying to: {$backupPath}");
+        $this->line("Copying from: {$source}");
+        $this->line("Copying to: {$backupPath}");
 
         // Use rsync with exclusions if available, otherwise use find + cp
         if (shell_exec('which rsync')) {
             $cmd = "rsync -av --exclude='.trash' '{$source}/' '{$backupPath}/'";
-            $this->line("🔧 Running: rsync (excluding .trash directory)...");
+            $this->line("[EXEC] Running: rsync (excluding .trash directory)...");
         } else {
             // Create target directory first
             File::makeDirectory($backupPath, 0755, true);
             $cmd = "find '{$source}' -type f -not -path '*/.trash/*' -exec cp --parents {} '{$backupPath}/' \\;";
-            $this->line("🔧 Running: selective copy (excluding .trash)...");
+            $this->line("[EXEC] Running: selective copy (excluding .trash)...");
         }
 
         // Execute command with real-time output
@@ -844,7 +844,7 @@ class WebkernelCheckUpdate extends Command
                 $lineCount++;
                 // Show every 10th file to avoid spam but show progress
                 if ($lineCount % 10 === 0) {
-                    $this->line("📄 Copied {$lineCount} items...");
+                    $this->line("[PROGRESS] Copied {$lineCount} items...");
                 }
             }
         }
@@ -855,7 +855,7 @@ class WebkernelCheckUpdate extends Command
             throw new \Exception("Backup failed with exit code: {$exitCode}");
         }
 
-        $this->line("✅ Backup completed: {$lineCount} items copied");
+        $this->line("[SUCCESS] Backup completed: {$lineCount} items copied");
 
         return $backupPath;
     }
