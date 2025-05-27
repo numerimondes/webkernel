@@ -62,42 +62,49 @@ class RenderHookSettingResource extends Resource
                     ->disabled()
                     ->maxLength(255),
             ]);
-    }
+    }public static function table(Tables\Table $table): Tables\Table
+{
+    return $table
+        ->columns([
+            IconColumn::make('icon')
+                ->label('')
+                ->width('1%')
+                ->icon(fn($record) => $record->icon)
+                ->size(IconColumn\IconColumnSize::Medium),
 
-    public static function table(Tables\Table $table): Tables\Table
-    {
-        return $table
-            ->columns([
-                IconColumn::make('icon')
-                    ->label('')
-                    ->width('1%')
-                    ->icon(fn($record) => $record->icon)
-                    ->size(IconColumn\IconColumnSize::Medium),
-                TextColumn::make('hook_key')
-                    ->label(lang('action'))
-                    ->description(fn($record) => nl2br($record->hook_key))
-                    ->html()
-                    ->wrap()
-                    ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
-                ToggleColumn::make('enabled')
-                    ->disabled(fn($record) => !self::originalViewExists($record))
-                    ->afterStateUpdated(function (Component $livewire) {
-                        $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
-                    })
-            ])
-            ->filters([])
-            ->actions([
-                  //  ViewAction::make(),
-                self::getCustomizeViewAction(),
-                self::getEditCustomViewAction(),
-                self::getDeleteCustomViewAction(),
-                EditAction::make()
-                    ->iconButton()
-                    ->modal() // Ouvre un modal
-                    ->hidden(fn($record) => self::originalViewExists($record)) // Désactive si la condition n'est pas remplie
-            ])
-            ->bulkActions([]);
-    }
+            TextColumn::make('hook_key')
+                ->label(lang('action'))
+                ->formatStateUsing(function ($state, $record) {
+                    $title = lang($record->hook_key); // Traduction de la clé
+                    $desc = lang($record->translation_desc_key); // Traduction de la description
+                    return "{$title}<br>{$desc}";
+                })
+                ->html()
+                ->wrap()
+                ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
+
+            ToggleColumn::make('enabled')
+                ->label(lang('enabled'))
+                ->disabled(fn($record) => !self::originalViewExists($record))
+                ->afterStateUpdated(function (Component $livewire) {
+                    $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
+                }),
+        ])
+        ->filters([])
+        ->actions([
+            self::getCustomizeViewAction(),
+            self::getEditCustomViewAction(),
+            self::getDeleteCustomViewAction(),
+
+            EditAction::make()
+                ->iconButton()
+                ->label(lang('edit'))
+                ->modal()
+                ->hidden(fn($record) => self::originalViewExists($record)),
+        ])
+        ->bulkActions([]);
+}
+
 
     protected static function getCustomizeViewAction(): Action
     {

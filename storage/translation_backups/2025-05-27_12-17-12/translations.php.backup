@@ -1,0 +1,13 @@
+<?php
+
+return [
+    'direction' => 'ltr',
+    'actions' => [
+        'components_display_settings_subheading' => [
+            'label' => 'Vous pouvez modifier le comportement et l\'apparence de certaines parties de l\'interface d\'application.'apparence de certains composants d\'interface sur la plate-forme.'interface se comportent et apparaissent sur la plate-forme.',
+        ],
+        'current_user_datetime' => [
+            'label' => 'La date et l\'heure actuelles de l\'utilisateur',
+        ],
+    ],
+];
