@@ -1,9 +1,13 @@
 <?php
+
+//Customize how different some interface components behave and appear across the platform.
+
 use Illuminate\Support\Facades\Auth;
 use Webkernel\Models\Language;
 use Webkernel\Models\LanguageTranslation;
 use Illuminate\Support\Facades\Session;
 use Illuminate\Support\Facades\Redirect;
+use Illuminate\Support\HtmlString;
 /*
 |--------------------------------------------------------------------------
 | Translation Helper lang('') @Numerimondes Web Kernel
@@ -70,7 +74,8 @@ if (!function_exists('lang')) {
                             foreach ($replace as $search => $replaceValue) {
                                 $message = str_replace(':' . $search, $replaceValue, $message);
                             }
-                            return $message;
+                            // CORRECTION: Retourner du HTML non-échappé si contient des balises HTML
+                            return (strpos($message, '<') !== false) ? new HtmlString($message) : $message;
                         }
                     }
                 } catch (\Exception $e) {
@@ -108,7 +113,8 @@ if (!function_exists('lang')) {
                                 foreach ($replace as $search => $replaceValue) {
                                     $message = str_replace(':' . $search, $replaceValue, $message);
                                 }
-                                return $message;
+                                // CORRECTION: Retourner du HTML non-échappé si contient des balises HTML
+                                return (strpos($message, '<') !== false) ? new HtmlString($message) : $message;
                             }
                         }
                     } catch (\Exception $e) {
@@ -128,10 +134,16 @@ if (!function_exists('lang')) {
                     foreach ($replace as $search => $replaceValue) {
                         $message = str_replace(':' . $search, $replaceValue, $message);
                     }
+
+                    // CORRECTION: Gérer le HTML et les clés de traduction
+                    $containsHtml = strpos($message, '<') !== false;
+
                     if (function_exists('shouldShowTranslationKey') && shouldShowTranslationKey($key)) {
-                        return "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                        $wrappedMessage = "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                        return new HtmlString($wrappedMessage);
                     }
-                    return $message;
+
+                    return $containsHtml ? new HtmlString($message) : $message;
                 }
             } catch (\Exception $e) {
                 // Continue to database search
@@ -156,11 +168,16 @@ if (!function_exists('lang')) {
                     foreach ($replace as $search => $replaceValue) {
                         $message = str_replace(':' . $search, $replaceValue, $message);
                     }
-                    // Future feature: Show translation key for authorized users
+
+                    // CORRECTION: Gérer le HTML et les clés de traduction
+                    $containsHtml = strpos($message, '<') !== false;
+
                     if (function_exists('shouldShowTranslationKey') && shouldShowTranslationKey($key)) {
-                        return "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                        $wrappedMessage = "<span class='translatable' data-trans-key=\"{$key}\" title=\"{$key}\">{$message}</span>";
+                        return new HtmlString($wrappedMessage);
                     }
-                    return $message;
+
+                    return $containsHtml ? new HtmlString($message) : $message;
                 }
             } catch (\Exception $e) {
                 // Continue to final fallback
@@ -168,7 +185,8 @@ if (!function_exists('lang')) {
         }
 
         // Final fallback to Laravel's built-in translation
-        return __($key, $replace, $locale);
+        $fallback = __($key, $replace, $locale);
+        return (is_string($fallback) && strpos($fallback, '<') !== false) ? new HtmlString($fallback) : $fallback;
     }
 }
 
