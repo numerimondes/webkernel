@@ -1,11 +1,11 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class InstallerUpdateComposers extends Command
+class UpdateComposers extends Command
 {
     protected $signature = 'webkernel:install-update-composer';
     protected $description = 'Webkernel Installer Composer Updater';

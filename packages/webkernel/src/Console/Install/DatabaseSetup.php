@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
@@ -10,7 +10,7 @@ use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 use function Laravel\Prompts\password;
 
-class InstallerInitialDatabaseSetup extends Command
+class DatabaseSetup extends Command
 
 {
     protected $signature = 'webkernel:install-initial-db-setup {--database=}';

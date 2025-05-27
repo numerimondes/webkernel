@@ -1,10 +1,10 @@
 <?php
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class InstallerUpdateUserModelWithUserExtensions extends Command
+class UpdateUserModel extends Command
 {
     protected $signature = 'webkernel:install-update-user-model';
     protected $description = 'Webkernel Update User Model with Adding UserExtensions (Trait)';

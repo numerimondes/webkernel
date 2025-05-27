@@ -1,11 +1,11 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
-class InstallerRegisterServiceProviders extends Command
+class RegisterServiceProviders extends Command
 {
     protected $signature = 'webkernel:install-register-providers';
     protected $description = 'Webkernel Installer Composer Updater';

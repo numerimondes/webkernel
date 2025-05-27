@@ -1,13 +1,13 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Schema;
 
-class InstallerCheckEnvironmentVariables extends Command
+class CheckEnvironment extends Command
 {
     protected $signature = 'webkernel:install-check-env';
     protected $description = 'Webkernel Installer Environment Checker';

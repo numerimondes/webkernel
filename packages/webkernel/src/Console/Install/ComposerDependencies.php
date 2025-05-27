@@ -1,10 +1,10 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 
-class InstallerComposerInstallDependencies extends Command
+class ComposerDependencies extends Command
 {
     protected $signature = 'webkernel:install-composer-dependencies';
     protected $description = 'Install Composer dependencies for Webkernel';

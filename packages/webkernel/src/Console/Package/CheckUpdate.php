@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkernel\Commands\PackageManager;
+namespace Webkernel\Console\Package;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
 
-class WebkernelCheckUpdate extends Command
+class CheckUpdate extends Command
 {
     /**
      * The name and signature of the console command.

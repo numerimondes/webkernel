@@ -1,11 +1,11 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Log;
 
-class InstallerSyncComposer extends Command
+class SyncComposer extends Command
 {
     protected $signature = 'webkernel:sync-composer';
     protected $description = 'Adds Webkernel and its local dependencies to the main composer.json';

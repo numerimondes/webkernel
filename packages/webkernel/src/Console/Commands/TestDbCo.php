@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Commands;
+namespace Webkernel\Console\Commands;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;

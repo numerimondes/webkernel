@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Commands\PackageManager;
+namespace Webkernel\Console\Package;
 
 use Illuminate\Console\Command;
 use Exception;

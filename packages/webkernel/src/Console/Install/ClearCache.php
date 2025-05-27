@@ -1,11 +1,11 @@
 <?php
 
-namespace Webkernel\Commands\composer\PostCreateProjectCmd;
+namespace Webkernel\Console\Install;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Artisan;
 
-class InstallerClearCache extends Command
+class ClearCache extends Command
 {
     protected $signature = 'webkernel:install-clear-cache';
     protected $description = 'Webkernel Installer Environment Checker';
