@@ -1,15 +1,40 @@
 <?php
 
 return [
+
+    /*
+    |--------------------------------------------------------------------------
+    | Webkernel Language File - Chinese (Simplified)
+    |--------------------------------------------------------------------------
+    |
+    | This file contains translations for the Webkernel ecosystem.
+    | Auto-generated translations are marked accordingly.
+    |
+    */
+
+    'language' => 'Chinese (Simplified)',
+    'language_destination' => '简体中文',
+    'code' => 'zh_CN',
     'direction' => 'ltr',
-    'actions' => [
-        'current_user_datetime' => [
-            'label' => '用户当前的日期和时间',
-            'protected' => true,
-        ],
+
+    'lang_ref' => [
         'components_display_settings_subheading' => [
-            'label' => '您可以更改应用程序界面某些部分的行为和外观。',
-            'protected' => true,
+            'label' => 'You can change the behavior and the look of some parts of the application interface.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'application interface settings',
+            'context_destination' => 'application interface settings',
+            'generated_at' => '2025-05-27 22:16:44',
+            'protected' => false,
+        ],
+        'components_display_settings_heading' => [
+            'label' => 'Components display setting',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'one software interface',
+            'context_destination' => 'one software interface',
+            'generated_at' => '2025-05-27 22:11:05',
+            'protected' => false,
         ],
     ],
 ];

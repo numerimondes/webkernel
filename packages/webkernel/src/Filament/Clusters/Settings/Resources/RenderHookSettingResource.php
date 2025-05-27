@@ -73,7 +73,7 @@ class RenderHookSettingResource extends Resource
                 ->size(IconColumn\IconColumnSize::Medium),
 
             TextColumn::make('hook_key')
-                ->label(lang('action'))
+                ->label(lang('action_to_perform'))
                 ->formatStateUsing(function ($state, $record) {
                     $title = lang($record->hook_key); // Traduction de la clé
                     $desc = lang($record->translation_desc_key); // Traduction de la description
@@ -84,7 +84,7 @@ class RenderHookSettingResource extends Resource
                 ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
 
             ToggleColumn::make('enabled')
-                ->label(lang('enabled'))
+                ->label(lang('toggle_visibility'))
                 ->disabled(fn($record) => !self::originalViewExists($record))
                 ->afterStateUpdated(function (Component $livewire) {
                     $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");

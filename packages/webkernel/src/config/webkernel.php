@@ -122,8 +122,8 @@ return [
         'priority' => [
             'database',        // Database translations (highest priority)
             'app',            // app/lang files
-            'webkernel',      // packages/webkernel/src/lang files
             'other_packages', // Other package translation files
+            'webkernel',      // packages/webkernel/src/lang files
         ],
 
         /*
@@ -163,6 +163,18 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Word Replacement System
+        |--------------------------------------------------------------------------
+        |
+        | Enable or disable the interactive word replacement prompts during translation.
+        | When enabled, users will be asked to provide word substitutions for better
+        | translation accuracy. Set to false to skip all replacement prompts.
+        |
+        */
+        'word_replacement_enabled' => false,
+
+        /*
+        |--------------------------------------------------------------------------
         | Engine Priority
         |--------------------------------------------------------------------------
         |
@@ -172,20 +184,176 @@ return [
         |
         */
 
-        'engine_priority' => [
+        'engines' => [
             'bing',
             'google',
             'yandex',
             // 'deepl',  // Requires API key
+            // Future AI engines (not yet implemented):
+            // 'openai',
+            // 'claude',
+            // 'gemini',
+            // 'local_llama',
+        ],
 
-            /**
-             * Future AI engines
-             * Not yet implemented)
-             * 'openai',
-             * 'claude',
-             * 'gemini',
-             * 'local_llama',
-             */
+        /*
+        |--------------------------------------------------------------------------
+        | Complete Language Mapping for TranslationHub
+        |--------------------------------------------------------------------------
+        |
+        | Maps Laravel locales to translate-shell language codes for all 53 supported languages.
+        |
+        */
+
+        'languages' => [
+            // Priority languages first
+            'en' => 'en', 'ar' => 'ar', 'fr' => 'fr',
+            // Extended language support
+            'az' => 'az', 'bg' => 'bg', 'bn' => 'bn', 'ha' => 'ha', 'ca' => 'ca',
+            'ckb' => 'ku', 'cs' => 'cs', 'da' => 'da', 'de' => 'de', 'el' => 'el',
+            'es' => 'es', 'fa' => 'fa', 'fi' => 'fi', 'he' => 'he', 'hi' => 'hi',
+            'hr' => 'hr', 'hu' => 'hu', 'hy' => 'hy', 'id' => 'id', 'it' => 'it', 'ja' => 'ja',
+            'ka' => 'ka', 'km' => 'km', 'ko' => 'ko', 'ku' => 'ku', 'lt' => 'lt', 'lv' => 'lv',
+            'mk' => 'mk', 'ml' => 'ml', 'mn' => 'mn', 'ms' => 'ms', 'my' => 'my', 'ne' => 'ne',
+            'nl' => 'nl', 'no' => 'no', 'pa' => 'pa', 'pl' => 'pl', 'ps' => 'ps', 'pt' => 'pt',
+            'ro' => 'ro', 'ru' => 'ru', 'si' => 'si', 'sk' => 'sk', 'sl' => 'sl', 'so' => 'so',
+            'sq' => 'sq', 'sr' => 'sr', 'sv' => 'sv', 'sw' => 'sw', 'ta' => 'ta', 'th' => 'th',
+            'tr' => 'tr', 'uk' => 'uk', 'ur' => 'ur', 'uz' => 'uz', 'vi' => 'vi',
+            'zh' => 'zh', 'zh_CN' => 'zh-cn', 'zh_TW' => 'zh-tw'
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | RTL Language Support
+        |--------------------------------------------------------------------------
+        |
+        | Languages that require right-to-left text direction.
+        |
+        */
+
+        'rtl_languages' => ['ar', 'fa', 'he', 'ur', 'ps', 'ckb', 'ku'],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Language Display Names (Dynamic)
+        |--------------------------------------------------------------------------
+        |
+        | Human-readable names for all languages. This is used dynamically
+        | in translation files instead of hardcoded values.
+        |
+        */
+
+        'language_names' => [
+            'en' => 'English', 'ar' => 'Arabic', 'fr' => 'French', 'es' => 'Spanish',
+            'de' => 'German', 'it' => 'Italian', 'pt' => 'Portuguese', 'ru' => 'Russian',
+            'zh' => 'Chinese', 'ja' => 'Japanese', 'ko' => 'Korean', 'hi' => 'Hindi',
+            'az' => 'Azerbaijani', 'bg' => 'Bulgarian', 'bn' => 'Bengali', 'ha' => 'Hausa',
+            'ca' => 'Catalan', 'ckb' => 'Kurdish (Sorani)', 'cs' => 'Czech', 'da' => 'Danish',
+            'el' => 'Greek', 'fa' => 'Persian', 'fi' => 'Finnish', 'he' => 'Hebrew',
+            'hr' => 'Croatian', 'hu' => 'Hungarian', 'hy' => 'Armenian', 'id' => 'Indonesian',
+            'ka' => 'Georgian', 'km' => 'Khmer', 'ku' => 'Kurdish', 'lt' => 'Lithuanian',
+            'lv' => 'Latvian', 'mk' => 'Macedonian', 'ml' => 'Malayalam', 'mn' => 'Mongolian',
+            'ms' => 'Malay', 'my' => 'Myanmar', 'ne' => 'Nepali', 'nl' => 'Dutch',
+            'no' => 'Norwegian', 'pa' => 'Punjabi', 'pl' => 'Polish', 'ps' => 'Pashto',
+            'ro' => 'Romanian', 'si' => 'Sinhala', 'sk' => 'Slovak', 'sl' => 'Slovenian',
+            'so' => 'Somali', 'sq' => 'Albanian', 'sr' => 'Serbian', 'sv' => 'Swedish',
+            'sw' => 'Swahili', 'ta' => 'Tamil', 'th' => 'Thai', 'tr' => 'Turkish',
+            'uk' => 'Ukrainian', 'ur' => 'Urdu', 'uz' => 'Uzbek', 'vi' => 'Vietnamese',
+            'zh_CN' => 'Chinese (Simplified)', 'zh_TW' => 'Chinese (Traditional)'
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Native Language Names (Dynamic)
+        |--------------------------------------------------------------------------
+        |
+        | Names of languages in their native script/language.
+        | Used for language_destination field in translation files.
+        |
+        */
+
+        'native_names' => [
+            'ar' => 'العربية', 'fr' => 'Français', 'es' => 'Español', 'de' => 'Deutsch',
+            'it' => 'Italiano', 'pt' => 'Português', 'ru' => 'Русский', 'zh' => '中文',
+            'ja' => '日本語', 'ko' => '한국어', 'hi' => 'हिन्दी', 'az' => 'Azərbaycan dili',
+            'bg' => 'Български', 'bn' => 'বাংলা', 'ca' => 'Català', 'cs' => 'Čeština',
+            'da' => 'Dansk', 'el' => 'Ελληνικά', 'fa' => 'فارسی', 'fi' => 'Suomi',
+            'he' => 'עברית', 'hr' => 'Hrvatski', 'hu' => 'Magyar', 'hy' => 'Հայերեն',
+            'id' => 'Bahasa Indonesia', 'ka' => 'ქართული', 'km' => 'ខ្មែរ', 'ku' => 'کوردی',
+            'lt' => 'Lietuvių', 'lv' => 'Latviešu', 'mk' => 'Македонски', 'ml' => 'മലയാളം',
+            'mn' => 'Монгол', 'ms' => 'Bahasa Melayu', 'my' => 'မြန်မာ', 'ne' => 'नेपाली',
+            'nl' => 'Nederlands', 'no' => 'Norsk', 'pa' => 'ਪੰਜਾਬੀ', 'pl' => 'Polski',
+            'ps' => 'پښتو', 'ro' => 'Română', 'si' => 'සිංහල', 'sk' => 'Slovenčina',
+            'sl' => 'Slovenščina', 'so' => 'Soomaali', 'sq' => 'Shqip', 'sr' => 'Српски',
+            'sv' => 'Svenska', 'sw' => 'Kiswahili', 'ta' => 'தமிழ்', 'th' => 'ไทย',
+            'tr' => 'Türkçe', 'uk' => 'Українська', 'ur' => 'اردو', 'uz' => 'Oʻzbekcha',
+            'vi' => 'Tiếng Việt', 'zh_CN' => '简体中文', 'zh_TW' => '繁體中文'
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Protection System Configuration
+        |--------------------------------------------------------------------------
+        |
+        | Settings for translation protection and backup management.
+        |
+        */
+
+        'protection' => [
+            'auto_backup' => true,
+            'retain_backups' => 30,
+            'protected_source' => true,
+            'timestamp_migration' => true,
+            'override_confirmation' => true
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Output Format Configuration
+        |--------------------------------------------------------------------------
+        |
+        | Configure how TranslationHub outputs information (console, future API, DB).
+        |
+        */
+
+        'output' => [
+            'format' => 'console', // console, json, api, database
+            'detail_level' => 'normal', // minimal, normal, verbose
+            'colors' => true,
+            'progress_indicators' => true,
+            'error_logging' => true,
+            'success_confirmations' => true
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Priority Languages for Detailed Tickets
+        |--------------------------------------------------------------------------
+        |
+        | Languages that should show detailed translation tickets in the summary.
+        | These languages will display complete translation information.
+        |
+        */
+
+        'priority_ticket_languages' => ['en', 'ar', 'fr'],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Word Substitution System
+        |--------------------------------------------------------------------------
+        |
+        | Replace technical terms before translation for better accuracy.
+        |
+        */
+
+        'word_substitutions' => [
+            'system' => 'application',
+            'admin' => 'administrator',
+            'config' => 'configuration',
+            'auth' => 'authentication',
+            'API' => 'programming interface',
+            'URL' => 'web address',
+            'UI' => 'user interface'
         ],
 
         /*

@@ -47,6 +47,10 @@
     pointer-events: none;
     transition: opacity 0.3s ease;
 }
+.fi-header-subheading {
+  max-width: none !important;
+  white-space: normal !important;
+}
 
 /* Mode sombre : ajustement automatique basé sur le thème */
 .dark #overlay-loader {

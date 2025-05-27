@@ -342,8 +342,8 @@ if (!function_exists('getTranslationFromFiles')) {
 
             // Try multiple possible structures
             $patterns = [
-                ['actions', $key, 'label'],
-                ['actions', $key],
+                ['lang_ref', $key, 'label'],
+                ['lang_ref', $key],
                 [$key, 'label'],
                 [$key]
             ];
