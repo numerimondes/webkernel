@@ -109,7 +109,7 @@ class RenderHookSettingResource extends Resource
     protected static function getCustomizeViewAction(): Action
     {
         return Action::make('customize_view')
-            ->label('Customize View')
+            ->label(lang('customize_this_view'))
             ->icon('heroicon-m-pencil-square')
             ->color('primary')
             ->visible(fn($record) => self::originalViewExists($record) && !File::exists(self::getFullViewPath($record)))

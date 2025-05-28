@@ -37,6 +37,36 @@ use ParseError;
 
 class TranslationHub extends Command
 {
+    // ==========================================
+    // CONFIGURATION CONSTANTS
+    // ==========================================
+
+    /** @var int Threshold for slow operation warning (milliseconds) */
+    private const SLOW_OPERATION_THRESHOLD_MS = 2000;
+
+    /** @var int Number of empty lines for visual separation */
+    private const VISUAL_SEPARATOR_LINES = 3;
+
+    /** @var int Microseconds sleep between bulk operations */
+    private const BULK_OPERATION_DELAY_US = 100000;
+
+    /** @var int Maximum feedback silence time (milliseconds) */
+    private const MAX_SILENCE_TIME_MS = 2500;
+
+    // ==========================================
+    // VISUAL SEPARATION HELPERS
+    // ==========================================
+
+    /**
+     * Create visual separation between operations
+     */
+    private function addVisualSeparator()
+    {
+        for ($i = 0; $i < self::VISUAL_SEPARATOR_LINES; $i++) {
+            $this->line('');
+        }
+    }
+
     protected $signature = 'webkernel:lang {text? : English text to translate} {key? : Translation key (optional)} ' .
                           '{--change-key : Change existing key mode} ' .
                           '{--old-key= : Old key to change (use with --change-key)} ' .
@@ -109,6 +139,8 @@ class TranslationHub extends Command
     protected $wordSubstitutions = [];
     protected $rtlLanguages = [];
     protected $retryAttempts = 3;
+    protected $lastContextDestination;
+    protected $protectedPlaceholders = [];
 
     /**
      * 2. HANDLE() METHOD - Main entry point
@@ -353,11 +385,13 @@ class TranslationHub extends Command
         $engines = $this->config['engines'];
 
         $this->output('info', 'Testing translation engines...');
+        $this->addVisualSeparator();
 
         foreach ($engines as $engine) {
             if ($this->isEngineAvailable($engine)) {
                 $this->selectedEngine = $engine;
                 $this->output('success', "Using {$engine} translation engine");
+                $this->addVisualSeparator();
                 return;
             }
 
@@ -373,18 +407,35 @@ class TranslationHub extends Command
         $testText = 'Hello';
         $expectedTranslation = 'Bonjour';
 
-        $this->output('progress', "Testing {$engine}...");
-        $this->output('progress', "Testing 'Hello' -> French...");
+        $this->line("<fg=cyan>→ Testing {$engine} translation engine...</>");
+        $this->line("  <fg=white>• Test phrase:</> <fg=yellow>'{$testText}'</> <fg=cyan>→</> <fg=green>French</>");
 
         $cmd = "trans -e {$engine} -brief en:fr " . escapeshellarg($testText) . " 2>/dev/null";
+        $this->line("  <fg=white>• Command:</> <fg=gray>{$cmd}</>");
+
+        $this->line("  <fg=white>• Sending request to {$engine} servers...</>");
+        $this->line("  <fg=white>• Establishing connection...</>");
+        $this->line("  <fg=white>• Transmitting test phrase...</>");
+
+        $startTime = microtime(true);
         $result = trim(shell_exec($cmd));
 
-        $this->output('progress', "Got: '{$result}'");
+        $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+        $this->line("  <fg=white>• Response received in {$duration}ms</>");
+        $this->line("  <fg=white>• Raw result:</> <fg=yellow>'{$result}'</>");
+        $this->line("  <fg=white>• Expected:</> <fg=green>'{$expectedTranslation}'</>");
 
         $isWorking = stripos($result, $expectedTranslation) !== false;
 
-        if ($isWorking) {
-            $this->output('success', 'Engine working correctly');
+        if (empty($result)) {
+            $this->line("  <fg=red>✗ Engine returned empty result - connection or service issue</>");
+        } elseif ($result === $testText) {
+            $this->line("  <fg=red>✗ Engine returned original text unchanged - translation failed</>");
+        } elseif ($isWorking) {
+            $this->line("  <fg=green>✓ Engine working correctly - translation successful</>");
+        } else {
+            $this->line("  <fg=red>✗ Engine returned unexpected result - may not contain expected translation</>");
         }
 
         return $isWorking;
@@ -698,16 +749,23 @@ class TranslationHub extends Command
                 $translation = $this->translateText($text, $code);
                 $this->output('info', "  → Translation received, processing result...");
                 $this->output('info', "  → Creating language files and directories...");
+                $this->output('info', "  → Preparing file structure...");
+                $this->output('info', "  → Writing translation data...");
 
-                if ($this->saveTranslation($locale, $key, $translation)) {
+                $saveStartTime = microtime(true);
+                $saveResult = $this->saveTranslation($locale, $key, $translation);
+                $saveDuration = round((microtime(true) - $saveStartTime) * 1000, 2);
+
+                if ($saveResult) {
                     $successful++;
-                    $this->output('success', "✓ {$languageName}: Translation saved");
+                    $this->output('success', "✓ {$languageName}: Translation saved ({$saveDuration}ms)");
                 } else {
                     $failed++;
                     $this->output('error', "✗ {$languageName}: Save failed");
                 }
 
-                usleep(100000); // Much faster rate limiting for bulk operations
+                $this->addVisualSeparator();
+                usleep(self::BULK_OPERATION_DELAY_US); // Rate limiting for bulk operations
 
             } catch (Exception $e) {
                 $failed++;
@@ -875,6 +933,9 @@ class TranslationHub extends Command
 
     private function translateText($text, $targetLanguageCode)
     {
+        // Store current target language for failure detection
+        $this->currentTargetLanguage = $targetLanguageCode;
+
         $this->output('info', "    • Optimizing text for translation...");
         $optimizedText = $this->optimizeTextForTranslation($text);
 
@@ -882,7 +943,18 @@ class TranslationHub extends Command
         $cmd = "trans -e {$this->selectedEngine} -brief en:{$targetLanguageCode} " . escapeshellarg($optimizedText) . " 2>/dev/null";
 
         $this->output('info', "    • Sending request to translation server...");
+        $this->output('info', "    • Connecting to {$this->selectedEngine} servers...");
+        $this->output('info', "    • Transmitting text for translation...");
+
+        $startTime = microtime(true);
         $result = trim(shell_exec($cmd));
+        $duration = round((microtime(true) - $startTime) * 1000, 2);
+
+        if ($duration > self::SLOW_OPERATION_THRESHOLD_MS) {
+            $this->line("    <fg=yellow>• Response took {$duration}ms (slower than usual)</>");
+        } else {
+            $this->line("    <fg=green>• Response received in {$duration}ms</>");
+        }
 
         $this->output('info', "    • Processing and cleaning translation result...");
         return $this->cleanTranslationResult($result, $text);
@@ -892,22 +964,69 @@ class TranslationHub extends Command
     {
         $optimized = $text;
 
-        // Apply runtime word substitutions from user input
+        // STEP 1: Protect placeholders before any processing
+        $protectedPlaceholders = $this->extractAndProtectPlaceholders($optimized);
+        $optimized = $protectedPlaceholders['text'];
+
+        // STEP 2: Apply runtime word substitutions from user input
         $optimized = $this->applyWordSubstitutions($optimized);
 
-        // Apply config-based word substitutions if available
+        // STEP 3: Apply config-based word substitutions if available
         if (!empty($this->config['word_substitutions'])) {
             foreach ($this->config['word_substitutions'] as $from => $to) {
                 $optimized = str_ireplace($from, $to, $optimized);
             }
         }
 
-        // Add context if available
+        // STEP 4: Add context if available using the >)>>>> ("in") <<<<(< marker
         if (!empty($this->translationContext)) {
-            $optimized = "Context: {$this->translationContext}. Text: {$optimized}";
+            $optimized = "{$optimized} >)>>>> (\"in\") <<<<(< {$this->translationContext}";
         }
 
+        // Store placeholders for restoration after translation
+        $this->protectedPlaceholders = $protectedPlaceholders['placeholders'];
+
         return $optimized;
+    }
+
+    /**
+     * Extract and protect placeholders from translation
+     */
+    private function extractAndProtectPlaceholders($text)
+    {
+        $placeholders = [];
+        $protectedText = $text;
+
+        $this->output('info', "Analyzing text for placeholders: {$text}");
+
+        // Pattern for Laravel placeholders: :word, :attribute, etc.
+        preg_match_all('/(:[a-zA-Z_][a-zA-Z0-9_]*\b)/', $text, $matches);
+        $this->output('info', "Found " . count($matches[0]) . " Laravel placeholders");
+
+        foreach ($matches[0] as $index => $placeholder) {
+            $token = "__PLACEHOLDER_{$index}__";
+            $placeholders[$token] = $placeholder;
+            $protectedText = str_replace($placeholder, $token, $protectedText);
+            $this->line("<fg=green>Protected:</> <fg=yellow>{$placeholder}</> <fg=cyan>→</> <fg=magenta>{$token}</>");
+        }
+
+        // Pattern for printf placeholders: %s, %d, %1$s, etc.
+        preg_match_all('/(%[a-zA-Z0-9\$]+)/', $protectedText, $matches);
+        $this->output('info', "Found " . count($matches[0]) . " printf placeholders");
+
+        foreach ($matches[0] as $index => $placeholder) {
+            $token = "__PRINTF_{$index}__";
+            $placeholders[$token] = $placeholder;
+            $protectedText = str_replace($placeholder, $token, $protectedText);
+            $this->line("<fg=green>Protected:</> <fg=cyan>{$placeholder}</> <fg=cyan>→</> <fg=magenta>{$token}</>");
+        }
+
+        $this->output('info', "Protected text: {$protectedText}");
+
+        return [
+            'text' => $protectedText,
+            'placeholders' => $placeholders
+        ];
     }
 
     private function applyWordSubstitutions($text)
@@ -997,9 +1116,15 @@ class TranslationHub extends Command
                 // No context_destination for English since it's the same
             } else {
                 // For other languages: context (original) + context_destination (translated)
-                $translatedContext = $this->translateText($this->translationContext, $this->config['languages'][$locale]);
                 $entry['context'] = $this->translationContext;
-                $entry['context_destination'] = $translatedContext;
+
+                // Use parsed context_destination if available, otherwise translate separately
+                if (!empty($this->lastContextDestination)) {
+                    $entry['context_destination'] = $this->lastContextDestination;
+                } else {
+                    // Translate context separately for clean result
+                    $entry['context_destination'] = $this->translateContextSeparately($this->translationContext, $this->config['languages'][$locale]);
+                }
             }
         }
 
@@ -1536,6 +1661,7 @@ class TranslationHub extends Command
         }
 
         $this->output('info', 'Files ready');
+        $this->addVisualSeparator();
         return true;
     }
 
@@ -1578,12 +1704,10 @@ class TranslationHub extends Command
             if (!empty($this->translationContext)) {
                 $this->output('info', "'context'              => '{$this->translationContext}'");
                 if ($locale !== 'en') {
-                    try {
-                        $translatedContext = $this->translateText($this->translationContext, $this->config['languages'][$locale]);
-                        $this->output('info', "'context_destination'  => '{$translatedContext}'");
-                    } catch (Exception $e) {
-                        $this->output('info', "'context_destination'  => '[Will be generated]'");
-                    }
+                    // Use parsed context_destination if available, otherwise translate separately
+                    $contextDestination = $this->lastContextDestination ??
+                                        $this->translateContextSeparately($this->translationContext, $this->config['languages'][$locale]);
+                    $this->output('info', "'context_destination'  => '{$contextDestination}'");
                 }
             }
 
@@ -1792,7 +1916,7 @@ class TranslationHub extends Command
         $this->output('info', 'Context specification for better translations:');
 
         // Dynamic context gathering
-        $context = $this->askWithReadline("Specify the context domain (e.g., 'software', 'medical', 'automotive', 'web development', etc.) or press Enter to skip", '');
+        $context = $this->askWithReadline("Specify the context domain (e.g., 'software' ...) or press Enter to skip", '');
 
         $this->translationContext = $context;
 
@@ -2470,7 +2594,7 @@ class TranslationHub extends Command
     }
 
     /**
-     * Enhanced translation result cleaning with Arabic/RTL Unicode normalization
+     * Enhanced translation result cleaning with context parsing and Arabic/RTL Unicode normalization
      */
     private function cleanTranslationResult($translation, $originalText)
     {
@@ -2478,32 +2602,163 @@ class TranslationHub extends Command
             return $originalText;
         }
 
-        // Remove context artifacts
-        $cleaned = preg_replace('/^.*?Text:\s*/i', '', $translation);
-        $cleaned = preg_replace('/^.*?Context:.*?Text:\s*/i', '', $cleaned);
+        // If no context was used, apply basic cleaning
+        if (empty($this->translationContext)) {
+            $cleaned = trim($translation, '"\'');
+            $cleaned = preg_replace('/\s+/', ' ', $cleaned);
 
-        // Remove quotes and extra whitespace
+            // CRITICAL: Restore protected placeholders EVEN without context
+            $cleaned = $this->restoreProtectedPlaceholders($cleaned);
+
+            // Normalize Unicode for Arabic and other Semitic languages
+            if (function_exists('normalizer_normalize')) {
+                $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+            }
+
+            return trim($cleaned) ?: $originalText;
+        }
+
+        // Parse the translated result to extract clean label and context_destination
+        $parsed = $this->parseTranslatedResult($translation);
+
+        // Store the context_destination for later use
+        if (!empty($parsed['context_destination'])) {
+            $this->lastContextDestination = $this->restoreProtectedPlaceholders($parsed['context_destination']);
+        }
+
+        $cleaned = $parsed['label'];
+
+        // CRITICAL: Restore protected placeholders FIRST before any other processing
+        $cleaned = $this->restoreProtectedPlaceholders($cleaned);
+
+        // Apply standard cleaning and normalization
         $cleaned = trim($cleaned, '"\'');
         $cleaned = preg_replace('/\s+/', ' ', $cleaned);
+
+
 
         // Normalize Unicode for Arabic and other Semitic languages
         if (function_exists('normalizer_normalize')) {
             $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
         }
 
-        // Detect if the result is still corrupted (contains only control chars or is too short)
-        if (strlen($cleaned) < 3 || preg_match('/^[\x{2000}-\x{206F}\x{00}-\x{1F}\.]+$/u', $cleaned)) {
-            // Fallback to Google Translate for Arabic
-            $cmd = "trans -e google -brief en:ar " . escapeshellarg($originalText) . " 2>/dev/null";
+        // CRITICAL: Detect if translation actually failed (text unchanged or too similar)
+        $similarity = similar_text(strtolower($cleaned), strtolower($originalText), $percent);
+
+        if (strlen($cleaned) < 3 ||
+            preg_match('/^[\x{2000}-\x{206F}\x{00}-\x{1F}\.]+$/u', $cleaned) ||
+            $percent > 85 || // Text is too similar to original (likely unchanged)
+            $cleaned === $originalText) {
+
+            $this->line("<fg=red>⚠ Translation failed or unchanged (similarity: {$percent}%), attempting fallback...</>");
+
+            // Store current target language for fallback
+            $targetLang = $this->currentTargetLanguage ?? 'ar';
+
+            // Try Google as fallback
+            $cmd = "trans -e google -brief en:{$targetLang} " . escapeshellarg($originalText) . " 2>/dev/null";
             $fallbackResult = trim(shell_exec($cmd));
+
             if (!empty($fallbackResult) && $fallbackResult !== $originalText) {
-                $cleaned = trim($fallbackResult, '"\'');
-                if (function_exists('normalizer_normalize')) {
-                    $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+                $similarity2 = similar_text(strtolower($fallbackResult), strtolower($originalText), $percent2);
+                if ($percent2 < 85) {
+                    $cleaned = trim($fallbackResult, '"\'');
+                    $cleaned = $this->restoreProtectedPlaceholders($cleaned);
+                    if (function_exists('normalizer_normalize')) {
+                        $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+                    }
+                    $this->line("<fg=yellow>→ Fallback translation successful</>");
+                } else {
+                    throw new Exception("Translation failed: both Bing and Google returned unchanged text (similarity > 85%)");
                 }
+            } else {
+                throw new Exception("Translation failed: both engines returned unchanged or empty text");
             }
         }
 
         return trim($cleaned) ?: $originalText;
+    }
+
+
+
+    /**
+     * Parse translated result using the >)>>>> (...) <<<<(< universal marker
+     */
+    private function parseTranslatedResult($translatedText)
+    {
+        // Look for the pattern >)>>>> (...) <<<<(< or its broken variations
+        // Pattern 1: Complete marker
+        if (preg_match('/^(.+?)\s*>\)>>>>\s*\([^)]*\)\s*<<<<\(<\s*(.+)$/u', $translatedText, $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'context_destination' => trim($matches[2])
+            ];
+        }
+
+        // Pattern 2: Broken marker like ">)>>>> (< something"
+        if (preg_match('/^(.+?)\s*>\)>>>>\s*\(<\s*(.+)$/u', $translatedText, $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'context_destination' => trim($matches[2])
+            ];
+        }
+
+        // Pattern 3: Any ">)>" pattern
+        if (preg_match('/^(.+?)\s*>\).*?<\s*(.+)$/u', $translatedText, $matches)) {
+            return [
+                'label' => trim($matches[1]),
+                'context_destination' => trim($matches[2])
+            ];
+        }
+
+        // Fallback: return original text as label, context will be translated separately
+        return [
+            'label' => $translatedText,
+            'context_destination' => null
+        ];
+    }
+
+    /**
+     * Restore protected placeholders after translation
+     */
+    private function restoreProtectedPlaceholders($text)
+    {
+        if (empty($this->protectedPlaceholders)) {
+            $this->output('warning', 'No protected placeholders stored for restoration');
+            return $text;
+        }
+
+        $restored = $text;
+        $this->output('info', 'Restoring ' . count($this->protectedPlaceholders) . ' placeholders');
+
+        foreach ($this->protectedPlaceholders as $token => $originalPlaceholder) {
+            $before = $restored;
+            $restored = str_replace($token, $originalPlaceholder, $restored);
+            if ($before !== $restored) {
+                $this->line("<fg=blue>Restored:</> <fg=magenta>{$token}</> <fg=cyan>→</> <fg=yellow>{$originalPlaceholder}</>");
+            }
+        }
+
+        // Validate that all placeholders were restored
+        if (preg_match('/__(?:PLACEHOLDER|PRINTF)_\d+__/', $restored)) {
+            $this->output('warning', 'Some placeholders may not have been properly restored');
+        }
+
+        return $restored;
+    }
+
+    /**
+     * Translate context separately for clean results
+     */
+    private function translateContextSeparately($context, $targetLanguageCode)
+    {
+        try {
+            $cmd = "trans -e {$this->selectedEngine} -brief en:{$targetLanguageCode} " . escapeshellarg($context) . " 2>/dev/null";
+            $result = trim(shell_exec($cmd));
+
+            return !empty($result) && $result !== $context ? $result : $context;
+        } catch (Exception $e) {
+            return $context;
+        }
     }
 }
