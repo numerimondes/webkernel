@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:56',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => '다른 번역 키를 선택해야 합니다.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:26',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => '사용자의 현재 날짜와 시간을 표시하십시오. 다가오는 회의나 중요한 이벤트와 같은 추가 정보를 포함할 수도 있습니다.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:44',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => '인터페이스를 단순화하기 위해 검색 바를 숨길 수 있습니다. 사용자는 여전히 CTRL+K 또는 COMMAND+K를 사용하여 즉시 열 수 있습니다. 이 동작은 사용자 정의 가능합니다.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:26:34',
+            'protected' => false,
+        ],
     ],
 ];

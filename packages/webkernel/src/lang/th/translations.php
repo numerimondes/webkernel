@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:04',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'คุณต้องเลือกคีย์การแปลอื่น',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:27',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'แสดงวันที่และเวลาปัจจุบันของผู้ใช้ คุณสามารถรวมข้อมูลเพิ่มเติม เช่น การประชุมที่กำลังจะมาหรือเหตุการณ์สำคัญต่างๆ ได้ด้วย',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:38:40',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:35:09',
+            'protected' => false,
+        ],
     ],
 ];

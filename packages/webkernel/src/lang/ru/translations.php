@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:40',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Вам нужно выбрать другой ключ перевода',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:05',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Отобразите текующее время и дату пользователя. Вы также можете включить дополнительную информацию, такую как предстоящие встречи или важные события.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:36:53',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Разрешите скрыть строку поиска, чтобы упростить интерфейс. Пользователи все равно могут мгновенно открыть её, используя CTRL+K или COMMAND+K. Это поведение настраиваемо.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:32:33',
+            'protected' => false,
+        ],
     ],
 ];

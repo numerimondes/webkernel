@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:59',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Lazima uchague kipanya kingine cha tafsiri',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:22',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Onyesha tarehe na wakati wa sasa wa mtumiaji. Unaweza pia kujumuisha taarifa za ziada, kama mikutano inayokuja au matukio muhimu.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:38:34',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Ruhusu kuficha ubao wa kutafuta ili kurahisisha muonekano. Watumiaji bado wanaweza kuufungua mara moja kwa kutumia CTRL+K au COMMAND+K. Tabia hii inaweza kubadilishwa.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:34:22',
+            'protected' => false,
+        ],
     ],
 ];

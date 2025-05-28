@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:11',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Та өөр орчуулгын түлхүүр сонгох ёстой',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:43',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Хэрэглэгчийн одоогийн өдөр, цагийг харуулах. Та мөн хурлын товлол, чухал үйл явдлууд зэрэг нэмэлт мэдээллийг багтааж болно.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:35:41',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Хайлт хийх мөрийг нуун, интерфэйсийг хялбаршуулах боломж олго. Хэрэглэгчид CTRL+K эсвэл COMMAND+K ашиглан үүнийг шууд нээж болно. Энэ зан төлөвийг өөрчлөх боломжтой.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:29:40',
+            'protected' => false,
+        ],
     ],
 ];

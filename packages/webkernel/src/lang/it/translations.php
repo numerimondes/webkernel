@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:47',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Devi scegliere un\'altra chiave di traduzione',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:15',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Mostra la data e l\'ora attuali dell\'utente. Puoi anche includere informazioni aggiuntive, come riunioni imminenti o eventi importanti.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:35',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Consenti di nascondere la barra di ricerca per semplificare l\'interfaccia. Gli utenti possono comunque aprirla istantaneamente usando CTRL+K o COMMAND+K. Questo comportamento è personalizzabile.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:59',
+            'protected' => false,
+        ],
     ],
 ];

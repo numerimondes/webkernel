@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:04',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Jums jāizvēlas cits tulkošanas atslēga',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:32',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Parādiet lietotāja pašreizējo datumu un laiku. Jūs varat arī iekļaut papildu informāciju, piemēram, gaidāmās sapulces vai svarīgus notikumus.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:52',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Atļaut meklēšanas joslas slēpšanu, lai vienkāršotu saskarni. Lietotāji to joprojām var nekavējoties atvērt, izmantojot CTRL+K vai COMMAND+K. Šī uzvedība ir pielāgojama.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:28:07',
+            'protected' => false,
+        ],
     ],
 ];

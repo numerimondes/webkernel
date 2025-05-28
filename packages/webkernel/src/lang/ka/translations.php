@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:52',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'თქვენ უნდა აირჩიოთ სხვა თარგმანის გასაღები',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:21',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'მომხმარებლის მიმდინარე თარიღისა და დროის ჩვენება. ასევე შეგიძლიათ მოიცავთ დამატებითი ინფორმაცია, როგორიცაა უახლოესი შეხვედრები ან მნიშვნელოვანი მოვლენები.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:39',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'შესაძლებელია მაძიებელის რიგის დამალვა ინტერფეისის გამარტივებისთვის. მომხმარებლები მისი სწრაფად გახსნის საშუალებას მიაწვდიან CTRL+K ან COMMAND+K-თან. ეს ქცევა მორგებულია.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:25:47',
+            'protected' => false,
+        ],
     ],
 ];

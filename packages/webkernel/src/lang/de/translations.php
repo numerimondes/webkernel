@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:20',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Du musst einen anderen Übersetzungsschlüssel wählen.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:37',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Zeigen Sie das aktuelle Datum und die Uhrzeit des Benutzers an. Sie können auch zusätzliche Informationen wie anstehende Meetings oder wichtige Ereignisse einfügen.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:32:46',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Erlauben Sie das Ausblenden der Suchleiste, um die Benutzeroberfläche zu vereinfachen. Die Benutzer können sie trotzdem sofort mit STRG+K oder COMMAND+K öffnen. Dieses Verhalten ist anpassbar.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:23:32',
+            'protected' => false,
+        ],
     ],
 ];

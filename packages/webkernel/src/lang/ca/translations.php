@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:10',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Has de triar una altra clau de traducció',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:29',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Mostra la data i hora actuals de l\'usuari. També pots incloure informació addicional, com ara reunions properes o esdeveniments importants.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:32:38',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Permetre amagar la barra de cerca per simplificar la interfície. Els usuaris encara poden obrir-la instantàniament utilitzant CTRL+K o COMMAND+K. Aquest comportament és personalitzable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:22:39',
+            'protected' => false,
+        ],
     ],
 ];

@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:07',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Мора да изберате друг клуч за превод',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:34',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Прикажете ја актуелната дата и време на корисникот. Можете исто така да вклучите дополнителни информации, како што се идните состаноци или важни настани.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:54',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:28:51',
+            'protected' => false,
+        ],
     ],
 ];

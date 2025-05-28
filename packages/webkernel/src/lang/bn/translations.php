@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:05',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'আপনাকে একটি অন্য অনুবাদ চাবি বেছে নিতে হবে',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:25',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'ব্যবহারকারীর বর্তমান তারিখ ও সময় প্রদর্শন করুন। আপনি অগ্রগামী বৈঠক বা গুরুত্বপূর্ণ ইভেন্টের মতো অতিরিক্ত তথ্যও অন্তর্ভুক্ত করতে পারেন।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:31:51',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'ইন্টারফেসটি সহজ করার জন্য অনুসন্ধান বারটি লুকানোর অনুমতি দিন। ব্যবহারকারীরা এখনও CTRL+K বা COMMAND+K ব্যবহার করে সেটি তাত্ক্ষণিকভাবে খুলতে পারেন। এই আচরণটি কাস্টমাইজযোগ্য।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:21:52',
+            'protected' => false,
+        ],
     ],
 ];

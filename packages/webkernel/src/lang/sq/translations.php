@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:52',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Ju duhet të zgjidhni një çelës tjetër për përkthimin',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:16',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Shfaqi datën dhe orën aktuale të përdoruesit. Mund të përfshish edhe informacione të tjera, si takimet e ardhshme ose ngjarjet e rëndësishme.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:37:46',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:34:12',
+            'protected' => false,
+        ],
     ],
 ];

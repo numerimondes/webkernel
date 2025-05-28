@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:17',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Bạn phải chọn một khóa dịch khác',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:37',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Hiển thị ngày và giờ hiện tại của người dùng. Bạn cũng có thể bao gồm thông tin bổ sung, chẳng hạn như các cuộc họp sắp tới hoặc sự kiện quan trọng.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:39:33',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Cho phép ẩn thanh tìm kiếm để đơn giản hóa giao diện. Người dùng vẫn có thể mở nó ngay lập tức bằng cách sử dụng CTRL+K hoặc COMMAND+K. Hành vi này có thể tùy chỉnh.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:36:08',
+            'protected' => false,
+        ],
     ],
 ];

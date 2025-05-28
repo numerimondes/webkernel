@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:45',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Anda harus memilih kunci terjemahan lainnya',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:12',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Tampilkan tanggal dan waktu saat ini pengguna. Anda juga dapat menyertakan informasi tambahan, seperti pertemuan yang akan datang atau acara penting.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:33',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Izinkan menyembunyikan bilah pencarian untuk menyederhanakan antarmuka. Pengguna masih dapat membukanya dengan cepat menggunakan CTRL+K atau COMMAND+K. Perilaku ini dapat disesuaikan.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:53',
+            'protected' => false,
+        ],
     ],
 ];

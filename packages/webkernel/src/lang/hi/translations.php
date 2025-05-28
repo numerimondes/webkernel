@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:34',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'आपको एक अन्य अनुवाद कुंजी चुननी चाहिए',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:53',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'उपयोगकर्ता की वर्तमान तिथि और समय प्रदर्शित करें। आप आगामी बैठकों या महत्वपूर्ण घटनाओं जैसी अतिरिक्त जानकारी भी शामिल कर सकते हैं।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:24',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'इंटरफेस को सरल बनाने के लिए खोज पट्टी को छुपाने की अनुमति दें। उपयोगकर्ता अभी भी CTRL+K या COMMAND+K का उपयोग करके इसे तुरंत खोल सकते हैं। यह व्यवहार अनुकूलन योग्य है।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:39',
+            'protected' => false,
+        ],
     ],
 ];

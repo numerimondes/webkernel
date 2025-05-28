@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:26',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'ਤੁਸੀਂ ਇੱਕ ਹੋਰ ਰੂਪਾਂਤਰਣ ਕੁੰਜੀ ਚੁਣਨੀ ਚਾਹੀਦੀ ਹੈ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:55',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'ਉਪਭੋਗਤਾ ਦੀ ਮੌਜੂਦਾ ਤਰੀਕ ਅਤੇ ਸਮਾਂ ਦਿਖਾਓ। ਤੁਸੀਂ ਹੋਰ ਜਾਣਕਾਰੀ ਵੀ ਸ਼ਾਮਲ ਕਰ ਸਕਦੇ ਹੋ, ਜਿਵੇਂ ਕਿ ਆਉਣ ਵਾਲੀਆਂ ਮੀਟਿੰਗਾਂ ਜਾਂ ਮਹੱਤਵਪੂਰਣ ਘਟਨਾਵਾਂ।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:36:37',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'ਖੋਜ ਬਾਰ ਨੂੰ ਛੁਪਾਉਣ ਦੀ ਆਗਿਆ ਦਿਓ ਤਾਂ ਜੋ ਇੰਟਰਫੇਸ ਨੂੰ ਸਧਾਰਨ ਕੀਤਾ ਜਾ ਸਕੇ। ਉਪਭੋਗਤਾ ਹੁਣ ਵੀ CTRL+K ਜਾਂ COMMAND+K ਦੇ ਵਰਤੋਂ ਨਾਲ ਇਸਨੂੰ ਤੱਛਣੀ ਤੇ ਖੋਲ ਸਕਦੇ ਹਨ। ਇਹ ਵਿਵਹਾਰ ਸਥਿਰਸ਼ੀਲ ਹੈ।',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:30:56',
+            'protected' => false,
+        ],
     ],
 ];

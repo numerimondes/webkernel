@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:21',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Je moet een andere vertaaloptie kiezen.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:51',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Toon de huidige date en tijd van de gebruiker. Je kunt ook aanvullende informatie opnemen, zoals aankomende vergaderingen of belangrijke gebeurtenissen.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:36:32',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Sta het verbergen van de zoekbalk toe om de interface te vereenvoudigen. Gebruikers kunnen deze nog steeds onmiddellijk openen met CTRL+K of COMMAND+K. Dit gedrag is aanpasbaar.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:30:50',
+            'protected' => false,
+        ],
     ],
 ];

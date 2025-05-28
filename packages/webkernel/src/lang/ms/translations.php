@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:13',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Anda mesti memilih kunci terjemahan lain',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:45',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Paparkan tarikh dan masa semasa pengguna. Anda juga boleh menyertakan maklumat tambahan, seperti mesyuarat yang akan datang atau acara penting.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:35:43',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Benarkan menyembunyikan bar carian untuk memudahkan antara muka. Pengguna boleh membukanya dengan segera menggunakan CTRL+K atau COMMAND+K. Tingkah laku ini boleh disesuaikan.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:29:51',
+            'protected' => false,
+        ],
     ],
 ];

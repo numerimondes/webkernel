@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:40',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Mást választania kell a fordítási kulcsból.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:01',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Jelenítse meg a felhasználó aktuális dátumát és időpontját. További információkat is tartalmazhat, például a közelgő találkozókat vagy fontos eseményeket.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:28',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Engedélyezze a keresősáv elrejtését az interfész egyszerűsítése érdekében. A felhasználók továbbra is azonnal megnyithatják a CTRL+K vagy COMMAND+K használatával. Ez a viselkedés testre szabható.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:46',
+            'protected' => false,
+        ],
     ],
 ];

@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:17',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Du skal vælge en anden oversættelsesnøgle',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:35',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Vis brugerens nuværende dato og tid. Du kan også inkludere yderligere oplysninger, såsom kommende møder eller vigtige begivenheder.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:32:44',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Tillad skjulning af søgefeltet for at forenkle brugergrænsefladen. Brugere kan stadig åbne det øjeblikkeligt ved hjælp af CTRL+K eller COMMAND+K. Denne adfærd kan tilpasses.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:23:29',
+            'protected' => false,
+        ],
     ],
 ];

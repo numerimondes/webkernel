@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:15:56',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'يجب عليك اختيار مفتاح ترجمة آخر',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:17',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'عرض التاريخ والوقت الحاليين للمستخدم. يمكنك أيضًا تضمين معلومات إضافية، مثل الاجتماعات القادمة أو الأحداث المهمة.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:31:00',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'السماح بإخفاء شريط البحث لتبسيط واجهة المستخدم. لا يزال بإمكان المستخدمين فتحه بسرعة باستخدام CTRL+K أو COMMAND+K. هذه السلوكيات قابلة للتخصيص.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:21:00',
+            'protected' => false,
+        ],
     ],
 ];

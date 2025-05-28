@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:09',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Вам потрібно вибрати інший ключ перекладу',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:31',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Відобразіть поточну дату та час користувача. Ви також можете включити додаткову інформацію, таку як майбутні зустрічі чи важливі події.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:38:45',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:35:58',
+            'protected' => false,
+        ],
     ],
 ];

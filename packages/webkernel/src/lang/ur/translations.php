@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:12',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'آپ کو ایک اور ترجمہ کلید منتخب کرنا ہوگی',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:33',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:39:29',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'انٹرفیس کو سادہ بنانے کے لیے سرچ بار کو چھپانے کی اجازت دیں۔ صارفین اب بھی اسے فوراً CTRL+K یا COMMAND+K کا استعمال کرتے ہوئے کھول سکتے ہیں۔ یہ رویہ اپنی مرضی کے مطابق بنایا جا سکتا ہے۔',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:36:02',
+            'protected' => false,
+        ],
     ],
 ];

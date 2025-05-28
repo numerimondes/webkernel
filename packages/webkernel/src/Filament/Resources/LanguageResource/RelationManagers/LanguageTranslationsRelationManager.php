@@ -56,23 +56,18 @@ class LanguageTranslationsRelationManager extends RelationManager
                             }
 
                             if (!empty($cleaned)) {
-                                $existingTranslation = LanguageTranslation::where('lang_ref', $cleaned)
-                                    ->where('app', $livewire->data['app'] ?? 'core')
-                                    ->where('theme', $livewire->data['theme'] ?? 'none')
-                                    ->first();
+                                // Simply check if the key exists (lang() works by key only)
+                                $existingTranslation = LanguageTranslation::where('lang_ref', $cleaned)->first();
 
                                 if ($existingTranslation) {
                                     Notification::make()
                                         ->title(lang('form_translation_key_exists_notification_title'))
-                                        ->body(lang('form_translation_key_exists_notification_body', ['cleaned' => $cleaned]))
-                                        ->info()
+                                        ->body("Key '{$cleaned}' already exists")
+                                        ->warning()
                                         ->send();
 
                                     // Get all translations for this key
-                                    $translationsQuery = LanguageTranslation::where('lang_ref', $cleaned)
-                                        ->where('app', $livewire->data['app'] ?? 'core')
-                                        ->where('theme', $livewire->data['theme'] ?? 'none')
-                                        ->get();
+                                    $translationsQuery = LanguageTranslation::where('lang_ref', $cleaned)->get();
 
                                     // Prepare translations for the form fields
                                     foreach ($translationsQuery as $translation) {
@@ -143,6 +138,7 @@ class LanguageTranslationsRelationManager extends RelationManager
     }
 
     public function table(Table $table): Table
+
     {
         // Get all languages for filters
         $languages = Language::all();

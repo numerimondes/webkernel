@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:23',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Πρέπει να επιλέξετε ένα άλλο κλειδί μετάφρασης',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:39',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:33:30',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Επιτρέψτε την απόκρυψη της γραμμής αναζήτησης για να απλοποιηθεί η διεπαφή. Οι χρήστες μπορούν να την ανοίξουν αμέσως χρησιμοποιώντας CTRL+K ή COMMAND+K. Αυτή η συμπεριφορά είναι προσαρμόσιμη.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:23:37',
+            'protected' => false,
+        ],
     ],
 ];

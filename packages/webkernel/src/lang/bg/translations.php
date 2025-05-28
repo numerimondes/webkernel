@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:03',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Трябва да изберете друг ключ за превод',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:23',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:31:48',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:21:49',
+            'protected' => false,
+        ],
     ],
 ];

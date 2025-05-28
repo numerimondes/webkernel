@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:36',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Trebuie să alegi un alt cheie de traducere',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:03',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Afișează data și ora curentă a utilizatorului. Poți include și informații suplimentare, cum ar fi întâlnirile viitoare sau evenimentele importante.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:36:50',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Permite ascunderea barei de căutare pentru a simplifica interfața. Utilizatorii o pot deschide instantaneu folosind CTRL+K sau COMMAND+K. Acest comportament este personalizabil.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:32:30',
+            'protected' => false,
+        ],
     ],
 ];

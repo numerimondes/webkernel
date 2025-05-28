@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:42',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Դուք պետք է ընտրեք մեկ այլ թարգմանական բանալին',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:03',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Ցույց տվեք օգտվողի ներկայիս ամսաթիվն ու ժամը: Դուք նաև կարող եք ներառել լրացուցիչ տեղեկություններ, כגון մոտեցող հանդիպումներ կամ կարևոր իրադարձություններ:',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:31',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Իրավացիք տալ որոնման պանակը թաքցնելու համար դիմումը պարզեցնելու։ Օգտվողները դեռ կարող են այն արագ բացել CTRL+K կամ COMMAND+K հրամաններով։ Այս վարքը հարմարեցվել է։',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:49',
+            'protected' => false,
+        ],
     ],
 ];

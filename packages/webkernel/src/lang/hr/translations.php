@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:37',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Morate odabrati drugu ključnu riječ za prijevod',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:59',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Prikaži trenutni datum i vrijeme korisnika. Također možete uključiti dodatne informacije, kao što su nadolazeći sastanci ili važni događaji.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:26',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Omogućite sakrivanje trake za pretraživanje kako biste pojednostavili sučelje. Korisnici je i dalje mogu odmah otvoriti koristeći CTRL+K ili COMMAND+K. Ovo ponašanje je prilagodljivo.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:42',
+            'protected' => false,
+        ],
     ],
 ];

@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:29',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Sinun on valittava toinen käännösoinen avain',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:46',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Näytä käyttäjän nykyinen päivämäärä ja aika. Voit myös sisällyttää lisätietoja, kuten tulevat kokoukset tai tärkeät tapahtumat.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:33:38',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Salli hakupalkin piilottaminen käyttöliittymän yksinkertaistamiseksi. Käyttäjät voivat silti avata sen välittömästi käyttämällä CTRL+K tai COMMAND+K. Tämä käyttäytyminen on muokattavissa.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:31',
+            'protected' => false,
+        ],
     ],
 ];

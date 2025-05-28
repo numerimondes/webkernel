@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:32',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'אתה חייב לבחור מפתח תרגום אחר',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:50',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:21',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'אפשר להסתיר את שורת החיפוש כדי לפשט את הממשק. המשתמשים עדיין יכולים לפתוח אותה מיידית באמצעות CTRL+K או COMMAND+K. התנהגות זו ניתנת להתאמה אישית.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:24:36',
+            'protected' => false,
+        ],
     ],
 ];

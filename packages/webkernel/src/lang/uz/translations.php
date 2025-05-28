@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:15',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Siz boshqa tarjima kalitini tanlashingiz kerak',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:35',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Foydalanuvchining joriy sanasi va vaqtini ko\'rsating. Siz shuningdek, yaqinlashib kelayotgan uchrashuvlar yoki muhim voqealar kabi qo\'shimcha ma\'lumotlarni ham qo\'shishingiz mumkin.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:39:31',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Izlash panelini yashirishga ruxsat bering, interfeysni soddalashtirish uchun. Foydalanuvchilar uni tezda CTRL+K yoki COMMAND+K tugmalari yordamida ochishlari mumkin. Ushbu xatti-harakat sozlanishi mumkin.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:36:05',
+            'protected' => false,
+        ],
     ],
 ];

@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:47',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Morate izbrati drugo prevodno ključno besedo.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:12',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Prikazujte trenutni datum in čas uporabnika. Lahko vključite tudi dodatne informacije, kot so prihajajoči sestanki ali pomembni dogodki.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:37:41',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Dopustite skrivanje iskalne vrstice za poenostavitev vmesnika. Uporabniki jo lahko še vedno hitro odprejo z uporabo CTRL+K ali COMMAND+K. To obnašanje je prilagodljivo.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:33:25',
+            'protected' => false,
+        ],
     ],
 ];

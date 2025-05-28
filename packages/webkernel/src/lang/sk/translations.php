@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:44',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Musíte si vybrať iný prekladový kľúč.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:10',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Zobrazte aktuálny dátum a čas používateľa. Môžete tiež zahrnúť ďalšie informácie, ako sú blížiace sa stretnutia alebo dôležité udalosti.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:37:39',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Povoľte skryť vyhľadávací panel na zjednodušenie rozhrania. Používatelia ho môžu stále okamžite otvoriť pomocou klávesov CTRL+K alebo COMMAND+K. Toto správanie je prispôsobiteľné.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:33:21',
+            'protected' => false,
+        ],
     ],
 ];

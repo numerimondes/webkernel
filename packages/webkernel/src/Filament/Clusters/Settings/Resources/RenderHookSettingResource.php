@@ -26,6 +26,7 @@ use Filament\Tables\Columns\TextColumn;
 use Webkernel\Models\RenderHookSetting;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
 use Illuminate\Database\Eloquent\Builder;
 use Webkernel\Filament\Clusters\Settings;
@@ -33,9 +34,12 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\View\Exceptions\CompilationException;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\RelationManagers;
+use Filament\Pages\SubNavigationPosition;
 
 class RenderHookSettingResource extends Resource
 {
+protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
+
     protected static ?string $model = RenderHookSetting::class;
     protected static ?string $navigationIcon = 'heroicon-o-ellipsis-horizontal-circle';
     protected static ?string $cluster = Settings::class;
@@ -82,6 +86,16 @@ class RenderHookSettingResource extends Resource
                 ->html()
                 ->wrap()
                 ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
+
+               SelectColumn::make('where_placed')
+                ->label(lang('toggle_visibility'))
+                ->options([
+                    'draft' => 'Draft',
+                    'reviewing' => 'Reviewing',
+                    'published' => 'Published',
+                    ]),
+
+
 
             ToggleColumn::make('enabled')
                 ->label(lang('toggle_visibility'))

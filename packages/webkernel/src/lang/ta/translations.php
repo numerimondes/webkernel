@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:18:02',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'நீங்கள் மற்றொரு மொழிபெயர்ப்பு விசையை தேர்வு செய்ய வேண்டும்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:25',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'பயனரின் தற்போதைய தேதி மற்றும் நேரத்தை நிகழ்த்தவும். நீங்கள் முன்னணி சந்திப்புகள் அல்லது முக்கிய நிகழ்வுகள் போன்ற கூடுதல் தகவல்களை முதலீடு செய்யவும்.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:38:37',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'இணையத் தேடல் பட்டையை மறைப்பதற்கு அனுமதி அளிக்கவும், இது சுருக்கமான இடைமுகத்தை உருவாக்குகிறது. பயனர் CTRL+K அல்லது COMMAND+K ஐப் பயன்படுத்தி அதை உடனடி முறையில் திறக்கலாம். இந்த நடத்தை நாட்டப்படுத்தலாம்.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:34:25',
+            'protected' => false,
+        ],
     ],
 ];

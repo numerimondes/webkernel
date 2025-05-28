@@ -35,7 +35,7 @@ use ParseError;
  * - Plugin system for new translation engines
  */
 
-class TranslationHub extends Command
+class TranslationHubCopy extends Command
 {
     // ==========================================
     // CONFIGURATION CONSTANTS
@@ -808,8 +808,12 @@ class TranslationHub extends Command
             }
         }
 
-        // Display comprehensive translation statistics instead of simple message
-        $this->displayTranslationStatistics();
+        $this->output('info', "Translation completed!");
+        $this->output('info', "Successful: {$successful}");
+
+        if ($failed > 0) {
+            $this->output('warning', "Failed: {$failed}");
+        }
 
         $this->addVisualSeparator();
 

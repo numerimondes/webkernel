@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:42',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'ඔබට වෙනත් පරිවර්තන යතුරක් තෝරා ගැනීම වඩාත්ම අවශ්‍ය වේ.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:08',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:37:36',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:33:17',
+            'protected' => false,
+        ],
     ],
 ];

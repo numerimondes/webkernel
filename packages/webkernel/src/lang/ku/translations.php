@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:59',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Divê tu mifteyeke cuda ya wergerê hilbijêrî.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:28',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Dîrok û dema xwe ya heyî nîşanî bikarhêner bide. Hûn dikarin hûrgilîyên zêde jî lê zêde bikin, wekî civînên li pêş an jî bûyerên girîng.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:47',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:27:18',
+            'protected' => false,
+        ],
     ],
 ];

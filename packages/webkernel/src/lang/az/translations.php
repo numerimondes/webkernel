@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:16:00',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Başqa bir tərcümə açarını seçməlisiniz',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:09:21',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'İstifadəçinin cari tarixini və zamanını göstər. Eyni zamanda, yaxınlaşan görüşlər və ya vacib hadisələr kimi əlavə məlumatlar da əlavə edə bilərsən.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:31:05',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'İnterfeysi sadələşdirmək üçün axtarış çubuğunu gizlətməyə icazə verin. İstifadəçilər hələ də CTRL+K və ya COMMAND+K istifadə edərək onu dərhal aça bilərlər. Bu davranış fərdiləşdirilə bilər.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:21:05',
+            'protected' => false,
+        ],
     ],
 ];

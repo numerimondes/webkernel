@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:49',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Waa inaad doorataa furaha turjumaadda kale',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:14',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Muuji waqtiga iyo taariikhda hadda ee isticmaaleha. Sidoo kale waxaad ku dari kartaa macluumaad dheeraad ah, sida kulamada soo socda ama dhacdooyinka muhiimka ah.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:37:44',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'U oggolow in baararka raadinta la qariyo si loo fududeeyo isdhexgalka. Isticmaalayaasha wali waxay si dhaqso ah u furi karaan iyadoo la adeegsanayo CTRL+K ama COMMAND+K. dhaqankan waa la habeyn karaa.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:33:29',
+            'protected' => false,
+        ],
     ],
 ];

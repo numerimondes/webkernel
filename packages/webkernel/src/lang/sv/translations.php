@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:57',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Du måste välja en annan översättningsnyckel',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:11:21',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Display the user\'s current date and time. You can also include additional information, such as upcoming meetings or important events.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:38:32',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Tillåt dölja sökfältet för att förenkla gränssnittet. Användare kan fortfarande öppna det omedelbart med CTRL+K eller COMMAND+K. Detta beteende är anpassningsbart.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:34:18',
+            'protected' => false,
+        ],
     ],
 ];

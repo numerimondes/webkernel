@@ -104,5 +104,26 @@ return [
             'generated_at' => '2025-05-28 12:17:01',
             'protected' => false,
         ],
+        'form_translation_key_exists_notification_title' => [
+            'label' => 'Jūs turite pasirinkti kitą vertimo raktą',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:10:30',
+            'protected' => false,
+        ],
+        'current_user_datetime_desc' => [
+            'label' => 'Rodykite vartotojo dabartinę datą ir laiką. Taip pat galite įtraukti papildomą informaciją, pvz., artėjančius susitikimus ar svarbius įvykius.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 14:34:49',
+            'protected' => false,
+        ],
+        'search_hide_desc' => [
+            'label' => 'Allow hiding the search bar to simplify the interface. Users can still open it instantly using CTRL+K or COMMAND+K. This behavior is customizable.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-28 18:28:04',
+            'protected' => false,
+        ],
     ],
 ];
