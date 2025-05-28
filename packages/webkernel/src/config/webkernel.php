@@ -24,8 +24,6 @@
 
 return [
 
-
-
     /*
     |--------------------------------------------------------------------------
     | Webkernel Laravel Core Functionalities
@@ -37,27 +35,32 @@ return [
     */
 
     'prohibit_commands' => [
-        'db:wipe' => [
-            'class' => \Illuminate\Database\Console\WipeCommand::class,
-            'prohibited' => false,
-        ],
-        'migrate:fresh' => [
-            'class' => \Illuminate\Database\Console\Migrations\FreshCommand::class,
-            'prohibited' => false,
-        ],
-        'migrate:reset' => [
-            'class' => \Illuminate\Database\Console\Migrations\ResetCommand::class,
-            'prohibited' => false,
-        ],
-        'migrate:refresh' => [
-            'class' => \Illuminate\Database\Console\Migrations\RefreshCommand::class,
-            'prohibited' => false,
-        ],
-        'migrate:rollback' => [
-            'class' => \Illuminate\Database\Console\Migrations\RollbackCommand::class,
-            'prohibited' => false,
+        'key_to_force_destructive_command' => ['8139fa70afa71edf57afc9428acbdc3a440c0a36'],
+
+        'commands' => [
+            'db:wipe' => [
+                'class' => \Illuminate\Database\Console\WipeCommand::class,
+                'prohibited' => true,
+            ],
+            'migrate:fresh' => [
+                'class' => \Illuminate\Database\Console\Migrations\FreshCommand::class,
+                'prohibited' => true,
+            ],
+            'migrate:reset' => [
+                'class' => \Illuminate\Database\Console\Migrations\ResetCommand::class,
+                'prohibited' => true,
+            ],
+            'migrate:refresh' => [
+                'class' => \Illuminate\Database\Console\Migrations\RefreshCommand::class,
+                'prohibited' => true,
+            ],
+            'migrate:rollback' => [
+                'class' => \Illuminate\Database\Console\Migrations\RollbackCommand::class,
+                'prohibited' => true,
+            ],
         ],
     ],
+
 
 
     /*

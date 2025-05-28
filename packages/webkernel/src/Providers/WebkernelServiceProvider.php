@@ -12,17 +12,14 @@ use Webkernel\Providers\WebkernelCommandServiceProvider;
 use Webkernel\Providers\WebkernelHelperServiceProvider;
 use Webkernel\Providers\WebkernelRouteServiceProvider;
 use Webkernel\Providers\WebkernelLivewireServiceProvider;
-use Webkernel\Providers\CommandProtectionServiceProvider;
+use Webkernel\Providers\WebkernelConfigServiceProvider;
 use Webkernel\Providers\WebkernelUserServiceProvider;
 use Webkernel\Providers\WebkernelFactoryServiceProvider;
 use Webkernel\Providers\WebkernelPoliciesServiceProvider;
 use Webkernel\Providers\WebkernelWidgetServiceProvider;
 
-use Webkernel\Traits\Configurable as GlobalWebkernelConfigurable;
-
 class WebkernelServiceProvider extends ServiceProvider
 {
-    use GlobalWebkernelConfigurable;
 
     /**
      * WebkernelServiceProvider constructor.
@@ -30,7 +27,6 @@ class WebkernelServiceProvider extends ServiceProvider
     public function __construct(Application $app)
     {
         parent::__construct($app);
-        $this->initializeConfig(); // from GlobalWebkernelConfigurable
     }
 
     /**
@@ -47,7 +43,7 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelLivewireServiceProvider::class);
         $this->app->register(WebkernelPoliciesServiceProvider::class);
         $this->app->register(WebkernelWidgetServiceProvider::class);
-        $this->app->register(CommandProtectionServiceProvider::class);
+        $this->app->register(WebkernelConfigServiceProvider::class);
     }
 
     /**

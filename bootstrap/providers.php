@@ -13,4 +13,5 @@ return [
     Webkernel\Providers\WebkernelServiceProvider::class,
     Webkernel\Providers\WebkernelViewServiceProvider::class,
     Webkernel\Providers\WebkernelWebhookServiceProvider::class,
+    Webkernel\Providers\WebKernelConfigServiceProvider::class,
 ];
