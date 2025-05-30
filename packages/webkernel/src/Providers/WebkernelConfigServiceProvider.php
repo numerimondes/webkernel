@@ -89,4 +89,6 @@ class WebkernelConfigServiceProvider extends ServiceProvider
             return isset($settings['prohibited']) && $settings['prohibited'];
         }));
     }
+
+
 }

@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:33:25',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Opremljeno z',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:43',
+            'protected' => false,
+        ],
     ],
 ];

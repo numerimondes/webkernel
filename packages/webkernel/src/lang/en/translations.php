@@ -117,5 +117,12 @@ return [
             'generated_at' => '2025-05-28 18:20:57',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Powered by',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:34:32',
+            'protected' => false,
+        ],
     ],
 ];

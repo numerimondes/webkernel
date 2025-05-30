@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:34:15',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Покренуто од',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:50',
+            'protected' => false,
+        ],
     ],
 ];

@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:29:35',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'ശക്തിപ്പടുത്തിയത്',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:35:55',
+            'protected' => false,
+        ],
     ],
 ];

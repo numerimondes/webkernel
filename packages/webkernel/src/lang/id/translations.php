@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:24:53',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Didukung oleh',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:35:24',
+            'protected' => false,
+        ],
     ],
 ];

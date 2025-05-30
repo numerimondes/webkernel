@@ -11,7 +11,6 @@ use Filament\Forms\Form;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 
-
 $helpersPath = __DIR__;
 $excludedFile = 'no-file-excluded-for-the-moment.php';
 

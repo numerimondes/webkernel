@@ -38,7 +38,6 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelMigrationServiceProvider::class);
         $this->app->register(WebkernelViewServiceProvider::class);
         $this->app->register(WebkernelCommandServiceProvider::class);
-        $this->app->register(WebkernelHelperServiceProvider::class);
         $this->app->register(WebkernelRouteServiceProvider::class);
         $this->app->register(WebkernelLivewireServiceProvider::class);
         $this->app->register(WebkernelPoliciesServiceProvider::class);

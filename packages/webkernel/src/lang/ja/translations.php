@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:25:44',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => '提供元',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:35:29',
+            'protected' => false,
+        ],
     ],
 ];

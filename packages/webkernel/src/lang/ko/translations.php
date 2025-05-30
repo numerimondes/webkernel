@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:26:34',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => '구동됨 by',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:35:36',
+            'protected' => false,
+        ],
     ],
 ];

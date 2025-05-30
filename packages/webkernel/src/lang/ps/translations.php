@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:32:24',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'په ځواک کې',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:22',
+            'protected' => false,
+        ],
     ],
 ];

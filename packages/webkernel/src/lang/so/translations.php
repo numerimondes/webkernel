@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:33:29',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Ku shaqeeya',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:45',
+            'protected' => false,
+        ],
     ],
 ];

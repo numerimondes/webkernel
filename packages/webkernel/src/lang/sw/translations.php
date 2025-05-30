@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:34:22',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Imepitishwa na',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:58',
+            'protected' => false,
+        ],
     ],
 ];

@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:36:05',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Asoslangan',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:37:17',
+            'protected' => false,
+        ],
     ],
 ];

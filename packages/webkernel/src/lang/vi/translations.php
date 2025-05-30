@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:36:08',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Được hỗ trợ bởi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:37:19',
+            'protected' => false,
+        ],
     ],
 ];

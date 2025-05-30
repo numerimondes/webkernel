@@ -7,8 +7,9 @@ use Illuminate\Support\Facades\File;
 class UpdateUserModel extends Command
 {
     protected $signature = 'webkernel:install-update-user-model';
-    protected $description = 'Webkernel Update User Model with Adding UserExtensions (Trait)';
+    protected $description = 'Webkernel Update User Model with Adding UserResolver (Dynamic Trait Loading)';
     protected $hidden = true;
+
     public function __construct()
     {
         parent::__construct();
@@ -18,11 +19,34 @@ class UpdateUserModel extends Command
     {
         $filePath = base_path('app/Models/User.php');
 
-        // Define what needs to be inserted
-        $headCode = 'use Webkernel\Models\Traits\UserExtensions;';
-        $insideClassCode = 'use UserExtensions; /** Do not remove this line to use Webkernel Capabilities */';
+        // Define what needs to be inserted with the new UserResolver trait
+        $headCode = 'use Webkernel\Traits\UserExtensions as OnlyGetTheActivePackageUserTrait;';
+        $insideClassCode = 'use OnlyGetTheActivePackageUserTrait; /** Do not remove this line to use Webkernel Capabilities */';
 
         $this->injectCodeIntoLaravelModelFile($filePath, $headCode, $insideClassCode);
+
+        // Show current configuration
+        $this->showCurrentConfiguration();
+    }
+
+    /**
+     * Show current active package configuration
+     */
+    protected function showCurrentConfiguration(): void
+    {
+        $activePackage = config('webkernel.translation.user_extensions.active_package', 'webkernel');
+        $extensions = config('webkernel.translation.user_extensions.extensions', []);
+
+        $this->info("\n📋 Current Webkernel Configuration:");
+        $this->line("   Active Package: {$activePackage}");
+
+        if (isset($extensions[$activePackage])) {
+            $description = $extensions[$activePackage]['description'] ?? 'No description';
+            $this->line("   Description: {$description}");
+        }
+
+        $this->line("\n💡 To change the active package, update config/webkernel.php");
+        $this->line("   Available packages: " . implode(', ', array_keys($extensions)));
     }
 
     /**
@@ -44,6 +68,13 @@ class UpdateUserModel extends Command
         $contents = File::get($filePath);
         $originalContents = $contents;
         $modified = false;
+
+        // Remove old UserExtensions references if they exist
+        $contents = $this->removeOldUserExtensions($contents);
+        if ($contents !== $originalContents) {
+            $modified = true;
+            $this->info("[🔄] Removed old UserExtensions references");
+        }
 
         // Process the head code (import statements)
         if (!empty($headCode) && strpos($contents, $headCode) === false) {
@@ -78,6 +109,27 @@ class UpdateUserModel extends Command
         } else {
             $this->info("[✓] No modifications needed for {$filePath}");
         }
+    }
+
+    /**
+     * Remove old UserExtensions and UserResolver references
+     *
+     * @param string $contents File contents
+     * @return string Modified contents
+     */
+    protected function removeOldUserExtensions(string $contents): string
+    {
+        // Remove old import statements
+        $contents = preg_replace('/use\s+Webkernel\\\\Models\\\\Traits\\\\UserExtensions;\s*\n/m', '', $contents);
+        $contents = preg_replace('/use\s+Webkernel\\\\Traits\\\\UserExtensions;\s*\n/m', '', $contents);
+        $contents = preg_replace('/use\s+Webkernel\\\\Traits\\\\UserResolver[^;]*;\s*\n/m', '', $contents);
+
+        // Remove old use statements inside class
+        $contents = preg_replace('/\s*use\s+UserExtensions;\s*\/\*\*[^*]*\*\/\s*\n/m', '', $contents);
+        $contents = preg_replace('/\s*use\s+UserResolver;\s*\/\*\*[^*]*\*\/\s*\n/m', '', $contents);
+        $contents = preg_replace('/\s*use\s+WebkernelUserResolverTrait;\s*\/\*\*[^*]*\*\/\s*\n/m', '', $contents);
+
+        return $contents;
     }
 
     /**

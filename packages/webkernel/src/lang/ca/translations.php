@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:22:39',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Impulsat per',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:34:49',
+            'protected' => false,
+        ],
     ],
 ];

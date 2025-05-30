@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:33:21',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Poháňané',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:40',
+            'protected' => false,
+        ],
     ],
 ];

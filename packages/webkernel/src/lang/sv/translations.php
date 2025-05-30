@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:34:18',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Drivs av',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:54',
+            'protected' => false,
+        ],
     ],
 ];

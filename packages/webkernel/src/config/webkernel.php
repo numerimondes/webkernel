@@ -23,46 +23,6 @@
 */
 
 return [
-
-    /*
-    |--------------------------------------------------------------------------
-    | Webkernel Laravel Core Functionalities
-    |--------------------------------------------------------------------------
-    |
-    | This section configures core Laravel functionalities modified by Webkernel,
-    | such as prohibiting destructive commands to protect the application.
-    |
-    */
-
-    'prohibit_commands' => [
-        'key_to_force_destructive_command' => ['8139fa70afa71edf57afc9428acbdc3a440c0a36'],
-
-        'commands' => [
-            'db:wipe' => [
-                'class' => \Illuminate\Database\Console\WipeCommand::class,
-                'prohibited' => true,
-            ],
-            'migrate:fresh' => [
-                'class' => \Illuminate\Database\Console\Migrations\FreshCommand::class,
-                'prohibited' => true,
-            ],
-            'migrate:reset' => [
-                'class' => \Illuminate\Database\Console\Migrations\ResetCommand::class,
-                'prohibited' => true,
-            ],
-            'migrate:refresh' => [
-                'class' => \Illuminate\Database\Console\Migrations\RefreshCommand::class,
-                'prohibited' => true,
-            ],
-            'migrate:rollback' => [
-                'class' => \Illuminate\Database\Console\Migrations\RollbackCommand::class,
-                'prohibited' => true,
-            ],
-        ],
-    ],
-
-
-
     /*
     |--------------------------------------------------------------------------
     | Webkernel Repository & System Information
@@ -82,6 +42,90 @@ return [
         'license' => 'Mozilla Public License (MPL)',
         'repository' => 'https://github.com/numerimondes/webkernel',
     ],
+
+     /*
+        |--------------------------------------------------------------------------
+        | User Model Extensions Configuration
+        |--------------------------------------------------------------------------
+        |
+        | Configuration for User model extensions across different packages.
+        | Only one package can be active per application to avoid conflicts.
+        |
+        */
+
+        'user_extensions' => [
+            /*
+            |--------------------------------------------------------------------------
+            | Active User Extension Package
+            |--------------------------------------------------------------------------
+            |
+            | Determines which package is active for extending the User model.
+            | Only one extension can be active per application.
+            |
+            */
+            'active_package' => 'webkernel', // 'webkernel' | 'solecoles' | 'autre_package'
+
+            /*
+            |--------------------------------------------------------------------------
+            | User Model Extensions per Package
+            |--------------------------------------------------------------------------
+            |
+            | Configuration of User model extensions for each package.
+            | Each package can define its own traits, relations, etc.
+            |
+            */
+            'extensions' => [
+                'webkernel' => [
+                    'trait' => \Webkernel\Traits\UserExtensions::class,
+                    'description' => 'Base webkernel user extensions with username, mobile, language, etc.',
+                ],
+
+                // School application
+
+                // 'solecoles' => [
+                //     'trait' => \Solecoles\Traits\UserExtensions::class,
+                //     'description' => 'School-specific user extensions with student_id, grades, enrollment, etc.',
+                //     'inherits' => 'webkernel', // Inherits webkernel functionalities
+                // ],
+
+                // Other packages...
+
+                // 'autre_package' => [
+                //     'trait' => \AutrePackage\Traits\UserExtensions::class,
+                //     'description' => 'Custom user extensions for specific application needs.',
+                //     'inherits' => 'webkernel',
+                // ],
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Migration Priority
+            |--------------------------------------------------------------------------
+            |
+            | Determines in which order migrations should be executed.
+            | Priority packages apply their migrations first.
+            |
+            */
+            'migration_priority' => [
+                'webkernel',
+                'autre_package',
+                // Other packages...
+            ],
+
+            /*
+            |--------------------------------------------------------------------------
+            | Conflict Resolution
+            |--------------------------------------------------------------------------
+            |
+            | How to resolve conflicts between packages.
+            |
+            */
+            'conflict_resolution' => [
+                'fillable_merge_strategy' => 'merge', // 'merge' | 'override' | 'ignore'
+                'trait_merge_strategy' => 'stack',    // 'stack' | 'override' | 'ignore'
+                'cast_merge_strategy' => 'merge',     // 'merge' | 'override' | 'ignore'
+            ],
+        ],
 
     /*
     |--------------------------------------------------------------------------
@@ -162,8 +206,8 @@ return [
         'priority' => [
             'database',        // Database translations (highest priority)
             'app',            // app/lang files
-            'other_packages', // Other package translation files
             'webkernel',      // packages/webkernel/src/lang files
+            'other_packages', // Other package translation files
         ],
 
         /*
@@ -558,4 +602,27 @@ return [
         'technical_term_handling' => false,
         'batch_optimization' => false,
     ],
+
+    /*
+    |--------------------------------------------------------------------------
+    | Resource Layouts (Convention-based)
+    |--------------------------------------------------------------------------
+    |
+    | Layouts are now automatically discovered using convention:
+    | packages/{package}/src/Layouts/{Resource}/{Layout}Layout.php
+    |
+    | Usage in Resource classes:
+    | public static string $webkernel_layout = 'avatar';
+    |
+    | This will automatically load:
+    | Webkernel\Layouts\User\AvatarLayout (for webkernel package)
+    | Solecoles\Layouts\User\AvatarLayout (for solecoles package)
+    |
+    | Available layouts:
+    | - default: DefaultLayout
+    | - tabs: TabsLayout
+    | - popup: PopupLayout
+    | - avatar: AvatarLayout (with 3-part structure)
+    |
+    */
 ];

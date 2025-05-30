@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:30:53',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'Drevet av',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:36:09',
+            'protected' => false,
+        ],
     ],
 ];

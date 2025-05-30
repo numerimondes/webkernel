@@ -54,3 +54,4 @@ Route::middleware(['auth'])->get('lang/{lang}', function ($lang) {
     // Redirect the user back to the previous page
     return redirect()->back(); // Redirect to the previous page
 });
+

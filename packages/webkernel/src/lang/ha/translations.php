@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:22:36',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'An ƙarfafa ta hanyar',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:34:46',
+            'protected' => false,
+        ],
     ],
 ];

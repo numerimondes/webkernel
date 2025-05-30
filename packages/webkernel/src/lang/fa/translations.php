@@ -125,5 +125,12 @@ return [
             'generated_at' => '2025-05-28 18:24:24',
             'protected' => false,
         ],
+        'powered_by' => [
+            'label' => 'تحت قدرت توسط',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-05-30 13:35:06',
+            'protected' => false,
+        ],
     ],
 ];

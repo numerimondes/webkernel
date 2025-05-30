@@ -2959,6 +2959,20 @@ class TranslationHub extends Command
     }
 
 
+    /**
+     * Draw a colored separator line in the console
+     *
+     * @param string $text The text to display in the separator (optional)
+     * @param string $color The color for the separator (e.g., 'cyan')
+     */
+    private function drawSeparator(string $text = "", string $color = "white")
+    {
+        $separator = str_repeat("═", 80);
+        if ($text) {
+            $this->line("<fg={$color}>{$text}</>");
+        }
+        $this->line("<fg={$color}>{$separator}</>");
+    }
 
     /**
      * Parse translated result using the >)>>>> (...) <<<<(< universal marker
