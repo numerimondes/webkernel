@@ -9,11 +9,11 @@ use Illuminate\Notifications\Notifiable;
 
 
 
-use Webkernel\Traits\UserExtensions as WebkernelUserExtensions;
+use Webkernel\Traits\UserExtensions as OnlyGetTheActivePackageUserTrait;
 
 class User extends Authenticatable
 {
-    use WebkernelUserExtensions; /** Do not remove this line to use Webkernel Capabilities */
+    use OnlyGetTheActivePackageUserTrait; /** Do not remove this line to use Webkernel Capabilities */
     /** @use HasFactory<\Database\Factories\UserFactory> */
     use HasFactory, Notifiable;
 

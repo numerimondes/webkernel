@@ -6,7 +6,6 @@ return [
     Webkernel\Providers\Filament\SystemPanelProvider::class,
     Webkernel\Providers\WebkernelBladeServiceProvider::class,
     Webkernel\Providers\WebkernelCommandServiceProvider::class,
-    Webkernel\Providers\WebkernelHelperServiceProvider::class,
     Webkernel\Providers\WebkernelMigrationServiceProvider::class,
     Webkernel\Providers\WebkernelRenderHooksServiceProvider::class,
     Webkernel\Providers\WebkernelRouteServiceProvider::class,
