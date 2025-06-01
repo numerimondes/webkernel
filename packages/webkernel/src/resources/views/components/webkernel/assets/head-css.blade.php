@@ -1,14 +1,35 @@
 @push('styles')
 <style>
-    aside.fi-main-sidebar {
+    :dir(ltr) aside.fi-main-sidebar {
         border-right: 0.1em solid rgba(var(--gray-200), 1) !important;
+        border-left: none !important;
     }
-    .dark aside.fi-main-sidebar {
+
+    :dir(ltr).dark aside.fi-main-sidebar {
         border-right-color: rgba(var(--gray-800), 1) !important;
+        border-left-color: transparent !important;
     }
-    .dark.fi-topbar nav {
+
+    :dir(ltr).dark.fi-topbar nav {
         border-right-color: rgba(var(--gray-800), 1) !important;
+        border-left-color: transparent !important;
     }
+
+    :dir(rtl) aside.fi-main-sidebar {
+        border-left: 0.1em solid rgba(var(--gray-200), 1) !important;
+        border-right: none !important;
+    }
+
+    :dir(rtl).dark aside.fi-main-sidebar {
+        border-left-color: rgba(var(--gray-800), 1) !important;
+        border-right-color: transparent !important;
+    }
+
+    :dir(rtl).dark.fi-topbar nav {
+        border-left-color: rgba(var(--gray-800), 1) !important;
+        border-right-color: transparent !important;
+    }
+
     .fi-sidebar-header {
         background: transparent !important;
     }
@@ -27,7 +48,7 @@
     .fi-modal-close-overlay {
         background-color: rgba(0, 0, 0, 0) !important;
     }
-    /* Full-screen loader overlay */
+
     #overlay-loader {
         position: fixed;
         top: 0;
@@ -75,6 +96,10 @@
             transform: rotate(360deg);
         }
     }
+</style>
+
+<style>
+
 </style>
 @endpush
 

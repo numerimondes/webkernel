@@ -43,17 +43,27 @@ if (!function_exists('webkernel_include')) {
     }
 }
 
-if (!function_exists('customizable_render_hook_view')) {
-    function customizable_render_hook_view(string $view, array $data = []): \Illuminate\Contracts\View\View
+if (!function_exists('safe_render_hook_view')) {
+    function safe_render_hook_view(string $viewName, array $data = []): string
     {
-        // Convert name to Laravel path
-        // Ex: webkernel::components.webkernel.ui.atoms.search-hide => components.webkernel.ui.atoms.search-hide
-        $customView = str_replace('webkernel::', '', $view);
+        try {
+            // webkernel::components.webkernel.ui.atoms.search-hide === components.webkernel.ui.atoms.search-hide
+            $customView = str_replace('webkernel::', '', $viewName);
 
-        if (view()->exists($customView)) {
-            return view($customView, $data);
+            if (view()->exists($customView)) {
+                return view($customView, $data)->render();
+            }
+
+            if (view()->exists($viewName)) {
+                return view($viewName, $data)->render();
+            }
+
+            \Log::warning("RenderHook view not found: {$viewName} (tried custom: {$customView})");
+            return '';
+
+        } catch (\Throwable $e) {
+            \Log::error("Error rendering renderHook view '{$viewName}': " . $e->getMessage());
+            return '';
         }
-
-        return view($view, $data); // fallback to the original package view
     }
 }
