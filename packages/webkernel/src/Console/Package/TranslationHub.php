@@ -460,40 +460,66 @@ class TranslationHub extends Command
 
     private function selectTargetDirectory()
     {
-        $locations = [
-            'packages/webkernel/src/lang',
-            'app/lang',
-            'database'
-        ];
+        $locations = [];
+
+        $webkernelLangDir = 'packages/webkernel/src/lang';
+        if (is_dir(base_path($webkernelLangDir))) {
+            $locations[$webkernelLangDir] = $webkernelLangDir;
+        }
+
+        $packagesDir = base_path('packages');
+        if (is_dir($packagesDir)) {
+            $packages = scandir($packagesDir);
+            foreach ($packages as $package) {
+                if ($package === '.' || $package === '..' || $package === 'webkernel') {
+                    continue;
+                }
+                $langDir = "packages/{$package}/src/lang";
+                $fullPath = base_path($langDir);
+                if (is_dir($fullPath)) {
+                    $locations[$langDir] = $langDir;
+                }
+            }
+        }
+
+        $locations['app/lang'] = 'app/lang';
+        $locations['database'] = 'database (webkernel_lang_words table via Eloquent)';
 
         $this->output('info', 'Available translation locations:');
-        $this->output('info', '  [1] packages/webkernel/src/lang');
-        $this->output('info', '  [2] app/lang');
-        $this->output('info', '  [3] database (webkernel_lang_words table via Eloquent)');
+        $indexedLocations = [];
+        $index = 1;
+        foreach ($locations as $key => $description) {
+            $this->output('info', "  [{$index}] {$description}");
+            $indexedLocations[$index] = $key;
+            $index++;
+        }
 
         $choice = $this->askWithValidation(
             'Choose location number',
-            function($input) { return in_array($input, ['1', '2', '3']); },
-            'Please enter 1, 2, or 3 to select a valid translation location.',
+            function ($input) use ($indexedLocations) {
+                return is_numeric($input) && isset($indexedLocations[intval($input)]);
+            },
+            'Please enter a valid location number (e.g., 1, 2, 3).',
             '1'
         );
 
-        $selectedIndex = intval($choice) - 1;
+        if ($choice === null) {
+            $this->output('error', 'Invalid selection. Defaulting to packages/webkernel/src/lang');
+            $choice = array_key_first($locations);
+        } else {
+            $choice = $indexedLocations[intval($choice)];
+        }
 
-        if ($selectedIndex === 2) {
+        if ($choice === 'database') {
             $this->baseDir = 'database';
             $this->output('info', 'Target location: Database (webkernel_lang_words table)');
             $this->output('info', 'Model: Webkernel\\Models\\LanguageTranslation');
             $this->output('warning', 'Database insertion temporarily disabled - structure changes pending');
         } else {
-            if (!isset($locations[$selectedIndex]) || $selectedIndex < 0) {
-                $selectedIndex = 0;
-            }
-            $this->baseDir = base_path($locations[$selectedIndex]);
+            $this->baseDir = base_path($choice);
             $this->output('info', "Target location: {$this->baseDir}");
         }
     }
-
     private function initializeBackupDir()
     {
         if (!$this->config['protection']['auto_backup']) {
