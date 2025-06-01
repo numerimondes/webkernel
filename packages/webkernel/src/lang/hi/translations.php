@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:14',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'बग की रिपोर्ट करें',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:11',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'अक्सर पूछे जाने वाले प्रश्न (FAQ)',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:26',
+            'protected' => false,
+        ],
     ],
 ];

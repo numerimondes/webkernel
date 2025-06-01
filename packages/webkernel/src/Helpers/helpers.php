@@ -12,10 +12,14 @@ use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 
 $helpersPath = __DIR__;
-$excludedFile = 'no-file-excluded-for-the-moment.php';
 
-foreach (glob($helpersPath . '/*.php') as $file) {
-    if (basename($file) !== $excludedFile) {
+$excludedFiles = [
+    basename(__FILE__),
+    'no-file-excluded-for-the-moment.php',
+];
+
+foreach (glob("$helpersPath/*.php") as $file) {
+    if (!in_array(basename($file), $excludedFiles)) {
         require_once $file;
     }
 }

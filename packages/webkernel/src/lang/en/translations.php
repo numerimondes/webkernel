@@ -124,5 +124,19 @@ return [
             'generated_at' => '2025-05-30 13:34:32',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Report Bug',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:36:33',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'FAQ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:46:49',
+            'protected' => false,
+        ],
     ],
 ];

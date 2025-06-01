@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:08',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Hata Raporla',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:31',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'SSS',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:29',
+            'protected' => false,
+        ],
     ],
 ];

@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:34',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'រាយការណ៍កំហុស',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:27',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'សូមអតិថិជនស្រឡាញ់',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:25',
+            'protected' => false,
+        ],
     ],
 ];

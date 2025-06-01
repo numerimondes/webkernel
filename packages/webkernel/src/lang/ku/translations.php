@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:39',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Xetayê Rapor Bike',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:31',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Pirsên gişpirsî',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:29',
+            'protected' => false,
+        ],
     ],
 ];

@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:57',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Буга мэдээлэх',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:42',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Тусламжийн лавлах',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:40',
+            'protected' => false,
+        ],
     ],
 ];

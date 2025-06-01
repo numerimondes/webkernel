@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:32',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Raportează o eroare',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:05',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Întrebări frecvente',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:01',
+            'protected' => false,
+        ],
     ],
 ];

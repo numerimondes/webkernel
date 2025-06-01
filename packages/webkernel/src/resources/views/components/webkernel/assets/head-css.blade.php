@@ -1,5 +1,26 @@
 @push('styles')
 <style>
+
+
+@media (min-width: 768px) {
+    padding-left: 10 !important;
+    padding-right: 10 !important;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+}
+
+@media (min-width: 1024px) {
+    padding-left: 1% !important;
+    padding-right: 10 !important;
+    padding-top: 2rem;
+    padding-bottom: 2rem;
+
+}
+
+</style>
+
+<style>
     :dir(ltr) aside.fi-main-sidebar {
         border-right: 0.1em solid rgba(var(--gray-200), 1) !important;
         border-left: none !important;

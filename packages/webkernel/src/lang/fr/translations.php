@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:34:37',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Signaler un bug',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:36:37',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'FAQ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:46:53',
+            'protected' => false,
+        ],
     ],
 ];

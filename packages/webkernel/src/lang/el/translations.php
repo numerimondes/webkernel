@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:00',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Αναφέρω σφάλμα',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:36:59',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'ΣΥΧΝΕΣ ΕΡΩΤΗΣΕΙΣ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:14',
+            'protected' => false,
+        ],
     ],
 ];

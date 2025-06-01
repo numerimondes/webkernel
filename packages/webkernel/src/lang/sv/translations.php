@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:54',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Rapportera bugg',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:22',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Vanliga frågor',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:19',
+            'protected' => false,
+        ],
     ],
 ];

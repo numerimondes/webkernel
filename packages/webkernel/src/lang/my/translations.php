@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:02',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'ပြန်ကြားမှုမရှိပါ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:46',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'မေးခွန်းများနှင့် ဖြေကြားမှုများ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:45',
+            'protected' => false,
+        ],
     ],
 ];

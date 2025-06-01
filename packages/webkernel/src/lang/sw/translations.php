@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:58',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Ripoti Hitilafu',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:25',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Maswali ya Mara kwa Mara',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:21',
+            'protected' => false,
+        ],
     ],
 ];

@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:05',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'รายงานข้อผิดพลาด',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:30',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'คำถามที่พบบ่อย',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:26',
+            'protected' => false,
+        ],
     ],
 ];

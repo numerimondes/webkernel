@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:17',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Xato haqida hisobot berish',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:38',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Tez-tez beriladigan savollar (FAQ)',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:35',
+            'protected' => false,
+        ],
     ],
 ];

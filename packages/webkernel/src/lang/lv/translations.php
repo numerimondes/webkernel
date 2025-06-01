@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:49',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Ziņot par kļūdu',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:35',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Biežāk uzdotie jautājumi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:33',
+            'protected' => false,
+        ],
     ],
 ];

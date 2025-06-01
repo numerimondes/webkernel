@@ -1,0 +1,66 @@
+// packages/webkernel-website-builder/src/constants/Application.php
+namespace WebkernelWebsiteBuilder\constants;
+
+class Application
+{
+    const WEBSITE_BUILDER_VERSION = '0.0.2';
+    const PACKAGE_NAME = 'webkernel-website-builder';
+
+    /**
+     * Get package name
+     */
+    public static function getPackageName(): string
+    {
+        return self::PACKAGE_NAME;
+    }
+
+    /**
+     * Get package version
+     */
+    public static function getVersion(): string
+    {
+        return self::WEBSITE_BUILDER_VERSION;
+    }
+
+    /**
+     * Get package dependencies
+     */
+    public static function getDependencies(): array
+    {
+        return ['webkernel'];
+    }
+}
+
+// ============================================
+// packages/webkernel-video-tools/src/constants/Application.php
+namespace WebkernelVideoTools\constants;
+
+class Application
+{
+    const VIDEO_TOOLS_VERSION = '0.0.1';
+    const PACKAGE_NAME = 'webkernel-video-tools';
+
+    /**
+     * Get package name
+     */
+    public static function getPackageName(): string
+    {
+        return self::PACKAGE_NAME;
+    }
+
+    /**
+     * Get package version
+     */
+    public static function getVersion(): string
+    {
+        return self::VIDEO_TOOLS_VERSION;
+    }
+
+    /**
+     * Get package dependencies
+     */
+    public static function getDependencies(): array
+    {
+        return ['webkernel'];
+    }
+}

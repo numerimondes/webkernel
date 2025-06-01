@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:34:46',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Rahoton Kuskure',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:36:46',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'TAMBAYOYI DA AKE YAWAN YI',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:01',
+            'protected' => false,
+        ],
     ],
 ];

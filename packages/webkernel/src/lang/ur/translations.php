@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:14',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'کیڑے کی رپورٹ کریں',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:36',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'عمومی سوالات',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:34',
+            'protected' => false,
+        ],
     ],
 ];

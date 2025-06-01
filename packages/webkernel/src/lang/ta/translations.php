@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:02',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'பிழையை அறிவிக்கவும்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:27',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'வழிமுறைகள்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:24',
+            'protected' => false,
+        ],
     ],
 ];

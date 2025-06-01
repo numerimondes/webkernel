@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:40',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Nahlásiť chybu',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:12',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Často kladené otázky',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:08',
+            'protected' => false,
+        ],
     ],
 ];

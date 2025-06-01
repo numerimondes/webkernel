@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:22',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'بګ راپور ورکړئ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:01',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'پرله پسې پوښتنې',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:57',
+            'protected' => false,
+        ],
     ],
 ];

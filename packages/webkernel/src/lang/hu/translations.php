@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:19',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Hiba jelentése',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:15',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'GYIK',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:31',
+            'protected' => false,
+        ],
     ],
 ];

@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:45',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Warbixin Cillad',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:16',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Su\'aalaha Badan La Isweydiiyo',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:13',
+            'protected' => false,
+        ],
     ],
 ];

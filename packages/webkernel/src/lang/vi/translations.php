@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:37:19',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Báo cáo lỗi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:40',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Câu hỏi thường gặp',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:38',
+            'protected' => false,
+        ],
     ],
 ];

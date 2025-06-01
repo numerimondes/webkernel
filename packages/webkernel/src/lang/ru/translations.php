@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:36',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Сообщить об ошибке',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:07',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Часто задаваемые вопросы',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:03',
+            'protected' => false,
+        ],
     ],
 ];

@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:36',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => '버그 신고',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:29',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => '자주 묻는 질문(FAQ)',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:27',
+            'protected' => false,
+        ],
     ],
 ];

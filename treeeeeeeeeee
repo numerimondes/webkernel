@@ -1,0 +1,715 @@
+packages/webkernel/
+├── bin
+├── composer.json
+├── END-LICENSOR-TEMPLACE-LICENCE
+├── install.php
+└── src
+    ├── config
+    │   ├── structure.json
+    │   └── webkernel.php
+    ├── Console
+    │   ├── Commands
+    │   │   ├── HelpCommand.php
+    │   │   ├── LoadWebkernelViews.php
+    │   │   ├── TestDbCo.php
+    │   │   └── WebkernelInit.php
+    │   ├── Install
+    │   │   ├── CheckEnvironment.php
+    │   │   ├── ClearCache.php
+    │   │   ├── ComposerDependencies.php
+    │   │   ├── DatabaseSetup.php
+    │   │   ├── RegisterServiceProviders.php
+    │   │   ├── SyncComposer.php
+    │   │   ├── UpdateComposers.php
+    │   │   ├── UpdateUserModel.php
+    │   │   └── WebkernelFirstInstall.php
+    │   ├── Package
+    │   │   ├── CheckUpdate.php
+    │   │   └── TranslationHub.php
+    │   └── Scripts
+    │       └── translate-shell-my-trans.sh
+    ├── constants
+    │   ├── Application.php
+    │   └── Application-subpackage.stub
+    ├── database
+    │   ├── init_dump
+    │   │   └── webkernel_seed_settings_languages.sql
+    │   ├── migrations
+    │   │   ├── 2025_04_13_000000_alter_users_table.php
+    │   │   ├── 2025_04_14_143839_create_core_platform_settings_table.php
+    │   │   ├── 2025_04_15_092907_create_notifications_table.php
+    │   │   ├── 2025_04_15_215041_create_webkernel_lang_table.php
+    │   │   ├── 2025_04_15_215350_create_webkernel_lang_words_table.php
+    │   │   └── 2025_05_01_120123_create_render_hook_settings_table.php
+    │   └── seeders
+    │       ├── DatabaseSeeder.php
+    │       └── LanguagesSeeder.php
+    ├── Filament
+    │   ├── Clusters
+    │   │   ├── Settings
+    │   │   │   └── Resources
+    │   │   │       ├── RenderHookSettingResource
+    │   │   │       │   └── Pages
+    │   │   │       │       ├── CreateRenderHookSetting.php
+    │   │   │       │       ├── EditRenderHookSetting.php
+    │   │   │       │       ├── ListRenderHookSettings.php
+    │   │   │       │       └── ViewRenderHookSetting.php
+    │   │   │       └── RenderHookSettingResource.php
+    │   │   └── Settings.php
+    │   ├── Pages
+    │   │   ├── Auth
+    │   │   │   └── EditProfile.php
+    │   │   ├── Dashboard.php
+    │   │   └── TestPage.php
+    │   ├── Resources
+    │   │   ├── LanguageResource
+    │   │   │   ├── Pages
+    │   │   │   │   ├── CreateLanguage.php
+    │   │   │   │   ├── EditLanguage.php
+    │   │   │   │   ├── ListLanguages.php
+    │   │   │   │   └── ViewLanguage.php
+    │   │   │   └── RelationManagers
+    │   │   │       └── LanguageTranslationsRelationManager.php
+    │   │   ├── LanguageResource.php
+    │   │   ├── UserResource
+    │   │   │   ├── Pages
+    │   │   │   │   ├── CreateUser.php
+    │   │   │   │   ├── EditUser.php
+    │   │   │   │   ├── ListUsers.php
+    │   │   │   │   └── ViewUser.php
+    │   │   │   └── tailwind.config.js
+    │   │   └── UserResource.php
+    │   └── Widgets
+    │       ├── AccountWidget.php
+    │       ├── ImmediateLoadWidget.php
+    │       └── WebkernelInfoWidget.php
+    ├── Helpers
+    │   ├── helpers_datetime_helpers.php
+    │   ├── helpers_lang_translation.php
+    │   ├── helpers_packages_updater.php
+    │   ├── helpers.php
+    │   ├── helpers_resource_layout.php
+    │   └── helpers_webkernel_view_helpers.php
+    ├── Http
+    │   ├── Controllers
+    │   │   └── Controller.php
+    │   └── Middleware
+    │       └── SetLang.php
+    ├── lang
+    │   ├── ar
+    │   │   └── translations.php
+    │   ├── az
+    │   │   └── translations.php
+    │   ├── bg
+    │   │   └── translations.php
+    │   ├── bn
+    │   │   └── translations.php
+    │   ├── ca
+    │   │   └── translations.php
+    │   ├── ckb
+    │   │   └── translations.php
+    │   ├── cs
+    │   │   └── translations.php
+    │   ├── da
+    │   │   └── translations.php
+    │   ├── de
+    │   │   └── translations.php
+    │   ├── el
+    │   │   └── translations.php
+    │   ├── en
+    │   │   └── translations.php
+    │   ├── es
+    │   │   └── translations.php
+    │   ├── fa
+    │   │   └── translations.php
+    │   ├── fi
+    │   │   └── translations.php
+    │   ├── fr
+    │   │   └── translations.php
+    │   ├── ha
+    │   │   └── translations.php
+    │   ├── he
+    │   │   └── translations.php
+    │   ├── hi
+    │   │   └── translations.php
+    │   ├── hr
+    │   │   └── translations.php
+    │   ├── hu
+    │   │   └── translations.php
+    │   ├── hy
+    │   │   └── translations.php
+    │   ├── id
+    │   │   └── translations.php
+    │   ├── it
+    │   │   └── translations.php
+    │   ├── ja
+    │   │   └── translations.php
+    │   ├── ka
+    │   │   └── translations.php
+    │   ├── km
+    │   │   └── translations.php
+    │   ├── ko
+    │   │   └── translations.php
+    │   ├── ku
+    │   │   └── translations.php
+    │   ├── lt
+    │   │   └── translations.php
+    │   ├── lv
+    │   │   └── translations.php
+    │   ├── mk
+    │   │   └── translations.php
+    │   ├── ml
+    │   │   └── translations.php
+    │   ├── mn
+    │   │   └── translations.php
+    │   ├── ms
+    │   │   └── translations.php
+    │   ├── my
+    │   │   └── translations.php
+    │   ├── ne
+    │   │   └── translations.php
+    │   ├── nl
+    │   │   └── translations.php
+    │   ├── no
+    │   │   └── translations.php
+    │   ├── pa
+    │   │   └── translations.php
+    │   ├── pl
+    │   │   └── translations.php
+    │   ├── ps
+    │   │   └── translations.php
+    │   ├── pt
+    │   │   └── translations.php
+    │   ├── ro
+    │   │   └── translations.php
+    │   ├── ru
+    │   │   └── translations.php
+    │   ├── si
+    │   │   └── translations.php
+    │   ├── sk
+    │   │   └── translations.php
+    │   ├── sl
+    │   │   └── translations.php
+    │   ├── so
+    │   │   └── translations.php
+    │   ├── sq
+    │   │   └── translations.php
+    │   ├── sr
+    │   │   └── translations.php
+    │   ├── sv
+    │   │   └── translations.php
+    │   ├── sw
+    │   │   └── translations.php
+    │   ├── ta
+    │   │   └── translations.php
+    │   ├── th
+    │   │   └── translations.php
+    │   ├── tr
+    │   │   └── translations.php
+    │   ├── uk
+    │   │   └── translations.php
+    │   ├── ur
+    │   │   └── translations.php
+    │   ├── uz
+    │   │   └── translations.php
+    │   ├── vi
+    │   │   └── translations.php
+    │   ├── zh
+    │   │   └── translations.php
+    │   ├── zh_CN
+    │   │   └── translations.php
+    │   └── zh_TW
+    │       └── translations.php
+    ├── Layouts
+    │   └── User
+    │       ├── AvatarLayout.php
+    │       ├── DefaultLayout.php
+    │       ├── PopupLayout.php
+    │       └── TabsLayout.php
+    ├── Models
+    │   ├── CorePlatformSettings.php
+    │   ├── HistorySession.php
+    │   ├── Language.php
+    │   ├── LanguageTranslation.php
+    │   ├── RenderHookSetting.php
+    │   └── Session.php
+    ├── Observers
+    │   └── LanguageTranslationObserver.php
+    ├── Policies
+    │   └── RenderHookSettingPolicy.php
+    ├── Providers
+    │   ├── Filament
+    │   │   └── SystemPanelProvider.php
+    │   ├── WebkernelBladeServiceProvider.php
+    │   ├── WebkernelCommandServiceProvider.php
+    │   ├── WebkernelConfigServiceProvider.php
+    │   ├── WebkernelLivewireServiceProvider.php
+    │   ├── WebkernelMigrationServiceProvider.php
+    │   ├── WebkernelPoliciesServiceProvider.php
+    │   ├── WebkernelRenderHooksServiceProvider.php
+    │   ├── WebkernelRouteServiceProvider.php
+    │   ├── WebkernelServiceProvider.php
+    │   ├── WebkernelSysUpdateServiceProvider.php
+    │   ├── WebkernelViewServiceProvider.php
+    │   ├── WebkernelWebhookServiceProvider.php
+    │   └── WebkernelWidgetServiceProvider.php
+    ├── public
+    │   ├── assets
+    │   │   └── flags
+    │   │       ├── countries
+    │   │       │   ├── ac.svg
+    │   │       │   ├── ad.svg
+    │   │       │   ├── ae.svg
+    │   │       │   ├── afar.svg
+    │   │       │   ├── af.svg
+    │   │       │   ├── ag.svg
+    │   │       │   ├── ai.svg
+    │   │       │   ├── al.svg
+    │   │       │   ├── am.svg
+    │   │       │   ├── ao.svg
+    │   │       │   ├── aq.svg
+    │   │       │   ├── ar.svg
+    │   │       │   ├── as.svg
+    │   │       │   ├── at.svg
+    │   │       │   ├── au-aboriginal.svg
+    │   │       │   ├── au-act.svg
+    │   │       │   ├── au-nsw.svg
+    │   │       │   ├── au-nt.svg
+    │   │       │   ├── au-qld.svg
+    │   │       │   ├── au-sa.svg
+    │   │       │   ├── au.svg
+    │   │       │   ├── au-tas.svg
+    │   │       │   ├── au-vic.svg
+    │   │       │   ├── au-wa.svg
+    │   │       │   ├── aw.svg
+    │   │       │   ├── ax.svg
+    │   │       │   ├── az.svg
+    │   │       │   ├── ba.svg
+    │   │       │   ├── bb.svg
+    │   │       │   ├── bd.svg
+    │   │       │   ├── be.svg
+    │   │       │   ├── bf.svg
+    │   │       │   ├── bg.svg
+    │   │       │   ├── bh.svg
+    │   │       │   ├── bi.svg
+    │   │       │   ├── bj.svg
+    │   │       │   ├── bl.svg
+    │   │       │   ├── bm.svg
+    │   │       │   ├── bn.svg
+    │   │       │   ├── bo.svg
+    │   │       │   ├── bq-bo.svg
+    │   │       │   ├── bq-sa.svg
+    │   │       │   ├── bq-se.svg
+    │   │       │   ├── bq.svg
+    │   │       │   ├── br.svg
+    │   │       │   ├── bs.svg
+    │   │       │   ├── bt.svg
+    │   │       │   ├── bv.svg
+    │   │       │   ├── bw.svg
+    │   │       │   ├── by.svg
+    │   │       │   ├── bz.svg
+    │   │       │   ├── ca-bc.svg
+    │   │       │   ├── ca.svg
+    │   │       │   ├── cc.svg
+    │   │       │   ├── cd.svg
+    │   │       │   ├── cf.svg
+    │   │       │   ├── cg.svg
+    │   │       │   ├── ch-gr.svg
+    │   │       │   ├── ch.svg
+    │   │       │   ├── ci.svg
+    │   │       │   ├── ck.svg
+    │   │       │   ├── cl.svg
+    │   │       │   ├── cm.svg
+    │   │       │   ├── cn.svg
+    │   │       │   ├── cn-xj.svg
+    │   │       │   ├── co.svg
+    │   │       │   ├── cp.svg
+    │   │       │   ├── cq.svg
+    │   │       │   ├── cr.svg
+    │   │       │   ├── cu.svg
+    │   │       │   ├── cv.svg
+    │   │       │   ├── cw.svg
+    │   │       │   ├── cx.svg
+    │   │       │   ├── cy.svg
+    │   │       │   ├── cz.svg
+    │   │       │   ├── de.svg
+    │   │       │   ├── dg.svg
+    │   │       │   ├── dj.svg
+    │   │       │   ├── dk.svg
+    │   │       │   ├── dm.svg
+    │   │       │   ├── do.svg
+    │   │       │   ├── dz.svg
+    │   │       │   ├── earth.svg
+    │   │       │   ├── east_african_federation.svg
+    │   │       │   ├── easter_island.svg
+    │   │       │   ├── ea.svg
+    │   │       │   ├── ec.svg
+    │   │       │   ├── ec-w.svg
+    │   │       │   ├── ee.svg
+    │   │       │   ├── eg.svg
+    │   │       │   ├── eh.svg
+    │   │       │   ├── er.svg
+    │   │       │   ├── es-ar.svg
+    │   │       │   ├── es-ce.svg
+    │   │       │   ├── es-cn.svg
+    │   │       │   ├── es-ct.svg
+    │   │       │   ├── es-ga.svg
+    │   │       │   ├── es-ib.svg
+    │   │       │   ├── es-ml.svg
+    │   │       │   ├── esperanto.svg
+    │   │       │   ├── es-pv.svg
+    │   │       │   ├── es.svg
+    │   │       │   ├── es-variant.svg
+    │   │       │   ├── et-or.svg
+    │   │       │   ├── et.svg
+    │   │       │   ├── et-ti.svg
+    │   │       │   ├── european_union.svg
+    │   │       │   ├── eu.svg
+    │   │       │   ├── ewe.svg
+    │   │       │   ├── fi.svg
+    │   │       │   ├── fj.svg
+    │   │       │   ├── fk.svg
+    │   │       │   ├── fm.svg
+    │   │       │   ├── fo.svg
+    │   │       │   ├── fr-20r.svg
+    │   │       │   ├── fr-bre.svg
+    │   │       │   ├── fr-cp.svg
+    │   │       │   ├── fr-h.svg
+    │   │       │   ├── fr.svg
+    │   │       │   ├── fx.svg
+    │   │       │   ├── ga.svg
+    │   │       │   ├── gb-con.svg
+    │   │       │   ├── gb-eng.svg
+    │   │       │   ├── gb-nir.svg
+    │   │       │   ├── gb-ork.svg
+    │   │       │   ├── gb-sct.svg
+    │   │       │   ├── gb.svg
+    │   │       │   ├── gb-wls.svg
+    │   │       │   ├── gd.svg
+    │   │       │   ├── ge-ab.svg
+    │   │       │   ├── ge.svg
+    │   │       │   ├── gf.svg
+    │   │       │   ├── gg.svg
+    │   │       │   ├── gh.svg
+    │   │       │   ├── gi.svg
+    │   │       │   ├── gl.svg
+    │   │       │   ├── gm.svg
+    │   │       │   ├── gn.svg
+    │   │       │   ├── gp.svg
+    │   │       │   ├── gq.svg
+    │   │       │   ├── gr.svg
+    │   │       │   ├── gs.svg
+    │   │       │   ├── gt.svg
+    │   │       │   ├── guarani.svg
+    │   │       │   ├── gu.svg
+    │   │       │   ├── gw.svg
+    │   │       │   ├── gy.svg
+    │   │       │   ├── hausa.svg
+    │   │       │   ├── hk.svg
+    │   │       │   ├── hmong.svg
+    │   │       │   ├── hm.svg
+    │   │       │   ├── hn.svg
+    │   │       │   ├── hr.svg
+    │   │       │   ├── ht.svg
+    │   │       │   ├── hu.svg
+    │   │       │   ├── ic.svg
+    │   │       │   ├── id-jb.svg
+    │   │       │   ├── id-jt.svg
+    │   │       │   ├── id.svg
+    │   │       │   ├── ie.svg
+    │   │       │   ├── il.svg
+    │   │       │   ├── im.svg
+    │   │       │   ├── in-as.svg
+    │   │       │   ├── in-gj.svg
+    │   │       │   ├── in-ka.svg
+    │   │       │   ├── in-or.svg
+    │   │       │   ├── in.svg
+    │   │       │   ├── in-tn.svg
+    │   │       │   ├── io.svg
+    │   │       │   ├── iq.svg
+    │   │       │   ├── ir.svg
+    │   │       │   ├── is.svg
+    │   │       │   ├── it-23.svg
+    │   │       │   ├── it-82.svg
+    │   │       │   ├── it-88.svg
+    │   │       │   ├── it.svg
+    │   │       │   ├── je.svg
+    │   │       │   ├── jm.svg
+    │   │       │   ├── jo.svg
+    │   │       │   ├── jp.svg
+    │   │       │   ├── kannada.svg
+    │   │       │   ├── kanuri.svg
+    │   │       │   ├── ke.svg
+    │   │       │   ├── kg.svg
+    │   │       │   ├── kh.svg
+    │   │       │   ├── kikuyu.svg
+    │   │       │   ├── ki.svg
+    │   │       │   ├── km.svg
+    │   │       │   ├── kn.svg
+    │   │       │   ├── kongo.svg
+    │   │       │   ├── kp.svg
+    │   │       │   ├── kr.svg
+    │   │       │   ├── kurdistan.svg
+    │   │       │   ├── kw.svg
+    │   │       │   ├── ky.svg
+    │   │       │   ├── kz.svg
+    │   │       │   ├── la.svg
+    │   │       │   ├── lb.svg
+    │   │       │   ├── lc.svg
+    │   │       │   ├── li.svg
+    │   │       │   ├── lk.svg
+    │   │       │   ├── lr.svg
+    │   │       │   ├── ls.svg
+    │   │       │   ├── lt.svg
+    │   │       │   ├── lu.svg
+    │   │       │   ├── lv.svg
+    │   │       │   ├── ly.svg
+    │   │       │   ├── malayali.svg
+    │   │       │   ├── manipur.svg
+    │   │       │   ├── maori.svg
+    │   │       │   ├── ma.svg
+    │   │       │   ├── mc.svg
+    │   │       │   ├── md.svg
+    │   │       │   ├── me.svg
+    │   │       │   ├── mf.svg
+    │   │       │   ├── mg.svg
+    │   │       │   ├── mh.svg
+    │   │       │   ├── mizoram.svg
+    │   │       │   ├── mk.svg
+    │   │       │   ├── ml.svg
+    │   │       │   ├── mm.svg
+    │   │       │   ├── mn.svg
+    │   │       │   ├── mo.svg
+    │   │       │   ├── mp.svg
+    │   │       │   ├── mq.svg
+    │   │       │   ├── mr.svg
+    │   │       │   ├── ms.svg
+    │   │       │   ├── mt.svg
+    │   │       │   ├── mu.svg
+    │   │       │   ├── mv.svg
+    │   │       │   ├── mw.svg
+    │   │       │   ├── mx.svg
+    │   │       │   ├── my.svg
+    │   │       │   ├── mz.svg
+    │   │       │   ├── na.svg
+    │   │       │   ├── nato.svg
+    │   │       │   ├── nc.svg
+    │   │       │   ├── ne.svg
+    │   │       │   ├── nf.svg
+    │   │       │   ├── ng.svg
+    │   │       │   ├── ni.svg
+    │   │       │   ├── nl-fr.svg
+    │   │       │   ├── nl.svg
+    │   │       │   ├── northern_cyprus.svg
+    │   │       │   ├── no.svg
+    │   │       │   ├── np.svg
+    │   │       │   ├── nr.svg
+    │   │       │   ├── nu.svg
+    │   │       │   ├── nz.svg
+    │   │       │   ├── occitania.svg
+    │   │       │   ├── olympics.svg
+    │   │       │   ├── om.svg
+    │   │       │   ├── otomi.svg
+    │   │       │   ├── pa.svg
+    │   │       │   ├── pe.svg
+    │   │       │   ├── pf.svg
+    │   │       │   ├── pg.svg
+    │   │       │   ├── ph.svg
+    │   │       │   ├── pk-jk.svg
+    │   │       │   ├── pk-sd.svg
+    │   │       │   ├── pk.svg
+    │   │       │   ├── pl.svg
+    │   │       │   ├── pm.svg
+    │   │       │   ├── pn.svg
+    │   │       │   ├── pr.svg
+    │   │       │   ├── ps.svg
+    │   │       │   ├── pt-20.svg
+    │   │       │   ├── pt-30.svg
+    │   │       │   ├── pt.svg
+    │   │       │   ├── pw.svg
+    │   │       │   ├── py.svg
+    │   │       │   ├── qa.svg
+    │   │       │   ├── quechua.svg
+    │   │       │   ├── re.svg
+    │   │       │   ├── ro.svg
+    │   │       │   ├── rs.svg
+    │   │       │   ├── ru-ba.svg
+    │   │       │   ├── ru-ce.svg
+    │   │       │   ├── ru-cu.svg
+    │   │       │   ├── ru-da.svg
+    │   │       │   ├── ru-ko.svg
+    │   │       │   ├── ru.svg
+    │   │       │   ├── ru-ta.svg
+    │   │       │   ├── ru-ud.svg
+    │   │       │   ├── rw.svg
+    │   │       │   ├── sami.svg
+    │   │       │   ├── sa.svg
+    │   │       │   ├── sb.svg
+    │   │       │   ├── sc.svg
+    │   │       │   ├── sd.svg
+    │   │       │   ├── se.svg
+    │   │       │   ├── sg.svg
+    │   │       │   ├── sh-ac.svg
+    │   │       │   ├── sh-hl.svg
+    │   │       │   ├── sh.svg
+    │   │       │   ├── sh-ta.svg
+    │   │       │   ├── sindh.svg
+    │   │       │   ├── si.svg
+    │   │       │   ├── sj.svg
+    │   │       │   ├── sk.svg
+    │   │       │   ├── sl.svg
+    │   │       │   ├── sm.svg
+    │   │       │   ├── sn.svg
+    │   │       │   ├── somaliland.svg
+    │   │       │   ├── so.svg
+    │   │       │   ├── south_ossetia.svg
+    │   │       │   ├── soviet_union.svg
+    │   │       │   ├── sr.svg
+    │   │       │   ├── ss.svg
+    │   │       │   ├── st.svg
+    │   │       │   ├── su.svg
+    │   │       │   ├── sv.svg
+    │   │       │   ├── sx.svg
+    │   │       │   ├── sy.svg
+    │   │       │   ├── sz.svg
+    │   │       │   ├── ta.svg
+    │   │       │   ├── tc.svg
+    │   │       │   ├── td.svg
+    │   │       │   ├── tf.svg
+    │   │       │   ├── tg.svg
+    │   │       │   ├── th.svg
+    │   │       │   ├── tibet.svg
+    │   │       │   ├── tj.svg
+    │   │       │   ├── tk.svg
+    │   │       │   ├── tl.svg
+    │   │       │   ├── tm.svg
+    │   │       │   ├── tn.svg
+    │   │       │   ├── torres_strait_islands.svg
+    │   │       │   ├── to.svg
+    │   │       │   ├── transnistria.svg
+    │   │       │   ├── tr.svg
+    │   │       │   ├── tt.svg
+    │   │       │   ├── tv.svg
+    │   │       │   ├── tw.svg
+    │   │       │   ├── tz.svg
+    │   │       │   ├── ua.svg
+    │   │       │   ├── ug.svg
+    │   │       │   ├── uk.svg
+    │   │       │   ├── um.svg
+    │   │       │   ├── united_nations.svg
+    │   │       │   ├── un.svg
+    │   │       │   ├── us-hi.svg
+    │   │       │   ├── us.svg
+    │   │       │   ├── uy.svg
+    │   │       │   ├── uz.svg
+    │   │       │   ├── va.svg
+    │   │       │   ├── vc.svg
+    │   │       │   ├── ve.svg
+    │   │       │   ├── vg.svg
+    │   │       │   ├── vi.svg
+    │   │       │   ├── vn.svg
+    │   │       │   ├── vu.svg
+    │   │       │   ├── wf.svg
+    │   │       │   ├── wiphala.svg
+    │   │       │   ├── ws.svg
+    │   │       │   ├── xk.svg
+    │   │       │   ├── xx.svg
+    │   │       │   ├── ye.svg
+    │   │       │   ├── yiddish.svg
+    │   │       │   ├── yorubaland.svg
+    │   │       │   ├── yt.svg
+    │   │       │   ├── za.svg
+    │   │       │   ├── zm.svg
+    │   │       │   └── zw.svg
+    │   │       ├── fictional
+    │   │       │   └── klingon.svg
+    │   │       ├── language
+    │   │       │   ├── ar.svg
+    │   │       │   ├── az.svg
+    │   │       │   ├── bn.svg
+    │   │       │   ├── ca.svg
+    │   │       │   ├── cn.svg
+    │   │       │   ├── de.svg
+    │   │       │   ├── en-ca.svg
+    │   │       │   ├── en-in.svg
+    │   │       │   ├── en-ng.svg
+    │   │       │   ├── en.svg
+    │   │       │   ├── en-za.svg
+    │   │       │   ├── eo.svg
+    │   │       │   ├── es.svg
+    │   │       │   ├── eu.svg
+    │   │       │   ├── fi.svg
+    │   │       │   ├── fr.svg
+    │   │       │   ├── he.svg
+    │   │       │   ├── hu.svg
+    │   │       │   ├── ia.svg
+    │   │       │   ├── id.svg
+    │   │       │   ├── ie.svg
+    │   │       │   ├── in.svg
+    │   │       │   ├── interslavic.svg
+    │   │       │   ├── io.svg
+    │   │       │   ├── jp.svg
+    │   │       │   ├── km.svg
+    │   │       │   ├── la.svg
+    │   │       │   ├── lv.svg
+    │   │       │   ├── mr.svg
+    │   │       │   ├── ms.svg
+    │   │       │   ├── non.svg
+    │   │       │   ├── no.svg
+    │   │       │   ├── pl.svg
+    │   │       │   ├── pt_BR.svg
+    │   │       │   ├── pt_PT.svg
+    │   │       │   ├── pt.svg
+    │   │       │   ├── ro.svg
+    │   │       │   ├── ru.svg
+    │   │       │   ├── tr.svg
+    │   │       │   ├── uz.svg
+    │   │       │   ├── vo.svg
+    │   │       │   ├── yi.svg
+    │   │       │   ├── zh_CN.svg
+    │   │       │   ├── zh.svg
+    │   │       │   └── zh_TW.svg
+    │   │       └── LICENCE
+    │   ├── favicon.ico
+    │   └── logo.png
+    ├── resources
+    │   ├── components.csv
+    │   ├── repo-assets
+    │   │   └── readme
+    │   │       └── v2
+    │   │           └── mermaid-diagram-2025-05-31-141023.png
+    │   └── views
+    │       ├── components
+    │       │   ├── ImmediateWidgetComponent.php
+    │       │   └── webkernel
+    │       │       ├── assets
+    │       │       │   ├── ascii
+    │       │       │   │   └── ascii-art.other
+    │       │       │   ├── head-css.blade.php
+    │       │       │   └── languages-fonts.blade.php
+    │       │       ├── rolebased
+    │       │       │   └── common
+    │       │       │       └── profile-header.blade.php
+    │       │       └── ui
+    │       │           ├── atoms
+    │       │           │   ├── currentuserdatetime.blade.php
+    │       │           │   └── search-hide.blade.php
+    │       │           └── molecules
+    │       │               ├── badge-and-universal-help.blade.php
+    │       │               ├── language-selector.blade.php
+    │       │               └── user-panels.blade.php
+    │       ├── filament
+    │       │   └── pages
+    │       │       ├── dashboard.blade.php
+    │       │       └── test-page.blade.php
+    │       └── widgets
+    │           ├── account-widget.blade.php
+    │           └── webkernel-info-widget.blade.php
+    ├── routes
+    │   ├── console.php
+    │   └── web.php
+    └── Traits
+        ├── UserExtensions.php
+        └── UserResolver.php
+
+128 directories, 585 files

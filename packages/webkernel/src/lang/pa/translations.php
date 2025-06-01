@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:12',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'ਬੱਗ ਦੀ ਰਿਪੋਰਟ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:55',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'ਤੇਲਵਾਰਾ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:48:54',
+            'protected' => false,
+        ],
     ],
 ];

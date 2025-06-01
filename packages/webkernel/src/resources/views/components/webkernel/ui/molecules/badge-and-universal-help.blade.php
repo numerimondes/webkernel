@@ -9,6 +9,7 @@
             $userLanguage = $user->language ?? null;
         }
     }
+
     $isRTL = in_array($userLanguage, $rtlLanguages);
     $positionSide = $isRTL ? 'left: 10px;' : 'right: 10px;';
     $dropdownPlacement = $isRTL ? 'top-start' : 'top-end';
@@ -17,7 +18,7 @@
     }
 
     $BADGE_SENSITIVITY_OPTIONS = ['clic', 'hover', 'nothing'];
-    $BADGE_SENSITIVITY = 'clic';
+    $BADGE_SENSITIVITY = 'nothing';
 
     $brand = 'Webkernel';
     $logo = 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256';
@@ -36,8 +37,6 @@
             display: none;
             align-items: center;
             gap: 3px;
-            margin-left: 2px;
-            margin-right: 2px;
         }
         .credit-badge-ui-main:hover .powered-by-text {
             display: inline-flex;
@@ -46,8 +45,6 @@
             display: none;
             align-items: center;
             gap: 3px;
-            margin-left: 2px;
-            margin-right: 2px;
         }
         .credit-badge-ui-main:hover .powered-by-link {
             display: inline-flex;
@@ -63,8 +60,6 @@
             display: none;
             align-items: center;
             gap: 3px;
-            margin-left: 2px;
-            margin-right: 2px;
         }
         .credit-badge-ui-main.clicked .powered-by-text {
             display: inline-flex;
@@ -73,8 +68,6 @@
             display: none;
             align-items: center;
             gap: 3px;
-            margin-left: 2px;
-            margin-right: 2px;
         }
         .credit-badge-ui-main.clicked .powered-by-link {
             display: inline-flex;
@@ -256,7 +249,7 @@
                         class="text-gray-500 dark:text-gray-400"
                         style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
                     />
-                    <span>FAQ</span>
+                    <span>{{ lang('faq') }}</span>
                 </div>
             </x-filament::dropdown.list.item>
             <x-filament::dropdown.list.item
@@ -270,7 +263,7 @@
                         class="text-gray-500 dark:text-gray-400"
                         style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
                     />
-                    <span>Report Bug</span>
+                    <span>{{ lang('report_bug') }}</span>
                 </div>
             </x-filament::dropdown.list.item>
         </x-filament::dropdown.list>

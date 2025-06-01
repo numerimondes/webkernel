@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:38',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'දෝෂයක් වාර්තා කරන්න',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:09',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'සහයෝගීකරණය',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:05',
+            'protected' => false,
+        ],
     ],
 ];

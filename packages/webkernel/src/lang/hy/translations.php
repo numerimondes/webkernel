@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:22',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'Հայտնել սխալ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:17',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'ՀՏՀ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:32',
+            'protected' => false,
+        ],
     ],
 ];

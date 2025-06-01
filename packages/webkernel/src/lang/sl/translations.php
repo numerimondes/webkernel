@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:36:43',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'PorReportiraj napako',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:38:14',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'Pogosta vprašanja',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:49:11',
+            'protected' => false,
+        ],
     ],
 ];

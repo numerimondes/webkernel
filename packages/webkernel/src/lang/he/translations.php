@@ -132,5 +132,19 @@ return [
             'generated_at' => '2025-05-30 13:35:11',
             'protected' => false,
         ],
+        'report_bug' => [
+            'label' => 'דווח על באג',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:37:08',
+            'protected' => false,
+        ],
+        'faq' => [
+            'label' => 'שאלות נפוצות',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-06-01 13:47:24',
+            'protected' => false,
+        ],
     ],
 ];
