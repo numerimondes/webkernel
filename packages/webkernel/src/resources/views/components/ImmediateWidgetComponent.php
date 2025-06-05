@@ -33,15 +33,12 @@ class ImmediateWidgetComponent extends Component
      */
     public function render()
     {
-        // Check if widget class exists and is a subclass of Widget
         if (!class_exists($this->widget) || !is_subclass_of($this->widget, Widget::class)) {
             return '';
         }
 
-        // Get the Livewire alias for the widget
         $alias = $this->getLivewireAlias($this->widget);
 
-        // Render the widget synchronously
         return Livewire::mount($alias)->html();
     }
 
@@ -53,15 +50,12 @@ class ImmediateWidgetComponent extends Component
      */
     protected function getLivewireAlias(string $widgetClass): string
     {
-        // Extract class name from the fully qualified class name
         $parts = explode('\\', $widgetClass);
         $className = end($parts);
 
-        // Convert to kebab case for Livewire component name
         $alias = preg_replace('/([a-z])([A-Z])/', '$1-$2', $className);
         $alias = strtolower($alias);
 
-        // Return the full Livewire component name
         return 'webkernel.filament.widgets.' . $alias;
     }
 }

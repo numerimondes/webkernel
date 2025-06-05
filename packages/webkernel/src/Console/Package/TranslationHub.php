@@ -37,9 +37,9 @@ use ParseError;
 
 class TranslationHub extends Command
 {
-    // ==========================================
-    // CONFIGURATION CONSTANTS
-    // ==========================================
+    /**
+     * CONFIGURATION CONSTANTS
+    */
 
     /** @var int Threshold for slow operation warning (milliseconds) */
     private const SLOW_OPERATION_THRESHOLD_MS = 2000;
@@ -71,12 +71,9 @@ class TranslationHub extends Command
     ];
 
     // ==========================================
-    // VISUAL SEPARATION HELPERS
+    // VISUAL SEPARATION HELPER
     // ==========================================
 
-    /**
-     * Create visual separation between operations
-     */
     private function addVisualSeparator()
     {
         for ($i = 0; $i < self::VISUAL_SEPARATOR_LINES; $i++) {
@@ -103,9 +100,6 @@ class TranslationHub extends Command
 
     protected $description = 'Webkernel Dev-Tools: TranslationHub - Advanced multilingual translation management for Laravel development';
 
-    /**
-     * Laravel 12+ : override aliases using method.
-     */
     public function getAliases(): array
     {
         return ['webkernel:translation-hub', 'webkernel:translate'];
@@ -149,8 +143,6 @@ class TranslationHub extends Command
     protected $config;
     protected $errorLog = [];
     protected $outputBuffer = [];
-
-    // Enhanced properties from TranslateTerm
     protected $locationMappings = [];
     protected $overrideKeys = [];
     protected $wordSubstitutions = [];
@@ -177,7 +169,6 @@ class TranslationHub extends Command
             $this->output('error', 'Error encountered: ' . $e->getMessage());
             $this->output('warning', 'Attempting recovery...');
 
-            // Try to recover gracefully
             try {
                 $this->initializeBasicConfig();
                 $this->output('success', 'Recovery successful - continuing with basic configuration');
@@ -185,14 +176,14 @@ class TranslationHub extends Command
             } catch (Exception $recoveryError) {
                 $this->output('error', 'Recovery failed: ' . $recoveryError->getMessage());
                 $this->output('info', 'Please check your configuration and try again');
-                return 1; // Return error code but don't terminate harshly
+                return 1;
             }
         }
     }
 
     private function initializeBasicConfig(): void
     {
-        // Initialize with minimal working configuration
+
         $this->config = [
             'languages' => [
                 'en' => 'English',
@@ -208,10 +199,9 @@ class TranslationHub extends Command
                 'auto_backup' => false,
                 'protected_source' => true
             ],
-            'word_replacement_enabled' => false // Set to true to enable "Enter a word to replace" prompts
+            'word_replacement_enabled' => false
         ];
 
-        // Set basic directory if not set
         if (empty($this->baseDir)) {
             $this->baseDir = base_path('packages/webkernel/src/lang');
         }
@@ -239,21 +229,18 @@ class TranslationHub extends Command
 
     private function initializeConfig()
     {
-        // Priority 1: Main Laravel config/webkernel.php
         $this->config = config('webkernel', []);
 
-        // Priority 2: Package fallback packages/webkernel/src/config/webkernel.php
         if (empty($this->config)) {
             $packageConfigPath = base_path('packages/webkernel/src/config/webkernel.php');
             if (file_exists($packageConfigPath)) {
                 $packageConfig = include $packageConfigPath;
-                // Register the package config in Laravel's config system
+
                 config(['webkernel' => $packageConfig]);
                 $this->config = config('webkernel', []);
             }
         }
 
-        // Config should always be found from package
         if (empty($this->config)) {
             throw new Exception('WebKernel configuration not found. Package config should always be available.');
         }
@@ -295,7 +282,6 @@ class TranslationHub extends Command
 
     private function validateConfig()
     {
-        // Support both direct config and translation.* structure
         $configSection = $this->config['translation'] ?? $this->config;
 
         $required = ['engines', 'languages', 'rtl_languages'];
@@ -308,7 +294,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Update config to use the correct section
         if (isset($this->config['translation'])) {
             $this->config = $this->config['translation'];
         }
@@ -353,16 +338,14 @@ class TranslationHub extends Command
         $text = $this->argument('text');
         $key = $this->argument('key');
 
-        // Skip validation for option-based commands
         if ($this->hasOptions()) {
             return true;
         }
 
         if (empty($text) && empty($key)) {
-            // Show help first
+
             $this->showHelp();
 
-            // Ask user if they want interactive mode with validation
             $wantInteractive = $this->askWithValidation(
                 "Do you want to enter interactive translation mode? (y/N)",
                 [$this, 'validateYesNo'],
@@ -370,7 +353,7 @@ class TranslationHub extends Command
                 'n'
             );
 
-            if ($wantInteractive === null) return false; // Max attempts reached
+            if ($wantInteractive === null) return false;
 
             if (strtolower($wantInteractive) === 'y' || strtolower($wantInteractive) === 'yes') {
                 $this->enterInteractiveMode();
@@ -546,7 +529,6 @@ class TranslationHub extends Command
 
     private function routeToHandler()
     {
-        // Handle options in order of priority
         if ($this->option('repair')) return $this->handleRepair();
         if ($this->option('retranslate')) return $this->handleRetranslate();
         if ($this->option('protect')) return $this->handleProtect();
@@ -556,7 +538,6 @@ class TranslationHub extends Command
         if ($this->option('validate-only')) return $this->handleValidateOnly();
         if ($this->option('change-key')) return $this->handleChangeKey();
 
-        // Default: Add new translation
         return $this->handleAddTranslation();
     }
 
@@ -645,7 +626,7 @@ class TranslationHub extends Command
         $errors = 0;
 
         foreach ($this->config['languages'] as $locale => $code) {
-            // Protect English source file from repair
+
             if ($locale === 'en' && $this->config['protection']['protected_source']) {
                 $this->output('warning', "→ Skipping English source file (protected)");
                 continue;
@@ -729,38 +710,32 @@ class TranslationHub extends Command
         $successful = 0;
         $failed = 0;
 
-        // 1. Create backup first
         $this->createBackupIfNeeded();
         $this->output('info', '');
 
-        // 2. Generate translation previews with verbose messaging
         $this->output('info', 'Generating translation previews...');
         $this->output('info', 'Testing translation engines and generating preview tickets...');
         $this->output('info', '');
 
         $previewTranslations = $this->generateTranslationPreviews($key, $text);
 
-        // 3. Show all translation tickets
         $this->displayTranslationTickets($key, $text, $previewTranslations);
 
-        // 4. Ask for confirmation with Change and Resume options
         while (true) {
             $confirm = $this->ask('Do you want to proceed with bulk translation and file creation? (y/N/C/R) [N]', 'n');
             $confirm = strtolower(trim($confirm));
 
             if ($confirm === 'y' || $confirm === 'yes') {
-                break; // Proceed with translation
+                break;
             } elseif ($confirm === 'c' || $confirm === 'change') {
                 $this->output('info', 'Changing context...');
                 $this->addVisualSeparator();
 
-                // Restart the interactive process without asking for mode again
                 return $this->processNewTranslation($text, $key);
             } elseif ($confirm === 'r' || $confirm === 'restart') {
                 $this->output('info', 'Reprend la traduction...');
                 $this->addVisualSeparator();
 
-                // Start completely fresh from the beginning
                 return $this->enterInteractiveMode();
             } else {
                 $this->output('info', 'Translation cancelled by user');
@@ -768,7 +743,6 @@ class TranslationHub extends Command
             }
         }
 
-        // 5. Process ALL translations in bulk with file creation
         $this->output('info', 'Starting bulk translation and file creation...');
         $this->output('info', '');
 
@@ -784,7 +758,7 @@ class TranslationHub extends Command
             'sl' => 'Slovenian', 'sv' => 'Swedish', 'th' => 'Thai', 'tr' => 'Turkish',
             'uk' => 'Ukrainian', 'vi' => 'Vietnamese', 'cy' => 'Welsh'
         ];
-        // FIRST: Create English source file (protected by default)
+
         if ($this->saveTranslation('en', $key, $text)) {
             $successful++;
             $this->output('success', "✓ English: Source created and protected");
@@ -793,12 +767,12 @@ class TranslationHub extends Command
             $this->output('error', "✗ English: Failed to create source");
         }
 
-        $totalLanguages = count($this->config['languages']) - 1; // Exclude English
+        $totalLanguages = count($this->config['languages']) - 1;
         $currentCount = 0;
 
         foreach ($this->config['languages'] as $locale => $code) {
             if ($locale === 'en') {
-                continue; // English already processed above
+                continue;
             }
 
             try {
@@ -826,7 +800,7 @@ class TranslationHub extends Command
                 }
 
                 $this->addVisualSeparator();
-                usleep(self::BULK_OPERATION_DELAY_US); // Rate limiting for bulk operations
+                usleep(self::BULK_OPERATION_DELAY_US);
 
             } catch (Exception $e) {
                 $failed++;
@@ -834,12 +808,10 @@ class TranslationHub extends Command
             }
         }
 
-        // Display comprehensive translation statistics instead of simple message
         $this->displayTranslationStatistics();
 
         $this->addVisualSeparator();
 
-        // Ask if user wants to add another translation
         $addAnother = $this->askWithValidation(
             "Do you want to add a new translation? (y/N)",
             [$this, 'validateYesNo'],
@@ -871,11 +843,10 @@ class TranslationHub extends Command
 
         $englishEntries = $englishContent['lang_ref'];
         $totalKeys = count($englishEntries);
-        $languageCount = count($languagesToProcess) - 1; // Exclude English itself
+        $languageCount = count($languagesToProcess) - 1;
         $protectedCount = 0;
         $unprotectedCount = 0;
 
-        // Count protected vs unprotected entries in target languages
         foreach ($englishEntries as $key => $entry) {
             $hasProtectedInTargets = false;
             foreach ($languagesToProcess as $locale => $code) {
@@ -921,7 +892,6 @@ class TranslationHub extends Command
 
         $this->outputBuffer[] = $output;
 
-        // Current implementation: console output
         $this->formatConsoleOutput($type, $message, $data);
 
         // Future: database logging, API responses, etc.
@@ -1005,7 +975,6 @@ class TranslationHub extends Command
 
     private function translateText($text, $targetLanguageCode)
     {
-        // Store current target language for failure detection
         $this->currentTargetLanguage = $targetLanguageCode;
 
         $this->output('info', "    • Optimizing text for translation...");
@@ -1020,17 +989,14 @@ class TranslationHub extends Command
 
         $startTime = microtime(true);
 
-        // Execute command with progress monitoring
         $result = $this->executeWithProgressFeedback($cmd, "Translating text via {$this->selectedEngine}");
 
         $duration = round((microtime(true) - $startTime) * 1000, 2);
 
-        // Track translation statistics
         $this->translationStats['times'][] = $duration;
         $this->translationStats['engines_used'][$this->selectedEngine] =
             ($this->translationStats['engines_used'][$this->selectedEngine] ?? 0) + 1;
 
-        // Track per-language timing
         if (isset($this->currentTargetLanguage)) {
             $this->translationStats['language_times'][$this->currentTargetLanguage] = $duration;
         }
@@ -1049,26 +1015,21 @@ class TranslationHub extends Command
     {
         $optimized = $text;
 
-        // STEP 1: Protect placeholders before any processing
         $protectedPlaceholders = $this->extractAndProtectPlaceholders($optimized);
         $optimized = $protectedPlaceholders['text'];
 
-        // STEP 2: Apply runtime word substitutions from user input
         $optimized = $this->applyWordSubstitutions($optimized);
 
-        // STEP 3: Apply config-based word substitutions if available
         if (!empty($this->config['word_substitutions'])) {
             foreach ($this->config['word_substitutions'] as $from => $to) {
                 $optimized = str_ireplace($from, $to, $optimized);
             }
         }
 
-        // STEP 4: Add context if available using the >)>>>> ("in") <<<<(< marker
         if (!empty($this->translationContext)) {
             $optimized = "{$optimized} >)>>>> (\"in\") <<<<(< {$this->translationContext}";
         }
 
-        // Store placeholders for restoration after translation
         $this->protectedPlaceholders = $protectedPlaceholders['placeholders'];
 
         return $optimized;
@@ -1084,7 +1045,6 @@ class TranslationHub extends Command
 
         $this->output('info', "Analyzing text for placeholders: {$text}");
 
-        // Pattern for Laravel placeholders: :word, :attribute, etc.
         preg_match_all('/(:[a-zA-Z_][a-zA-Z0-9_]*\b)/', $text, $matches);
         $this->output('info', "Found " . count($matches[0]) . " Laravel placeholders");
 
@@ -1095,7 +1055,6 @@ class TranslationHub extends Command
             $this->line("<fg=green>Protected:</> <fg=yellow>{$placeholder}</> <fg=cyan>→</> <fg=magenta>{$token}</>");
         }
 
-        // Pattern for printf placeholders: %s, %d, %1$s, etc.
         preg_match_all('/(%[a-zA-Z0-9\$]+)/', $protectedText, $matches);
         $this->output('info', "Found " . count($matches[0]) . " printf placeholders");
 
@@ -1128,15 +1087,10 @@ class TranslationHub extends Command
         return $optimized;
     }
 
-
-
-
-
     private function saveTranslation($locale, $key, $translation)
     {
         $filePath = $this->getLanguageFilePath($locale);
 
-        // Ensure directory exists
         $dir = dirname($filePath);
         if (!is_dir($dir)) {
             if (!mkdir($dir, 0755, true)) {
@@ -1146,7 +1100,6 @@ class TranslationHub extends Command
             $this->output('success', "Created directory: {$dir}");
         }
 
-        // Create translation file if it doesn't exist
         if (!file_exists($filePath)) {
             $direction = in_array($locale, $this->config['rtl_languages']) ? 'rtl' : 'ltr';
             $languageName = $this->config['languages'][$locale] ?? ucfirst($locale);
@@ -1176,7 +1129,6 @@ class TranslationHub extends Command
 
         $content = include $filePath;
 
-        // Fix scalar value issue - ensure we have proper array structure
         if (!is_array($content)) {
             $content = [
                 'direction' => in_array($locale, $this->config['rtl_languages'] ?? []) ? 'rtl' : 'ltr',
@@ -1184,7 +1136,6 @@ class TranslationHub extends Command
             ];
         }
 
-        // Initialize structure if needed
         if (!isset($content['lang_ref'])) {
             $content['lang_ref'] = [];
         }
@@ -1193,59 +1144,50 @@ class TranslationHub extends Command
             'label' => $translation,
         ];
 
-        // Add context information first
         if (!empty($this->translationContext)) {
             if ($locale === 'en') {
-                // For English: only context (original user input)
-                $entry['context'] = $this->translationContext;
-                // No context_destination for English since it's the same
-            } else {
-                // For other languages: context (original) + context_destination (translated)
+
                 $entry['context'] = $this->translationContext;
 
-                // Use parsed context_destination if available, otherwise translate separately
+            } else {
+
+                $entry['context'] = $this->translationContext;
+
                 if (!empty($this->lastContextDestination)) {
                     $entry['context_destination'] = $this->lastContextDestination;
                 } else {
-                    // Translate context separately for clean result
                     $entry['context_destination'] = $this->translateContextSeparately($this->translationContext, $this->config['languages'][$locale]);
                 }
             }
         }
 
-        // Add metadata in the requested order
         $entry['engine_used'] = $this->selectedEngine ?? 'bing';
         $entry['auto_generated'] = true;
         $entry['generated_at'] = date('Y-m-d H:i:s');
         $entry['protected'] = false;
 
-        // Check if key already exists before writing
         if (isset($content['lang_ref'][$key])) {
             $this->output('warning', "Key '{$key}' already exists in {$locale} translations. Will be updated.");
         }
 
         $content['lang_ref'][$key] = $entry;
 
-        // Store file path in content for direction detection
         $content['path'] = $filePath;
 
-        // During bulk mode, write directly without confirmation
         return $this->writeTranslationFileDirect($filePath, $content);
     }
 
     private function writeTranslationFile($filePath, $content)
     {
         try {
-            // Pre-write validation
+
             if (!$this->validateBeforeWrite($filePath, $content)) {
                 return false;
             }
 
-            // Show summary of what will be written BEFORE asking for agreement
             $newKey = null;
             $newEntry = null;
 
-            // Find the new entry being added
             foreach ($content['lang_ref'] as $k => $e) {
                 if (!isset($e['existing'])) {
                     $newKey = $k;
@@ -1256,7 +1198,6 @@ class TranslationHub extends Command
 
             $this->showWriteSummary($filePath, $content, $newKey, $newEntry);
 
-            // Ask for confirmation after showing the summary with validation
             $confirm = $this->askWithValidation(
                 "Proceed with writing translation file? (y/N)",
                 [$this, 'validateYesNo'],
@@ -1269,7 +1210,6 @@ class TranslationHub extends Command
                 return false;
             }
 
-            // Ensure directory exists
             $dir = dirname($filePath);
             if (!is_dir($dir)) {
                 if (!mkdir($dir, 0755, true)) {
@@ -1279,22 +1219,18 @@ class TranslationHub extends Command
                 $this->output('success', "Created directory: {$dir}");
             }
 
-            // Check write permissions
             if (!is_writable($dir)) {
                 $this->output('error', "Directory not writable: {$dir}");
                 return false;
             }
 
-            // Generate PHP content with clean formatting
             $phpContent = $this->generateCleanPhpContent($content);
 
-            // Write file
             if (file_put_contents($filePath, $phpContent) === false) {
                 $this->output('error', "Failed to write file: {$filePath}");
                 return false;
             }
 
-            // Validate the written file
             if (!$this->validatePhpSyntax($filePath)) {
                 $this->output('error', "PHP syntax validation failed for: {$filePath}");
                 return false;
@@ -1311,19 +1247,16 @@ class TranslationHub extends Command
 
     private function validateBeforeWrite($filePath, $content): bool
     {
-        // Check if content is valid
         if (empty($content) || !is_array($content)) {
             $this->output('error', 'Invalid content provided for translation file');
             return false;
         }
 
-        // Check if file path is valid
         if (empty($filePath) || !is_string($filePath)) {
             $this->output('error', 'Invalid file path provided');
             return false;
         }
 
-        // Check if parent directory can be created
         $dir = dirname($filePath);
         if (!is_dir($dir) && !is_writable(dirname($dir))) {
             $this->output('error', "Cannot create directory (parent not writable): {$dir}");
@@ -1385,7 +1318,6 @@ class TranslationHub extends Command
         $this->output('info', '═══════════════════════════════════════════════════════════════════════════════');
         $this->output('info', '');
 
-        // Show detailed tickets for priority languages (English, Arabic, French)
         $priorityLanguages = $this->config['priority_ticket_languages'] ?? ['en', 'ar', 'fr'];
         foreach ($priorityLanguages as $locale) {
             if (isset($translationSummary[$locale])) {
@@ -1394,7 +1326,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Show summary for other languages
         $otherLanguages = array_diff(array_keys($translationSummary), $priorityLanguages);
         if (!empty($otherLanguages)) {
             $this->output('info', '-------------------------------------------------------');
@@ -1419,7 +1350,6 @@ class TranslationHub extends Command
         $this->output('info', '═══════════════════════════════════════════════════════════════════════════════');
         $this->output('info', '');
 
-        // Display comprehensive translation statistics
         $this->displayTranslationStatistics();
     }
 
@@ -1442,7 +1372,7 @@ class TranslationHub extends Command
         if (!empty($this->translationContext)) {
             $this->output('info', "'context'              => '{$this->translationContext}'");
             if ($locale !== 'en') {
-                // Show translated context for non-English
+
                 $translatedContext = $this->translateText($this->translationContext, $this->config['languages'][$locale]);
                 $this->output('info', "'context_destination'  => '{$translatedContext}'");
             }
@@ -1458,20 +1388,16 @@ class TranslationHub extends Command
 
     private function generateCleanPhpContent($content): string
     {
-        // ALWAYS extract locale from the file path being written to
         $filePath = $content['path'] ?? '';
         $locale = basename(dirname($filePath));
 
-        // Fallback if path extraction fails
         if (empty($locale) || $locale === '.') {
             $locale = $content['code'] ?? 'en';
         }
 
-        // Use DYNAMIC language names directly from config
         $languageName = $this->config['language_names'][$locale] ?? ucfirst($locale);
         $direction = $content['direction'] ?? (in_array($locale, $this->config['rtl_languages'] ?? []) ? 'rtl' : 'ltr');
 
-        // Get native name from config or fallback to language name
         $nativeName = $this->config['native_names'][$locale] ?? $languageName;
 
         $php = "<?php\n\nreturn [\n\n";
@@ -1484,7 +1410,7 @@ class TranslationHub extends Command
         $php .= "    | Auto-generated translations are marked accordingly.\n";
         $php .= "    |\n";
         $php .= "    */\n\n";
-        // Ensure we have proper values, especially for English
+
         $finalLanguageName = !empty($languageName) ? $languageName : ucfirst($locale);
         $finalLocale = !empty($locale) ? $locale : 'en';
 
@@ -1571,12 +1497,10 @@ class TranslationHub extends Command
         $this->output('info', "2. Fix permissions: sudo chmod 755 {$path}");
         $this->output('info', "3. Fix ownership: sudo chown -R \$(whoami):www-data {$path}");
 
-        // Get current user info for better diagnostics
         $currentUser = get_current_user();
 
         $this->output('info', "Current system user: {$currentUser}");
 
-        // Check if running via web server or CLI
         if (php_sapi_name() === 'cli') {
             $this->output('info', "Running via CLI - check file system permissions");
         } else {
@@ -1612,14 +1536,13 @@ class TranslationHub extends Command
      */
     private function getLanguageNameFromConfig($locale): string
     {
-        // First check if it's in the main config languages
+
         foreach ($this->config['languages'] as $code => $name) {
             if ($code === $locale) {
                 return ucfirst($name);
             }
         }
 
-        // Fallback: convert locale code to readable name
         return $this->localeToLanguageName($locale);
     }
 
@@ -1644,15 +1567,12 @@ class TranslationHub extends Command
      */
     private function ensureBaseDirectoryAccess(): bool
     {
-        // If base directory doesn't exist, try to create it
         if (!is_dir($this->baseDir)) {
             $this->output('info', "Base directory doesn't exist: {$this->baseDir}");
 
-            // Try to create base directory
             if (!$this->ensureDirectoryExists($this->baseDir)) {
                 $this->output('warning', "Cannot create base directory, trying alternative location");
 
-                // Try alternative writable directory
                 $alternatives = [
                     base_path('storage/app/translations'),
                     sys_get_temp_dir() . '/webkernel_translations',
@@ -1671,7 +1591,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Check if base directory is writable
         if (!is_writable($this->baseDir)) {
             $this->output('error', "Base directory not writable: {$this->baseDir}");
             $this->suggestPermissionFix($this->baseDir);
@@ -1706,7 +1625,6 @@ class TranslationHub extends Command
     {
         $this->output('info', 'Creating fallback translation files...');
 
-        // Use priority languages from config if we have permission issues
         $priorityLanguages = $this->config['priority_ticket_languages'] ?? ['en', 'ar', 'fr'];
 
         foreach ($priorityLanguages as $locale) {
@@ -1715,7 +1633,6 @@ class TranslationHub extends Command
 
             if (!file_exists($filePath)) {
                 $this->output('info', "Fallback: Creating minimal file for {$locale}");
-                // We'll create these files during the actual translation process
             }
         }
 
@@ -1727,7 +1644,6 @@ class TranslationHub extends Command
     {
         $this->output('info', 'Checking translation files...');
 
-        // Just check the 3 essential language files exist
         $files = [
             'en' => $this->baseDir . '/en/translations.php',
             'ar' => $this->baseDir . '/ar/translations.php',
@@ -1761,14 +1677,12 @@ class TranslationHub extends Command
         $this->output('info', '═══════════════════════════════════════════════════════════════════════════════');
         $this->output('info', '');
 
-        // Generate preview translations for priority languages
         $priorityLanguages = ['en', 'ar', 'fr'];
 
         foreach ($priorityLanguages as $locale) {
             $languageName = strtoupper($this->config['languages'][$locale] ?? $locale);
             $direction = in_array($locale, $this->config['rtl_languages'] ?? []) ? 'rtl' : 'ltr';
 
-            // Get the translation text
             if ($locale === 'en') {
                 $translatedText = $text;
             } else {
@@ -1792,7 +1706,7 @@ class TranslationHub extends Command
             if (!empty($this->translationContext)) {
                 $this->output('info', "'context'              => '{$this->translationContext}'");
                 if ($locale !== 'en') {
-                    // Use parsed context_destination if available, otherwise translate separately
+
                     $contextDestination = $this->lastContextDestination ??
                                         $this->translateContextSeparately($this->translationContext, $this->config['languages'][$locale]);
                     $this->output('info', "'context_destination'  => '{$contextDestination}'");
@@ -1894,28 +1808,24 @@ class TranslationHub extends Command
     private function writeTranslationFileDirect($filePath, $content)
     {
         try {
-            // Ensure directory exists
+
             $dir = dirname($filePath);
             if (!$this->ensureDirectoryExists($dir)) {
                 return false;
             }
 
-            // Generate PHP content with clean formatting
             $phpContent = $this->generateCleanPhpContent($content);
 
-            // Write file directly without confirmation
             $bytesWritten = file_put_contents($filePath, $phpContent);
             if ($bytesWritten === false) {
                 return false;
             }
 
-            // Validate the written file
             if (!$this->validatePhpSyntax($filePath)) {
                 $this->output('error', "PHP syntax validation failed for: {$filePath}");
                 return false;
             }
 
-            // Success - no verbose message during bulk mode
             return true;
 
         } catch (Exception $e) {
@@ -1923,10 +1833,6 @@ class TranslationHub extends Command
             return false;
         }
     }
-
-
-
-
 
     private function validateTranslationFile($filePath)
     {
@@ -1944,13 +1850,11 @@ class TranslationHub extends Command
             $backupPath = $filePath . '.backup.' . time();
             copy($filePath, $backupPath);
 
-            // Try to load and re-save with proper formatting
             $content = include $filePath;
             if (is_array($content)) {
                 return $this->writeTranslationFile($filePath, $content);
             }
 
-            // If still invalid, create minimal valid structure
             $this->createMinimalValidFile($filePath, in_array($locale, $this->config['rtl_languages']) ? 'rtl' : 'ltr');
             return true;
 
@@ -1971,7 +1875,7 @@ class TranslationHub extends Command
         try {
             $content = include $filePath;
             if (!is_array($content) || !isset($content[$oldKey])) {
-                return true; // Key doesn't exist, consider it success
+                return true;
             }
 
             $content[$newKey] = $content[$oldKey];
@@ -2003,7 +1907,6 @@ class TranslationHub extends Command
     {
         $this->output('info', 'Context specification for better translations:');
 
-        // Dynamic context gathering
         $context = $this->askWithReadline("Specify the context domain (e.g., 'software' ...) or press Enter to skip", '');
 
         $this->translationContext = $context;
@@ -2012,20 +1915,17 @@ class TranslationHub extends Command
             $this->output('info', "Context set: {$context}");
         }
 
-        // Word substitutions for better translation accuracy
         $this->output('info', 'Word substitutions for better translation understanding:');
         $this->output('info', 'Some technical words may be misunderstood. You can suggest replacements that preserve meaning.');
         $this->output('info', "Example: 'key' -> 'configuration-key' or 'parameter'");
 
         $substitutions = [];
 
-        // Only ask for word replacements if enabled in config
         if ($this->config['word_replacement_enabled'] ?? false) {
             while (true) {
                 $word = $this->askWithReadline("Enter a word to replace (or press Enter to skip)");
                 if (empty($word)) break;
 
-            // Validate replacement word
             $replacement = $this->askWithValidation(
                 "Replace '{$word}' with",
                 [$this, 'validateNonEmpty'],
@@ -2052,13 +1952,12 @@ class TranslationHub extends Command
     private function askWithReadline($question, $default = '')
     {
         if (function_exists('readline')) {
-            // Enable readline editing features for left-right navigation
+
             readline_completion_function(function() { return []; });
 
             $prompt = $default ? "{$question} [{$default}]: " : "{$question}: ";
             $answer = readline($prompt);
 
-            // Add to history for up-down navigation
             if ($answer !== false && !empty(trim($answer))) {
                 readline_add_history($answer);
             }
@@ -2160,7 +2059,6 @@ class TranslationHub extends Command
                         $englishText = $englishText['label'] ?? '';
                     }
 
-                    // Get original context for consistent retranslation
                     $originalContext = '';
                     if (is_array($englishEntry) && isset($englishEntry['context'])) {
                         $originalContext = $englishEntry['context'];
@@ -2175,7 +2073,7 @@ class TranslationHub extends Command
                         $errors++;
                     }
 
-                    usleep(300000); // Rate limiting
+                    usleep(300000);
 
                 } catch (Exception $e) {
                     $this->handleError("Translation failed for {$locale}:{$key}", ['error' => $e->getMessage()]);
@@ -2207,7 +2105,6 @@ class TranslationHub extends Command
                 $this->applyUnprotection($keyList, $this->option('before'), $this->option('after'));
         }
 
-        // Interactive mode
         while (true) {
             $key = $this->askWithReadline('Enter translation key to ' . ($protect ? 'protect' : 'unprotect') . ' (or press Enter to finish)');
             if (empty($key)) break;
@@ -2448,7 +2345,6 @@ class TranslationHub extends Command
         return null;
     }
 
-    // Helper methods for interactive mode
     private function showHelp(): void
     {
         $this->output('info', '=== WEBKERNEL DEVELOPMENT TOOLS ===');
@@ -2483,7 +2379,6 @@ class TranslationHub extends Command
     {
         $this->output('info', 'Webkernel Dev-Tools: Entering interactive translation mode...');
 
-        // Validate English text input
         $text = $this->askWithValidation(
             "Enter English text to translate",
             [$this, 'validateNonEmpty'],
@@ -2496,11 +2391,9 @@ class TranslationHub extends Command
             return 1;
         }
 
-        // Auto-generate translation key from text
         $autoKey = $this->generateKeyFromText($text);
         $this->output('info', "Auto-generated key: {$autoKey}");
 
-        // Ask for translation key with auto-generated as default
         $key = $this->askWithValidation(
             "Enter translation key",
             [$this, 'validateTranslationKey'],
@@ -2516,14 +2409,11 @@ class TranslationHub extends Command
         $this->output('success', "Using translation key: {$key}");
         $this->output('info', '');
 
-        // Set the arguments for processing
         $this->input->setArgument('text', $text);
         $this->input->setArgument('key', $key);
 
-        // Ensure all translation files exist before starting
         $this->ensureAllTranslationFilesExist();
 
-        // Continue with normal translation process
         return $this->handle();
     }
 
@@ -2537,7 +2427,6 @@ class TranslationHub extends Command
         return $key ?: 'auto_generated_' . time();
     }
 
-    // Utility methods
     private function getLanguageFilePath($locale)
     {
         return $this->baseDir . '/' . $locale . '/translations.php';
@@ -2553,15 +2442,12 @@ class TranslationHub extends Command
             return "''";
         }
 
-        // Normalize Unicode characters to NFC (Normalization Form Canonical Composition)
         if (function_exists('normalizer_normalize')) {
             $content = normalizer_normalize($content, \Normalizer::FORM_C);
         }
 
-        // Check if the content is Semitic (Arabic, Hebrew, etc.)
         $isSemitic = $this->isSemiticText($content);
 
-        // Strategy 1: Try single quotes first (cleanest for Arabic)
         $escaped = str_replace(['\\', "'"], ['\\\\', "\\'"], $content);
         $test1 = "'" . $escaped . "'";
 
@@ -2569,7 +2455,6 @@ class TranslationHub extends Command
             return $test1;
         }
 
-        // Strategy 2: Try double quotes with proper escaping (more reliable for Unicode)
         $escaped = addslashes($content);
         $test2 = '"' . $escaped . '"';
 
@@ -2577,7 +2462,6 @@ class TranslationHub extends Command
             return $test2;
         }
 
-        // Strategy 3: Use heredoc only for really complex content
         if ($isSemitic || $this->hasProblematicChars($content)) {
             $marker = 'EOT_' . uniqid();
             $test3 = "<<<{$marker}\n{$content}\n{$marker}";
@@ -2610,7 +2494,7 @@ class TranslationHub extends Command
             return true;
         }
 
-        // Hebrew Unicode ranges
+        // Hebrew
         if (preg_match('/[\x{0590}-\x{05FF}\x{FB1D}-\x{FB4F}]/u', $text)) {
             return true;
         }
@@ -2628,7 +2512,7 @@ class TranslationHub extends Command
      */
     private function hasProblematicChars($text): bool
     {
-        // Check for characters that often cause escaping problems
+
         $problematicChars = [
             "\x00", "\x01", "\x02", "\x03", "\x04", "\x05", "\x06", "\x07",
             "\x08", "\x0B", "\x0C", "\x0E", "\x0F", "\x10", "\x11", "\x12",
@@ -2642,7 +2526,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Check for mixed RTL/LTR content that might cause issues
         $hasRTL = preg_match('/[\x{0590}-\x{08FF}\x{FB1D}-\x{FDFF}\x{FE70}-\x{FEFF}]/u', $text);
         $hasLTR = preg_match('/[a-zA-Z]/', $text);
 
@@ -2654,21 +2537,19 @@ class TranslationHub extends Command
      */
     private function validatePhpSyntax($phpCode): bool
     {
-        // Use token_get_all for syntax validation
+
         $tokens = @token_get_all($phpCode);
 
         if ($tokens === false) {
             return false;
         }
 
-        // Check for parse errors in tokens
         foreach ($tokens as $token) {
             if (is_array($token) && $token[0] === T_BAD_CHARACTER) {
                 return false;
             }
         }
 
-        // Additional validation with eval in sandbox
         $tempFile = tempnam(sys_get_temp_dir(), 'php_syntax_check_');
         file_put_contents($tempFile, $phpCode);
 
@@ -2690,15 +2571,12 @@ class TranslationHub extends Command
             return $originalText;
         }
 
-        // If no context was used, apply basic cleaning
         if (empty($this->translationContext)) {
             $cleaned = trim($translation, '"\'');
             $cleaned = preg_replace('/\s+/', ' ', $cleaned);
 
-            // CRITICAL: Restore protected placeholders EVEN without context
             $cleaned = $this->restoreProtectedPlaceholders($cleaned);
 
-            // Normalize Unicode for Arabic and other Semitic languages
             if (function_exists('normalizer_normalize')) {
                 $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
             }
@@ -2706,41 +2584,34 @@ class TranslationHub extends Command
             return trim($cleaned) ?: $originalText;
         }
 
-        // Parse the translated result to extract clean label and context_destination
         $parsed = $this->parseTranslatedResult($translation);
 
-        // Store the context_destination for later use
         if (!empty($parsed['context_destination'])) {
             $this->lastContextDestination = $this->restoreProtectedPlaceholders($parsed['context_destination']);
         }
 
         $cleaned = $parsed['label'];
 
-        // CRITICAL: Restore protected placeholders FIRST before any other processing
         $cleaned = $this->restoreProtectedPlaceholders($cleaned);
 
-        // Apply standard cleaning and normalization
         $cleaned = trim($cleaned, '"\'');
         $cleaned = preg_replace('/\s+/', ' ', $cleaned);
 
 
 
-        // Normalize Unicode for Arabic and other Semitic languages
         if (function_exists('normalizer_normalize')) {
             $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
         }
 
-        // CRITICAL: Detect if translation actually failed (text unchanged or too similar)
         $similarity = similar_text(strtolower($cleaned), strtolower($originalText), $percent);
 
         if (strlen($cleaned) < 3 ||
             preg_match('/^[\x{2000}-\x{206F}\x{00}-\x{1F}\.]+$/u', $cleaned) ||
-            $percent > 85 || // Text is too similar to original (likely unchanged)
+            $percent > 85 ||
             $cleaned === $originalText) {
 
             $this->line("<fg=red>⚠ Translation failed or unchanged (similarity: {$percent}%), attempting fallback...</>");
 
-            // Track incident with engine details
             $this->translationStats['incidents'][] = [
                 'engine' => $this->selectedEngine,
                 'similarity' => $percent,
@@ -2748,10 +2619,8 @@ class TranslationHub extends Command
             ];
             $this->translationStats['total_failures']++;
 
-            // Store current target language for fallback
             $targetLang = $this->currentTargetLanguage ?? 'ar';
 
-            // Try Google as fallback
             $cmd = "trans -e google -brief en:{$targetLang} " . escapeshellarg($originalText) . " 2>/dev/null";
             $fallbackResult = trim(shell_exec($cmd));
 
@@ -2765,12 +2634,11 @@ class TranslationHub extends Command
                     }
                     $this->line("<fg=yellow>→ Fallback translation successful</>");
 
-                    // Track successful fallback
                     $this->translationStats['fallbacks'][] = $targetLang;
                     $this->translationStats['engines_used']['google'] =
                         ($this->translationStats['engines_used']['google'] ?? 0) + 1;
                 } else {
-                    // Track complete failure
+
                     $this->translationStats['complete_failures'][] = $targetLang;
                     $this->translationStats['incidents'][] = [
                         'engine' => 'google',
@@ -2780,7 +2648,7 @@ class TranslationHub extends Command
                     throw new Exception("Translation failed: both Bing and Google returned unchanged text (similarity > 85%)");
                 }
             } else {
-                // Track complete failure
+
                 $this->translationStats['complete_failures'][] = $targetLang;
                 throw new Exception("Translation failed: both engines returned unchanged or empty text");
             }
@@ -2797,7 +2665,6 @@ class TranslationHub extends Command
         $startTime = microtime(true);
         $feedbackGiven = false;
 
-        // Start the command in background and monitor
         $descriptorSpec = [
             0 => ["pipe", "r"],  // stdin
             1 => ["pipe", "w"],  // stdout
@@ -2807,13 +2674,11 @@ class TranslationHub extends Command
         $process = proc_open($command, $descriptorSpec, $pipes);
 
         if (!is_resource($process)) {
-            return trim(shell_exec($command)); // Fallback to normal execution
+            return trim(shell_exec($command));
         }
 
-        // Close stdin as we don't need it
         fclose($pipes[0]);
 
-        // Make stdout and stderr non-blocking
         stream_set_blocking($pipes[1], 0);
         stream_set_blocking($pipes[2], 0);
 
@@ -2823,7 +2688,7 @@ class TranslationHub extends Command
         while (true) {
             $status = proc_get_status($process);
             if (!$status['running']) {
-                // Process finished, collect remaining output
+
                 $output .= stream_get_contents($pipes[1]);
                 break;
             }
@@ -2831,7 +2696,6 @@ class TranslationHub extends Command
             $currentTime = microtime(true);
             $elapsed = ($currentTime - $startTime) * 1000; // Convert to milliseconds
 
-            // Check if we should reassure the user
             if ($elapsed > self::TTL_BEFORE_REASSURING_USER && !$feedbackGiven) {
                 $this->line('');
                 $this->line("    <fg=cyan>• Please wait, operation still in progress ({$operationDescription})...</>");
@@ -2839,14 +2703,11 @@ class TranslationHub extends Command
                 $feedbackGiven = true;
             }
 
-            // Read any available output
             $output .= stream_get_contents($pipes[1]);
 
-            // Small delay to prevent high CPU usage
             usleep(100000); // 100ms
         }
 
-        // Close pipes and process
         fclose($pipes[1]);
         fclose($pipes[2]);
         proc_close($process);
@@ -2862,7 +2723,6 @@ class TranslationHub extends Command
         $this->newLine();
         $this->drawSeparator("", "cyan");
 
-        // Calculate overall statistics
         $totalTranslations = count($this->translationStats['times']);
         $totalFailures = $this->translationStats['total_failures'];
         $successfulTranslations = $totalTranslations - count($this->translationStats['complete_failures']);
@@ -2870,12 +2730,10 @@ class TranslationHub extends Command
         $completeFails = count($this->translationStats['complete_failures']);
         $incidents = count($this->translationStats['incidents']);
 
-        // Calculate rates
         $failureRate = $totalTranslations > 0 ? round(($totalFailures / $totalTranslations) * 100, 1) : 0;
         $recoveryRate = $totalFailures > 0 ? round(($fallbackSuccesses / $totalFailures) * 100, 1) : 0;
         $completeFailureRate = $totalTranslations > 0 ? round(($completeFails / $totalTranslations) * 100, 1) : 0;
 
-        // Calculate engine percentages
         $engineStats = [];
         $totalEngineUsage = array_sum($this->translationStats['engines_used']);
         foreach ($this->translationStats['engines_used'] as $engine => $count) {
@@ -2883,18 +2741,16 @@ class TranslationHub extends Command
             $engineStats[$engine] = ['count' => $count, 'percentage' => $percentage];
         }
 
-        // Performance calculations
         $avgDuration = count($this->translationStats['times']) > 0 ?
             round(array_sum($this->translationStats['times']) / count($this->translationStats['times']), 2) : 0;
 
-        // Find slowest and fastest with language info
         $slowestTime = 0;
         $fastestTime = PHP_FLOAT_MAX;
         $slowestLang = '';
         $fastestLang = '';
 
         foreach ($this->translationStats['language_times'] as $lang => $time) {
-            if ($lang !== 'en') { // Exclude English
+            if ($lang !== 'en') {
                 if ($time > $slowestTime) {
                     $slowestTime = $time;
                     $slowestLang = $lang;
@@ -2906,7 +2762,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Display main results
         $this->line("<fg=green;options=bold>Translation completed!</>");
         $this->newLine();
 
@@ -2937,7 +2792,6 @@ class TranslationHub extends Command
             $this->line("<fg=red>Failed languages:</> " . implode(', ', $this->translationStats['complete_failures']));
         }
 
-        // Performance metrics
         $this->newLine();
         $this->line("<fg=cyan;options=bold>Performance Metrics:</>");
         $this->line("Average duration: <fg=yellow>{$avgDuration}ms</>");
@@ -2948,7 +2802,6 @@ class TranslationHub extends Command
             $this->line("Fastest translation: <fg=green>{$fastestTime}ms</> (language: {$fastestLang})");
         }
 
-        // Incidents
         if ($incidents > 0) {
             $this->newLine();
             $this->line("<fg=red;options=bold>Incident count: {$incidents}</>");
@@ -2958,23 +2811,19 @@ class TranslationHub extends Command
             }
         }
 
-        // Additional metrics suggestions
         if ($totalTranslations > 0) {
             $this->newLine();
             $this->line("<fg=cyan;options=bold>Additional Insights:</>");
 
-            // Quality assessment
             $qualityScore = 100 - $failureRate - ($completeFailureRate * 2);
             $qualityLevel = $qualityScore >= 90 ? 'Excellent' : ($qualityScore >= 75 ? 'Good' : ($qualityScore >= 60 ? 'Acceptable' : 'Needs Improvement'));
             $this->line("Quality Score: <fg=green>{$qualityScore}%</> ({$qualityLevel})");
 
-            // Engine reliability
             if (isset($engineStats['bing']) && isset($engineStats['google'])) {
                 $primaryEngine = $engineStats['bing']['percentage'] > $engineStats['google']['percentage'] ? 'bing' : 'google';
                 $this->line("Primary Engine: <fg=cyan>{$primaryEngine}</> ({$engineStats[$primaryEngine]['percentage']}% usage)");
             }
 
-            // Language complexity insights
             if ($slowestLang && $fastestLang) {
                 $complexityRatio = round($slowestTime / $fastestTime, 2);
                 $this->line("Complexity Ratio: <fg=yellow>{$complexityRatio}x</> (most/least complex languages)");
@@ -3005,8 +2854,6 @@ class TranslationHub extends Command
      */
     private function parseTranslatedResult($translatedText)
     {
-        // Look for the pattern >)>>>> (...) <<<<(< or its broken variations
-        // Pattern 1: Complete marker
         if (preg_match('/^(.+?)\s*>\)>>>>\s*\([^)]*\)\s*<<<<\(<\s*(.+)$/u', $translatedText, $matches)) {
             return [
                 'label' => trim($matches[1]),
@@ -3014,7 +2861,6 @@ class TranslationHub extends Command
             ];
         }
 
-        // Pattern 2: Broken marker like ">)>>>> (< something"
         if (preg_match('/^(.+?)\s*>\)>>>>\s*\(<\s*(.+)$/u', $translatedText, $matches)) {
             return [
                 'label' => trim($matches[1]),
@@ -3022,7 +2868,6 @@ class TranslationHub extends Command
             ];
         }
 
-        // Pattern 3: Any ">)>" pattern
         if (preg_match('/^(.+?)\s*>\).*?<\s*(.+)$/u', $translatedText, $matches)) {
             return [
                 'label' => trim($matches[1]),
@@ -3030,7 +2875,6 @@ class TranslationHub extends Command
             ];
         }
 
-        // Fallback: return original text as label, context will be translated separately
         return [
             'label' => $translatedText,
             'context_destination' => null
@@ -3058,7 +2902,6 @@ class TranslationHub extends Command
             }
         }
 
-        // Validate that all placeholders were restored
         if (preg_match('/__(?:PLACEHOLDER|PRINTF)_\d+__/', $restored)) {
             $this->output('warning', 'Some placeholders may not have been properly restored');
         }

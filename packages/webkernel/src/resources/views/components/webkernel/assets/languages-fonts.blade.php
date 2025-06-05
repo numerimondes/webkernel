@@ -9,28 +9,19 @@
     /*--- Japanese ---*/
     @import url('https://fonts.googleapis.com/css2?family=Noto+Sans+JP&display=swap');
 
-    [lang="ar"] {
-      /*  font-family: 'Amiri', serif;*/
-    }
-
     [lang="ar"] h1,
     [lang="ar"] h2,
     [lang="ar"] h3 {
     font-family: 'Amiri', serif !important;
     }
 
-    [lang="he"] {
+    [lang="he"] h1,
+    [lang="he"] h2,
+    [lang="he"] h3 {
         font-family: 'Frank+Ruhl+Libre', serif;
     }
     [lang="ja"] {
         font-family: 'Noto Sans JP', sans-serif;
-    }
-
-    aside,
-    [lang="ar"] aside,
-    [lang="he"] aside,
-    [lang="ja"] aside {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif !important;
     }
 
     .force-inter,
