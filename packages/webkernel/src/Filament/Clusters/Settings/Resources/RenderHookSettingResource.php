@@ -104,8 +104,8 @@ class RenderHookSettingResource extends Resource
     protected static function getCustomizeViewAction(): Action
     {
         return Action::make('customize_view')
-            ->label(__('customize_this_view'))
-            ->icon('heroicon-m-pencil-square')
+            ->label(__('Customize This View'))
+            ->icon('heroicon-o-pencil-square')
             ->color('primary')
             ->visible(function ($record) {
                 $visible = self::originalViewExists($record) && !File::exists(self::getFullViewPath($record));
@@ -114,16 +114,16 @@ class RenderHookSettingResource extends Resource
             })
             ->requiresConfirmation()
             ->modalHeading(__('Customize View'))
-            ->modalDescription(__('This will create a customized copy of the original view file that you can modify.'))
+            ->modalDescription(__('This will create a customized copy of the original view file.'))
             ->modalSubmitActionLabel(__('Customize'))
-            ->modalWidth('lg')
             ->modalCancelActionLabel(__('Cancel'))
+            ->modalWidth('lg')
             ->action(function ($record, Component $livewire) {
                 Log::info('Customize view action triggered for hook_key: ' . ($record->hook_key ?? 'null'));
                 try {
                     $viewPath = self::getViewPathFromHookKey($record->hook_key);
                     if (empty($viewPath)) {
-                        Log::error('No view path found for hook_key: ' . $record->hook_key);
+                        Log::error('No view path found for hook_key: ' . ($record->hook_key ?? 'null'));
                         Notification::make()
                             ->title(__('Action Failed'))
                             ->body(__('No view path defined for this hook.'))
@@ -146,7 +146,7 @@ class RenderHookSettingResource extends Resource
                         $livewire->dispatch('refresh');
                     }
                 } catch (Exception $e) {
-                    Log::error('Customize view action failed: ' . $e->getMessage());
+                    Log::error('Customize view action failed: ' . $e->getMessage(), ['exception' => $e]);
                     Notification::make()
                         ->title(__('Action Failed'))
                         ->body($e->getMessage())
@@ -160,7 +160,7 @@ class RenderHookSettingResource extends Resource
     {
         return Action::make('edit_custom_view')
             ->label(__('Edit View'))
-            ->icon('heroicon-m-code-bracket')
+            ->icon('heroicon-o-code-bracket')
             ->color('secondary')
             ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->form([
@@ -207,7 +207,7 @@ class RenderHookSettingResource extends Resource
                         ->send();
                     $livewire->dispatch('refresh');
                 } catch (Exception $e) {
-                    Log::error('View save failed: ' . $e->getMessage());
+                    Log::error('View save failed: ' . $e->getMessage(), ['exception' => $e]);
                     if (File::exists($backupPath)) {
                         File::put($path, File::get($backupPath));
                         File::delete($backupPath);
@@ -227,7 +227,7 @@ class RenderHookSettingResource extends Resource
     {
         return Action::make('delete_custom_view')
             ->label(__('Delete View'))
-            ->icon('heroicon-m-trash')
+            ->icon('heroicon-o-trash')
             ->color('danger')
             ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->requiresConfirmation()
@@ -242,8 +242,8 @@ class RenderHookSettingResource extends Resource
                 return __('This will delete your customized view and restore default behavior.');
             })
             ->modalSubmitActionLabel(__('Confirm Deletion'))
-            ->modalWidth('lg')
             ->modalCancelActionLabel(__('Cancel'))
+            ->modalWidth('lg')
             ->action(function ($record, Component $livewire) {
                 Log::info('Attempting to delete custom view for hook_key: ' . ($record->hook_key ?? 'null'));
                 try {
@@ -254,7 +254,7 @@ class RenderHookSettingResource extends Resource
                         ->send();
                     $livewire->dispatch('refresh');
                 } catch (Exception $e) {
-                    Log::error('View deletion failed: ' . $e->getMessage());
+                    Log::error('View deletion failed: ' . $e->getMessage(), ['exception' => $e]);
                     Notification::make()
                         ->title(__('Deletion Failed'))
                         ->body($e->getMessage())
@@ -351,7 +351,7 @@ class RenderHookSettingResource extends Resource
 
             return $result;
         } catch (Exception $e) {
-            Log::error('Copy view failed: ' . $e->getMessage());
+            Log::error('Copy view failed: ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }
@@ -367,7 +367,7 @@ class RenderHookSettingResource extends Resource
             Log::info('Blade syntax validation passed');
             return true;
         } catch (Throwable $e) {
-            Log::error('Blade syntax validation failed: ' . $e->getMessage());
+            Log::error('Blade syntax validation failed: ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }
@@ -401,7 +401,7 @@ class RenderHookSettingResource extends Resource
             Log::info('View reverted successfully: ' . $destination);
             return true;
         } catch (Exception $e) {
-            Log::error('View revert failed: ' . $e->getMessage());
+            Log::error('View revert failed: ' . $e->getMessage(), ['exception' => $e]);
             return false;
         }
     }

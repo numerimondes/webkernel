@@ -36,8 +36,9 @@
   <p>This single command sets up a complete Laravel + FilamentPHP environment with pre-configured modules, translations, and development tools.
 </p>
 <p style="max-width: 600px; margin-top: auto; line-height: 1.6;">
-  <img src="packages/webkernel/src/resources/repo-assets/credits/yassine.jpg" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;"><br>
-  Created by <a href="https://www.linkedin.com/in/elmoumenyassine/" target="_blank" rel="noopener noreferrer">El Moumen Yassine</a>, for <a href="https://numerimondes.com" target="_blank" rel="noopener noreferrer">Numerimondes</a>
+  <img src="packages/webkernel/src/resources/repo-assets/credits/yassine.png" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;"><br>
+  Created by <a href="https://www.linkedin.com/in/elmoumenyassine/" target="_blank" rel="noopener noreferrer">
+  El Moumen Yassine</a>, for <a href="https://numerimondes.com" target="_blank" rel="noopener noreferrer">Numerimondes</a>
 </p>
 
 </div>
