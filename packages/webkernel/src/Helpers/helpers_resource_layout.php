@@ -152,7 +152,7 @@ if (!function_exists('webkernel_get_layout')) {
 
         // Get layout name from resource class property
         if ($resourceClass && class_exists($resourceClass)) {
-            $reflection = new \ReflectionClass($resourceClass);
+            $reflection = new ReflectionClass($resourceClass);
             if ($reflection->hasProperty('webkernel_layout')) {
                 $property = $reflection->getProperty('webkernel_layout');
                 if ($property->isStatic()) {

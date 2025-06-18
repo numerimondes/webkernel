@@ -2,6 +2,7 @@
 
 namespace Webkernel\Providers;
 
+use Blade;
 use Illuminate\Support\ServiceProvider;
 
 class WebkernelBladeServiceProvider extends ServiceProvider
@@ -27,6 +28,6 @@ class WebkernelBladeServiceProvider extends ServiceProvider
      */
     protected function registerBladeDirectives(): void
     {
-        \Blade::directive('webkernel', fn($expression) => "<?php echo webkernel_include({$expression}); ?>");
+        Blade::directive('webkernel', fn($expression) => "<?php echo webkernel_include({$expression}); ?>");
     }
 }

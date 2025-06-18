@@ -3,33 +3,24 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
+use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
         Schema::table('users', function (Blueprint $table) {
-            // Ajout de nouvelles colonnes
             $table->string('username')->unique();
             $table->string('mobile')->nullable()->unique();
             $table->string('whatsapp')->nullable()->unique();
             $table->string('timezone')->nullable();
-            $table->string('user_lang', 2)->default('en'); // Définir la valeur par défaut
-
-            // Activité de l'utilisateur
+            $table->string('user_lang', 2)->default('en');
             $table->boolean('forceChangePassword')->default(true);
             $table->boolean('is_active')->default(true);
             $table->boolean('is_banned')->default(false);
             $table->foreignId('created_by')->nullable()->constrained('users')->nullOnDelete();
-
-            // subscriptions
             $table->boolean('marketing_callable')->default(true);
             $table->boolean('marketing_whatsappable')->default(true);
             $table->boolean('marketing_smsable')->default(true);
-
-            // Multi-tenant
             $table->integer('belongs_to')->default(1); // Tenant before implementation
         });
 
@@ -44,29 +35,42 @@ return new class extends Migration {
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('users', function (Blueprint $table) {
-            // Suppression des colonnes ajoutées
-            $table->dropColumn('username');
-            $table->dropColumn('mobile');
-            $table->dropColumn('whatsapp');
-            $table->dropColumn('timezone');
-            $table->dropColumn('user_lang');
-            $table->dropColumn('forceChangePassword');
-            $table->dropColumn('is_active');
-            $table->dropColumn('is_banned');
-            $table->dropColumn('created_by');
-            $table->dropColumn('marketing_callable');
-            $table->dropColumn('marketing_whatsappable');
-            $table->dropColumn('marketing_smsable');
-            $table->dropColumn('belongs_to');
-        });
+        Schema::disableForeignKeyConstraints();
 
-        // Suppression de la table history_sessions
+        if (Schema::hasTable('users')) {
+            if (Schema::hasColumn('users', 'created_by')) {
+                try {
+                    DB::statement('ALTER TABLE `users` DROP FOREIGN KEY `users_created_by_foreign`');
+                } catch (\Throwable $e) {}
+            }
+
+            Schema::table('users', function (Blueprint $table) {
+                foreach ([
+                    'username',
+                    'mobile',
+                    'whatsapp',
+                    'timezone',
+                    'user_lang',
+                    'forceChangePassword',
+                    'is_active',
+                    'is_banned',
+                    'created_by',
+                    'marketing_callable',
+                    'marketing_whatsappable',
+                    'marketing_smsable',
+                    'belongs_to',
+                ] as $column) {
+                    if (Schema::hasColumn('users', $column)) {
+                        $table->dropColumn($column);
+                    }
+                }
+            });
+        }
+
         Schema::dropIfExists('history_sessions');
+
+        Schema::enableForeignKeyConstraints();
     }
 };

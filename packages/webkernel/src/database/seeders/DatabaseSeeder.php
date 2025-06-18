@@ -3,6 +3,7 @@
 namespace Webkernel\database\seeders;
 
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
+use DB;
 use Illuminate\Database\Seeder;
 use Webkernel\UsersDriver\Models\User;
 
@@ -29,7 +30,7 @@ class DatabaseSeeder extends Seeder
         $populateDirFilePath = '/database/language_translations';
 
         if (file_exists($populateFilePath)) {
-            \DB::unprepared(
+            DB::unprepared(
                 file_get_contents($populateFilePath)
             );
         } else {

@@ -1,9 +1,12 @@
 <?php
 namespace Webkernel\Providers;
 
+use DB;
+use Exception;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentView;
 use Filament\View\PanelsRenderHook;
+use Filament\Facades\Filament;
 use Illuminate\Support\Facades\Schema;
 use Webkernel\Models\RenderHookSetting;
 
@@ -23,21 +26,26 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
     protected function isRenderHookEnabled(string $key): bool
     {
         try {
-            \DB::connection()->getPdo();
+            DB::connection()->getPdo();
             if (!Schema::hasTable('render_hook_settings')) {
                 return true;
             }
             return (bool) optional(RenderHookSetting::where('hook_key', $key)->first())->enabled ?? true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             return true;
         }
     }
 
     protected function forceSidebarCollapsible(): void
     {
-        $currentPanel = filament()->getCurrentPanel();
-        if ($currentPanel) {
-            $this->forceSidebarSettings($currentPanel);
+        try {
+            $currentPanel = Filament::getCurrentPanel();
+            if ($currentPanel) {
+                $this->forceSidebarSettings($currentPanel);
+            }
+        } catch (Exception $e) {
+            // Si aucun panel n'est disponible, on ignore silencieusement
+            // Cela peut arriver pendant les commandes artisan ou les migrations
         }
     }
 
@@ -47,7 +55,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
         $currentPanel->sidebarFullyCollapsibleOnDesktop(true);
     }
 
-      protected function registerPanelsRenderHooks(): void
+    protected function registerPanelsRenderHooks(): void
     {
         if (!app()->runningInConsole()) {
             app()->singleton('page_start_time', fn() => microtime(true));

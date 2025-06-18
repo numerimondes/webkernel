@@ -2,6 +2,7 @@
 
 namespace Webkernel\Console\Commands;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 
@@ -32,7 +33,7 @@ class TestDbCo extends Command
             DB::connection()->getPdo();
             $this->info('true'); // Connexion réussie
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->info('false'); // Connexion échouée
             return false;
         }

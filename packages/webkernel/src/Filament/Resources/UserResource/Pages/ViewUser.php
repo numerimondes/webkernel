@@ -2,6 +2,7 @@
 
 namespace Webkernel\Filament\Resources\UserResource\Pages;
 
+use Filament\Actions\EditAction;
 use Webkernel\Filament\Resources\UserResource;
 use Filament\Actions;
 use Filament\Resources\Pages\ViewRecord;
@@ -13,7 +14,7 @@ class ViewUser extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            EditAction::make(),
         ];
     }
 }

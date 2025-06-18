@@ -1,6 +1,7 @@
 <?php
 namespace Webkernel\Console\Package;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
@@ -35,7 +36,7 @@ class CreatePackage extends Command
             $this->displaySuccess($packageData);
 
             return 0;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("Package creation failed: {$e->getMessage()}");
             return 1;
         }
@@ -291,7 +292,7 @@ class CreatePackage extends Command
         foreach ($generators as $generator) {
             try {
                 $this->$generator($packageDir, $packageData);
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->warn("Warning: Failed to generate file with {$generator}: {$e->getMessage()}");
             }
         }

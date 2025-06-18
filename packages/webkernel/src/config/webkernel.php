@@ -1,5 +1,7 @@
 <?php
 
+use Webkernel\Traits\UserExtensions;
+
 /*
 |--------------------------------------------------------------------------
 | Webkernel Configuration File
@@ -21,7 +23,6 @@
 | for modern web applications.
 |
 */
-
 return [
     /*
     |--------------------------------------------------------------------------
@@ -76,7 +77,7 @@ return [
             */
             'extensions' => [
                 'webkernel' => [
-                    'trait' => \Webkernel\Traits\UserExtensions::class,
+                    'trait' => UserExtensions::class,
                     'description' => 'Base webkernel user extensions with username, mobile, language, etc.',
                 ],
 

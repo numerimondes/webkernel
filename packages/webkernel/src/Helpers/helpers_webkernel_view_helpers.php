@@ -58,11 +58,11 @@ if (!function_exists('safe_render_hook_view')) {
                 return view($viewName, $data)->render();
             }
 
-            \Log::warning("RenderHook view not found: {$viewName} (tried custom: {$customView})");
+            Log::warning("RenderHook view not found: {$viewName} (tried custom: {$customView})");
             return '';
 
-        } catch (\Throwable $e) {
-            \Log::error("Error rendering renderHook view '{$viewName}': " . $e->getMessage());
+        } catch (Throwable $e) {
+            Log::error("Error rendering renderHook view '{$viewName}': " . $e->getMessage());
             return '';
         }
     }

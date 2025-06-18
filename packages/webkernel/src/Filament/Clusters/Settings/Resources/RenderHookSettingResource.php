@@ -4,13 +4,11 @@ namespace Webkernel\Filament\Clusters\Settings\Resources;
 use Filament\Forms;
 use Filament\Tables;
 use Livewire\Component;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
 use Pages\ListRenderHookSettings;
 use BladeUI\Icons\Components\Icon;
 use Illuminate\Support\HtmlString;
-use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Filament\Support\Enums\MaxWidth;
 use Illuminate\Support\Facades\File;
@@ -19,7 +17,6 @@ use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Blade;
 use Symfony\Component\Process\Process;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
@@ -34,12 +31,17 @@ use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Illuminate\View\Exceptions\CompilationException;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\RelationManagers;
-use Filament\Pages\SubNavigationPosition;
+use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting;
+use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting;
+use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting;
+use Filament\Tables\Actions\EditAction; // Changed from Filament\Actions\EditAction
+use Filament\Tables\Actions\Action; // Changed from Filament\Actions\Action
+use Filament\Support\Enums\IconSize;
+use Exception;
+use Throwable;
 
 class RenderHookSettingResource extends Resource
 {
-protected static SubNavigationPosition $subNavigationPosition = SubNavigationPosition::Top;
-
     protected static ?string $model = RenderHookSetting::class;
     protected static ?string $navigationIcon = 'heroicon-o-ellipsis-horizontal-circle';
     protected static ?string $cluster = Settings::class;
@@ -66,59 +68,58 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                     ->disabled()
                     ->maxLength(255),
             ]);
-    }public static function table(Tables\Table $table): Tables\Table
-{
-    return $table
-        ->columns([
-            IconColumn::make('icon')
-                ->label('')
-                ->width('1%')
-                ->icon(fn($record) => $record->icon)
-                ->size(IconColumn\IconColumnSize::Medium),
+    }
 
-            TextColumn::make('hook_key')
-                ->label(lang('action_to_perform'))
-                ->formatStateUsing(function ($state, $record) {
-                    $title = lang($record->hook_key); // Traduction de la clé
-                    $desc = lang($record->translation_desc_key); // Traduction de la description
-                    return "{$title}<br>{$desc}";
-                })
-                ->html()
-                ->wrap()
-                ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
+    public static function table(Table $table): Table
+    {
+        return $table
+            ->columns([
+                IconColumn::make('icon')
+                    ->label('')
+                    ->width('1%')
+                    ->icon(fn($record) => $record->icon)
+                    ->size('md'),
 
-               SelectColumn::make('where_placed')
-                ->label(lang('toggle_visibility'))
-                ->options([
-                    'draft' => 'Draft',
-                    'reviewing' => 'Reviewing',
-                    'published' => 'Published',
+                TextColumn::make('hook_key')
+                    ->label(lang('action_to_perform'))
+                    ->formatStateUsing(function ($state, $record) {
+                        $title = lang($record->hook_key); // Traduction de la clé
+                        $desc = lang($record->translation_desc_key); // Traduction de la description
+                        return "{$title}<br>{$desc}";
+                    })
+                    ->html()
+                    ->wrap()
+                    ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
+
+                SelectColumn::make('where_placed')
+                    ->label(lang('toggle_visibility'))
+                    ->options([
+                        'draft' => 'Draft',
+                        'reviewing' => 'Reviewing',
+                        'published' => 'Published',
                     ]),
 
+                ToggleColumn::make('enabled')
+                    ->label(lang('toggle_visibility'))
+                    ->disabled(fn($record) => !self::originalViewExists($record))
+                    ->afterStateUpdated(function (Component $livewire) {
+                        $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
+                    }),
+            ])
+            ->filters([])
+            ->actions([
+                self::getCustomizeViewAction(),
+                self::getEditCustomViewAction(),
+                self::getDeleteCustomViewAction(),
 
-
-            ToggleColumn::make('enabled')
-                ->label(lang('toggle_visibility'))
-                ->disabled(fn($record) => !self::originalViewExists($record))
-                ->afterStateUpdated(function (Component $livewire) {
-                    $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
-                }),
-        ])
-        ->filters([])
-        ->actions([
-            self::getCustomizeViewAction(),
-            self::getEditCustomViewAction(),
-            self::getDeleteCustomViewAction(),
-
-            EditAction::make()
-                ->iconButton()
-                ->label(lang('edit'))
-                ->modal()
-                ->hidden(fn($record) => self::originalViewExists($record)),
-        ])
-        ->bulkActions([]);
-}
-
+                EditAction::make()
+                    ->iconButton()
+                    ->label(lang('edit'))
+                    ->modal()
+                    ->hidden(fn($record) => self::originalViewExists($record)),
+            ])
+            ->bulkActions([]);
+    }
 
     protected static function getCustomizeViewAction(): Action
     {
@@ -156,7 +157,7 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
             ->color('secondary')
             ->visible(fn ($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->form(fn ($record) => [
-                Forms\Components\Textarea::make('view_contents')
+                Textarea::make('view_contents')
                     ->label('Blade Content')
                     ->default(function () use ($record) {
                         $fullPath = self::getFullViewPath($record);
@@ -200,7 +201,7 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                             window.dispatchEvent(new CustomEvent('triggerSmoothReload'));
                         }, 150);
                     ");
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('View save failed: ' . $e->getMessage());
                     if (File::exists($backupPath)) {
                         File::put($path, File::get($backupPath));
@@ -247,7 +248,7 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                         ->success()
                         ->send();
                     $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
-                } catch (\Exception $e) {
+                } catch (Exception $e) {
                     Log::error('View deletion failed: ' . $e->getMessage());
                     Notification::make()
                         ->title('Deletion Failed')
@@ -301,7 +302,7 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                 return File::copy($source, $destination);
             }
             return false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('View copy failed: '.$e->getMessage());
             return false;
         }
@@ -325,10 +326,10 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                 }
             }
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('Blade compilation failed: ' . $e->getMessage());
             return false;
-        } catch (\Throwable $e) {
+        } catch (Throwable $e) {
             Log::error('Syntax validation error: ' . $e->getMessage());
             return false;
         }
@@ -347,12 +348,11 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
                 return true;
             }
             return false;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             Log::error('View revert failed: '.$e->getMessage());
             return false;
         }
     }
-
 
     public static function getRelations(): array
     {
@@ -365,9 +365,9 @@ protected static SubNavigationPosition $subNavigationPosition = SubNavigationPos
     {
         return [
             'index' => Pages\ListRenderHookSettings::route('/'),
-            'create' => Pages\CreateRenderHookSetting::route('/create'),
-            'view' => Pages\ViewRenderHookSetting::route('/{record}'),
-            'edit' => Pages\EditRenderHookSetting::route('/{record}/edit'),
+            'create' => CreateRenderHookSetting::route('/create'),
+            'view' => ViewRenderHookSetting::route('/{record}'),
+            'edit' => EditRenderHookSetting::route('/{record}/edit'),
         ];
     }
 }

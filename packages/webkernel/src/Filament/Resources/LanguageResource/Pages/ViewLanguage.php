@@ -2,6 +2,7 @@
 
 namespace Webkernel\Filament\Resources\LanguageResource\Pages;
 
+use Filament\Actions\EditAction;
 use Webkernel\Filament\Resources\LanguageResource\RelationManagers\LanguageTranslationsRelationManager;
 use Webkernel\Filament\Resources\LanguageResource;
 use Filament\Actions;
@@ -15,7 +16,7 @@ class ViewLanguage extends ViewRecord
     protected function getHeaderActions(): array
     {
         return [
-            Actions\EditAction::make(),
+            EditAction::make(),
         ];
     }
 

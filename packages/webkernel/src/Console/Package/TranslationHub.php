@@ -2,6 +2,7 @@
 
 namespace Webkernel\Console\Package;
 
+use Normalizer;
 use Illuminate\Console\Command;
 use Exception;
 use ParseError;
@@ -2443,7 +2444,7 @@ class TranslationHub extends Command
         }
 
         if (function_exists('normalizer_normalize')) {
-            $content = normalizer_normalize($content, \Normalizer::FORM_C);
+            $content = normalizer_normalize($content, Normalizer::FORM_C);
         }
 
         $isSemitic = $this->isSemiticText($content);
@@ -2578,7 +2579,7 @@ class TranslationHub extends Command
             $cleaned = $this->restoreProtectedPlaceholders($cleaned);
 
             if (function_exists('normalizer_normalize')) {
-                $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+                $cleaned = normalizer_normalize($cleaned, Normalizer::FORM_C);
             }
 
             return trim($cleaned) ?: $originalText;
@@ -2600,7 +2601,7 @@ class TranslationHub extends Command
 
 
         if (function_exists('normalizer_normalize')) {
-            $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+            $cleaned = normalizer_normalize($cleaned, Normalizer::FORM_C);
         }
 
         $similarity = similar_text(strtolower($cleaned), strtolower($originalText), $percent);
@@ -2630,7 +2631,7 @@ class TranslationHub extends Command
                     $cleaned = trim($fallbackResult, '"\'');
                     $cleaned = $this->restoreProtectedPlaceholders($cleaned);
                     if (function_exists('normalizer_normalize')) {
-                        $cleaned = normalizer_normalize($cleaned, \Normalizer::FORM_C);
+                        $cleaned = normalizer_normalize($cleaned, Normalizer::FORM_C);
                     }
                     $this->line("<fg=yellow>→ Fallback translation successful</>");
 

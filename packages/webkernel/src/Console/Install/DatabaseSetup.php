@@ -1,6 +1,7 @@
 <?php
 namespace Webkernel\Console\Install;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Config;
@@ -158,7 +159,7 @@ class DatabaseSetup extends Command
             DB::connection()->getPdo();
             $this->info('true'); // Connexion réussie
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->info('false'); // Connexion échouée
             return false;
         }
@@ -171,7 +172,7 @@ class DatabaseSetup extends Command
             $this->call('migrate', ['--force' => true]);
             $this->info('Migrations completed successfully!');
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error('Migration failed: ' . $e->getMessage());
             return false;
         }
@@ -365,12 +366,12 @@ class DatabaseSetup extends Command
             try {
                 $fileContents = file_get_contents($url);
                 if ($fileContents === false) {
-                    throw new \Exception("Failed to download the SQL file from the URL.");
+                    throw new Exception("Failed to download the SQL file from the URL.");
                 }
                 // Save the file locally
                 file_put_contents($sqlFile, $fileContents);
                 $this->info('SQL file downloaded successfully.');
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error('Error downloading the SQL file: ' . $e->getMessage());
                 return false; // Fail if the file can't be downloaded
             }
@@ -400,7 +401,7 @@ class DatabaseSetup extends Command
 
             $this->info('Initial data imported successfully!');
             return true;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             // Re-enable foreign key checks in case of an error
             DB::statement('SET FOREIGN_KEY_CHECKS = 1;');
             $this->error('Data import error: ' . $e->getMessage());

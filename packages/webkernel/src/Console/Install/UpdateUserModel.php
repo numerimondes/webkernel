@@ -1,6 +1,7 @@
 <?php
 namespace Webkernel\Console\Install;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\File;
 
@@ -103,7 +104,7 @@ class UpdateUserModel extends Command
             try {
                 File::put($filePath, $contents);
                 $this->info("[✓] Successfully updated {$filePath}");
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 $this->error("❌ Error writing to file: " . $e->getMessage());
             }
         } else {

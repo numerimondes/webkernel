@@ -1,45 +1,51 @@
 <?php
-
 namespace Webkernel\Filament\Resources;
 
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Webkernel\Filament\Resources\LanguageResource\Pages\ListLanguages;
+use Webkernel\Filament\Resources\LanguageResource\Pages\CreateLanguage;
+use Webkernel\Filament\Resources\LanguageResource\Pages\EditLanguage;
+use Webkernel\Filament\Resources\LanguageResource\Pages\ViewLanguage;
 use Webkernel\Filament\Resources\LanguageResource\Pages;
 use Webkernel\Models\Language;
 use Filament\Forms;
-use Filament\Forms\Form;
 use Filament\Resources\Resource;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\SoftDeletingScope;
 use Webkernel\Filament\Resources\LanguageResource\RelationManagers\LanguageTranslationsRelationManager;
-use Tables\Columns\ToggleColumn;
-use Filament\Tables\Actions\ActionGroup;
+use Filament\Tables\Columns\ToggleColumn;
 use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\ViewAction;
 
 class LanguageResource extends Resource
 {
     protected static ?string $model = Language::class;
-
     protected static ?string $navigationIcon = 'heroicon-o-language';
 
-    public static function form(Form $form): Form
+    public static function form(Forms\Form $form): Forms\Form
     {
         return $form
             ->schema([
-                Forms\Components\TextInput::make('code')
+                TextInput::make('code')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('ISO')
+                TextInput::make('ISO')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\TextInput::make('label')
+                TextInput::make('label')
                     ->required()
                     ->maxLength(255),
-                Forms\Components\Toggle::make('is_active')
+                Toggle::make('is_active')
                     ->required(),
-                Forms\Components\Toggle::make('is_system_lang')
+                Toggle::make('is_system_lang')
                     ->required(),
             ]);
     }
@@ -48,18 +54,18 @@ class LanguageResource extends Resource
     {
         return $table
             ->columns([
-                Tables\Columns\TextColumn::make('label')
+                TextColumn::make('label')
                     ->searchable(),
-                Tables\Columns\TextColumn::make('code')
+                TextColumn::make('code')
                     ->searchable(),
-                Tables\Columns\ToggleColumn::make('is_active')
+                ToggleColumn::make('is_active')
                     ->afterStateUpdated(fn() => redirect(request()->header('Referer'))),
-                //Tables\Columns\IconColumn::make('is_system_lang')->boolean(),
-                Tables\Columns\TextColumn::make('created_at')
+                // Tables\Columns\IconColumn::make('is_system_lang')->boolean(),
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
-                Tables\Columns\TextColumn::make('updated_at')
+                TextColumn::make('updated_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
@@ -70,12 +76,12 @@ class LanguageResource extends Resource
             ->actions([
                 ActionGroup::make([
                     ViewAction::make(),
+                    EditAction::make(),
                 ]),
-                Tables\Actions\EditAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    //     Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    // DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -90,11 +96,10 @@ class LanguageResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListLanguages::route('/'),
-            'create' => Pages\CreateLanguage::route('/create'),
-            'edit' => Pages\EditLanguage::route(path: '/{record}/edit'),
-            'view' => Pages\ViewLanguage::route(path: '/{record}/view'),
+            'index' => ListLanguages::route('/'),
+            'create' => CreateLanguage::route('/create'),
+            'edit' => EditLanguage::route('/{record}/edit'),
+            'view' => ViewLanguage::route('/{record}/view'),
         ];
     }
-
 }

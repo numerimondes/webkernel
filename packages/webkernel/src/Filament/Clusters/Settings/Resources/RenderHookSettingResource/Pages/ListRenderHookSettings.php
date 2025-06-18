@@ -2,9 +2,10 @@
 
 namespace Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages;
 
+use Filament\Actions\CreateAction;
+use Filament\Actions\Action;
 use Filament\Actions;
 use Illuminate\Support\HtmlString;
-use Filament\Tables\Actions\Action;
 use Filament\Resources\Pages\ListRecords;
 use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource;
 
@@ -22,7 +23,7 @@ class ListRenderHookSettings extends ListRecords
     protected function getHeaderActions(): array
     {
         return [
-            Actions\CreateAction::make(),
+            CreateAction::make(),
         ];
     }
 

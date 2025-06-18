@@ -3,6 +3,9 @@
 namespace Webkernel\Providers\Filament;
 
 //Filament
+use Webkernel\Filament\Pages\Dashboard;
+use Filament\Widgets\AccountWidget;
+use Filament\Widgets\FilamentInfoWidget;
 use Filament\Http\Middleware\Authenticate;
 use Filament\Http\Middleware\AuthenticateSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -73,7 +76,7 @@ class SystemPanelProvider extends PanelProvider
             ->discoverResources(in: base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
             ->discoverPages(in: base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
             ->pages([
-                \Webkernel\Filament\Pages\Dashboard::class,
+                Dashboard::class,
             ])
             //->resources([
             // \Webkernel\Filament\Resources\UserResource::class,
@@ -82,8 +85,8 @@ class SystemPanelProvider extends PanelProvider
             // Découvrir automatiquement les widgets à partir du dossier spécifié
             ->discoverWidgets(in: app_path('packages/webkernel/src/Filament/Widgets'), for: 'Webkernel\\Filament\\Widgets')
             ->widgets([
-                Widgets\AccountWidget::class,
-                Widgets\FilamentInfoWidget::class,
+                AccountWidget::class,
+                FilamentInfoWidget::class,
             ])
             ->middleware([
                 EncryptCookies::class,

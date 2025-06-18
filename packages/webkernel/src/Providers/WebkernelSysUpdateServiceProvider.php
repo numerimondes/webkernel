@@ -2,6 +2,8 @@
 
 namespace Webkernel\Providers;
 
+use Webkernel\Services\WebkernelUpdater;
+use Exception;
 use Illuminate\Support\ServiceProvider;
 use Webkernel\Console\Commands\WebkernelCheckUpdateCommand;
 use Webkernel\Console\Commands\WebkernelUpdateCommand;
@@ -20,8 +22,8 @@ class WebkernelSysUpdateServiceProvider extends ServiceProvider
         );
 
         // Register WebkernelUpdater service
-        $this->app->singleton(\Webkernel\Services\WebkernelUpdater::class, function ($app) {
-            return new \Webkernel\Services\WebkernelUpdater();
+        $this->app->singleton(WebkernelUpdater::class, function ($app) {
+            return new WebkernelUpdater();
         });
     }
 
@@ -63,13 +65,13 @@ class WebkernelSysUpdateServiceProvider extends ServiceProvider
         // Schedule check in background to avoid slowing down the application boot
         $this->app->terminating(function () use ($preference) {
             try {
-                $updater = new \Webkernel\Services\WebkernelUpdater();
+                $updater = new WebkernelUpdater();
                 $updateAvailable = $updater->checkForUpdates($preference === 'stable');
 
                 if ($updateAvailable && $preference !== 'nothing') {
                     $updater->update();
                 }
-            } catch (\Exception $e) {
+            } catch (Exception $e) {
                 // Fail silently, log error but don't interrupt the application
                 logger()->error('Webkernel auto-update failed: ' . $e->getMessage());
             }

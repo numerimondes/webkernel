@@ -1,5 +1,6 @@
 <?php
 
+use Carbon\Carbon;
 use Illuminate\Support\Facades\Auth;
 use Webkernel\Models\Language;
 use Webkernel\Models\LanguageTranslation;
@@ -91,8 +92,8 @@ if (!function_exists('HelperFormattedDate')) {
         }
 
         try {
-            return \Carbon\Carbon::parse($date)->format($format);
-        } catch (\Exception $e) {
+            return Carbon::parse($date)->format($format);
+        } catch (Exception $e) {
             return 'Invalid Date'; // or return another default value
         }
     }

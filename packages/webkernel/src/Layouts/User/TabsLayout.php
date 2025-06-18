@@ -2,19 +2,20 @@
 
 namespace Webkernel\Layouts\User;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Tabs;
+use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Form;
 
 class TabsLayout
 {
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Tabs::make('User Details')
                 ->tabs([
-                    Tabs\Tab::make('Personal Information')
+                    Tab::make('Personal Information')
                         ->schema([
                             TextInput::make('name')
                                 ->required()
@@ -26,7 +27,7 @@ class TabsLayout
                                 ->maxLength(255),
                         ]),
 
-                    Tabs\Tab::make('Security')
+                    Tab::make('Security')
                         ->schema([
                             TextInput::make('password')
                                 ->password()

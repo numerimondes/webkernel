@@ -7,7 +7,7 @@ use Filament\Facades\Filament;
 
 class AccountWidget extends ImmediateLoadWidget
 {
-    // This is critical for Livewire to find the component
+    // This is critical for Livewire to find the component - MUST be static in Filament 4.x
     protected static string $view = 'webkernel::widgets.account-widget';
 
     // Force immediate loading

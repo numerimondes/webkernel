@@ -2,6 +2,8 @@
 
 namespace Webkernel\Traits;
 
+use Exception;
+use Log;
 use Webkernel\Models\Language;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
@@ -85,8 +87,8 @@ trait UserExtensions
         try {
             $language = Language::find($this->user_lang);
             return $language ? $language->code : 'en';
-        } catch (\Exception $e) {
-            \Log::error("Erreur lors de la récupération de la langue de l'utilisateur : " . $e->getMessage());
+        } catch (Exception $e) {
+            Log::error("Erreur lors de la récupération de la langue de l'utilisateur : " . $e->getMessage());
             return 'en';
         }
     }

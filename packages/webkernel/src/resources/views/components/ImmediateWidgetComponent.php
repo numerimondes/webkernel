@@ -2,6 +2,8 @@
 
 namespace Webkernel\resources\views\components;
 
+use Illuminate\View\View;
+use Closure;
 use Illuminate\View\Component;
 use Filament\Widgets\Widget;
 use Livewire\Livewire;
@@ -29,7 +31,7 @@ class ImmediateWidgetComponent extends Component
     /**
      * Get the view / contents that represent the component.
      *
-     * @return \Illuminate\View\View|\Closure|string
+     * @return View|Closure|string
      */
     public function render()
     {

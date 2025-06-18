@@ -2,16 +2,22 @@
 
 namespace Webkernel\Layouts\User;
 
+use Filament\Schemas\Schema;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Actions\EditAction;
+use Filament\Actions\DeleteAction;
+use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
+use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
+use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Form;
 
 class DefaultLayout
 {
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return $form->schema([
+        return $schema->components([
             Section::make('User Information')
                 ->schema([
                     TextInput::make('name')
@@ -42,31 +48,31 @@ class DefaultLayout
     {
         return $table
             ->columns([
-                \Filament\Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->searchable(),
-                \Filament\Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->searchable(),
-                \Filament\Tables\Columns\TextColumn::make('email_verified_at')
+                TextColumn::make('email_verified_at')
                     ->dateTime()
                     ->sortable(),
-                \Filament\Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([])
             ->actions([
-                \Filament\Tables\Actions\EditAction::make(),
-                \Filament\Tables\Actions\DeleteAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ]);
     }
 
     public static function pages(): array
     {
         return [
-            'index' => \Webkernel\Filament\Resources\UserResource\Pages\ListUsers::route('/'),
-            'create' => \Webkernel\Filament\Resources\UserResource\Pages\CreateUser::route('/create'),
-            'edit' => \Webkernel\Filament\Resources\UserResource\Pages\EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 }

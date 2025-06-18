@@ -1,6 +1,7 @@
 <?php
 namespace Webkernel\Console\Package;
 
+use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
@@ -215,7 +216,7 @@ class CheckUpdate extends Command
 
             return $packages;
 
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("[ERROR] Error fetching remote package list: {$e->getMessage()}");
             return [];
         }
@@ -344,14 +345,14 @@ class CheckUpdate extends Command
                 $this->line("[EXEC] " . explode(' && ', $cmd)[count(explode(' && ', $cmd)) - 1]);
                 $result = shell_exec($cmd . " 2>&1");
                 if (strpos($result, 'fatal') !== false || strpos($result, 'error') !== false) {
-                    throw new \Exception("Git command failed: {$result}");
+                    throw new Exception("Git command failed: {$result}");
                 }
             }
 
             $sourcePath = $tempDir . '/' . $localPath;
             $targetPath = base_path($localPath);
             if (!File::exists($sourcePath)) {
-                throw new \Exception("Source directory not found: {$sourcePath}");
+                throw new Exception("Source directory not found: {$sourcePath}");
             }
             if (File::exists($targetPath)) {
                 $this->line('[INFO] Removing old files...');
@@ -364,7 +365,7 @@ class CheckUpdate extends Command
             $this->info('[SUCCESS] Update completed successfully!');
             $this->line("Backup available at: " . basename($backupPath));
             return self::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("[ERROR] Update failed for {$localPath}: {$e->getMessage()}");
             return self::FAILURE;
         }
@@ -419,7 +420,7 @@ class CheckUpdate extends Command
     {
         $result = shell_exec("cp -r '{$source}' '{$target}' 2>&1");
         if ($result !== null && $result !== '') {
-            throw new \Exception("Copy failed: {$result}");
+            throw new Exception("Copy failed: {$result}");
         }
     }
 
@@ -510,7 +511,7 @@ class CheckUpdate extends Command
             $this->newLine();
             $this->info('Webkernel successfully reverted!');
             return self::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("Revert failed: {$e->getMessage()}");
             return self::FAILURE;
         }
@@ -560,7 +561,7 @@ class CheckUpdate extends Command
             $this->line('Webkernel will now check for updates daily at 2:00 AM');
             $this->line('To disable: php artisan webkernel:update --automatic and choose to remove');
             return self::SUCCESS;
-        } catch (\Exception $e) {
+        } catch (Exception $e) {
             $this->error("Failed to setup automatic updates: {$e->getMessage()}");
             return self::FAILURE;
         }
@@ -591,7 +592,7 @@ class CheckUpdate extends Command
         $result = shell_exec("crontab {$tempFile} 2>&1");
         unlink($tempFile);
         if ($result !== null && $result !== '') {
-            throw new \Exception("Failed to install cron job: {$result}");
+            throw new Exception("Failed to install cron job: {$result}");
         }
         $this->line("Cron job added: {$cronEntry}");
     }

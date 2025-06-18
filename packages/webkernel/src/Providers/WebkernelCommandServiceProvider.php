@@ -2,6 +2,7 @@
 
 namespace Webkernel\Providers;
 
+use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 
 class WebkernelCommandServiceProvider extends ServiceProvider
@@ -27,17 +28,17 @@ class WebkernelCommandServiceProvider extends ServiceProvider
             // Commands in Console/Commands
             $mainCommands = collect(glob("{$basePath}/Commands/*.php"))
                 ->map(fn($file) => $baseNamespace . 'Commands\\' . basename($file, '.php'))
-                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class));
+                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, Command::class));
 
             // Commands in Console/Install
             $installCommands = collect(glob("{$basePath}/Install/*.php"))
                 ->map(fn($file) => $baseNamespace . 'Install\\' . basename($file, '.php'))
-                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class));
+                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, Command::class));
 
             // Commands in Console/Package
             $packageCommands = collect(glob("{$basePath}/Package/*.php"))
                 ->map(fn($file) => $baseNamespace . 'Package\\' . basename($file, '.php'))
-                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, \Illuminate\Console\Command::class));
+                ->filter(fn($class) => class_exists($class) && is_subclass_of($class, Command::class));
 
             // Merge and register all found command classes
             $allCommands = $mainCommands

@@ -15,8 +15,11 @@ use Webkernel\Filament\Widgets\WebkernelInfoWidget;
 class TestPage extends Page
 {
     protected static ?string $title = null;
+
     protected static ?string $navigationIcon = 'heroicon-o-document-text';
+
     protected static string $view = 'webkernel::filament.pages.test-page';
+
     public function getHeader(): ?View
     {
         return view('webkernel::filament.pages.test-page');
@@ -37,7 +40,6 @@ class TestPage extends Page
     {
         // Initialise dynamiquement le titre
         self::setTitle();
-
     }
 
     /**
@@ -47,5 +49,4 @@ class TestPage extends Page
     {
         return 2;
     }
-
 }

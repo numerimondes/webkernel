@@ -2,7 +2,8 @@
 
 namespace Webkernel\Filament\Pages;
 
-use Filament\Pages\Page;
+use Filament\Panel;
+use Filament\Pages\Dashboard as BaseDashboard;
 use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\Widget;
@@ -11,17 +12,15 @@ use Illuminate\Contracts\Support\Htmlable;
 use Webkernel\Filament\Widgets\AccountWidget;
 use Webkernel\Filament\Widgets\WebkernelInfoWidget;
 
-
-class Dashboard extends Page
+class Dashboard extends BaseDashboard
 {
     protected static ?string $navigationIcon = 'heroicon-o-home';
-    protected static string $view = 'webkernel::filament.pages.dashboard';
-    protected static string $routePath = '/';
-    protected static ?int $navigationSort = -2;
 
-    /**
-     * @var view-string
-     */
+    protected static string $view = 'webkernel::filament.pages.dashboard';
+
+    protected static string $routePath = '/';
+
+    protected static ?int $navigationSort = -2;
 
     public static function getNavigationLabel(): string
     {

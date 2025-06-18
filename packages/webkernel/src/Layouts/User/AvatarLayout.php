@@ -2,8 +2,32 @@
 
 namespace Webkernel\Layouts\User;
 
-use Filament\Forms;
 use Filament\Forms\Form;
+use Filament\Forms\Components\Section;
+use Filament\Forms\Components\Grid;
+use Filament\Forms\Components\FileUpload;
+use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\Tabs;
+use Filament\Forms\Components\Tabs\Tab;
+use Filament\Forms\Components\Textarea;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\DateTimePicker;
+use Filament\Forms\Components\Toggle;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Actions\ViewAction;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Actions\BulkActionGroup;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
+use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
+use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
+use Filament\Forms;
 use Filament\Tables;
 use Filament\Tables\Table;
 
@@ -14,12 +38,12 @@ class AvatarLayout
         return $form
             ->schema([
                 // PARTIE 1 - Informations principales avec avatar
-                Forms\Components\Section::make('Profil utilisateur')
+                Section::make('Profil utilisateur')
                     ->schema([
-                        Forms\Components\Grid::make(3)
+                        Grid::make(3)
                             ->schema([
                                 // COL 1 - Avatar
-                                Forms\Components\FileUpload::make('avatar')
+                                FileUpload::make('avatar')
                                     ->label('Photo de profil')
                                     ->image()
                                     ->avatar()
@@ -29,31 +53,31 @@ class AvatarLayout
                                     ->columnSpan(1),
 
                                 // COL 2 - Nom complet et titre
-                                Forms\Components\Grid::make(1)
+                                Grid::make(1)
                                     ->schema([
-                                        Forms\Components\TextInput::make('name')
+                                        TextInput::make('name')
                                             ->label('Nom complet')
                                             ->required()
                                             ->maxLength(255),
 
-                                        Forms\Components\TextInput::make('title')
+                                        TextInput::make('title')
                                             ->label('Titre ou Profession')
                                             ->maxLength(255),
                                     ])
                                     ->columnSpan(1),
 
                                 // COL 3 - Informations de contact
-                                Forms\Components\Grid::make(1)
+                                Grid::make(1)
                                     ->schema([
-                                        Forms\Components\DatePicker::make('date_of_birth')
+                                        DatePicker::make('date_of_birth')
                                             ->label('Date de naissance'),
 
-                                        Forms\Components\TextInput::make('phone')
+                                        TextInput::make('phone')
                                             ->label('Téléphone (Principal)')
                                             ->tel()
                                             ->maxLength(255),
 
-                                        Forms\Components\TextInput::make('email')
+                                        TextInput::make('email')
                                             ->label('Email')
                                             ->email()
                                             ->required()
@@ -64,23 +88,23 @@ class AvatarLayout
                     ]),
 
                 // PARTIE 2 - Onglets d'informations
-                Forms\Components\Tabs::make('Informations')
+                Tabs::make('Informations')
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('Informations utilisateur')
+                        Tab::make('Informations utilisateur')
                             ->schema([
-                                Forms\Components\TextInput::make('username')
+                                TextInput::make('username')
                                     ->label('Nom d\'utilisateur')
                                     ->maxLength(255),
 
-                                Forms\Components\Textarea::make('bio')
+                                Textarea::make('bio')
                                     ->label('Biographie')
                                     ->rows(3),
 
-                                Forms\Components\TextInput::make('location')
+                                TextInput::make('location')
                                     ->label('Localisation')
                                     ->maxLength(255),
 
-                                Forms\Components\Select::make('gender')
+                                Select::make('gender')
                                     ->label('Genre')
                                     ->options([
                                         'male' => 'Masculin',
@@ -90,9 +114,9 @@ class AvatarLayout
                                     ]),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Informations de compte')
+                        Tab::make('Informations de compte')
                             ->schema([
-                                Forms\Components\Select::make('status')
+                                Select::make('status')
                                     ->label('Statut du compte')
                                     ->options([
                                         'active' => 'Actif',
@@ -102,30 +126,30 @@ class AvatarLayout
                                     ])
                                     ->default('active'),
 
-                                Forms\Components\DateTimePicker::make('last_login_at')
+                                DateTimePicker::make('last_login_at')
                                     ->label('Dernière connexion')
                                     ->disabled(),
 
-                                Forms\Components\TextInput::make('login_count')
+                                TextInput::make('login_count')
                                     ->label('Nombre de connexions')
                                     ->numeric()
                                     ->disabled(),
 
-                                Forms\Components\Toggle::make('email_verified')
+                                Toggle::make('email_verified')
                                     ->label('Email vérifié'),
 
-                                Forms\Components\Toggle::make('two_factor_enabled')
+                                Toggle::make('two_factor_enabled')
                                     ->label('Authentification à deux facteurs'),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Notes')
+                        Tab::make('Notes')
                             ->schema([
-                                Forms\Components\Textarea::make('admin_notes')
+                                Textarea::make('admin_notes')
                                     ->label('Notes administratives')
                                     ->rows(4)
                                     ->columnSpanFull(),
 
-                                Forms\Components\Textarea::make('public_notes')
+                                Textarea::make('public_notes')
                                     ->label('Notes publiques')
                                     ->rows(4)
                                     ->columnSpanFull(),
@@ -133,11 +157,11 @@ class AvatarLayout
                     ]),
 
                 // PARTIE 3 - Onglets de services et pièces jointes
-                Forms\Components\Tabs::make('Services et Documents')
+                Tabs::make('Services et Documents')
                     ->tabs([
-                        Forms\Components\Tabs\Tab::make('Services associés')
+                        Tab::make('Services associés')
                             ->schema([
-                                Forms\Components\CheckboxList::make('services')
+                                CheckboxList::make('services')
                                     ->label('Services actifs')
                                     ->options([
                                         'support' => 'Support technique',
@@ -148,29 +172,29 @@ class AvatarLayout
                                     ])
                                     ->columns(2),
 
-                                Forms\Components\DatePicker::make('subscription_start')
+                                DatePicker::make('subscription_start')
                                     ->label('Début d\'abonnement'),
 
-                                Forms\Components\DatePicker::make('subscription_end')
+                                DatePicker::make('subscription_end')
                                     ->label('Fin d\'abonnement'),
                             ]),
 
-                        Forms\Components\Tabs\Tab::make('Pièces jointes')
+                        Tab::make('Pièces jointes')
                             ->schema([
-                                Forms\Components\FileUpload::make('documents')
+                                FileUpload::make('documents')
                                     ->label('Documents')
                                     ->multiple()
                                     ->disk('public')
                                     ->directory('user-documents')
-                                    ->acceptedFileTypes(['pdf', 'doc', 'docx', 'txt'])
+                                    ->acceptedFileTypes(['application/pdf', 'application/msword', 'application/vnd.openxmlformats-officedocument.wordprocessingml.document', 'text/plain'])
                                     ->maxSize(10240), // 10MB
 
-                                Forms\Components\FileUpload::make('certificates')
+                                FileUpload::make('certificates')
                                     ->label('Certificats')
                                     ->multiple()
                                     ->disk('public')
                                     ->directory('user-certificates')
-                                    ->acceptedFileTypes(['pdf', 'jpg', 'png'])
+                                    ->acceptedFileTypes(['application/pdf', 'image/jpeg', 'image/png'])
                                     ->maxSize(5120), // 5MB
                             ]),
                     ]),
@@ -181,31 +205,31 @@ class AvatarLayout
     {
         return $table
             ->columns([
-                Tables\Columns\ImageColumn::make('avatar')
+                ImageColumn::make('avatar')
                     ->label('Avatar')
                     ->circular()
                     ->size(50),
 
-                Tables\Columns\TextColumn::make('name')
+                TextColumn::make('name')
                     ->label('Nom complet')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('title')
+                TextColumn::make('title')
                     ->label('Titre')
                     ->searchable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('email')
+                TextColumn::make('email')
                     ->label('Email')
                     ->searchable()
                     ->sortable(),
 
-                Tables\Columns\TextColumn::make('phone')
+                TextColumn::make('phone')
                     ->label('Téléphone')
                     ->toggleable(),
 
-                Tables\Columns\BadgeColumn::make('status')
+                BadgeColumn::make('status')
                     ->label('Statut')
                     ->colors([
                         'success' => 'active',
@@ -214,20 +238,20 @@ class AvatarLayout
                         'secondary' => 'inactive',
                     ]),
 
-                Tables\Columns\TextColumn::make('last_login_at')
+                TextColumn::make('last_login_at')
                     ->label('Dernière connexion')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(),
 
-                Tables\Columns\TextColumn::make('created_at')
+                TextColumn::make('created_at')
                     ->label('Créé le')
                     ->dateTime()
                     ->sortable()
                     ->toggleable(isToggledHiddenByDefault: true),
             ])
             ->filters([
-                Tables\Filters\SelectFilter::make('status')
+                SelectFilter::make('status')
                     ->options([
                         'active' => 'Actif',
                         'inactive' => 'Inactif',
@@ -236,13 +260,13 @@ class AvatarLayout
                     ]),
             ])
             ->actions([
-                Tables\Actions\ViewAction::make(),
-                Tables\Actions\EditAction::make(),
-                Tables\Actions\DeleteAction::make(),
+                ViewAction::make(),
+                EditAction::make(),
+                DeleteAction::make(),
             ])
             ->bulkActions([
-                Tables\Actions\BulkActionGroup::make([
-                    Tables\Actions\DeleteBulkAction::make(),
+                BulkActionGroup::make([
+                    DeleteBulkAction::make(),
                 ]),
             ]);
     }
@@ -250,9 +274,9 @@ class AvatarLayout
     public static function getPages(): array
     {
         return [
-            'index' => \Webkernel\Filament\Resources\UserResource\Pages\ListUsers::route('/'),
-            'create' => \Webkernel\Filament\Resources\UserResource\Pages\CreateUser::route('/create'),
-            'edit' => \Webkernel\Filament\Resources\UserResource\Pages\EditUser::route('/{record}/edit'),
+            'index' => ListUsers::route('/'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 }
