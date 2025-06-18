@@ -1,4 +1,5 @@
 <?php
+
 namespace Webkernel\Filament\Clusters\Settings\Resources;
 
 use Filament\Forms;
@@ -6,37 +7,23 @@ use Filament\Tables;
 use Livewire\Component;
 use Filament\Tables\Table;
 use Filament\Resources\Resource;
-use Pages\ListRenderHookSettings;
-use BladeUI\Icons\Components\Icon;
-use Illuminate\Support\HtmlString;
-use Illuminate\Support\Facades\Log;
-use Filament\Support\Enums\MaxWidth;
-use Illuminate\Support\Facades\File;
+use Webkernel\Models\RenderHookSetting;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
-use Illuminate\Support\Facades\Blade;
-use Symfony\Component\Process\Process;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Actions\ViewAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Webkernel\Models\RenderHookSetting;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
 use Filament\Tables\Columns\SelectColumn;
 use Filament\Tables\Columns\ToggleColumn;
-use Illuminate\Database\Eloquent\Builder;
+use Filament\Tables\Actions\EditAction;
+use Filament\Tables\Actions\Action;
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\Blade;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Log;
 use Webkernel\Filament\Clusters\Settings;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Illuminate\View\Exceptions\CompilationException;
-use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages;
-use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\RelationManagers;
-use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting;
-use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting;
-use Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting;
-use Filament\Tables\Actions\EditAction; // Changed from Filament\Actions\EditAction
-use Filament\Tables\Actions\Action; // Changed from Filament\Actions\Action
-use Filament\Support\Enums\IconSize;
 use Exception;
 use Throwable;
 
@@ -48,7 +35,7 @@ class RenderHookSettingResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return lang('Custom Navigation Label');
+        return __('Custom Navigation Label');
     }
 
     public static function form(Forms\Form $form): Forms\Form
@@ -57,15 +44,12 @@ class RenderHookSettingResource extends Resource
             ->schema([
                 TextInput::make('hook_key')
                     ->required()
-                    ->disabled()
                     ->maxLength(255),
                 TextInput::make('where_placed')
                     ->required()
-                    ->disabled()
                     ->maxLength(255),
                 TextInput::make('view_path')
                     ->required()
-                    ->disabled()
                     ->maxLength(255),
             ]);
     }
@@ -79,31 +63,28 @@ class RenderHookSettingResource extends Resource
                     ->width('1%')
                     ->icon(fn($record) => $record->icon)
                     ->size('md'),
-
                 TextColumn::make('hook_key')
-                    ->label(lang('action_to_perform'))
+                    ->label(__('action_to_perform'))
                     ->formatStateUsing(function ($state, $record) {
-                        $title = lang($record->hook_key); // Traduction de la clé
-                        $desc = lang($record->translation_desc_key); // Traduction de la description
+                        $title = __($record->hook_key);
+                        $desc = __($record->translation_desc_key);
                         return "{$title}<br>{$desc}";
                     })
                     ->html()
                     ->wrap()
                     ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
-
                 SelectColumn::make('where_placed')
-                    ->label(lang('toggle_visibility'))
+                    ->label(__('toggle_visibility'))
                     ->options([
                         'draft' => 'Draft',
                         'reviewing' => 'Reviewing',
                         'published' => 'Published',
                     ]),
-
                 ToggleColumn::make('enabled')
-                    ->label(lang('toggle_visibility'))
+                    ->label(__('toggle_visibility'))
                     ->disabled(fn($record) => !self::originalViewExists($record))
                     ->afterStateUpdated(function (Component $livewire) {
-                        $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
+                        $livewire->dispatch('refresh');
                     }),
             ])
             ->filters([])
@@ -111,11 +92,10 @@ class RenderHookSettingResource extends Resource
                 self::getCustomizeViewAction(),
                 self::getEditCustomViewAction(),
                 self::getDeleteCustomViewAction(),
-
                 EditAction::make()
                     ->iconButton()
-                    ->label(lang('edit'))
-                    ->modal()
+                    ->label(__('edit'))
+                    ->modalWidth('lg')
                     ->hidden(fn($record) => self::originalViewExists($record)),
             ])
             ->bulkActions([]);
@@ -124,63 +104,89 @@ class RenderHookSettingResource extends Resource
     protected static function getCustomizeViewAction(): Action
     {
         return Action::make('customize_view')
-            ->label(lang('customize_this_view'))
+            ->label(__('customize_this_view'))
             ->icon('heroicon-m-pencil-square')
             ->color('primary')
-            ->visible(fn($record) => self::originalViewExists($record) && !File::exists(self::getFullViewPath($record)))
+            ->visible(function ($record) {
+                $visible = self::originalViewExists($record) && !File::exists(self::getFullViewPath($record));
+                Log::info('Customize view action visibility for hook_key: ' . ($record->hook_key ?? 'null') . ' - Visible: ' . ($visible ? 'Yes' : 'No'));
+                return $visible;
+            })
             ->requiresConfirmation()
-            ->modalHeading('Customize View')
-            ->modalDescription('This will create a customized copy of the original view file that you can modify.')
-            ->modalSubmitActionLabel('Customize')
+            ->modalHeading(__('Customize View'))
+            ->modalDescription(__('This will create a customized copy of the original view file that you can modify.'))
+            ->modalSubmitActionLabel(__('Customize'))
+            ->modalWidth('lg')
+            ->modalCancelActionLabel(__('Cancel'))
             ->action(function ($record, Component $livewire) {
-                $copied = self::copyViewToCustomPath(
-                    self::getViewPathFromHookKey($record->hook_key)
-                );
-                $notification = Notification::make();
-                if ($copied) {
-                    $notification->title('View Copied Successfully')
-                        ->success();
-                } else {
-                    $notification->title('View Already Exists or Copy Failed')
-                        ->warning();
+                Log::info('Customize view action triggered for hook_key: ' . ($record->hook_key ?? 'null'));
+                try {
+                    $viewPath = self::getViewPathFromHookKey($record->hook_key);
+                    if (empty($viewPath)) {
+                        Log::error('No view path found for hook_key: ' . $record->hook_key);
+                        Notification::make()
+                            ->title(__('Action Failed'))
+                            ->body(__('No view path defined for this hook.'))
+                            ->danger()
+                            ->send();
+                        return;
+                    }
+                    Log::info('View path retrieved: ' . $viewPath);
+
+                    $copied = self::copyViewToCustomPath($viewPath);
+                    Log::info('Copy operation result: ' . ($copied ? 'Success' : 'Failed'));
+
+                    Notification::make()
+                        ->title($copied ? __('View Copied Successfully') : __('View Copy Failed'))
+                        ->body($copied ? __('The view has been copied to your custom path.') : __('Could not copy the view. Check logs for details.'))
+                        ->status($copied ? 'success' : 'danger')
+                        ->send();
+
+                    if ($copied) {
+                        $livewire->dispatch('refresh');
+                    }
+                } catch (Exception $e) {
+                    Log::error('Customize view action failed: ' . $e->getMessage());
+                    Notification::make()
+                        ->title(__('Action Failed'))
+                        ->body($e->getMessage())
+                        ->danger()
+                        ->send();
                 }
-                $notification->send();
-                $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
             });
     }
 
     protected static function getEditCustomViewAction(): Action
     {
         return Action::make('edit_custom_view')
-            ->label('Edit View')
+            ->label(__('Edit View'))
             ->icon('heroicon-m-code-bracket')
             ->color('secondary')
-            ->visible(fn ($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
-            ->form(fn ($record) => [
+            ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
+            ->form([
                 Textarea::make('view_contents')
-                    ->label('Blade Content')
-                    ->default(function () use ($record) {
+                    ->label(__('Blade Content'))
+                    ->default(function ($record) {
                         $fullPath = self::getFullViewPath($record);
                         return File::exists($fullPath) ? File::get($fullPath) : '';
                     })
                     ->rows(20)
                     ->required()
                     ->live(debounce: 500)
-                    ->afterStateUpdated(function ($state, callable $set, $get, $component) {
+                    ->afterStateUpdated(function ($state, callable $set, $component) {
                         $isValid = self::validateBladeSyntax($state);
-                        $message = $isValid ? 'Valid Syntax' : 'Syntax Error';
+                        $message = $isValid ? __('Valid Syntax') : __('Syntax Error');
                         $color = $isValid ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)';
-                        $component->hint(new HtmlString(
-                            "<span style='color: {$color}; font-weight: 500;'>{$message}</span>"
-                        ));
+                        $component->hint(new HtmlString("<span style='color: {$color}; font-weight: 500;'>{$message}</span>"));
                     })
-                    ->helperText('Note: Ensure that the Blade syntax is correct before saving. The checks only validate that your code will not crash Laravel. If your code happens to crash the app, please let us know how it occurred.'),
+                    ->helperText(__('Note: Ensure that the Blade syntax is correct before saving.')),
             ])
             ->action(function (array $data, $record, Component $livewire) {
+                Log::info('Attempting to save custom view for hook_key: ' . ($record->hook_key ?? 'null'));
                 if (!self::validateBladeSyntax($data['view_contents'])) {
                     Notification::make()
-                        ->title('Syntax Error')
-                        ->body('Invalid Blade/PHP syntax detected. Changes not saved.')
+                        ->title(__('Syntax Error'))
+                        ->body(__('Invalid Blade/PHP syntax detected. Changes not saved.'))
                         ->danger()
                         ->send();
                     return;
@@ -188,19 +194,18 @@ class RenderHookSettingResource extends Resource
                 $path = self::getFullViewPath($record);
                 $backupPath = $path . '.bak';
                 try {
+                    if (!is_writable(dirname($path))) {
+                        throw new Exception('Directory is not writable: ' . dirname($path));
+                    }
                     if (File::exists($path)) {
                         File::put($backupPath, File::get($path));
                     }
                     File::put($path, $data['view_contents']);
                     Notification::make()
-                        ->title('View Saved Successfully')
+                        ->title(__('View Saved Successfully'))
                         ->success()
                         ->send();
-                    $livewire->js("
-                        setTimeout(() => {
-                            window.dispatchEvent(new CustomEvent('triggerSmoothReload'));
-                        }, 150);
-                    ");
+                    $livewire->dispatch('refresh');
                 } catch (Exception $e) {
                     Log::error('View save failed: ' . $e->getMessage());
                     if (File::exists($backupPath)) {
@@ -210,7 +215,7 @@ class RenderHookSettingResource extends Resource
                         self::revertToOriginalView(self::getViewPathFromHookKey($record->hook_key));
                     }
                     Notification::make()
-                        ->title('Save Failed')
+                        ->title(__('Save Failed'))
                         ->body($e->getMessage())
                         ->danger()
                         ->send();
@@ -221,37 +226,37 @@ class RenderHookSettingResource extends Resource
     protected static function getDeleteCustomViewAction(): Action
     {
         return Action::make('delete_custom_view')
-            ->label('Delete View')
+            ->label(__('Delete View'))
             ->icon('heroicon-m-trash')
             ->color('danger')
-            ->visible(function ($record) {
-                $customPath = self::getFullViewPath($record);
-                return self::originalViewExists($record) && File::exists($customPath);
-            })
+            ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->requiresConfirmation()
-            ->modalHeading('Delete Custom View')
+            ->modalHeading(__('Delete Custom View'))
             ->modalIcon('heroicon-o-trash')
             ->modalDescription(function ($record) {
                 $customPath = self::getFullViewPath($record);
                 $originalPath = self::getOriginalViewPath($record->hook_key);
                 if (File::exists($originalPath) && File::get($customPath) === File::get($originalPath)) {
-                    return 'This custom view matches the original. Remove it?';
+                    return __('This custom view matches the original. Remove it?');
                 }
-                return 'This will delete your customized view and restore default behavior.';
+                return __('This will delete your customized view and restore default behavior.');
             })
-            ->modalSubmitActionLabel('Confirm Deletion')
+            ->modalSubmitActionLabel(__('Confirm Deletion'))
+            ->modalWidth('lg')
+            ->modalCancelActionLabel(__('Cancel'))
             ->action(function ($record, Component $livewire) {
+                Log::info('Attempting to delete custom view for hook_key: ' . ($record->hook_key ?? 'null'));
                 try {
                     File::delete(self::getFullViewPath($record));
                     Notification::make()
-                        ->title('View Deleted Successfully')
+                        ->title(__('View Deleted Successfully'))
                         ->success()
                         ->send();
-                    $livewire->js("setTimeout(() => { window.dispatchEvent(new CustomEvent('triggerSmoothReload')); }, 150);");
+                    $livewire->dispatch('refresh');
                 } catch (Exception $e) {
                     Log::error('View deletion failed: ' . $e->getMessage());
                     Notification::make()
-                        ->title('Deletion Failed')
+                        ->title(__('Deletion Failed'))
                         ->body($e->getMessage())
                         ->danger()
                         ->send();
@@ -261,113 +266,158 @@ class RenderHookSettingResource extends Resource
 
     public static function getViewPathFromHookKey(string $key): string
     {
-        $hookSettings = RenderHookSetting::all();
-        $viewPaths = [];
-        foreach ($hookSettings as $hookSetting) {
-            $viewPaths[$hookSetting->hook_key] = $hookSetting->view_path;
-        }
-        return $viewPaths[$key] ?? '';
+        $hookSetting = RenderHookSetting::where('hook_key', $key)->first();
+        $viewPath = $hookSetting?->view_path ?? '';
+        Log::info('View path for hook_key ' . $key . ': ' . $viewPath);
+        return $viewPath;
     }
 
     private static function getFullViewPath($record): string
     {
         $viewPath = self::getViewPathFromHookKey($record->hook_key);
-        return empty($viewPath) ? '' : resource_path('views/'.str_replace('.', '/', $viewPath).'.blade.php');
+        if (empty($viewPath)) {
+            Log::warning('Empty view path for hook_key: ' . ($record->hook_key ?? 'null'));
+            return '';
+        }
+        $path = resource_path('views/' . str_replace('.', '/', $viewPath) . '.blade.php');
+        Log::info('Resolved full view path: ' . $path);
+        return $path;
     }
 
     private static function getOriginalViewPath(string $hookKey): string
     {
         $viewPath = self::getViewPathFromHookKey($hookKey);
-        return empty($viewPath) ? '' : base_path("packages/webkernel/src/resources/views/".str_replace('.', '/', $viewPath).'.blade.php');
+        if (empty($viewPath)) {
+            Log::warning('Empty original view path for hook_key: ' . $hookKey);
+            return '';
+        }
+        $path = base_path('packages/webkernel/src/resources/views/' . str_replace('.', '/', $viewPath) . '.blade.php');
+        Log::info('Resolved original view path: ' . $path);
+        return $path;
     }
 
     public static function originalViewExists($record): bool
     {
         $originalPath = self::getOriginalViewPath($record->hook_key);
-        return !empty($originalPath) && File::exists($originalPath);
+        $exists = !empty($originalPath) && File::exists($originalPath);
+        Log::info('Original view exists for hook_key ' . ($record->hook_key ?? 'null') . ': ' . ($exists ? 'Yes' : 'No'));
+        return $exists;
     }
 
     public static function copyViewToCustomPath(string $viewPath): bool
     {
+        Log::info('Starting copyViewToCustomPath for view path: ' . $viewPath);
         if (empty($viewPath)) {
-            Log::warning('Empty view path in copy operation');
+            Log::warning('Empty view path provided');
             return false;
         }
-        $relativePath = str_replace('.', '/', $viewPath).'.blade.php';
-        $source = base_path("packages/webkernel/src/resources/views/{$relativePath}");
-        $destination = resource_path("views/{$relativePath}");
+
+        $relativePath = str_replace('.', '/', $viewPath) . '.blade.php';
+        $source = base_path('packages/webkernel/src/resources/views/' . $relativePath);
+        $destination = resource_path('views/' . $relativePath);
+
+        Log::info('Source path: ' . $source);
+        Log::info('Destination path: ' . $destination);
+
         try {
-            if (File::exists($source) && !File::exists($destination)) {
-                File::ensureDirectoryExists(dirname($destination));
-                return File::copy($source, $destination);
+            if (!File::exists($source)) {
+                Log::error('Source view file does not exist: ' . $source);
+                return false;
             }
-            return false;
+
+            if (File::exists($destination)) {
+                Log::warning('Destination view file already exists: ' . $destination);
+                return false;
+            }
+
+            $destinationDir = dirname($destination);
+            if (!File::exists($destinationDir)) {
+                Log::info('Creating destination directory: ' . $destinationDir);
+                File::makeDirectory($destinationDir, 0755, true);
+            }
+
+            if (!is_writable($destinationDir)) {
+                Log::error('Destination directory is not writable: ' . $destinationDir);
+                return false;
+            }
+
+            $result = File::copy($source, $destination);
+            Log::info('Copy operation ' . ($result ? 'succeeded' : 'failed') . ': ' . $source . ' to ' . $destination);
+
+            if ($result && File::exists($destination)) {
+                chmod($destination, 0644);
+                Log::info('File permissions set to 0644 for: ' . $destination);
+            }
+
+            return $result;
         } catch (Exception $e) {
-            Log::error('View copy failed: '.$e->getMessage());
+            Log::error('Copy view failed: ' . $e->getMessage());
             return false;
         }
     }
 
     public static function validateBladeSyntax(?string $content): bool
     {
-        if (empty(trim($content))) return false;
-        try {
-            if (is_null($content)) {
-                return false;
-            }
-            $compiled = Blade::compileString($content);
-            if (preg_match('/<\?php/', $compiled)) {
-                $process = new Process([PHP_BINARY, '-l']);
-                $process->setInput($compiled);
-                $process->run();
-                if (!$process->isSuccessful()) {
-                    Log::error('PHP syntax error: ' . $process->getErrorOutput());
-                    return false;
-                }
-            }
-            return true;
-        } catch (Exception $e) {
-            Log::error('Blade compilation failed: ' . $e->getMessage());
+        if (empty(trim($content))) {
+            Log::warning('Empty Blade content provided');
             return false;
+        }
+        try {
+            Blade::compileString($content);
+            Log::info('Blade syntax validation passed');
+            return true;
         } catch (Throwable $e) {
-            Log::error('Syntax validation error: ' . $e->getMessage());
+            Log::error('Blade syntax validation failed: ' . $e->getMessage());
             return false;
         }
     }
 
     public static function revertToOriginalView(string $viewPath): bool
     {
-        if (empty($viewPath)) return false;
-        $relativePath = str_replace('.', '/', $viewPath).'.blade.php';
-        $source = base_path("packages/webkernel/src/resources/views/{$relativePath}");
-        $destination = resource_path("views/{$relativePath}");
-        try {
-            if (File::exists($source)) {
-                File::ensureDirectoryExists(dirname($destination));
-                File::put($destination, File::get($source));
-                return true;
-            }
+        Log::info('Starting revertToOriginalView for view path: ' . $viewPath);
+        if (empty($viewPath)) {
+            Log::warning('Empty view path provided');
             return false;
+        }
+
+        $relativePath = str_replace('.', '/', $viewPath) . '.blade.php';
+        $source = base_path('packages/webkernel/src/resources/views/' . $relativePath);
+        $destination = resource_path('views/' . $relativePath);
+
+        try {
+            if (!File::exists($source)) {
+                Log::error('Original view file does not exist: ' . $source);
+                return false;
+            }
+
+            $destinationDir = dirname($destination);
+            if (!is_writable($destinationDir)) {
+                Log::error('Destination directory is not writable: ' . $destinationDir);
+                return false;
+            }
+
+            File::put($destination, File::get($source));
+            chmod($destination, 0644);
+            Log::info('View reverted successfully: ' . $destination);
+            return true;
         } catch (Exception $e) {
-            Log::error('View revert failed: '.$e->getMessage());
+            Log::error('View revert failed: ' . $e->getMessage());
             return false;
         }
     }
 
     public static function getRelations(): array
     {
-        return [
-            // Relation managers
-        ];
+        return [];
     }
 
     public static function getPages(): array
     {
         return [
-            'index' => Pages\ListRenderHookSettings::route('/'),
-            'create' => CreateRenderHookSetting::route('/create'),
-            'view' => ViewRenderHookSetting::route('/{record}'),
-            'edit' => EditRenderHookSetting::route('/{record}/edit'),
+            'index' => \Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\ListRenderHookSettings::route('/'),
+            'create' => \Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting::route('/create'),
+            'view' => \Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting::route('/{record}'),
+            'edit' => \Webkernel\Filament\Clusters\Settings\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting::route('/{record}/edit'),
         ];
     }
 }

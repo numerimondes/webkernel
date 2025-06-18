@@ -9,6 +9,7 @@ use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
 use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
 use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
 use Webkernel\Filament\Resources\UserResource\Pages;
+use Webkernel\Filament\Resources\UserResource\Pages\ViewUser;
 
 class UserResource extends Resource
 {
@@ -36,6 +37,8 @@ class UserResource extends Resource
                 'index' => ListUsers::route('/'),
                 'create' => CreateUser::route('/create'),
                 'edit' => EditUser::route('/{record}/edit'),
+                'view' => ViewUser::route('/{record}/view'),
+
             ]
         );
     }
