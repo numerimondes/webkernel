@@ -3,6 +3,7 @@
 namespace App\Models;
 
 
+use Database\Factories\UserFactory;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
@@ -14,7 +15,7 @@ use Webkernel\Traits\UserExtensions as OnlyGetTheActivePackageUserTrait;
 class User extends Authenticatable
 {
     use OnlyGetTheActivePackageUserTrait; /** Do not remove this line to use Webkernel Capabilities */
-    /** @use HasFactory<\Database\Factories\UserFactory> */
+    /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
     /**

@@ -35,7 +35,7 @@ class RenderHookSettingResource extends Resource
 
     public static function getNavigationLabel(): string
     {
-        return __('Custom Navigation Label');
+        return lang('Custom Navigation Label');
     }
 
     public static function form(Forms\Form $form): Forms\Form
@@ -66,8 +66,8 @@ class RenderHookSettingResource extends Resource
                 TextColumn::make('hook_key')
                     ->label(__('action_to_perform'))
                     ->formatStateUsing(function ($state, $record) {
-                        $title = __($record->hook_key);
-                        $desc = __($record->translation_desc_key);
+                        $title = lang($record->hook_key);
+                        $desc = lang($record->translation_desc_key);
                         return "{$title}<br>{$desc}";
                     })
                     ->html()
@@ -137,8 +137,8 @@ class RenderHookSettingResource extends Resource
                     Log::info('Copy operation result: ' . ($copied ? 'Success' : 'Failed'));
 
                     Notification::make()
-                        ->title($copied ? __('View Copied Successfully') : __('View Copy Failed'))
-                        ->body($copied ? __('The view has been copied to your custom path.') : __('Could not copy the view. Check logs for details.'))
+                        ->title($copied ? lang('View Copied Successfully') : lang('View Copy Failed'))
+                        ->body($copied ? lang('The view has been copied to your custom path.') : lang('Could not copy the view. Check logs for details.'))
                         ->status($copied ? 'success' : 'danger')
                         ->send();
 
@@ -175,7 +175,7 @@ class RenderHookSettingResource extends Resource
                     ->live(debounce: 500)
                     ->afterStateUpdated(function ($state, callable $set, $component) {
                         $isValid = self::validateBladeSyntax($state);
-                        $message = $isValid ? __('Valid Syntax') : __('Syntax Error');
+                        $message = $isValid ? lang('Valid Syntax') : lang('Syntax Error');
                         $color = $isValid ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)';
                         $component->hint(new HtmlString("<span style='color: {$color}; font-weight: 500;'>{$message}</span>"));
                     })
@@ -237,9 +237,9 @@ class RenderHookSettingResource extends Resource
                 $customPath = self::getFullViewPath($record);
                 $originalPath = self::getOriginalViewPath($record->hook_key);
                 if (File::exists($originalPath) && File::get($customPath) === File::get($originalPath)) {
-                    return __('This custom view matches the original. Remove it?');
+                    return lang('This custom view matches the original. Remove it?');
                 }
-                return __('This will delete your customized view and restore default behavior.');
+                return lang('This will delete your customized view and restore default behavior.');
             })
             ->modalSubmitActionLabel(__('Confirm Deletion'))
             ->modalCancelActionLabel(__('Cancel'))
