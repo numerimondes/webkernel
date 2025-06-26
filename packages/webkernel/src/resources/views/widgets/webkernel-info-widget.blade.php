@@ -69,7 +69,7 @@
                     rel="noopener noreferrer"
                     target="_blank"
                 >
-                    {{ __('filament-panels::widgets/filament-info-widget.actions.open_documentation.label') }}
+                    {{ lang('filament-panels::widgets/filament-info-widget.actions.open_documentation.label') }}
                 </x-filament::link>
 
                 <x-filament::link
@@ -93,7 +93,7 @@
                         </svg>
                     </x-slot>
 
-                    {{ __('filament-panels::widgets/filament-info-widget.actions.open_github.label') }}
+                    {{ lang('filament-panels::widgets/filament-info-widget.actions.open_github.label') }}
                 </x-filament::link>
             </div>
         </div>
