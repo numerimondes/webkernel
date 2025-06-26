@@ -12,11 +12,10 @@ class Application extends LaravelApplication
         'webkernel' => [
             'path' => 'packages/webkernel',
             'minimum_stable_version_required' => self::WEBKERNEL_VERSION,
-            'dependencies' => [
-            ]-
+            'dependencies' => []
         ]
-
     ];
+
 
     const BUSINESS_APPLICATIONS = [
         'solecoles' => [
