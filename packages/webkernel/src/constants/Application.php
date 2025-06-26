@@ -13,8 +13,8 @@ class Application extends LaravelApplication
             'path' => 'packages/webkernel',
             'minimum_stable_version_required' => self::WEBKERNEL_VERSION,
             'dependencies' => [
-            ]
-        ],
+            ]-
+        ]
 
     ];
 
