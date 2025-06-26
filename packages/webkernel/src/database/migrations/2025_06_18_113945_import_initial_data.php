@@ -26,7 +26,7 @@ return new class extends Migration
 
         // Insertion des données dans webkernel_lang
         DB::statement("
-            INSERT INTO `webkernel_lang` (`id`, `code`, `ISO`, `label`, `is_active`, `created_at`, `updated_at`, `belongs_to`) VALUES
+            INSERT INTO `webkernel_lang` (`id`, `code`, `ISO`, `label`, `is_active`, `created_at`, `updated_at`, `tenant_id`) VALUES
                 (1, 'en', 'en-US', 'English', 1, '2025-04-17 03:42:11', '2025-04-17 08:17:36', 1),
                 (2, 'fr', 'fr-FR', 'Français', 1, '2025-04-17 03:42:11', '2025-04-17 03:42:11', 1),
                 (3, 'ar', 'ar-MA', 'العربية', 1, '2025-04-17 03:42:11', '2025-04-17 05:31:17', 1)

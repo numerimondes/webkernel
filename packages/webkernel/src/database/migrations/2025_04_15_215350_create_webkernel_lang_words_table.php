@@ -30,6 +30,7 @@ return new class extends Migration {
             $table->index(['lang_ref', 'lang']);              // clé+langue : unique par langue
             $table->index(['app', 'theme']);             // app/thème
             $table->unique(['lang_ref', 'lang', 'app', 'theme']);
+            $table->integer('tenant_id')->default(1); // Tenant before implementation
 
         });
 

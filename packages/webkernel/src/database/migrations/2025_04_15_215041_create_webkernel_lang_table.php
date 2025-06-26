@@ -17,7 +17,7 @@ return new class extends Migration {
             $table->string('label');          // ex: 'English', 'Français'
             $table->boolean('is_active')->default(true);
             $table->timestamps();
-            $table->integer('belongs_to')->default(1); // Tenant before implementation
+            $table->integer('tenant_id')->default(1); // Tenant before implementation
 
         });
 

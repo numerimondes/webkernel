@@ -22,6 +22,8 @@ return new class extends Migration
             $table->boolean('enabled')->default(1);
             $table->boolean('customizable')->default(0);
             $table->text('customization_rel_ink')->nullable();
+            $table->integer('tenant_id')->default(1); // Tenant before implementation
+
             $table->timestamps();
 
             $table->index('hook_key');

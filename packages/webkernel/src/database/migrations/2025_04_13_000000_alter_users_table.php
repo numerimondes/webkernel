@@ -21,7 +21,7 @@ return new class extends Migration {
             $table->boolean('marketing_callable')->default(true);
             $table->boolean('marketing_whatsappable')->default(true);
             $table->boolean('marketing_smsable')->default(true);
-            $table->integer('belongs_to')->default(1); // Tenant before implementation
+            $table->integer('tenant_id')->default(1); // Tenant before implementation
         });
 
         Schema::create('history_sessions', function (Blueprint $table) {
@@ -60,7 +60,7 @@ return new class extends Migration {
                     'marketing_callable',
                     'marketing_whatsappable',
                     'marketing_smsable',
-                    'belongs_to',
+                    'tenant_id',
                 ] as $column) {
                     if (Schema::hasColumn('users', $column)) {
                         $table->dropColumn($column);
