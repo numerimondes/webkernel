@@ -36,17 +36,34 @@
 
                 </a>
 
-                <p class="mt-2 text-xs text-gray-500 dark:text-gray-400">
-                    Webkernel v{{ Webkernel\constants\Application::WEBKERNEL_VERSION }} |
-                    Filament {{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }} |
-                    Laravel v{{ Illuminate\Foundation\Application::VERSION }}
+                <p x-data class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex space-x-12">
+                    <!-- Groupe W -->
+                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer">
+                        <span>Webkernel</span>
+                        <span style="margin-left:4px;">v{{ Webkernel\constants\Application::WEBKERNEL_VERSION }}</span>
+                    </span>
+
+                    <!-- Groupe F -->
+                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
+                        <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">F</span>
+                        <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Filament</span>
+                        <span style="margin-left:4px;">{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}</span>
+                    </span>
+
+                    <!-- Groupe L -->
+                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
+                        <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">L</span>
+                        <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Laravel</span>
+                        <span style="margin-left:4px;">v{{ Illuminate\Foundation\Application::VERSION }}</span>
+                    </span>
                 </p>
+
             </div>
 
             <div class="flex flex-col items-end gap-y-1">
                 <x-filament::link
                     color="gray"
-                    href="https://github.com/numerimondes/webkernel"
+                    href="https://deepwiki.com/numerimondes/webkernel"
                     icon="heroicon-m-book-open"
                     icon-alias="panels::widgets.filament-info.open-documentation-button"
                     rel="noopener noreferrer"

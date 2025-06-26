@@ -18,7 +18,7 @@
     }
 
     $BADGE_SENSITIVITY_OPTIONS = ['clic', 'hover', 'nothing'];
-    $BADGE_SENSITIVITY = 'nothing';
+    $BADGE_SENSITIVITY = 'hover';
 
     $brand = 'Webkernel';
     $logo = 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256';
@@ -90,11 +90,25 @@
     .dark .external-link-icon {
         color: rgb(255, 255, 255);
     }
-    @media (prefers-color-scheme: dark) {
-        .external-link-icon {
-            color: rgb(255, 255, 255);
-        }
+
+    /* Styles for the main badge - automatic theme adaptation */
+.credit-badge-ui-main {
+    border: 1px solid rgba(31, 41, 55, 0.2) !important; /* Dark border in light mode */
+}
+.dark .credit-badge-ui-main {
+    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* White border in dark mode */
+}
+
+    /* Styles pour le bouton d'aide - adaptation automatique au thème */
+    .universal-help-ui-button {
+        color: rgb(31, 41, 55) !important; /* Couleur foncée par défaut (light mode) */
+        border: 1px solid rgba(31, 41, 55, 0.2) !important; /* Bordure foncée en light mode */
     }
+    .dark .universal-help-ui-button {
+        color: rgb(255, 255, 255) !important; /* Blanc en dark mode */
+        border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Bordure blanche en dark mode */
+    }
+
     .universal-help-ui-dropdown .fi-dropdown-panel {
         z-index: 10000 !important;
     }
@@ -108,168 +122,10 @@
 </style>
 
 <div id="{{ $id }}" class="credit-badge-ui-container" style="{{ $positionSide }} position: fixed; bottom: 10px; display: flex; align-items: center; gap: 8px; z-index: 9999;">
-    <div class="credit-badge-ui-main" style="
-        padding: 6px 12px; font-size: 11px;
-        font-family: sans-serif; color: white; background: rgba(255, 255, 255, 0.15);
-        backdrop-filter: blur(10px); -webkit-backdrop-filter: blur(10px);
-        border: 1px solid rgba(255, 255, 255, 0.2); border-radius: 8px;
-        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-        display: flex; align-items: center; white-space: nowrap;
-        gap: 5px; cursor: {{ $BADGE_SENSITIVITY === 'clic' ? 'pointer' : 'default' }}; transition: all 0.2s ease;
-        height: 32px;
-        @if($isRTL) flex-direction: row-reverse; @endif
-    ">
-        @if($isRTL)
-            @if($BADGE_SENSITIVITY !== 'nothing')
-                <span class="powered-by-link">
-                    <a href="{{ $poweredLinkBrand }}" target="_blank" rel="noopener noreferrer" style="color: currentColor; text-decoration: none;">
-                        <x-filament::icon
-                            icon="heroicon-m-arrow-top-right-on-square"
-                            class="external-link-icon"
-                            style="width: {{ $svg_width }}px; height: {{ $svg_width }}px; max-width: 100%; max-height: 100%;"
-                        />
-                    </a>
-                    <a href="{{ $poweredLinkBrand }}" target="_blank" rel="noopener noreferrer"
-                    style="color: currentColor; text-decoration: none;">
-                       <span class="text-sm font-bold leading-6 text-gray-950 dark:text-white">
-                        {{ $brandLink }}
-                    </span>
-                    </a>
-                </span>
-                    <span class="powered-by-text text-sm font-bold leading-6 text-gray-950 dark:text-white">
-                    {{ $poweredByText }}
-                </span>
-            @endif
-            <span class="brand-text text-sm font-bold leading-6 text-gray-950 dark:text-white">{{ $brand }}</span>
-            <img src="{{ $logo }}" alt="Logo" style="width: {{ $img_width }}px; height: auto; display: inline-block; vertical-align: middle;">
-        @else
-            <img src="{{ $logo }}" alt="Logo" style="width: {{ $img_width }}px; height: auto; display: inline-block; vertical-align: middle;">
-            <span class="brand-text text-sm font-bold leading-6 text-gray-950 dark:text-white">{{ $brand }}</span>
-            @if($BADGE_SENSITIVITY !== 'nothing')
-                    <span class="powered-by-text text-sm font-bold leading-6 text-gray-950 dark:text-white">
-                    {{ $poweredByText }}
-                </span>
-                <span class="powered-by-link">
-                    <a href="{{ $poweredLinkBrand }}" target="_blank" rel="noopener noreferrer" style="color: currentColor; text-decoration: none;">
-                       <span class="text-sm font-bold leading-6 text-gray-950 dark:text-white">
-                        {{ $brandLink }}
-                    </span>
-                    </a>
-                    <a href="{{ $poweredLinkBrand }}" target="_blank" rel="noopener noreferrer" style="color: currentColor; text-decoration: none;">
-                        <x-filament::icon
-                            icon="heroicon-m-arrow-top-right-on-square"
-                            class="external-link-icon"
-                            style="width: {{ $svg_width }}px; height: {{ $svg_width }}px; max-width: 100%; max-height: 100%;"
-                        />
-                    </a>
-                </span>
-            @endif
-        @endif
-    </div>
 
-    <x-filament::dropdown :placement="$dropdownPlacement">
-        <x-slot name="trigger">
-            <button
-                type="button"
-                class="universal-help-ui-button"
-                style="
-                    padding: 6px;
-                    font-size: 14px;
-                    font-family: sans-serif;
-                    cursor: pointer;
-                    color: white;
-                    background: rgba(255, 255, 255, 0.15);
-                    backdrop-filter: blur(10px);
-                    -webkit-backdrop-filter: blur(10px);
-                    border: 1px solid rgba(255, 255, 255, 0.2);
-                    border-radius: 8px;
-                    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.05);
-                    display: flex;
-                    align-items: center;
-                    justify-content: center;
-                    width: 32px;
-                    height: 32px;
-                    transition: all 0.2s ease;
-                "
-            >
-                <x-filament::icon
-                    icon="heroicon-m-question-mark-circle"
-                    class="text-white"
-                    style="width: 18px; height: 18px; max-width: 100%; max-height: 100%;"
-                />
-            </button>
-        </x-slot>
-        <x-filament::dropdown.header>
-            <div class="flex items-center gap-2">
-                <x-filament::icon
-                    icon="heroicon-m-question-mark-circle"
-                    class="text-gray-500 dark:text-gray-400"
-                    style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
-                />
-                Help & Support
-            </div>
-        </x-filament::dropdown.header>
-        <x-filament::dropdown.list>
-            <x-filament::dropdown.list.item
-                href="https://numerimondes.com/docs"
-                tag="a"
-                target="_blank"
-            >
-                <div class="flex items-center gap-3">
-                    <x-filament::icon
-                        icon="heroicon-m-book-open"
-                        class="text-gray-500 dark:text-gray-400"
-                        style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
-                    />
-                    <span>Documentation</span>
-                </div>
-            </x-filament::dropdown.list.item>
-            <x-filament::dropdown.list.item
-                href="https://numerimondes.com/support"
-                tag="a"
-                target="_blank"
-            >
-                <div class="flex items-center gap-3">
-                    <x-filament::icon
-                        icon="heroicon-m-chat-bubble-left-right"
-                        class="text-gray-500 dark:text-gray-400"
-                        style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
-                    />
-                    <span>Contact Support</span>
-                </div>
-            </x-filament::dropdown.list.item>
-            <x-filament::dropdown.list.item
-                href="https://numerimondes.com/faq"
-                tag="a"
-                target="_blank"
-            >
-                <div class="flex items-center gap-3">
-                    <x-filament::icon
-                        icon="heroicon-m-information-circle"
-                        class="text-gray-500 dark:text-gray-400"
-                        style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
-                    />
-                    <span>{{ lang('faq') }}</span>
-                </div>
-            </x-filament::dropdown.list.item>
-            <x-filament::dropdown.list.item
-                href="https://numerimondes.com/bug-report"
-                tag="a"
-                target="_blank"
-            >
-                <div class="flex items-center gap-3">
-                    <x-filament::icon
-                        icon="heroicon-m-bug-ant"
-                        class="text-gray-500 dark:text-gray-400"
-                        style="width: 16px; height: 16px; max-width: 100%; max-height: 100%;"
-                    />
-                    <span>{{ lang('report_bug') }}</span>
-                </div>
-            </x-filament::dropdown.list.item>
-        </x-filament::dropdown.list>
-    </x-filament::dropdown>
+    @include('webkernel::components.webkernel.ui.organism.universal-badge.parts.badge-white-label')
+
 </div>
-
 <script>
 (function() {
     'use strict';
