@@ -66,16 +66,23 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             fn() => safe_render_hook_view('webkernel::components.webkernel.assets.head-css-js')
         );
 
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::HEAD_START,
+            fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
+        );
+
+
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_START,
             fn() => safe_render_hook_view('webkernel::components.webkernel.assets.languages-fonts')
         );
 
 
-FilamentView::registerRenderHook(
-    PanelsRenderHook::BODY_END,
-    fn() => safe_render_hook_view('webkernel::components.webkernel.ui.organism.universal-badge.universal-badges')
-);
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn() => safe_render_hook_view('webkernel::components.webkernel.ui.organism.universal-badge.universal-badges')
+        );
 
 
         if ($this->isRenderHookEnabled('current_user_datetime')) {

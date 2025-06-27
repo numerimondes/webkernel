@@ -2,6 +2,7 @@
 
 namespace Webkernel\Models;
 
+use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -24,5 +25,13 @@ class Session extends Model
     public function user(): BelongsTo
     {
         return $this->belongsTo(User::class);
+    }
+
+    /**
+     * Vérifie si cette session est celle actuellement utilisée par l'utilisateur connecté.
+     */
+    public function isCurrent(): bool
+    {
+        return $this->id === session()->getId();
     }
 }

@@ -29,6 +29,10 @@
     $poweredByText = lang('powered_by');
     $poweredLinkBrand = "https://numerimondes.com";
     $brandLink = "Numerimondes";
+
+
+    // exclude : fi-sidebar-close-overlay fixed inset-0 z-30 bg-gray-950/50 transition duration-500 dark:bg-gray-950/75 lg:hidden
+
 @endphp
 
 <style>

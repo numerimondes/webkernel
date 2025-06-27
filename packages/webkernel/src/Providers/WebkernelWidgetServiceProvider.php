@@ -24,7 +24,7 @@ class WebkernelWidgetServiceProvider extends ServiceProvider
      */
     public function boot(): void
     {
-        // Get all widget classes in the Widgets directory
+        // Get all widget classes in the Widgets directories
         $widgetClasses = $this->discoverWidgets();
 
         if (!empty($widgetClasses)) {
@@ -43,11 +43,11 @@ class WebkernelWidgetServiceProvider extends ServiceProvider
             }
         }
 
-        // Load custom view components
-        $this->loadViewComponentsFrom(
-            base_path('packages/webkernel/src/View/Components'),
-            'webkernel'
-        );
+        // Load custom view components from all packages and platform
+        $viewComponentPaths = $this->getViewComponentPaths();
+        foreach ($viewComponentPaths as $path => $namespace) {
+            $this->loadViewComponentsFrom($path, $namespace);
+        }
 
         // Publish widget assets for immediate loading
         $this->publishes([
@@ -56,36 +56,30 @@ class WebkernelWidgetServiceProvider extends ServiceProvider
     }
 
     /**
-     * Discover all widget classes in the Widgets directory
+     * Discover all widget classes in the Widgets directories
      *
      * @return array
      */
     protected function discoverWidgets(): array
     {
-        $widgetPath = base_path('packages/webkernel/src/Filament/Widgets');
-        $namespace = 'Webkernel\\Filament\\Widgets';
         $widgets = [];
+        $widgetPaths = $this->getWidgetPaths();
 
-        // Check if the directory exists
-        if (!File::isDirectory($widgetPath)) {
-            return $widgets;
-        }
+        foreach ($widgetPaths as $path => $namespace) {
+            if (!File::isDirectory($path)) {
+                continue;
+            }
 
-        // Get all PHP files in the widgets directory
-        $files = File::files($widgetPath);
+            $files = File::files($path);
+            foreach ($files as $file) {
+                $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
+                $class = $namespace . '\\' . $className;
 
-        foreach ($files as $file) {
-            // Get the filename without extension
-            $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-
-            // Build the fully qualified class name
-            $class = $namespace . '\\' . $className;
-
-            // Check if the class exists and is a Widget
-            if (class_exists($class)) {
-                $reflection = new ReflectionClass($class);
-                if (!$reflection->isAbstract() && $reflection->isSubclassOf(Widget::class)) {
-                    $widgets[] = $class;
+                if (class_exists($class)) {
+                    $reflection = new ReflectionClass($class);
+                    if (!$reflection->isAbstract() && $reflection->isSubclassOf(Widget::class)) {
+                        $widgets[] = $class;
+                    }
                 }
             }
         }
@@ -101,16 +95,15 @@ class WebkernelWidgetServiceProvider extends ServiceProvider
      */
     protected function getWidgetAlias(string $widgetClass): string
     {
-        // Extract class name from the fully qualified class name
         $reflection = new ReflectionClass($widgetClass);
         $className = $reflection->getShortName();
-
-        // Convert class name to kebab case for Livewire component name
         $alias = preg_replace('/([a-z])([A-Z])/', '$1-$2', $className);
         $alias = strtolower($alias);
 
-        // Return the full Livewire component name
-        return 'webkernel.filament.widgets.' . $alias;
+        // Use namespace prefix for alias to avoid conflicts
+        $namespace = $reflection->getNamespaceName();
+        $prefix = str_replace('\\', '.', strtolower(str_replace('Filament\\Widgets', '', $namespace)));
+        return trim($prefix, '.') . '.filament.widgets.' . $alias;
     }
 
     /**
@@ -130,11 +123,79 @@ class WebkernelWidgetServiceProvider extends ServiceProvider
 
         foreach ($files as $file) {
             $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
-            $namespace = 'Webkernel\\View\\Components\\' . $className;
+            $class = $namespace . '\\' . $className;
 
-            if (class_exists($namespace)) {
-                $this->app->make('blade.compiler')->component($namespace, null, $namespace);
+            if (class_exists($class)) {
+                $this->app->make('blade.compiler')->component($class, null, $namespace);
             }
         }
+    }
+
+    /**
+     * Get widget paths and their corresponding namespaces
+     *
+     * @return array
+     */
+    protected function getWidgetPaths(): array
+    {
+        $paths = [
+            base_path('packages/webkernel/src/Filament/Widgets') => 'Webkernel\\Filament\\Widgets',
+        ];
+
+        // Add platform and package paths
+        $autoloadNamespaces = $this->getAutoloadNamespaces();
+        foreach ($autoloadNamespaces as $namespace => $path) {
+            $widgetPath = $path . '/Filament/Widgets';
+            if (File::isDirectory($widgetPath)) {
+                $paths[$widgetPath] = $namespace . 'Filament\\Widgets';
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Get view component paths and their corresponding namespaces
+     *
+     * @return array
+     */
+    protected function getViewComponentPaths(): array
+    {
+        $paths = [
+            base_path('packages/webkernel/src/View/Components') => 'Webkernel\\View\\Components',
+        ];
+
+        // Add platform and package paths
+        $autoloadNamespaces = $this->getAutoloadNamespaces();
+        foreach ($autoloadNamespaces as $namespace => $path) {
+            $componentPath = $path . '/View/Components';
+            if (File::isDirectory($componentPath)) {
+                $paths[$componentPath] = $namespace . 'View\\Components';
+            }
+        }
+
+        return $paths;
+    }
+
+    /**
+     * Get PSR-4 namespaces from composer.json
+     *
+     * @return array
+     */
+    protected function getAutoloadNamespaces(): array
+    {
+        $composerJson = json_decode(File::get(base_path('composer.json')), true);
+        $namespaces = [];
+
+        if (isset($composerJson['autoload']['psr-4'])) {
+            foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
+                // Include paths under platform/ and packages/ (excluding webkernel)
+                if (str_starts_with($path, 'platform/') || (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/')) {
+                    $namespaces[rtrim($namespace, '\\') . '\\'] = base_path($path);
+                }
+            }
+        }
+
+        return $namespaces;
     }
 }

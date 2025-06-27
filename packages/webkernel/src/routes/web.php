@@ -55,3 +55,29 @@ Route::middleware(['auth'])->get('lang/{lang}', function ($lang) {
     return redirect()->back(); // Redirect to the previous page
 });
 
+
+
+Route::get('/dynamic.css', function () {
+    return Response::make(generate_dynamic_css(), 200, [
+        'Content-Type' => 'text/css',
+        'Cache-Control' => 'public, max-age=3600',
+    ]);
+})->name('dynamic.css');
+
+Route::get('/dynamic.js', function () {
+    return Response::make(generate_dynamic_js(), 200, [
+        'Content-Type' => 'application/javascript',
+        'Cache-Control' => 'public, max-age=3600',
+    ]);
+})->name('dynamic.js');
+
+Route::get('/manifest.json', function () {
+    return Response::json(generate_manifest_json());
+})->name('manifest.json');
+
+Route::get('/service-worker.js', function () {
+    return Response::make(generate_service_worker(), 200, [
+        'Content-Type' => 'application/javascript',
+        'Cache-Control' => 'public, max-age=3600',
+    ]);
+})->name('service-worker.js');
