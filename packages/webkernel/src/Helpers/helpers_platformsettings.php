@@ -1,387 +1,687 @@
 <?php
 
-use Illuminate\Support\Facades\Storage;
+use Webkernel\Models\PlatformSetting;
+use Illuminate\Support\Str;
 
-if (!function_exists('platform_setting')) {
-    /**
-     * Get a platform setting value
-     */
-    function platform_setting(string $reference, $default = null, ?int $tenantId = null)
+
+/*
+|--------------------------------------------------------------------------
+| Usage Examples for PlatformSettingsHelper
+|--------------------------------------------------------------------------
+|
+| // Get a setting value
+| $platformName = PlatformSettingsHelper::getValue('PLATFORM_NAME');
+|
+| // Get all layout settings
+| $layoutSettings = PlatformSettingsHelper::getSettingsByCategory('layout');
+|
+| // Get settings by card group
+| $brandingSettings = PlatformSettingsHelper::getSettingsByCardGroup('branding');
+|
+| // Update a setting
+| PlatformSettingsHelper::updateValue('PLATFORM_NAME', 'New App Name');
+|
+| // Bulk update
+| PlatformSettingsHelper::bulkUpdateValues([
+| 'PLATFORM_NAME' => 'Updated Name',
+| 'THEME_PRIMARY_COLOR' => '#ff0000'
+| ]);
+|
+*/
+
+if (!function_exists('getPlatformValue')) {
+    function getPlatformValue(string $key, ?int $tenantId = null): mixed
     {
-        return \Webkernel\Models\PlatformSetting::get($reference, $default, $tenantId);
+        return PlatformSetting::getPlatformTypedValue($key, $tenantId);
     }
 }
 
-if (!function_exists('set_platform_setting')) {
-    /**
-     * Set a platform setting value
-     */
-    function set_platform_setting(string $reference, $value, ?int $tenantId = null)
+if (!function_exists('getPlatformSetting')) {
+    function getPlatformSetting(string $key, ?int $tenantId = null): ?PlatformSetting
     {
-        return \Webkernel\Models\PlatformSetting::set($reference, $value, $tenantId);
+        return PlatformSetting::getPlatformSetting($key, $tenantId);
     }
 }
 
-if (!function_exists('public_platform_settings')) {
-    /**
-     * Get all public platform settings
-     */
-    function public_platform_settings(?int $tenantId = null): array
+if (!function_exists('getPlatformPublicSettings')) {
+    function getPlatformPublicSettings(?int $tenantId = null): \Illuminate\Support\Collection
     {
-        return \Webkernel\Models\PlatformSetting::getPublicSettings($tenantId);
+        return PlatformSetting::getPlatformPublicSettings($tenantId);
     }
 }
 
-if (!function_exists('generate_dynamic_css')) {
-    /**
-     * Generate dynamic CSS based on platform settings
-     */
-    function generate_dynamic_css(?int $tenantId = null): string
+if (!function_exists('getPlatformSettingsByCategory')) {
+    function getPlatformSettingsByCategory(string $category, ?int $tenantId = null): \Illuminate\Support\Collection
     {
-        $settings = public_platform_settings($tenantId);
-
-        $css = ":root {\n";
-        $css .= "    --primary-color: " . ($settings['THEME_PRIMARY_COLOR'] ?? '#3b82f6') . ";\n";
-        $css .= "    --secondary-color: " . ($settings['THEME_SECONDARY_COLOR'] ?? '#64748b') . ";\n";
-        $css .= "    --sidebar-width: " . ($settings['SIDEBAR_WIDTH'] ?? 16) . "px;\n";
-        $css .= "    --sidebar-border-width: " . ($settings['SIDEBAR_BORDER_WIDTH'] ?? 0.1) . "em;\n";
-        $css .= "    --sidebar-border-color: " . ($settings['SIDEBAR_BORDER_COLOR'] ?? 'rgba(var(--gray-200), 1)') . ";\n";
-        $css .= "    --sidebar-dark-border-color: " . ($settings['SIDEBAR_DARK_BORDER_COLOR'] ?? 'rgba(var(--gray-800), 1)') . ";\n";
-        $css .= "    --loader-background: " . ($settings['LOADER_BACKGROUND'] ?? 'rgba(255, 255, 255, 0.05)') . ";\n";
-        $css .= "    --loader-dark-background: " . ($settings['LOADER_DARK_BACKGROUND'] ?? 'rgba(0, 0, 0, 0.3)') . ";\n";
-        $css .= "    --loader-border-color: " . ($settings['LOADER_BORDER_COLOR'] ?? 'rgba(255, 255, 255, 0.12)') . ";\n";
-        $css .= "    --loader-spinner-size: " . ($settings['LOADER_SPINNER_SIZE'] ?? 3) . "px;\n";
-        $css .= "    --loader-spinner-border-width: " . ($settings['LOADER_SPINNER_BORDER_WIDTH'] ?? 4) . "px;\n";
-        $css .= "    --loader-spinner-border-color: " . ($settings['LOADER_SPINNER_BORDER_COLOR'] ?? 'rgba(255, 255, 255, 0.2)') . ";\n";
-        $css .= "}\n\n";
-
-        // Responsive padding
-        $paddingX = $settings['CONTENT_PADDING_X'] ?? 1;
-        $paddingY = $settings['CONTENT_PADDING_Y'] ?? 2;
-
-        $css .= "@media (min-width: 768px) {\n";
-        $css .= "    .dynamic-content-padding {\n";
-        $css .= "        padding-left: {$paddingX}% !important;\n";
-        $css .= "        padding-right: {$paddingX}% !important;\n";
-        $css .= "        padding-top: {$paddingY}px !important;\n";
-        $css .= "        padding-bottom: {$paddingY}px !important;\n";
-        $css .= "    }\n";
-        $css .= "}\n\n";
-
-        $css .= "@media (min-width: 1024px) {\n";
-        $css .= "    .dynamic-content-padding {\n";
-        $css .= "        padding-left: {$paddingX}% !important;\n";
-        $css .= "        padding-right: {$paddingX}% !important;\n";
-        $css .= "    }\n";
-        $css .= "}\n\n";
-
-        // Sidebar styling
-        $css .= ":dir(ltr) aside.fi-main-sidebar.fi-sidebar-open {\n";
-        $css .= "    width: var(--sidebar-width) !important;\n";
-        $css .= "    border-right: var(--sidebar-border-width) solid var(--sidebar-border-color) !important;\n";
-        $css .= "    border-left: none !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ":dir(rtl) aside.fi-main-sidebar.fi-sidebar-open {\n";
-        $css .= "    width: var(--sidebar-width) !important;\n";
-        $css .= "    border-left: var(--sidebar-border-width) solid var(--sidebar-border-color) !important;\n";
-        $css .= "    border-right: none !important;\n";
-        $css .= "}\n\n";
-
-        // Dark mode adjustments
-        $css .= ":dir(ltr).dark aside.fi-main-sidebar {\n";
-        $css .= "    border-right-color: var(--sidebar-dark-border-color) !important;\n";
-        $css .= "    border-left-color: transparent !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ":dir(rtl).dark aside.fi-main-sidebar {\n";
-        $css .= "    border-left-color: var(--sidebar-dark-border-color) !important;\n";
-        $css .= "    border-right-color: transparent !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ":dir(ltr).dark.fi-topbar nav {\n";
-        $css .= "    border-right-color: var(--sidebar-dark-border-color) !important;\n";
-        $css .= "    border-left-color: transparent !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ":dir(rtl).dark.fi-topbar nav {\n";
-        $css .= "    border-left-color: var(--sidebar-dark-border-color) !important;\n";
-        $css .= "    border-right-color: transparent !important;\n";
-        $css .= "}\n\n";
-
-        // Additional existing styles
-        $css .= ".fi-sidebar-header {\n";
-        $css .= "    background: transparent !important;\n";
-        $css .= "}\n\n";
-
-        $css .= "nav {\n";
-        $css .= "    background-color: transparent !important;\n";
-        $css .= "    backdrop-filter: blur(20px) saturate(180%);\n";
-        $css .= "    -webkit-backdrop-filter: blur(20px) saturate(180%);\n";
-        $css .= "    border-bottom: 1px solid rgba(255, 255, 255, 0.1);\n";
-        $css .= "}\n\n";
-
-        $css .= ".fi-breadcrumbs.mb-2.hidden.sm\\:block {\n";
-        $css .= "    display: none !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ".fi-modal-close-overlay {\n";
-        $css .= "    background-color: rgba(0, 0, 0, 0) !important;\n";
-        $css .= "}\n\n";
-
-        $css .= ".fi-header-subheading {\n";
-        $css .= "    max-width: none !important;\n";
-        $css .= "    white-space: normal !important;\n";
-        $css .= "}\n\n";
-
-        // Loader styles
-        $css .= "#overlay-loader {\n";
-        $css .= "    position: fixed;\n";
-        $css .= "    top: 0;\n";
-        $css .= "    left: 0;\n";
-        $css .= "    right: 0;\n";
-        $css .= "    bottom: 0;\n";
-        $css .= "    background: var(--loader-background);\n";
-        $css .= "    backdrop-filter: blur(12px) saturate(160%);\n";
-        $css .= "    -webkit-backdrop-filter: blur(12px) saturate(160%);\n";
-        $css .= "    border: 1px solid var(--loader-border-color);\n";
-        $css .= "    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.1);\n";
-        $css .= "    z-index: 40;\n";
-        $css .= "    display: flex;\n";
-        $css .= "    align-items: center;\n";
-        $css .= "    justify-content: center;\n";
-        $css .= "    opacity: 0;\n";
-        $css .= "    pointer-events: none;\n";
-        $css .= "    transition: opacity 0.3s ease;\n";
-        $css .= "}\n\n";
-
-        $css .= ".dark #overlay-loader {\n";
-        $css .= "    background: var(--loader-dark-background);\n";
-        $css .= "    border-color: var(--loader-border-color);\n";
-        $css .= "    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.3);\n";
-        $css .= "}\n\n";
-
-        $css .= "#overlay-loader.active {\n";
-        $css .= "    opacity: 1;\n";
-        $css .= "    pointer-events: auto;\n";
-        $css .= "}\n\n";
-
-        $css .= ".loader-spinner {\n";
-        $css .= "    width: var(--loader-spinner-size);\n";
-        $css .= "    height: var(--loader-spinner-size);\n";
-        $css .= "    border: var(--loader-spinner-border-width) solid var(--loader-spinner-border-color);\n";
-        $css .= "    border-top-color: var(--primary-color);\n";
-        $css .= "    border-radius: 50%;\n";
-        $css .= "    animation: spin 0.8s linear infinite;\n";
-        $css .= "    backdrop-filter: none;\n";
-        $css .= "}\n\n";
-
-        $css .= "@keyframes spin {\n";
-        $css .= "    to {\n";
-        $css .= "        transform: rotate(360deg);\n";
-        $css .= "    }\n";
-        $css .= "}\n";
-
-        return $css;
+        return PlatformSetting::getPlatformAllByCategory($category, $tenantId);
     }
 }
 
-if (! function_exists('generate_dynamic_js')) {
-    /**
-     * Generate dynamic JavaScript for real-time updates and loader
-     */
-    function generate_dynamic_js(?int $tenantId = null): string
+if (!function_exists('getPlatformSettingsByCardGroup')) {
+    function getPlatformSettingsByCardGroup(string $cardGroup, ?int $tenantId = null): \Illuminate\Support\Collection
     {
-        $js = <<<JS
-document.addEventListener('DOMContentLoaded', function() {
-    // Ensure loader is appended directly to body
-    const overlay = document.createElement('div');
-    overlay.id = 'overlay-loader';
-    overlay.innerHTML = '<div class="loader-spinner"></div>';
-    document.body.appendChild(overlay);
-
-    const reloadController = {
-        handleReload() {
-            overlay.classList.add('active');
-            setTimeout(() => {
-                window.location.href = window.location.href;
-            }, 550);
-        }
-    };
-
-    // Real-time CSS update handler
-    window.addEventListener('setting-updated', (event) => {
-        const { reference, value, type } = event.detail;
-        let cssProperty = '';
-        let cssValue = value;
-
-        switch (reference) {
-            case 'THEME_PRIMARY_COLOR':
-                cssProperty = '--primary-color';
-                break;
-            case 'THEME_SECONDARY_COLOR':
-                cssProperty = '--secondary-color';
-                break;
-            case 'SIDEBAR_WIDTH':
-                cssProperty = '--sidebar-width';
-                cssValue = type === 'number' ? value + 'px' : value;
-                break;
-            case 'SIDEBAR_BORDER_WIDTH':
-                cssProperty = '--sidebar-border-width';
-                cssValue = type === 'number' ? value + 'em' : value;
-                break;
-            case 'SIDEBAR_BORDER_COLOR':
-                cssProperty = '--sidebar-border-color';
-                break;
-            case 'SIDEBAR_DARK_BORDER_COLOR':
-                cssProperty = '--sidebar-dark-border-color';
-                break;
-            case 'LOADER_BACKGROUND':
-                cssProperty = '--loader-background';
-                break;
-            case 'LOADER_DARK_BACKGROUND':
-                cssProperty = '--loader-dark-background';
-                break;
-            case 'LOADER_BORDER_COLOR':
-                cssProperty = '--loader-border-color';
-                break;
-            case 'LOADER_SPINNER_SIZE':
-                cssProperty = '--loader-spinner-size';
-                cssValue = type === 'number' ? value + 'px' : value;
-                break;
-            case 'LOADER_SPINNER_BORDER_WIDTH':
-                cssProperty = '--loader-spinner-border-width';
-                cssValue = type === 'number' ? value + 'px' : value;
-                break;
-            case 'LOADER_SPINNER_BORDER_COLOR':
-                cssProperty = '--loader-spinner-border-color';
-                break;
-            case 'CONTENT_PADDING_X':
-                document.querySelectorAll('.dynamic-content-padding').forEach(el => {
-                    el.style.paddingLeft = value + '%';
-                    el.style.paddingRight = value + '%';
-                });
-                break;
-            case 'CONTENT_PADDING_Y':
-                document.querySelectorAll('.dynamic-content-padding').forEach(el => {
-                    el.style.paddingTop = value + 'px';
-                    el.style.paddingBottom = value + 'px';
-                });
-                break;
-        }
-
-        if (cssProperty) {
-            document.documentElement.style.setProperty(cssProperty, cssValue);
-        }
-    });
-
-    window.addEventListener('triggerSmoothReload', reloadController.handleReload);
-
-    window.addEventListener('beforeunload', () => {
-        window.pxoveEventListener('triggerSmoothReload', reloadController.handleReload);
-    });
-});
-JS;
-
-        return $js;
+        return PlatformSetting::getPlatformSettingsByCardGroup($cardGroup, $tenantId);
     }
 }
 
-if (!function_exists('generate_manifest_json')) {
-    /**
-     * Generate PWA manifest.json based on platform settings
-     */
-    function generate_manifest_json(?int $tenantId = null): array
+if (!function_exists('getPlatformEditableSettings')) {
+    function getPlatformEditableSettings(?int $tenantId = null): \Illuminate\Support\Collection
     {
-        $settings = public_platform_settings($tenantId);
+        return PlatformSetting::getPlatformEditableSettings($tenantId);
+    }
+}
 
+if (!function_exists('updateValue')) {
+    function updateValue(string $key, mixed $value, ?int $tenantId = null): bool
+    {
+        return PlatformSetting::setTypedValue($key, $tenantId);
+    }
+}
+
+if (!function_exists('bulkUpdateValues')) {
+    function bulkUpdateValues(array $settingsData, ?int $tenantId = null): bool
+    {
+        return PlatformSetting::bulkUpdate($settingsData, $tenantId);
+    }
+}
+
+if (!function_exists('createSetting')) {
+    function createSetting(string $key, array $settingData, ?int $tenantId = null): bool
+    {
+        return PlatformSetting::setSetting($key, $settingData, $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformName')) {
+    function getPlatformName(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_NAME', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformDescription')) {
+    function getPlatformDescription(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_DESCRIPTION', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformLogo')) {
+    function getPlatformLogo(?int $tenantId = null): ?string
+    {
+        return PlatformSetting::getAbsoluteUrl('PLATFORM_LOGO', $tenantId);
+    }
+}
+
+if (!function_exists('doesPlatformHaveFavicon')) {
+    function doesPlatformHaveFavicon(?int $tenantId = null): bool
+    {
+        return !empty(PlatformSetting::getRawStoredData('PLATFORM_FAVICON', $tenantId));
+    }
+}
+
+if (!function_exists('getPlatformFavicon')) {
+    function getPlatformFavicon(?int $tenantId = null, int $size = 256): string
+    {
+        $favicon = PlatformSetting::getVerifiedStoredData('PLATFORM_FAVICON', $tenantId);
+        return $favicon ?? "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size={$size}";
+    }
+}
+
+if (!function_exists('getPlatformFaviconHtml')) {
+    function getPlatformFaviconHtml(?int $tenantId = null, int $size = 256): string
+    {
+        $faviconUrl = getPlatformFavicon($tenantId, $size);
+        $extension = strtolower(pathinfo(parse_url($faviconUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
+
+        $mimeTypes = [
+            'ico' => 'image/x-icon',
+            'png' => 'image/png',
+            'jpg' => 'image/jpeg',
+            'jpeg' => 'image/jpeg',
+            'gif' => 'image/gif',
+            'svg' => 'image/svg+xml',
+            'webp' => 'image/webp',
+        ];
+
+        $mimeType = $mimeTypes[$extension] ?? 'image/x-icon';
+        return '<link rel="icon" href="' . e($faviconUrl) . '" type="' . e($mimeType) . '">' . PHP_EOL;
+    }
+}
+
+if (!function_exists('getPlatformLicence')) {
+    function getPlatformLicence(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_LICENCE', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformEnvironment')) {
+    function getPlatformEnvironment(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_ENVIRONMENT', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformThemePrimaryColor')) {
+    function getPlatformThemePrimaryColor(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('THEME_PRIMARY_COLOR', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformThemeSecondaryColor')) {
+    function getPlatformThemeSecondaryColor(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('THEME_SECONDARY_COLOR', $tenantId);
+    }
+}
+
+if (!function_exists('isPwaEnabled')) {
+    function isPwaEnabled(?int $tenantId = null): bool
+    {
+        return getPlatformValue('PWA_ENABLED', $tenantId) === 'true';
+    }
+}
+
+if (!function_exists('getPlatformPwaThemeColor')) {
+    function getPlatformPwaThemeColor(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PWA_THEME_COLOR', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformPwaBackgroundColor')) {
+    function getPlatformPwaBackgroundColor(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PWA_BACKGROUND_COLOR', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformGeneralLayout')) {
+    function getPlatformGeneralLayout(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('GENERAL_LAYOUT', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformSidebarWidth')) {
+    function getPlatformSidebarWidth(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('SIDEBAR_WIDTH', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformContentPadding')) {
+    function getPlatformContentPadding(?int $tenantId = null): ?array
+    {
+        return getPlatformValue('CONTENT_PADDING', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformContentPaddingX')) {
+    function getPlatformContentPaddingX(?int $tenantId = null): ?string
+    {
+        $padding = getPlatformContentPadding($tenantId);
+        return $padding['x'] ?? null;
+    }
+}
+
+if (!function_exists('getPlatformContentPaddingY')) {
+    function getPlatformContentPaddingY(?int $tenantId = null): ?string
+    {
+        $padding = getPlatformContentPadding($tenantId);
+        return $padding['y'] ?? null;
+    }
+}
+
+if (!function_exists('getPlatformBrandingSettings')) {
+    function getPlatformBrandingSettings(?int $tenantId = null): \Illuminate\Support\Collection
+    {
+        return getPlatformSettingsByCardGroup('branding', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformLayoutSettings')) {
+    function getPlatformLayoutSettings(?int $tenantId = null): \Illuminate\Support\Collection
+    {
+        return getPlatformSettingsByCategory('layout', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformThemeSettings')) {
+    function getPlatformThemeSettings(?int $tenantId = null): \Illuminate\Support\Collection
+    {
+        return getPlatformSettingsByCategory('theme', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformSystemSettings')) {
+    function getPlatformSystemSettings(?int $tenantId = null): \Illuminate\Support\Collection
+    {
+        return getPlatformSettingsByCategory('system', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformPwaSettings')) {
+    function getPlatformPwaSettings(?int $tenantId = null): \Illuminate\Support\Collection
+    {
+        return getPlatformSettingsByCategory('pwa', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformMetaTitle')) {
+    function getPlatformMetaTitle(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('META_TITLE', $tenantId) ?? getPlatformName($tenantId);
+    }
+}
+
+if (!function_exists('getPlatformMetaDescription')) {
+    function getPlatformMetaDescription(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('META_DESCRIPTION', $tenantId) ?? getPlatformDescription($tenantId);
+    }
+}
+
+if (!function_exists('getPlatformMetaKeywords')) {
+    function getPlatformMetaKeywords(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('META_KEYWORDS', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformOgTitle')) {
+    function getPlatformOgTitle(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('OG_TITLE', $tenantId) ?? getPlatformName($tenantId);
+    }
+}
+
+if (!function_exists('getPlatformOgDescription')) {
+    function getPlatformOgDescription(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('OG_DESCRIPTION', $tenantId) ?? getPlatformDescription($tenantId);
+    }
+}
+
+if (!function_exists('getPlatformOgImage')) {
+    function getPlatformOgImage(?int $tenantId = null): ?string
+    {
+        return PlatformSetting::getAbsoluteUrl('OG_IMAGE', $tenantId) ?? getPlatformLogo($tenantId);
+    }
+}
+
+if (!function_exists('getPlatformOgType')) {
+    function getPlatformOgType(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('OG_TYPE', $tenantId) ?? 'website';
+    }
+}
+
+if (!function_exists('getPlatformOgUrl')) {
+    function getPlatformOgUrl(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('OG_URL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformTwitterCard')) {
+    function getPlatformTwitterCard(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('TWITTER_CARD', $tenantId) ?? 'summary_large_image';
+    }
+}
+
+if (!function_exists('getPlatformTwitterSite')) {
+    function getPlatformTwitterSite(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('TWITTER_SITE', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformTwitterCreator')) {
+    function getPlatformTwitterCreator(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('TWITTER_CREATOR', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformGoogleAnalyticsId')) {
+    function getPlatformGoogleAnalyticsId(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('GOOGLE_ANALYTICS_ID', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformGoogleTagManagerId')) {
+    function getPlatformGoogleTagManagerId(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('GOOGLE_TAG_MANAGER_ID', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformFacebookPixelId')) {
+    function getPlatformFacebookPixelId(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('FACEBOOK_PIXEL_ID', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformCanonicalUrl')) {
+    function getPlatformCanonicalUrl(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('CANONICAL_URL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformRobotsContent')) {
+    function getPlatformRobotsContent(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('ROBOTS_CONTENT', $tenantId) ?? 'index, follow';
+    }
+}
+
+if (!function_exists('getPlatformLanguage')) {
+    function getPlatformLanguage(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_LANGUAGE', $tenantId) ?? 'en';
+    }
+}
+
+if (!function_exists('getPlatformTimezone')) {
+    function getPlatformTimezone(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_TIMEZONE', $tenantId) ?? 'UTC';
+    }
+}
+
+if (!function_exists('getPlatformCurrency')) {
+    function getPlatformCurrency(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PLATFORM_CURRENCY', $tenantId) ?? 'USD';
+    }
+}
+
+if (!function_exists('getPlatformDateFormat')) {
+    function getPlatformDateFormat(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('DATE_FORMAT', $tenantId) ?? 'Y-m-d';
+    }
+}
+
+if (!function_exists('getPlatformTimeFormat')) {
+    function getPlatformTimeFormat(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('TIME_FORMAT', $tenantId) ?? 'H:i:s';
+    }
+}
+
+if (!function_exists('isMaintenanceMode')) {
+    function isMaintenanceMode(?int $tenantId = null): bool
+    {
+        return getPlatformValue('MAINTENANCE_MODE', $tenantId) === 'true';
+    }
+}
+
+if (!function_exists('getPlatformMaintenanceMessage')) {
+    function getPlatformMaintenanceMessage(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('MAINTENANCE_MESSAGE', $tenantId);
+    }
+}
+
+if (!function_exists('isDebugMode')) {
+    function isDebugMode(?int $tenantId = null): bool
+    {
+        return getPlatformValue('DEBUG_MODE', $tenantId) === 'true';
+    }
+}
+
+if (!function_exists('getPlatformContactEmail')) {
+    function getPlatformContactEmail(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('CONTACT_EMAIL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformSupportEmail')) {
+    function getPlatformSupportEmail(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('SUPPORT_EMAIL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformTermsUrl')) {
+    function getPlatformTermsUrl(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('TERMS_URL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformPrivacyUrl')) {
+    function getPlatformPrivacyUrl(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('PRIVACY_URL', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformCopyrightText')) {
+    function getPlatformCopyrightText(?int $tenantId = null): ?string
+    {
+        $value = getPlatformValue('COPYRIGHT_TEXT', $tenantId);
+        return $value ? lang($value) : null;
+    }
+}
+
+if (!function_exists('getPlatformApiVersion')) {
+    function getPlatformApiVersion(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('API_VERSION', $tenantId) ?? '1.0';
+    }
+}
+
+if (!function_exists('getPlatformMaxUploadSize')) {
+    function getPlatformMaxUploadSize(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('MAX_UPLOAD_SIZE', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformAllowedFileTypes')) {
+    function getPlatformAllowedFileTypes(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('ALLOWED_FILE_TYPES', $tenantId);
+    }
+}
+
+if (!function_exists('getPlatformSessionTimeout')) {
+    function getPlatformSessionTimeout(?int $tenantId = null): ?string
+    {
+        return getPlatformValue('SESSION_TIMEOUT', $tenantId);
+    }
+}
+
+if (!function_exists('isRegistrationEnabled')) {
+    function isRegistrationEnabled(?int $tenantId = null): bool
+    {
+        return getPlatformValue('REGISTRATION_ENABLED', $tenantId) === 'true';
+    }
+}
+
+if (!function_exists('is2faEnabled')) {
+    function is2faEnabled(?int $tenantId = null): bool
+    {
+        return getPlatformValue('TWO_FACTOR_ENABLED', $tenantId) === 'true';
+    }
+}
+
+if (!function_exists('getPlatformPasswordMinLength')) {
+    function getPlatformPasswordMinLength(?int $tenantId = null): ?int
+    {
+        $length = getPlatformValue('PASSWORD_MIN_LENGTH', $tenantId);
+        return $length ? (int) $length : 8;
+    }
+}
+
+if (!function_exists('getPlatformMetaTags')) {
+    function getPlatformMetaTags(?int $tenantId = null): array
+    {
         return [
-            'name' => isset($settings['PLATFORM_NAME']) ? $settings['PLATFORM_NAME'] : 'Mon Application',
-            'short_name' => substr(isset($settings['PLATFORM_NAME']) ? $settings['PLATFORM_NAME'] : 'App', 0, 12),
-            'description' => isset($settings['PLATFORM_DESCRIPTION']) ? $settings['PLATFORM_DESCRIPTION'] : 'Description de mon application',
-            'start_url' => '/',
-            'display' => 'standalone',
-            'theme_color' => isset($settings['PWA_THEME_COLOR']) ? $settings['PWA_THEME_COLOR'] : '#3b82f6',
-            'background_color' => isset($settings['PWA_BACKGROUND_COLOR']) ? $settings['PWA_BACKGROUND_COLOR'] : '#ffffff',
-            'orientation' => isset($settings['PWA_ORIENTATION']) ? $settings['PWA_ORIENTATION'] : 'portrait-primary',
-            'scope' => '/',
-            'icons' => [
-                [
-                    'src' => isset($settings['PLATFORM_LOGO']) ? $settings['PLATFORM_LOGO'] : '/images/logo.png',
-                    'sizes' => '192x192',
-                    'type' => 'image/png',
-                ],
-                [
-                    'src' => isset($settings['PLATFORM_LOGO']) ? $settings['PLATFORM_LOGO'] : '/images/logo.png',
-                    'sizes' => '512x512',
-                    'type' => 'image/png',
-                ],
-            ],
-            'categories' => ['business', 'productivity'],
-            'lang' => app()->getLocale(),
-            'dir' => 'auto',
+            'title' => getPlatformMetaTitle($tenantId),
+            'description' => getPlatformMetaDescription($tenantId),
+            'keywords' => getPlatformMetaKeywords($tenantId),
+            'robots' => getPlatformRobotsContent($tenantId),
+            'canonical' => getPlatformCanonicalUrl($tenantId),
+            'language' => getPlatformLanguage($tenantId),
         ];
     }
 }
 
-if (!function_exists('generate_service_worker')) {
-    /**
-     * Generate service worker JavaScript based on platform settings
-     */
-    function generate_service_worker(?int $tenantId = null): string
+if (!function_exists('getPlatformMetaTagsHtml')) {
+    function getPlatformMetaTagsHtml(?int $tenantId = null): string
     {
-        $settings = public_platform_settings($tenantId);
-        $pwaEnabled = isset($settings['PWA_ENABLED']) ? $settings['PWA_ENABLED'] : true;
-        $platformLogo = isset($settings['PLATFORM_LOGO']) ? $settings['PLATFORM_LOGO'] : '/images/logo.png';
-        $platformFavicon = isset($settings['PLATFORM_FAVICON']) ? $settings['PLATFORM_FAVICON'] : '/images/favicon.ico';
+        $tags = getPlatformMetaTags($tenantId);
+        $html = '';
 
-        if (!$pwaEnabled) {
-            return '';
+        if (!empty($tags['title'])) {
+            $html .= '<title>' . e($tags['title']) . '</title>' . PHP_EOL;
         }
 
-        $sw = <<<JS
-const CACHE_NAME = 'app-cache-v1';
-const urlsToCache = [
-    '/',
-    '{$platformLogo}',
-    '{$platformFavicon}',
-    '/offline.html'
-];
+        if (!empty($tags['description'])) {
+            $html .= '<meta name="description" content="' . e(lang($tags['description'])) . '">' . PHP_EOL;
+        }
 
-self.addEventListener('install', event => {
-    event.waitUntil(
-        caches.open(CACHE_NAME).then(cache => {
-            return cache.addAll(urlsToCache);
-        })
-    );
-});
+        if (!empty($tags['keywords'])) {
+            $html .= '<meta name="keywords" content="' . e($tags['keywords']) . '">' . PHP_EOL;
+        }
 
-self.addEventListener('fetch', event => {
-    event.respondWith(
-        caches.match(event.request).then(response => {
-            return response || fetch(event.request);
-        }).catch(() => {
-            return caches.match('/offline.html');
-        })
-    );
-});
+        if (!empty($tags['robots'])) {
+            $html .= '<meta name="robots" content="' . e($tags['robots']) . '">' . PHP_EOL;
+        }
 
-self.addEventListener('activate', event => {
-    const cacheWhitelist = [CACHE_NAME];
-    event.waitUntil(
-        caches.keys().then(cacheNames => {
-            return Promise.all(
-                cacheNames.map(cacheName => {
-                    if (!cacheWhitelist.includes(cacheName)) {
-                        return caches.delete(cacheName);
-                    }
-                })
-            );
-        })
-    );
-});
-JS;
+        if (!empty($tags['canonical'])) {
+            $html .= '<link rel="canonical" href="' . e($tags['canonical']) . '">' . PHP_EOL;
+        }
 
-        return $sw;
+        if (!empty($tags['language'])) {
+            $html .= '<meta name="language" content="' . e($tags['language']) . '">' . PHP_EOL;
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('getPlatformOpenGraphTags')) {
+    function getPlatformOpenGraphTags(?int $tenantId = null): array
+    {
+        return [
+            'og:title' => getPlatformOgTitle($tenantId),
+            'og:description' => getPlatformOgDescription($tenantId),
+            'og:image' => getPlatformOgImage($tenantId),
+            'og:type' => getPlatformOgType($tenantId),
+            'og:url' => getPlatformOgUrl($tenantId),
+        ];
+    }
+}
+
+if (!function_exists('getPlatformOpenGraphTagsHtml')) {
+    function getPlatformOpenGraphTagsHtml(?int $tenantId = null): string
+    {
+        $tags = getPlatformOpenGraphTags($tenantId);
+        $html = '';
+
+        foreach ($tags as $property => $content) {
+            if ($content) {
+                $html .= '<meta property="' . e($property) . '" content="' . e($content) . '">' . PHP_EOL;
+            }
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('getPlatformTwitterTags')) {
+    function getPlatformTwitterTags(?int $tenantId = null): array
+    {
+        return [
+            'twitter:card' => getPlatformTwitterCard($tenantId),
+            'twitter:site' => getPlatformTwitterSite($tenantId),
+            'twitter:creator' => getPlatformTwitterCreator($tenantId),
+            'twitter:title' => getPlatformOgTitle($tenantId),
+            'twitter:description' => getPlatformOgDescription($tenantId),
+            'twitter:image' => getPlatformOgImage($tenantId),
+        ];
+    }
+}
+
+if (!function_exists('getPlatformTwitterTagsHtml')) {
+    function getPlatformTwitterTagsHtml(?int $tenantId = null): string
+    {
+        $tags = getPlatformTwitterTags($tenantId);
+        $html = '';
+
+        foreach ($tags as $name => $content) {
+            if ($content) {
+                $html .= '<meta name="' . e($name) . '" content="' . ($name === 'twitter:description' ? e(lang($content)) : e($content)) . '">' . PHP_EOL;
+            }
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('getPlatformAnalyticsTags')) {
+    function getPlatformAnalyticsTags(?int $tenantId = null): array
+    {
+        return [
+            'google_analytics' => getPlatformGoogleAnalyticsId($tenantId),
+            'google_tag_manager' => getPlatformGoogleTagManagerId($tenantId),
+            'facebook_pixel' => getPlatformFacebookPixelId($tenantId),
+        ];
+    }
+}
+
+if (!function_exists('getPlatformAnalyticsTagsHtml')) {
+    function getPlatformAnalyticsTagsHtml(?int $tenantId = null): string
+    {
+        $tags = getPlatformAnalyticsTags($tenantId);
+        $html = '';
+
+        if ($googleAnalytics = $tags['google_analytics']) {
+            $html .= "<script async src=\"https://www.googletagmanager.com/gtag/js?id=" . e($googleAnalytics) . "\"></script>" . PHP_EOL;
+            $html .= "<script>window.dataLayer = window.dataLayer || []; function gtag(){dataLayer.push(arguments);} gtag('js', new Date()); gtag('config', '" . e($googleAnalytics) . "');</script>" . PHP_EOL;
+        }
+
+        if ($googleTagManager = $tags['google_tag_manager']) {
+            $html .= "<script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start': new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src='https://www.googletagmanager.com/gtm.js?id='+i+dl;f.parentNode.insertBefore(j,f);})(window,document,'script','dataLayer','" . e($googleTagManager) . "');</script>" . PHP_EOL;
+        }
+
+        if ($facebookPixel = $tags['facebook_pixel']) {
+            $html .= "<script>!function(f,b,e,v,n,t,s){if(f.fbq)return;n=f.fbq=function(){n.callMethod?n.callMethod.apply(n,arguments):n.queue.push(arguments)};if(!f._fbq)f._fbq=n;n.push=n;n.loaded=!0;n.version='2.0';n.queue=[];t=b.createElement(e);t.async=!0;t.src=v;s=b.getElementsByTagName(e)[0];s.parentNode.insertBefore(t,s)}(window,document,'script','https://connect.facebook.net/en_US/fbevents.js');fbq('init', '" . e($facebookPixel) . "');fbq('track', 'PageView');</script>" . PHP_EOL;
+        }
+
+        return $html;
+    }
+}
+
+if (!function_exists('getAbsoluteUrl')) {
+    function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = 'https://numerimondes.com'): ?string
+    {
+        return PlatformSetting::getAbsoluteUrl($key, $tenantId, $baseUrl);
+    }
+}
+
+if (!function_exists('getRawStoredData')) {
+    function getRawStoredData(string $key, ?int $tenantId = null): mixed
+    {
+        return PlatformSetting::getRawStoredData($key, $tenantId);
+    }
+}
+
+if (!function_exists('getVerifiedStoredData')) {
+    function getVerifiedStoredData(string $key, ?int $tenantId = null): ?string
+    {
+        return PlatformSetting::getVerifiedStoredData($key, $tenantId);
     }
 }

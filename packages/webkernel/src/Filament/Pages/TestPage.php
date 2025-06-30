@@ -23,7 +23,7 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
         return 'heroicon-o-document-text';
     }
 
-    protected string $view = 'webkernel::filament.test-page';
+    protected string $view = 'webkernel::filament.pages.test-page';
 
     /**
      * Méthode statique pour définir dynamiquement le titre

@@ -18,7 +18,7 @@
     }
 
     $BADGE_SENSITIVITY_OPTIONS = ['clic', 'hover', 'nothing'];
-    $BADGE_SENSITIVITY = 'hover';
+    $BADGE_SENSITIVITY = 'clic';
 
     $brand = 'Webkernel';
     $logo = 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256';
@@ -198,11 +198,12 @@
     }
 
     function handleConflictingElement(element) {
-        // Skip Filament modals and their overlays to prevent interference
+
         if (element.closest(`#${BADGE_ID}`) ||
             element.closest('.fi-dropdown-panel') ||
             element.closest('[data-fi-dropdown-panel]') ||
             element.classList.contains('fi-modal') ||
+            element.classList.contains('fi-main-sidebar') ||
             element.classList.contains('fi-modal-close-overlay')) {
             return;
         }

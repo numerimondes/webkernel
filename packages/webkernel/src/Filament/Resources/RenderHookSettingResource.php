@@ -9,17 +9,17 @@ use Filament\Forms;
 use Filament\Tables;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Actions\Action;
 use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
 use Filament\Resources\Resource;
 use Illuminate\Support\HtmlString;
-use Filament\Tables\Actions\Action;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Support\Facades\File;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Illuminate\Support\Facades\Blade;
 use Filament\Forms\Components\Textarea;
-use Filament\Tables\Actions\EditAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
 use Webkernel\Models\RenderHookSetting;
@@ -78,7 +78,7 @@ class RenderHookSettingResource extends Resource
                     ->icon(fn($record) => $record->icon)
                     ->size('md'),
                 TextColumn::make('hook_key')
-                    ->label(__('action_to_perform'))
+                    ->label(lang('action_to_perform'))
                     ->formatStateUsing(function ($state, $record) {
                         $title = lang($record->hook_key);
                         $desc = lang($record->translation_desc_key);
@@ -88,14 +88,14 @@ class RenderHookSettingResource extends Resource
                     ->wrap()
                     ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
                 SelectColumn::make('where_placed')
-                    ->label(__('toggle_visibility'))
+                    ->label(lang('toggle_visibility'))
                     ->options([
                         'draft' => 'Draft',
                         'reviewing' => 'Reviewing',
                         'published' => 'Published',
                     ]),
                 ToggleColumn::make('enabled')
-                    ->label(__('toggle_visibility'))
+                    ->label(lang('toggle_visibility'))
                     ->disabled(fn($record) => !self::originalViewExists($record))
                     ->afterStateUpdated(function ($livewire) {
                         $livewire->dispatch('refresh');
@@ -108,7 +108,7 @@ class RenderHookSettingResource extends Resource
                 self::getDeleteCustomViewAction(),
                 EditAction::make()
                     ->iconButton()
-                    ->label(__('edit'))
+                    ->label(lang('edit'))
                     ->modalWidth('lg')
                     ->hidden(fn($record) => self::originalViewExists($record)),
             ])
@@ -118,7 +118,7 @@ class RenderHookSettingResource extends Resource
     protected static function getCustomizeViewAction(): Action
     {
         return Action::make('customize_view')
-            ->label(__('Customize This View'))
+            ->label(lang('Customize This View'))
             ->icon('heroicon-o-pencil-square')
             ->color('primary')
             ->visible(function ($record) {
@@ -127,10 +127,10 @@ class RenderHookSettingResource extends Resource
                 return $visible;
             })
             ->requiresConfirmation()
-            ->modalHeading(__('Customize View'))
-            ->modalDescription(__('This will create a customized copy of the original view file.'))
-            ->modalSubmitActionLabel(__('Customize'))
-            ->modalCancelActionLabel(__('Cancel'))
+            ->modalHeading(lang('Customize View'))
+            ->modalDescription(lang('This will create a customized copy of the original view file.'))
+            ->modalSubmitActionLabel(lang('Customize'))
+            ->modalCancelActionLabel(lang('Cancel'))
             ->modalWidth('lg')
             ->action(function ($record, $livewire) {
                 Log::info('Customize view action triggered for hook_key: ' . ($record->hook_key ?? 'null'));
@@ -139,8 +139,8 @@ class RenderHookSettingResource extends Resource
                     if (empty($viewPath)) {
                         Log::error('No view path found for hook_key: ' . ($record->hook_key ?? 'null'));
                         Notification::make()
-                            ->title(__('Action Failed'))
-                            ->body(__('No view path defined for this hook.'))
+                            ->title(lang('Action Failed'))
+                            ->body(lang('No view path defined for this hook.'))
                             ->danger()
                             ->send();
                         return;
@@ -162,7 +162,7 @@ class RenderHookSettingResource extends Resource
                 } catch (Exception $e) {
                     Log::error('Customize view action failed: ' . $e->getMessage(), ['exception' => $e]);
                     Notification::make()
-                        ->title(__('Action Failed'))
+                        ->title(lang('Action Failed'))
                         ->body($e->getMessage())
                         ->danger()
                         ->send();
@@ -173,13 +173,13 @@ class RenderHookSettingResource extends Resource
     protected static function getEditCustomViewAction(): Action
     {
         return Action::make('edit_custom_view')
-            ->label(__('Edit View'))
+            ->label(lang('Edit View'))
             ->icon('heroicon-o-code-bracket')
             ->color('secondary')
             ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->form([
                 Textarea::make('view_contents')
-                    ->label(__('Blade Content'))
+                    ->label(lang('Blade Content'))
                     ->default(function ($record) {
                         $fullPath = self::getFullViewPath($record);
                         return File::exists($fullPath) ? File::get($fullPath) : '';
@@ -193,14 +193,14 @@ class RenderHookSettingResource extends Resource
                         $color = $isValid ? 'rgb(34, 197, 94)' : 'rgb(239, 68, 68)';
                         $component->hint(new HtmlString("<span style='color: {$color}; font-weight: 500;'>{$message}</span>"));
                     })
-                    ->helperText(__('Note: Ensure that the Blade syntax is correct before saving.')),
+                    ->helperText(lang('Note: Ensure that the Blade syntax is correct before saving.')),
             ])
             ->action(function (array $data, $record, $livewire) {
                 Log::info('Attempting to save custom view for hook_key: ' . ($record->hook_key ?? 'null'));
                 if (!self::validateBladeSyntax($data['view_contents'])) {
                     Notification::make()
-                        ->title(__('Syntax Error'))
-                        -> mullisaniwanathis->body(__('Invalid Blade/PHP syntax detected. Changes not saved.'))
+                        ->title(lang('Syntax Error'))
+                        -> mullisaniwanathis->body(lang('Invalid Blade/PHP syntax detected. Changes not saved.'))
                         ->danger()
                         ->send();
                     return;
@@ -216,7 +216,7 @@ class RenderHookSettingResource extends Resource
                     }
                     File::put($path, $data['view_contents']);
                     Notification::make()
-                        ->title(__('View Saved Successfully'))
+                        ->title(lang('View Saved Successfully'))
                         ->success()
                         ->send();
                     $livewire->dispatch('refresh');
@@ -229,7 +229,7 @@ class RenderHookSettingResource extends Resource
                         self::revertToOriginalView(self::getViewPathFromHookKey($record->hook_key));
                     }
                     Notification::make()
-                        ->title(__('Save Failed'))
+                        ->title(lang('Save Failed'))
                         ->body($e->getMessage())
                         ->danger()
                         ->send();
@@ -240,12 +240,12 @@ class RenderHookSettingResource extends Resource
     protected static function getDeleteCustomViewAction(): Action
     {
         return Action::make('delete_custom_view')
-            ->label(__('Delete View'))
+            ->label(lang('Delete View'))
             ->icon('heroicon-o-trash')
             ->color('danger')
             ->visible(fn($record) => self::originalViewExists($record) && File::exists(self::getFullViewPath($record)))
             ->requiresConfirmation()
-            ->modalHeading(__('Delete Custom View'))
+            ->modalHeading(lang('Delete Custom View'))
             ->modalIcon('heroicon-o-trash')
             ->modalDescription(function ($record) {
                 $customPath = self::getFullViewPath($record);
@@ -255,22 +255,22 @@ class RenderHookSettingResource extends Resource
                 }
                 return lang('This will delete your customized view and restore default behavior.');
             })
-            ->modalSubmitActionLabel(__('Confirm Deletion'))
-            ->modalCancelActionLabel(__('Cancel'))
+            ->modalSubmitActionLabel(lang('Confirm Deletion'))
+            ->modalCancelActionLabel(lang('Cancel'))
             ->modalWidth('lg')
             ->action(function ($record, $livewire) {
                 Log::info('Attempting to delete custom view for hook_key: ' . ($record->hook_key ?? 'null'));
                 try {
                     File::delete(self::getFullViewPath($record));
                     Notification::make()
-                        ->title(__('View Deleted Successfully'))
+                        ->title(lang('View Deleted Successfully'))
                         ->success()
                         ->send();
                     $livewire->dispatch('refresh');
                 } catch (Exception $e) {
                     Log::error('View deletion failed: ' . $e->getMessage(), ['exception' => $e]);
                     Notification::make()
-                        ->title(__('Deletion Failed'))
+                        ->title(lang('Deletion Failed'))
                         ->body($e->getMessage())
                         ->danger()
                         ->send();

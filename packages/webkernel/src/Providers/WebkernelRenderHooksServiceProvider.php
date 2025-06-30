@@ -39,20 +39,27 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
     protected function forceSidebarCollapsible(): void
     {
         try {
-            $currentPanel = Filament::getCurrentPanel();
-            if ($currentPanel) {
-                $this->forceSidebarSettings($currentPanel);
+            // Iterate over all panels to apply sidebar settings globally
+            foreach (Filament::getPanels() as $panel) {
+                $this->forceSidebarSettings($panel);
             }
         } catch (Exception $e) {
-            // Si aucun panel n'est disponible, on ignore silencieusement
-            // Cela peut arriver pendant les commandes artisan ou les migrations
+            // Silent catch for artisan commands or migrations
         }
     }
 
-    protected function forceSidebarSettings($currentPanel): void
+    protected function forceSidebarSettings($panel): void
     {
-        $currentPanel->sidebarCollapsibleOnDesktop(true);
-        $currentPanel->sidebarFullyCollapsibleOnDesktop(true);
+        // Attempt to apply sidebar settings using panel methods
+        // Note: Filament v4 beta may not support these methods directly via facade
+        try {
+            $panel
+                ->sidebarCollapsibleOnDesktop()
+                ->sidebarFullyCollapsibleOnDesktop();
+        } catch (Exception $e) {
+            // Log warning if methods are unavailable
+            \Illuminate\Support\Facades\Log::warning('Failed to apply sidebar collapsible settings for panel: ' . $panel->getId() . '. Check Filament v4 beta documentation.');
+        }
     }
 
     protected function registerPanelsRenderHooks(): void
@@ -66,24 +73,20 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             fn() => safe_render_hook_view('webkernel::components.webkernel.assets.head-css-js')
         );
 
-
-//        FilamentView::registerRenderHook(
-//            PanelsRenderHook::HEAD_START,
-//            fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
-//        );
-
+        // FilamentView::registerRenderHook(
+        //     PanelsRenderHook::HEAD_START,
+        //     fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
+        // );
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_START,
             fn() => safe_render_hook_view('webkernel::components.webkernel.assets.languages-fonts')
         );
 
-
         FilamentView::registerRenderHook(
             PanelsRenderHook::BODY_END,
             fn() => safe_render_hook_view('webkernel::components.webkernel.ui.organism.universal-badge.universal-badges')
         );
-
 
         if ($this->isRenderHookEnabled('current_user_datetime')) {
             FilamentView::registerRenderHook(

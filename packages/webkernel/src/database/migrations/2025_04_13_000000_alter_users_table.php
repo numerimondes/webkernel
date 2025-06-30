@@ -3,7 +3,6 @@
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
-use Illuminate\Support\Facades\DB;
 
 return new class extends Migration {
     public function up(): void
@@ -21,13 +20,13 @@ return new class extends Migration {
             $table->boolean('marketing_callable')->default(true);
             $table->boolean('marketing_whatsappable')->default(true);
             $table->boolean('marketing_smsable')->default(true);
-            $table->integer('tenant_id')->default(1); // Tenant before implementation
+            $table->integer('tenant_id')->default(1);
         });
 
         Schema::create('history_sessions', function (Blueprint $table) {
             $table->id();
             $table->string('session_id')->index();
-            $table->foreignId('user_id')->nullable()->index();
+            $table->foreignId('user_id')->nullable()->constrained('users')->nullOnDelete();
             $table->string('ip_address', 45)->nullable();
             $table->text('user_agent')->nullable();
             $table->integer('last_activity')->index();
@@ -36,41 +35,44 @@ return new class extends Migration {
     }
 
     public function down(): void
-    {
-        Schema::disableForeignKeyConstraints();
+{
+    Schema::disableForeignKeyConstraints();
 
-        if (Schema::hasTable('users')) {
+    Schema::dropIfExists('history_sessions');
+
+    if (Schema::hasTable('users')) {
+        Schema::table('users', function (Blueprint $table) {
             if (Schema::hasColumn('users', 'created_by')) {
-                try {
-                    DB::statement('ALTER TABLE `users` DROP FOREIGN KEY `users_created_by_foreign`');
-                } catch (\Throwable $e) {}
+                $table->dropForeign(['created_by']);
             }
+        });
 
-            Schema::table('users', function (Blueprint $table) {
-                foreach ([
-                    'username',
-                    'mobile',
-                    'whatsapp',
-                    'timezone',
-                    'user_lang',
-                    'forceChangePassword',
-                    'is_active',
-                    'is_banned',
-                    'created_by',
-                    'marketing_callable',
-                    'marketing_whatsappable',
-                    'marketing_smsable',
-                    'tenant_id',
-                ] as $column) {
-                    if (Schema::hasColumn('users', $column)) {
-                        $table->dropColumn($column);
-                    }
+        Schema::table('users', function (Blueprint $table) {
+            $columns = [
+                'username',
+                'mobile',
+                'whatsapp',
+                'timezone',
+                'user_lang',
+                'forceChangePassword',
+                'is_active',
+                'is_banned',
+                'created_by',
+                'marketing_callable',
+                'marketing_whatsappable',
+                'marketing_smsable',
+                'tenant_id',
+            ];
+
+            foreach ($columns as $column) {
+                if (Schema::hasColumn('users', $column)) {
+                    $table->dropColumn($column);
                 }
-            });
-        }
-
-        Schema::dropIfExists('history_sessions');
-
-        Schema::enableForeignKeyConstraints();
+            }
+        });
     }
+
+    Schema::enableForeignKeyConstraints();
+}
+
 };
