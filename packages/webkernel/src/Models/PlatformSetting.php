@@ -2,11 +2,12 @@
 
 namespace Webkernel\Models;
 
-use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Casts\Attribute;
-use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Http;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Casts\Attribute;
 
 class PlatformSetting extends Model
 {
@@ -361,7 +362,7 @@ class PlatformSetting extends Model
         return $array;
     }
 
-    public static function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = 'https://numerimondes.com'): ?string
+    public static function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = URL::asset()): ?string
     {
         $value = self::getPlatformTypedValue($key, $tenantId);
 

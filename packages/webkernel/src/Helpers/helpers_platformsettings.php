@@ -1,7 +1,8 @@
 <?php
 
-use Webkernel\Models\PlatformSetting;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\URL;
+use Webkernel\Models\PlatformSetting;
 
 
 /*
@@ -666,7 +667,7 @@ if (!function_exists('getPlatformAnalyticsTagsHtml')) {
 }
 
 if (!function_exists('getAbsoluteUrl')) {
-    function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = 'https://numerimondes.com'): ?string
+    function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = URL::asset()): ?string
     {
         return PlatformSetting::getAbsoluteUrl($key, $tenantId, $baseUrl);
     }
