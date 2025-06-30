@@ -43,14 +43,14 @@ if (!function_exists('generate_dynamic_css')) {
         $css = ":root {\n";
         $css .= "    --primary-color: " . ($settings['THEME_PRIMARY_COLOR'] ?? '#3b82f6') . ";\n";
         $css .= "    --secondary-color: " . ($settings['THEME_SECONDARY_COLOR'] ?? '#64748b') . ";\n";
-        $css .= "    --sidebar-width: " . ($settings['SIDEBAR_WIDTH'] ?? 16) . "rem;\n";
+        $css .= "    --sidebar-width: " . ($settings['SIDEBAR_WIDTH'] ?? 16) . "px;\n";
         $css .= "    --sidebar-border-width: " . ($settings['SIDEBAR_BORDER_WIDTH'] ?? 0.1) . "em;\n";
         $css .= "    --sidebar-border-color: " . ($settings['SIDEBAR_BORDER_COLOR'] ?? 'rgba(var(--gray-200), 1)') . ";\n";
         $css .= "    --sidebar-dark-border-color: " . ($settings['SIDEBAR_DARK_BORDER_COLOR'] ?? 'rgba(var(--gray-800), 1)') . ";\n";
         $css .= "    --loader-background: " . ($settings['LOADER_BACKGROUND'] ?? 'rgba(255, 255, 255, 0.05)') . ";\n";
         $css .= "    --loader-dark-background: " . ($settings['LOADER_DARK_BACKGROUND'] ?? 'rgba(0, 0, 0, 0.3)') . ";\n";
         $css .= "    --loader-border-color: " . ($settings['LOADER_BORDER_COLOR'] ?? 'rgba(255, 255, 255, 0.12)') . ";\n";
-        $css .= "    --loader-spinner-size: " . ($settings['LOADER_SPINNER_SIZE'] ?? 3) . "rem;\n";
+        $css .= "    --loader-spinner-size: " . ($settings['LOADER_SPINNER_SIZE'] ?? 3) . "px;\n";
         $css .= "    --loader-spinner-border-width: " . ($settings['LOADER_SPINNER_BORDER_WIDTH'] ?? 4) . "px;\n";
         $css .= "    --loader-spinner-border-color: " . ($settings['LOADER_SPINNER_BORDER_COLOR'] ?? 'rgba(255, 255, 255, 0.2)') . ";\n";
         $css .= "}\n\n";
@@ -63,8 +63,8 @@ if (!function_exists('generate_dynamic_css')) {
         $css .= "    .dynamic-content-padding {\n";
         $css .= "        padding-left: {$paddingX}% !important;\n";
         $css .= "        padding-right: {$paddingX}% !important;\n";
-        $css .= "        padding-top: {$paddingY}rem !important;\n";
-        $css .= "        padding-bottom: {$paddingY}rem !important;\n";
+        $css .= "        padding-top: {$paddingY}px !important;\n";
+        $css .= "        padding-bottom: {$paddingY}px !important;\n";
         $css .= "    }\n";
         $css .= "}\n\n";
 
@@ -76,13 +76,13 @@ if (!function_exists('generate_dynamic_css')) {
         $css .= "}\n\n";
 
         // Sidebar styling
-        $css .= ":dir(ltr) aside.fi-main-sidebar {\n";
+        $css .= ":dir(ltr) aside.fi-main-sidebar.fi-sidebar-open {\n";
         $css .= "    width: var(--sidebar-width) !important;\n";
         $css .= "    border-right: var(--sidebar-border-width) solid var(--sidebar-border-color) !important;\n";
         $css .= "    border-left: none !important;\n";
         $css .= "}\n\n";
 
-        $css .= ":dir(rtl) aside.fi-main-sidebar {\n";
+        $css .= ":dir(rtl) aside.fi-main-sidebar.fi-sidebar-open {\n";
         $css .= "    width: var(--sidebar-width) !important;\n";
         $css .= "    border-left: var(--sidebar-border-width) solid var(--sidebar-border-color) !important;\n";
         $css .= "    border-right: none !important;\n";
@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'SIDEBAR_WIDTH':
                 cssProperty = '--sidebar-width';
-                cssValue = type === 'number' ? value + 'rem' : value;
+                cssValue = type === 'number' ? value + 'px' : value;
                 break;
             case 'SIDEBAR_BORDER_WIDTH':
                 cssProperty = '--sidebar-border-width';
@@ -247,7 +247,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'LOADER_SPINNER_SIZE':
                 cssProperty = '--loader-spinner-size';
-                cssValue = type === 'number' ? value + 'rem' : value;
+                cssValue = type === 'number' ? value + 'px' : value;
                 break;
             case 'LOADER_SPINNER_BORDER_WIDTH':
                 cssProperty = '--loader-spinner-border-width';
@@ -264,8 +264,8 @@ document.addEventListener('DOMContentLoaded', function() {
                 break;
             case 'CONTENT_PADDING_Y':
                 document.querySelectorAll('.dynamic-content-padding').forEach(el => {
-                    el.style.paddingTop = value + 'rem';
-                    el.style.paddingBottom = value + 'rem';
+                    el.style.paddingTop = value + 'px';
+                    el.style.paddingBottom = value + 'px';
                 });
                 break;
         }
@@ -278,7 +278,7 @@ document.addEventListener('DOMContentLoaded', function() {
     window.addEventListener('triggerSmoothReload', reloadController.handleReload);
 
     window.addEventListener('beforeunload', () => {
-        window.removeEventListener('triggerSmoothReload', reloadController.handleReload);
+        window.pxoveEventListener('triggerSmoothReload', reloadController.handleReload);
     });
 });
 JS;

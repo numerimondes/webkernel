@@ -2,8 +2,8 @@
 
 namespace Webkernel\Filament\Pages;
 
-use Filament\Panel;
 use Filament\Pages\Dashboard as BaseDashboard;
+use Filament\Panel;
 use Filament\Facades\Filament;
 use Filament\Support\Facades\FilamentIcon;
 use Filament\Widgets\Widget;
@@ -11,37 +11,42 @@ use Filament\Widgets\WidgetConfiguration;
 use Illuminate\Contracts\Support\Htmlable;
 use Webkernel\Filament\Widgets\AccountWidget;
 use Webkernel\Filament\Widgets\WebkernelInfoWidget;
+use BackedEnum;
 
 class Dashboard extends BaseDashboard
 {
-    protected static ?string $navigationIcon = 'heroicon-o-home';
+    // Vue personnalisée
+    protected string $view = 'webkernel::filament.pages.dashboard';
 
-    protected static string $view = 'webkernel::filament.pages.dashboard';
+public static function getNavigationIcon(): BackedEnum | string | null
+    {
+        return 'heroicon-o-home';
+    }
 
+    // Label du menu - CORRIGÉ: doit être ?string selon l'erreur
+    protected static ?string $navigationLabel = null;
+
+    // Chemin de route
     protected static string $routePath = '/';
 
+    // Ordre dans le menu
     protected static ?int $navigationSort = -2;
 
     public static function getNavigationLabel(): string
     {
-        return static::$navigationLabel ??
-            static::$title ??
-            __('filament-panels::pages/dashboard.title');
+        return static::$navigationLabel
+            ?? static::$title
+            ?? __('filament-panels::pages/dashboard.title');
     }
 
-    public static function getNavigationIcon(): string | Htmlable | null
-    {
-        return static::$navigationIcon
-            ?? FilamentIcon::resolve('panels::pages.dashboard.navigation-item')
-            ?? (Filament::hasTopNavigation() ? 'heroicon-m-home' : 'heroicon-o-home');
-    }
-
-    public static function getRoutePath(): string
+    public static function getRoutePath(Panel $panel): string
     {
         return static::$routePath;
     }
 
     /**
+     * Liste des widgets affichés.
+     *
      * @return array<class-string<Widget> | WidgetConfiguration>
      */
     public function getWidgets(): array
@@ -53,6 +58,8 @@ class Dashboard extends BaseDashboard
     }
 
     /**
+     * Widgets visibles après filtrage.
+     *
      * @return array<class-string<Widget> | WidgetConfiguration>
      */
     public function getVisibleWidgets(): array
@@ -61,13 +68,16 @@ class Dashboard extends BaseDashboard
     }
 
     /**
-     * @return int | string | array<string, int | string | null>
+     * Nombre de colonnes sur le dashboard.
      */
-    public function getColumns(): int | string | array
+    public function getColumns(): int
     {
         return 2;
     }
 
+    /**
+     * Titre affiché dans la page.
+     */
     public function getTitle(): string | Htmlable
     {
         return static::$title ?? __('filament-panels::pages/dashboard.title');

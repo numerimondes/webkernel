@@ -1,27 +1,32 @@
 <?php
 namespace Webkernel\Filament\Resources;
 
-use Filament\Forms\Form;
-use Filament\Resources\Resource;
-use Filament\Tables\Table;
+use BackedEnum;
 use App\Models\User;
+use Filament\Forms\Form;
+use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Resources\Resource;
+use Illuminate\Contracts\Support\Htmlable;
+use Webkernel\Filament\Resources\UserResource\Pages;
+use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
+use Webkernel\Filament\Resources\UserResource\Pages\ViewUser;
 use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
 use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
-use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
-use Webkernel\Filament\Resources\UserResource\Pages;
-use Webkernel\Filament\Resources\UserResource\Pages\ViewUser;
 
 class UserResource extends Resource
 {
     protected static ?string $model = User::class;
 
-    protected static ?string $navigationIcon = 'heroicon-o-users';
-
+public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+    {
+        return 'heroicon-o-users';
+    }
     public static string $webkernel_layout = 'avatar'; // Layout avec avatar et structure 3 parties
 
-    public static function form(Form $form): Form
+    public static function form(Schema $schema): Schema
     {
-        return webkernel_form($form, static::class);
+        return webkernel_form($schema, static::class);
     }
 
     public static function table(Table $table): Table
@@ -41,5 +46,10 @@ class UserResource extends Resource
 
             ]
         );
+    }
+
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
     }
 }

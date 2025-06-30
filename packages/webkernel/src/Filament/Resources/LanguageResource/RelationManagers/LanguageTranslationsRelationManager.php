@@ -1,40 +1,39 @@
 <?php
 namespace Webkernel\Filament\Resources\LanguageResource\RelationManagers;
 
-use Filament\Forms\Form;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Hidden;
-use Filament\Forms\Get;
-use Filament\Forms\Set;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Actions\CreateAction;
-use Illuminate\Support\Facades\Log;
-use Filament\Actions\Action;
-use Filament\Actions\EditAction;
 use Exception;
-use Filament\Actions\DeleteAction;
-use Filament\Support\Enums\MaxWidth;
-use Filament\Forms;
 use Filament\Tables;
-use Webkernel\Models\Language;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Actions\Action;
+use Filament\Schemas\Schema;
 use Illuminate\Support\Carbon;
+use Webkernel\Models\Language;
+use Filament\Actions\EditAction;
+use Filament\Actions\CreateAction;
+use Filament\Actions\DeleteAction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
-use Webkernel\Models\LanguageTranslation;
-use Illuminate\Database\QueryException;
-use Filament\Notifications\Notification;
-use Filament\Resources\RelationManagers\RelationManager;
-use Filament\Tables\Filters\SelectFilter;
 use Filament\Tables\Filters\Filter;
-use Filament\Tables\Filters\TernaryFilter;
-use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Support\Facades\Log;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Forms\Components\Hidden;
+use Filament\Forms\Components\Select;
+use Filament\Schemas\Components\Grid;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Illuminate\Database\QueryException;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
 use Filament\Tables\Enums\FiltersLayout;
+use Filament\Schemas\Components\Fieldset;
+use Filament\Tables\Filters\SelectFilter;
+use Illuminate\Database\Eloquent\Builder;
+use Webkernel\Models\LanguageTranslation;
+use Filament\Tables\Filters\TernaryFilter;
+use Filament\Schemas\Components\Utilities\Get;
+use Filament\Schemas\Components\Utilities\Set;
+use Filament\Resources\RelationManagers\RelationManager;
 
 class LanguageTranslationsRelationManager extends RelationManager
 {
@@ -45,12 +44,12 @@ class LanguageTranslationsRelationManager extends RelationManager
         return false;
     }
 
-    public function form(Form $form): Form
+    public function form(Schema $schema): Schema
     {
         $languages = Language::all();
         $languageOptions = $languages->pluck('id', 'code')->toArray();
 
-        return $form->schema([
+        return $schema->schema([
             Grid::make(columns: 3)
                 ->schema([
                     TextInput::make('lang_ref')
@@ -71,9 +70,8 @@ class LanguageTranslationsRelationManager extends RelationManager
                             }
 
                             if (!empty($cleaned)) {
-                                // Simply check if the key exists (lang() works by key only)
+                                // Simply check if the key exists
                                 $existingTranslation = LanguageTranslation::where('lang_ref', $cleaned)->first();
-
                                 if ($existingTranslation) {
                                     Notification::make()
                                         ->title(lang('form_translation_key_exists_notification_title'))
@@ -92,11 +90,11 @@ class LanguageTranslationsRelationManager extends RelationManager
                                             $set("translations.{$language->code}", $translation->translation);
                                         }
                                     }
-
                                     $set('is_edit_mode', true);
                                 }
                             }
                         }),
+
                     Select::make('app')
                         ->label(lang('form_translation_app_label'))
                         ->searchable()
@@ -107,12 +105,14 @@ class LanguageTranslationsRelationManager extends RelationManager
                         ])
                         ->required()
                         ->default('core'),
+
                     TextInput::make('theme')
                         ->default('none')
                         ->required(),
                 ]),
+
             Fieldset::make('translations')
-                ->label(__('Translations'))
+                ->label(lang('Translations'))
                 ->schema(
                     $languages->map(function ($lang) {
                         return Textarea::make("translations.{$lang->code}")
@@ -146,6 +146,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                     })->toArray()
                 )
                 ->columns(1),
+
             // Hidden field to store language ID mapping
             Hidden::make('language_mapping')
                 ->default(json_encode($languageOptions))
@@ -203,8 +204,8 @@ class LanguageTranslationsRelationManager extends RelationManager
                         }
                         return $data;
                     })
-                    ->using(function (array $data, RelationManager $livewire) {
-                        return DB::transaction(function () use ($data, $livewire) {
+                    ->using(function (array $data, string $model): \Illuminate\Database\Eloquent\Model {
+                        return DB::transaction(function () use ($data, $model) {
                             $isEditMode = $data['is_edit_mode'] ?? false;
                             $langRef = $data['lang_ref'];
                             $app = $data['app'];
@@ -222,6 +223,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                                     ->body("The key '$langRef' already exists. Use edit mode to modify it.")
                                     ->warning()
                                     ->send();
+
                                 // Return an existing translation to avoid null
                                 $existingTranslation = LanguageTranslation::where('lang_ref', $langRef)
                                     ->where('app', $app)
@@ -292,11 +294,13 @@ class LanguageTranslationsRelationManager extends RelationManager
                                             ->body("A translation for key '$langRef' and language '$langCode' already exists.")
                                             ->danger()
                                             ->send();
+
                                         $existingTranslation = LanguageTranslation::where('lang_ref', $langRef)
                                             ->where('lang', $langId)
                                             ->where('app', $app)
                                             ->where('theme', $theme)
                                             ->first();
+
                                         if ($existingTranslation) {
                                             $translations[] = $existingTranslation;
                                             $createdTranslation = $existingTranslation;
@@ -312,6 +316,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                                 $createdAt = $createdTranslation->created_at instanceof Carbon
                                     ? $createdTranslation->created_at
                                     : Carbon::parse($createdTranslation->created_at);
+
                                 $delay = $createdAt->diffInSeconds(now()) + 60;
 
                                 Notification::make()
@@ -349,7 +354,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                         });
                     }),
             ])
-            ->recordActions([
+            ->actions([
                 EditAction::make()
                     ->mutateRecordDataUsing(function (array $data, LanguageTranslation $record): array {
                         $langRef = $data['lang_ref'] ?? $record->lang_ref;
@@ -379,9 +384,8 @@ class LanguageTranslationsRelationManager extends RelationManager
 
                         return $data;
                     })
-                    ->form(function (LanguageTranslation $record) {
+                    ->schema(function (LanguageTranslation $record) {
                         $languages = Language::all();
-
                         return [
                             Grid::make(3)
                                 ->schema([
@@ -397,7 +401,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                                         ->default(true),
                                 ]),
                             Fieldset::make('translations')
-                                ->label(__('Translations'))
+                                ->label(lang('Translations'))
                                 ->schema(
                                     $languages->map(function ($lang) {
                                         return Textarea::make("translations.{$lang->code}")
@@ -432,7 +436,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                                         'lang' => $language->id,
                                         'app' => $data['app'],
                                         'theme' => $data['theme'],
-                    ],
+                                    ],
                                     ['translation' => $text]
                                 );
                             }
@@ -447,6 +451,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                             return $record;
                         });
                     }),
+
                 DeleteAction::make()
                     ->hidden(fn($record) => !$record->isDeletable())
                     ->using(function (LanguageTranslation $record) {
@@ -454,6 +459,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                             ->where('app', $record->app)
                             ->where('theme', $record->theme)
                             ->delete();
+
                         // Return a boolean to confirm deletion
                         return true;
                     })
@@ -464,18 +470,20 @@ class LanguageTranslationsRelationManager extends RelationManager
                     ->options($appOptions)
                     ->searchable()
                     ->preload(),
+
                 SelectFilter::make('theme')
                     ->label('Theme')
                     ->options($themeOptions)
                     ->searchable()
                     ->preload(),
+
                 SelectFilter::make('has_translation')
-                    ->label(__('Translation'))
-                    ->placeholder(__('All Translations'))
+                    ->label(lang('Translation'))
+                    ->placeholder(lang('All Translations'))
                     ->native(false)
                     ->options([
-                        '1' => __('With Content'),
-                        '0' => __('Without Content'),
+                        '1' => lang('With Content'),
+                        '0' => lang('Without Content'),
                     ])
                     ->query(function (Builder $query, $state): Builder {
                         return match ($state) {
@@ -484,9 +492,10 @@ class LanguageTranslationsRelationManager extends RelationManager
                             default => $query,
                         };
                     }),
+
                 Filter::make('key_prefix')
                     ->label('Key prefix')
-                    ->form([
+                    ->schema([
                         Select::make('prefix')
                             ->label('Common prefix')
                             ->options(function () {
@@ -507,9 +516,10 @@ class LanguageTranslationsRelationManager extends RelationManager
                             fn(Builder $query, $value): Builder => $query->where('lang_ref', 'like', "{$value}_%")
                         );
                     }),
+
                 Filter::make('recently_modified')
                     ->label('Recently modified')
-                    ->form([
+                    ->schema([
                         Select::make('period')
                             ->label('Period')
                             ->options([
@@ -531,7 +541,6 @@ class LanguageTranslationsRelationManager extends RelationManager
                         });
                     }),
             ], layout: FiltersLayout::AboveContentCollapsible)
-            ->filtersFormMaxWidth(MaxWidth::FourExtraLarge)
             ->filtersFormColumns(5)
             ->persistFiltersInSession();
     }

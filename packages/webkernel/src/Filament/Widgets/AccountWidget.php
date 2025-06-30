@@ -7,16 +7,13 @@ use Filament\Facades\Filament;
 
 class AccountWidget extends ImmediateLoadWidget
 {
-    // This is critical for Livewire to find the component - MUST be static in Filament 4.x
-    protected static string $view = 'webkernel::widgets.account-widget';
+    // Doit être non statique comme dans la classe parente
+    protected string $view = 'webkernel::widgets.account-widget';
 
-    // Force immediate loading
-    protected static bool $isLazy = false;
-
-    // Don't wait for deferred loading
+    // Ne pas différer le chargement
     public $deferLoading = false;
 
-    // Set widget configuration
+    // Configuration de la largeur du widget
     protected int | string | array $columnSpan = 1;
 
     public function getUserName(): string
@@ -34,13 +31,13 @@ class AccountWidget extends ImmediateLoadWidget
         return Auth::user()->avatar_url ?? null;
     }
 
-    // Optional method if you need to determine if this widget should be rendered
+    // Méthode statique obligatoire (héritée statique)
     public static function canView(): bool
     {
         return Auth::check();
     }
 
-    // Disable real-time polling
+    // Désactive le polling temps réel
     protected function getPollingInterval(): ?string
     {
         return null;

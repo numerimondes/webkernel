@@ -2,35 +2,39 @@
 
 namespace Webkernel\Filament\Pages\Auth;
 
-use Filament\Forms\Components\Actions\Action;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Placeholder;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Contracts\HasForms;
+use BackedEnum;
+use DateTimeZone;
+use App\Models\User;
 use Filament\Forms\Form;
-use Filament\Notifications\Notification;
-use Filament\Pages\Auth\EditProfile as BaseEditProfile;
-use Filament\Support\Enums\ActionSize;
-use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Table;
+use Illuminate\Support\Str;
+use Filament\Tables\Actions\Action;
+use Filament\Tables\Actions\BulkAction;
+use Filament\Schemas\Schema;
+use Webkernel\Models\Session;
+use Webkernel\Models\Language;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Hash;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Illuminate\Support\Facades\Cache;
+use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
-use Filament\Tables\Table;
+use Filament\Forms\Components\TextInput;
+use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Str;
 use Illuminate\Validation\Rules\Password;
-use Webkernel\Models\Language;
-use Webkernel\Models\Session;
-use App\Models\User;
-use DateTimeZone;
+use Filament\Forms\Components\Placeholder;
+use Illuminate\Contracts\Support\Htmlable;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Forms\Components\Actions\Action as FormAction;
+use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 
 class EditProfile extends BaseEditProfile implements HasForms, HasTable
 {
@@ -38,11 +42,15 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
 
     protected static ?string $model = User::class;
     protected static bool $shouldRegisterNavigation = true;
-    protected static ?string $navigationIcon = 'heroicon-o-user-circle';
 
-    public function form(Form $form): Form
+    public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
     {
-        return $form
+        return 'heroicon-o-user-circle';
+    }
+
+    public function form(Schema $schema): Schema
+    {
+        return $schema
             ->schema([
                 // Contextual Help Section
                 Section::make('need_help')
@@ -119,7 +127,10 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     ->schema([
                         Grid::make(2)
                             ->schema([
-                                $this->getEmailFormComponent()
+                                TextInput::make('email')
+                                    ->label('email')
+                                    ->email()
+                                    ->required()
                                     ->disabled()
                                     ->suffixIcon('heroicon-o-envelope')
                                     ->columnSpan(1),
@@ -136,11 +147,11 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                             ]),
 
                         \Filament\Forms\Components\Actions::make([
-                            Action::make('change_email')
+                            FormAction::make('change_email')
                                 ->label('request_email_change')
                                 ->icon('heroicon-o-envelope')
                                 ->color('gray')
-                                ->size(ActionSize::Small)
+                                ->size('sm')
                                 ->requiresConfirmation()
                                 ->form([
                                     TextInput::make('new_email')
@@ -163,11 +174,11 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            Action::make('resend_verification')
+                            FormAction::make('resend_verification')
                                 ->label('resend_verification')
                                 ->icon('heroicon-o-check-circle')
                                 ->color('primary')
-                                ->size(ActionSize::Small)
+                                ->size('sm')
                                 ->visible(fn () => !auth()->user()->email_verified_at)
                                 ->requiresConfirmation()
                                 ->action(function () {
@@ -199,7 +210,9 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
 
                                 Grid::make(2)
                                     ->schema([
-                                        $this->getPasswordFormComponent()
+                                        TextInput::make('password')
+                                            ->label('new_password')
+                                            ->password()
                                             ->revealable()
                                             ->rules([
                                                 Password::min(8)
@@ -212,8 +225,11 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                             ->helperText('password_requirements')
                                             ->columnSpan(1),
 
-                                        $this->getPasswordConfirmationFormComponent()
+                                        TextInput::make('password_confirmation')
+                                            ->label('confirm_password')
+                                            ->password()
                                             ->revealable()
+                                            ->same('password')
                                             ->columnSpan(1),
                                     ]),
                             ]),
@@ -229,17 +245,17 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                             ->schema([
                                 Select::make('timezone')
                                     ->label('timezone')
-                                    ->options($this->getTimezoneOptions())
+                                    ->options(static::getTimezoneOptions())
                                     ->default(auth()->user()?->timezone ?? config('app.timezone'))
                                     ->required()
                                     ->searchable()
-                                    ->getSearchResultsUsing(fn (string $search) => $this->searchTimezones($search))
+                                    ->getSearchResultsUsing(fn (string $search) => static::searchTimezones($search))
                                     ->columnSpan(1)
                                     ->suffixIcon('heroicon-o-globe-alt'),
 
                                 Select::make('user_lang')
                                     ->label('language')
-                                    ->options($this->getAvailableLanguages())
+                                    ->options(static::getAvailableLanguages())
                                     ->default(app()->getLocale())
                                     ->required()
                                     ->columnSpan(1)
@@ -299,7 +315,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                     ->default(true)
                                     ->inline(false),
 
-                                Toggle::make('marketing_smsable')
+                                Toggle::make('dae')
                                     ->label('sms_notifications')
                                     ->helperText('sms_helper')
                                     ->default(true)
@@ -314,7 +330,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     ->aside()
                     ->schema([
                         \Filament\Forms\Components\Actions::make([
-                            Action::make('export_data')
+                            FormAction::make('export_data')
                                 ->label('export_my_data')
                                 ->icon('heroicon-o-arrow-down-tray')
                                 ->color('info')
@@ -328,7 +344,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            Action::make('request_data_deletion')
+                            FormAction::make('request_data_deletion')
                                 ->label('request_data_deletion')
                                 ->icon('heroicon-o-trash')
                                 ->color('warning')
@@ -386,7 +402,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     ->aside()
                     ->schema([
                         \Filament\Forms\Components\Actions::make([
-                            Action::make('logout_other_sessions')
+                            FormAction::make('logout_other_sessions')
                                 ->label('logout_other_sessions')
                                 ->icon('heroicon-o-computer-desktop')
                                 ->color('warning')
@@ -406,7 +422,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            Action::make('deactivate_account')
+                            FormAction::make('deactivate_account')
                                 ->label('deactivate_account')
                                 ->icon('heroicon-o-no-symbol')
                                 ->color('danger')
@@ -502,7 +518,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             ])
             ->filters([])
             ->actions([
-                \Filament\Tables\Actions\Action::make('terminate')
+                Action::make('terminate')
                     ->label('terminate')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
@@ -518,7 +534,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     }),
             ])
             ->bulkActions([
-                \Filament\Tables\Actions\BulkAction::make('terminate_selected')
+                BulkAction::make('terminate_selected')
                     ->label('terminate_selected')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
@@ -596,7 +612,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
         Cache::forget('user_sessions_' . auth()->id());
     }
 
-    public function getTimezoneOptions(): array
+    public static function getTimezoneOptions(): array
     {
         return Cache::remember('timezone_options', now()->addDays(7), function () {
             $timezones = DateTimeZone::listIdentifiers();
@@ -607,9 +623,9 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
         });
     }
 
-    protected function searchTimezones(string $search): array
+    public static function searchTimezones(string $search): array
     {
-        $timezones = DateTimeZone:: frivolity;
+        $timezones = DateTimeZone::listIdentifiers();
         return collect($timezones)
             ->filter(fn ($tz) => str_contains(strtolower($tz), strtolower($search)))
             ->mapWithKeys(function ($timezone) {
@@ -620,7 +636,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             ->toArray();
     }
 
-    protected function getAvailableLanguages(): array
+    public static function getAvailableLanguages(): array
     {
         return Cache::remember('available_languages', now()->addHour(), function () {
             return Language::where('is_active', true)
@@ -674,5 +690,4 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             Cache::forget('available_languages');
         }
     }
-
 }

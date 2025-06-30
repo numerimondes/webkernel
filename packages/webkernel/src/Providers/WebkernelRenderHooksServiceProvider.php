@@ -67,10 +67,10 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
         );
 
 
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::HEAD_START,
-            fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
-        );
+//        FilamentView::registerRenderHook(
+//            PanelsRenderHook::HEAD_START,
+//            fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
+//        );
 
 
         FilamentView::registerRenderHook(
@@ -122,7 +122,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
         }
         */
 
-        switch (true) {
+        switch (false) {
             case true:
                 FilamentView::registerRenderHook(
                     PanelsRenderHook::BODY_END,

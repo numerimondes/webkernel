@@ -11,19 +11,19 @@ use Filament\Widgets\WidgetConfiguration;
 use Illuminate\Contracts\Support\Htmlable;
 use Webkernel\Filament\Widgets\AccountWidget;
 use Webkernel\Filament\Widgets\WebkernelInfoWidget;
+use BackedEnum;
 
 class TestPage extends Page
 {
-    protected static ?string $title = null;
 
-    protected static ?string $navigationIcon = 'heroicon-o-document-text';
 
-    protected static string $view = 'webkernel::filament.pages.test-page';
+public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+{
 
-    public function getHeader(): ?View
-    {
-        return view('webkernel::filament.pages.test-page');
+        return 'heroicon-o-document-text';
     }
+
+    protected string $view = 'webkernel::filament.test-page';
 
     /**
      * Méthode statique pour définir dynamiquement le titre

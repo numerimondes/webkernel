@@ -1,101 +1,101 @@
+@push('styles')
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+    .numerimondes-logo {
+font-family: 'Poppins', sans-serif !important;
+font-weight: bold !important;
+    }
+    .numerimondes-dot {
+        color: var(--primary-600, #3b82f6) !important;
+    }
+</style>
+@endpush
+
+@php
+$adaptation_sys_logo = 'large'; // small, medium, large
+
+$logo_sizes = [
+    'small' => [
+        'class' => 'font-medium text-current truncate',
+        'style' => 'font-size: 0.875rem; line-height: 1rem;'
+    ],
+    'medium' => [
+        'class' => 'font-medium text-current',
+        'style' => 'font-size: 1.125rem; line-height: 1.25rem;'
+    ],
+    'large' => [
+        'class' => 'font-medium text-current',
+        'style' => 'font-size: 1.7rem; line-height: 1.25rem;'
+    ]
+];
+
+$current_size = $logo_sizes[$adaptation_sys_logo];
+@endphp
+
 <x-filament-widgets::widget class="fi-filament-info-widget">
     <x-filament::section>
-        <div class="flex items-center gap-x-3">
-            <div class="flex-1">
-                <a
-                    href="https://numerimondes.com"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >
+        <div class="fi-filament-info-widget-main">
+            <a href="https://numerimondes.com" rel="noopener noreferrer" target="_blank">
+                <!-- Logo Numerimondes avec tailles adaptatives -->
+                <div class="fi-filament-info-widget-logo-container flex items-center justify-center overflow-hidden" style="max-height: 59px; max-width: 302px; width: 100%;">
+                    <span class="{{ $current_size['class'] }} numerimondes-logo"
+                          style="font-family: 'Poppins', sans-serif; font-weight: 500; {{ $current_size['style'] }} white-space: nowrap; display: flex; align-items: baseline; color: currentColor;">
+                        <span>Numerimondes</span><span class="numerimondes-dot" style="color: var(--primary-600, #3b82f6);">.</span>
+                    </span>
+                </div>
+            </a>
 
-                <svg version="1.1"
-                aria-label="Numerimondes"
-                fill="currentColor"
-                role="img"
-                viewBox="0 0 1566 151.95"
-                class="block ml-0 h-5 w-48 text-gray-950 dark:text-white"
-                xml:space="preserve"
-                xmlns="http://www.w3.org/2000/svg">
+            <p class="fi-filament-info-widget-version text-xs text-gray-600" style="margin-top: 0.25rem;">
+                <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer">
+                    <span>Webkernel</span>
+                    <span style="margin-left:4px;">v{{ Webkernel\constants\Application::WEBKERNEL_VERSION }}</span>
+                </span>
 
-                <style type="text/css">
-                    .fill-green {
-                        fill: currentColor;
-                        stroke: currentColor;
-                    }
-                    .fill-red {
-                        fill: rgba(var(--primary-400), 1);
-                        stroke: rgba(var(--primary-400), 1);
-                    }
-                </style>
+                <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
+                    <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">F</span>
+                    <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Filament</span>
+                    <span style="margin-left:4px;">{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}</span>
+                </span>
 
-                        <g transform="translate(-3641.6 -1892.8)">
-                            <path class="fill-green" d="M3813.1 2043.5c-14.165-3.4446-24.145-13.47-27.948-28.074-1.2607-4.8417-1.552-12.583-1.552-41.25v-35.29h32l0.01 30.75c0 19.35 0.415 32.225 1.1098 34.728 2.1361 7.694 10.586 13.502 19.667 13.517 7.4088 0.013 16.395-6.3738 18.222-12.95 0.549-1.9761 0.9872-17.372 0.9903-34.794l0.01-31.25h33v105.05l-32.5-0.5496-0.5-6.3409-0.5-6.341-2.4423 2.6101c-8.9123 9.5248-25.117 13.698-39.558 10.186zm331.28-0.1669c-18.346-4.4477-32.338-18.653-36.884-37.447-0.7317-3.025-1.2963-10.225-1.2547-16 0.089-12.338 3.0401-22.671 9.0694-31.754 13.91-20.956 46.553-27.375 72.333-14.223 6.474 3.3028 15.292 12.785 18.761 20.175 4.438 9.4534 5.5633 15.851 5.2861 30.052l-0.093 4.75h-73v2.3037c0 3.2778 4.5857 11.879 7.4247 13.927 3.8233 2.7572 10.56 4.1491 16.077 3.3217 4.0198-0.6028 5.7806-1.5715 9.3564-5.1472l4.4047-4.4048h33.872l-0.6808 2.25c-1.6703 5.52-7.3879 14.628-12.219 19.465-5.8335 5.8405-14.241 10.53-22.938 12.796-7.0461 1.8352-21.813 1.8033-29.515-0.064zm34.218-64.997c0-5.3372-4.7227-11.183-11.232-13.903-7.5548-3.1566-18.28-1.0619-23.471 4.584-2.1503 2.339-5.2978 8.7768-5.2978 10.836 0 0.6751 6.9185 1.0321 20 1.0321h20zm420.63 64.963c-8.752-2.1184-17.397-7.11-24.246-14-10.045-10.105-14.397-21.722-14.377-38.374 0.02-15.977 4.1239-26.836 14.223-37.632 23.979-25.634 72.434-20.008 88.502 10.276 4.9274 9.2871 6.6285 16.512 6.5486 27.816-0.1844 26.081-15.211 45.734-39.746 51.982-7.3966 1.8838-22.983 1.8493-30.906-0.069zm24.866-28.304c8.4265-3.8891 12.658-11.969 12.658-24.17 0-12.949-5.1901-21.498-15.057-24.802-8.9279-2.9892-19.523 0.9736-24.528 9.1743-2.4801 4.0631-3.0065 6.1285-3.381 13.264-0.2671 5.0889 0.051 10.22 0.8008 12.896 1.4712 5.2549 6.5865 11.579 11.208 13.856 4.4485 2.1924 13.305 2.0867 18.3-0.2184zm216.47 27.676c-15.576-5.461-26.658-18.972-30.393-37.053-5.4467-26.369 4.2837-52.721 23.286-63.064 16.954-9.2276 38.122-6.7134 50.464 5.994l3.6696 3.7781v-48.491l32.5 0.5495 0.5136 139.5h-33.014v-13.947l-4.3044 4.3045c-2.3675 2.3674-6.9148 5.5815-10.105 7.1424-4.9555 2.4245-7.2788 2.8917-15.946 3.2065-8.6187 0.3131-11.127 0.024-16.672-1.9198zm31.027-26.771c4.7861-1.3317 10.624-6.3614 13.187-11.362 2.6305-5.1314 3.5832-16.717 1.831-22.266-1.9849-6.2864-5.6458-11.084-10.746-14.082-9.7344-5.722-23.258-2.7974-29.51 6.3815-7.2734 10.68-6.099 27.03 2.5638 35.692 6.0046 6.0046 14.109 8.019 22.674 5.6358zm104.27 27.548c-18.21-4.4124-32.491-18.665-36.732-36.656-1.7761-7.535-1.9976-22.597-0.4428-30.108 3.9588-19.124 19.194-34.21 38.729-38.35 26.022-5.5151 50.573 5.3226 60.678 26.785 4.5151 9.5897 6.7907 24.331 4.8652 31.516l-0.603 2.25h-36.383c-28.443 0-36.382 0.2729-36.378 1.25 0.029 6.4705 5.1435 14.004 11.453 16.87 8.1132 3.6853 19.775 1.1464 23.316-5.0763l1.7251-3.0314 17.25-0.01c13.756-0.01 17.25 0.2651 17.25 1.3339 0 3.4859-6.8667 14.656-12.435 20.229-9.929 9.936-22.017 14.497-38.025 14.346-4.9719-0.047-11.392-0.6551-14.268-1.3518zm33.465-66.485c-0.7269-5.419-3.3297-8.6192-9.5245-11.711-4.5569-2.2741-6.132-2.5619-11.405-2.0838-9.3699 0.8497-15.517 6.0502-18.282 15.466l-0.6607 2.25h40.398zm77.897 66.335c-16.26-3.9358-29.733-16.769-32.193-30.664l-0.6638-3.75h31.838l1.6806 3.8093c2.3187 5.2554 7.7502 8.1907 15.156 8.1907 8.2126 0 12.451-2.741 12.516-8.095 0.06-4.8853-3.2917-6.6635-22.54-11.958-16.753-4.6084-22.393-7.1826-27.629-12.61-5.1196-5.3066-6.8007-9.9009-6.7891-18.554 0.023-17.468 12.562-29.346 33.811-32.028 17.304-2.1841 32.713 1.968 42.085 11.34 4.6483 4.6483 9.5203 13.873 10.646 20.155l0.6716 3.75h-15.111c-12.606 0-15.111-0.2429-15.111-1.4652 0-2.4876-5.9101-8.35-9.6685-9.5904-7.7432-2.5555-17.332 1.1225-17.332 6.6482 0 5.964 1.6362 6.9097 21.324 12.325 16.529 4.5469 22.984 7.4561 28.27 12.743 11.168 11.168 10.493 29.801-1.4711 40.61-5.2037 4.7012-10.527 7.377-18.341 9.2193-7.8178 1.8432-23.375 1.8053-31.147-0.076zm-1445.6-65.889v-66.525h32.104l26.698 40.466c14.684 22.256 27.035 40.481 27.448 40.5s0.75-18.19 0.75-40.466v-40.5h32v133l-32.5-0.02-53-80.301-1 79.816-32.5 0.5496zm270 14v-52.525h33v11.77l3.7472-3.4322c8.1815-7.494 20.435-10.872 33.508-9.2361 9.4076 1.1769 17.11 5.0745 23.912 12.1l5.6671 5.8537 5.2435-5.5442c9.3497-9.886 21.651-14.013 36.91-12.383 17.645 1.8853 31.219 14.204 34.897 31.67 0.6971 3.3103 1.1159 18.229 1.1159 39.75v34.451h-31.897l-0.3013-32.25-0.3014-32.25-2.5125-4.4874c-3.5007-6.2522-9.1784-9.2626-17.47-9.2626-8.1464 0-13.658 2.9323-17.366 9.2393l-2.652 4.5107-0.647 64.5h-31.853l-0.01-30.75c0-19.351-0.4152-32.233-1.1106-34.75-2.2076-7.9909-13.262-14.693-21.448-13.003-1.34 0.2767-3.5531 0.7346-4.918 1.0175-2.7812 0.5765-8.9563 5.6466-10.807 8.8727-0.8516 1.4848-1.3604 11.922-1.7118 35.113l-0.5 33-32.5 0.5496zm317.67 51.809c-0.3667-0.3667-0.6667-23.992-0.6667-52.5v-51.833h33v15.87l5.25-5.2431c6.3898-6.3815 15.087-10.824 22.374-11.428l5.376-0.4458v34.248h-8.8858c-7.7519 0-9.5578 0.3511-14.153 2.7515-3.7811 1.9753-5.8585 3.8794-7.3642 6.75-1.9673 3.7507-2.1162 5.8114-2.4028 33.248l-0.3055 29.25h-15.778c-8.6778 0-16.078-0.3-16.444-0.6666zm81.333-51.833v-52.5h32v105h-32zm55.667 51.833c-0.3667-0.3667-0.6667-23.992-0.6667-52.5v-51.833h33v12.406l3.75-3.5994c15.259-14.646 43.452-13.308 58.136 2.7596l5.043 5.5179 3.7281-4.1266c8.7354-9.669 19.077-14.185 32.342-14.124 20.239 0.093 34.474 10.012 39.988 27.865 1.8572 6.0131 2.0116 9.2686 2.0116 42.408v35.895h-32l-0.022-31.75c-0.024-35.26-0.2998-36.977-6.8066-42.452-3.3481-2.8173-11.771-5.1194-15.735-4.3008-1.34 0.2767-3.5727 0.7395-4.9616 1.0284-3.8574 0.8026-10.296 7.1699-11.449 11.323-0.5855 2.1083-1.0166 16.869-1.0198 34.926l-0.01 31.275-32.5-0.5496-0.5-33.08-0.5-33.08-2.8165-3.6907c-3.6589-4.7944-6.7097-6.7259-12.262-7.7632-10.473-1.9566-20.81 3.6482-23.306 12.636-0.6948 2.5028-1.1063 15.378-1.1098 34.727l-0.01 30.75h-15.833c-8.7083 0-16.133-0.3-16.5-0.6666zm321.33-51.833v-52.5h32v13.416l4.25-4.1575c8.2018-8.0232 20.8-11.738 34.295-10.114 15.185 1.8281 26.121 10.662 31.72 25.622 2.0252 5.4111 2.1659 7.8252 2.506 42.983l0.3603 37.25h-32.131v-29.451c0-32.981-0.6051-37.891-5.3341-43.277-4.064-4.6287-8.1779-6.2723-15.7-6.2723-6.8175 0-8.994 0.8461-13.744 5.3428-5.6661 5.3641-6.2226 9.2399-6.2226 43.339v30.318h-32zm-368.43-64.93c-2.1593-0.8004-5.512-3.0413-7.4505-4.9798-3.1764-3.1764-3.5657-4.172-3.9419-10.08-0.3662-5.7507-0.1041-7.0288 2.1345-10.412 4.9712-7.512 17.174-10.44 25.598-6.1424 12.641 6.449 13.586 22.628 1.7485 29.943-4.4357 2.7414-13.052 3.5371-18.089 1.6704z" />
-                            <path class="fill-red" d="M5183.8 2043.9c-7.2972-1.7857-13.123-8.6901-13.123-15.553 0-11.68 8.2363-18.365 21.181-17.192 9.7274 0.882 15.819 7.3194 15.819 16.717 0 5.5924-2.2395 9.934-6.7714 13.127-4.1674 2.9364-11.723 4.2172-17.106 2.8999z" />
-                        </g>
+                <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
+                    <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">L</span>
+                    <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Laravel</span>
+                    <span style="margin-left:4px;">v{{ Illuminate\Foundation\Application::VERSION }}</span>
+                </span>
+            </p>
+        </div>
+
+        <div class="fi-filament-info-widget-links">
+            <x-filament::link
+                color="gray"
+                href="https://numerimondes.com/docs"
+                :icon="\Filament\Support\Icons\Heroicon::BookOpen"
+                icon-alias="panels::widgets.filament-info.open-documentation-button"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
+                Documentation
+            </x-filament::link>
+
+            <x-filament::link
+                color="gray"
+                href="https://github.com/numerimondes"
+                icon-alias="panels::widgets.filament-info.open-github-button"
+                rel="noopener noreferrer"
+                target="_blank"
+            >
+                <x-slot name="icon">
+                    <svg viewBox="0 0 98 96" xmlns="http://www.w3.org/2000/svg" class="w-4 h-4">
+                        <path
+                            clip-rule="evenodd"
+                            fill="currentColor"
+                            fill-rule="evenodd"
+                            d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
+                        />
                     </svg>
-
-                </a>
-
-                <p x-data class="mt-2 text-xs text-gray-500 dark:text-gray-400 flex space-x-12">
-                    <!-- Groupe W -->
-                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer">
-                        <span>Webkernel</span>
-                        <span style="margin-left:4px;">v{{ Webkernel\constants\Application::WEBKERNEL_VERSION }}</span>
-                    </span>
-
-                    <!-- Groupe F -->
-                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
-                        <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">F</span>
-                        <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Filament</span>
-                        <span style="margin-left:4px;">{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}</span>
-                    </span>
-
-                    <!-- Groupe L -->
-                    <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="flex items-center space-x-3 cursor-pointer" style="margin-left:4px;">
-                        <span x-show="!hovered" class="font-bold block min-w-[1rem] text-center">L</span>
-                        <span x-show="hovered" class="block min-w-[6rem]" style="margin-left:4px;">Laravel</span>
-                        <span style="margin-left:4px;">v{{ Illuminate\Foundation\Application::VERSION }}</span>
-                    </span>
-                </p>
-
-            </div>
-
-            <div class="flex flex-col items-end gap-y-1">
-                <x-filament::link
-                    color="gray"
-                    href="https://deepwiki.com/numerimondes/webkernel"
-                    icon="heroicon-m-book-open"
-                    icon-alias="panels::widgets.filament-info.open-documentation-button"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >
-                    {{ lang('filament-panels::widgets/filament-info-widget.actions.open_documentation.label') }}
-                </x-filament::link>
-
-                <x-filament::link
-                    color="gray"
-                    href="https://github.com/numerimondes/webkernel"
-                    icon-alias="panels::widgets.filament-info.open-github-button"
-                    rel="noopener noreferrer"
-                    target="_blank"
-                >
-                    <x-slot name="icon">
-                        <svg
-                            viewBox="0 0 98 96"
-                            xmlns="http://www.w3.org/2000/svg"
-                        >
-                            <path
-                                clip-rule="evenodd"
-                                fill="currentColor"
-                                fill-rule="evenodd"
-                                d="M48.854 0C21.839 0 0 22 0 49.217c0 21.756 13.993 40.172 33.405 46.69 2.427.49 3.316-1.059 3.316-2.362 0-1.141-.08-5.052-.08-9.127-13.59 2.934-16.42-5.867-16.42-5.867-2.184-5.704-5.42-7.17-5.42-7.17-4.448-3.015.324-3.015.324-3.015 4.934.326 7.523 5.052 7.523 5.052 4.367 7.496 11.404 5.378 14.235 4.074.404-3.178 1.699-5.378 3.074-6.6-10.839-1.141-22.243-5.378-22.243-24.283 0-5.378 1.94-9.778 5.014-13.2-.485-1.222-2.184-6.275.486-13.038 0 0 4.125-1.304 13.426 5.052a46.97 46.97 0 0 1 12.214-1.63c4.125 0 8.33.571 12.213 1.63 9.302-6.356 13.427-5.052 13.427-5.052 2.67 6.763.97 11.816.485 13.038 3.155 3.422 5.015 7.822 5.015 13.2 0 18.905-11.404 23.06-22.324 24.283 1.78 1.548 3.316 4.481 3.316 9.126 0 6.6-.08 11.897-.08 13.526 0 1.304.89 2.853 3.316 2.364 19.412-6.52 33.405-24.935 33.405-46.691C97.707 22 75.788 0 48.854 0z"
-                            />
-                        </svg>
-                    </x-slot>
-
-                    {{ lang('filament-panels::widgets/filament-info-widget.actions.open_github.label') }}
-                </x-filament::link>
-            </div>
+                </x-slot>
+                GitHub
+            </x-filament::link>
         </div>
     </x-filament::section>
 </x-filament-widgets::widget>

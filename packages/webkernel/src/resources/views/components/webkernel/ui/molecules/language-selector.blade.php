@@ -1,25 +1,41 @@
 @php
     use Illuminate\Support\Str;
-    $isMobile = Str::contains(request()->header('User-Agent'), 'Mobile');
     $languages = \Webkernel\Models\Language::getActiveLanguages();
     $currentLang = auth()->check() ? auth()->user()->user_lang : (session('locale') ?? config('app.locale'));
     $currentLangLabel = $languages->firstWhere('code', $currentLang)->label ?? $currentLang;
-    $path = base_path('packages/webkernel/src/public/assets/flags/language/' . $currentLang . '.svg');
-    $svgContent = file_exists($path) ? file_get_contents($path) : '';
-    if ($svgContent) {
-        $svgContent = preg_replace('/<svg(.*?)>/', '<svg$1 class="h-4 w-4 object-contain">', $svgContent);
-    }
-    $languageSVG = function($languageCode) {
-        $path = base_path('packages/webkernel/src/public/assets/flags/language/' . $languageCode . '.svg');
-        $svgContent = file_exists($path) ? file_get_contents($path) : '';
-        if ($svgContent) {
-            $svgContent = preg_replace('/<svg(.*?)>/', '<svg$1 class="h-4 w-4 object-contain">', $svgContent);
+
+    $method = 'method_replace'; // or 'method_cssinline'
+
+    $processSvg = function($svgContent) use ($method) {
+        if (! $svgContent) return '';
+        if ($method === 'method_replace') {
+            $svgContent = preg_replace('/(width|height)="[^"]*"/i', '', $svgContent);
+            $svgContent = preg_replace(
+                '/<svg(.*?)>/',
+                '<svg$1 class="fi-icon fi-size-md" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true">',
+                $svgContent
+            );
+        } elseif ($method === 'method_cssinline') {
+            $svgContent = preg_replace(
+                '/<svg(.*?)>/',
+                '<svg$1 style="height:20px; width:20px;" class="fi-icon fi-size-md" xmlns="http://www.w3.org/2000/svg" fill="currentColor" aria-hidden="true">',
+                $svgContent
+            );
         }
         return $svgContent;
     };
-    $responsiveMaxHeight = 'max-h-48 sm:max-h-60 md:max-h-72 lg:max-h-80 xl:max-h-96';
+
+    $path = base_path('packages/webkernel/src/public/assets/flags/language/' . $currentLang . '.svg');
+    $svgContent = file_exists($path) ? file_get_contents($path) : '';
+    $svgContent = $processSvg($svgContent);
+
+    $languageSVG = function($languageCode) use ($processSvg) {
+        $path = base_path('packages/webkernel/src/public/assets/flags/language/' . $languageCode . '.svg');
+        $svgContent = file_exists($path) ? file_get_contents($path) : '';
+        return $processSvg($svgContent);
+    };
 @endphp
-<!-- WebKernel Language Provider by www.numerimondes.com -->
+
 <div x-data="{
     selectedLang: '{{ $currentLang }}',
     selectedLangLabel: '{{ $currentLangLabel }}',
@@ -36,24 +52,26 @@
                 </div>
             </div>
         </x-slot>
-        <x-filament::dropdown.header class="font-semibold" icon="heroicon-c-language">
+
+        <x-filament::dropdown.header class="font-semibold text-gray-900 dark:text-gray-100" icon="heroicon-c-language">
             {{ lang('available_languages') }}
         </x-filament::dropdown.header>
-        <x-filament::dropdown.list class="w-40 {{ $responsiveMaxHeight }} overflow-y-auto">
+
+        <x-filament::dropdown.list class="w-40 max-h-60 overflow-y-auto fi-dropdown-list">
             @foreach ($languages as $language)
-                <x-filament::dropdown.list.item
-                    x-bind:class="selectedLang === '{{ $language->code }}' ? 'force-inter bg-gray-100 dark:bg-gray-700' : ''"
-                    @click="changeLang('{{ $language->code }}')" tag="button" wire:key="language-{{ $language->code }}">
-                    <div class="flex items-center justify-between w-full">
-                        <div class="flex items-center gap-2 force-inter">
-                            {!! $languageSVG($language->code) !!}
-                            <span>{{ $language->label }}</span>
-                        </div>
-                        <template x-if="selectedLang === '{{ $language->code }}'">
-                            <x-filament::icon name="heroicon-m-check" class="h-4 w-4 text-primary-500" />
-                        </template>
-                    </div>
-                </x-filament::dropdown.list.item>
+                <a
+                    href="javascript:void(0)"
+                    @click.prevent="changeLang('{{ $language->code }}')"
+                    wire:key="language-{{ $language->code }}"
+                    class="fi-dropdown-list-item fi-ac-grouped-action cursor-pointer whitespace-nowrap flex items-center gap-2"
+                    :class="selectedLang === '{{ $language->code }}' ? 'bg-gray-100 dark:bg-gray-700' : ''"
+                >
+                    {!! $languageSVG($language->code) !!}
+                    <span class="fi-dropdown-list-item-label">{{ $language->label }}</span>
+                    <span x-show="selectedLang === '{{ $language->code }}'">
+                        <x-filament::icon name="heroicon-m-check" class="h-4 w-4 text-primary-500" />
+                    </span>
+                </a>
             @endforeach
         </x-filament::dropdown.list>
     </x-filament::dropdown>

@@ -2,28 +2,28 @@
 
 namespace Webkernel\Providers;
 
-use Illuminate\Support\ServiceProvider;
-use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\File;
+use Filament\Schemas\Components\Grid;
+use Illuminate\Support\ServiceProvider;
 
 // Sub-providers
-use Webkernel\Providers\WebkernelBladeServiceProvider;
-use Webkernel\Providers\WebkernelMigrationServiceProvider;
-use Webkernel\Providers\WebkernelViewServiceProvider;
-use Webkernel\Providers\WebkernelCommandServiceProvider;
-use Webkernel\Providers\WebkernelHelperServiceProvider;
-use Webkernel\Providers\WebkernelRouteServiceProvider;
-use Webkernel\Providers\WebkernelLivewireServiceProvider;
-use Webkernel\Providers\WebkernelConfigServiceProvider;
+use Filament\Schemas\Components\Section;
+use Filament\Schemas\Components\Fieldset;
+use Illuminate\Contracts\Foundation\Application;
 use Webkernel\Providers\WebkernelUserServiceProvider;
-use Webkernel\Providers\WebkernelFactoryServiceProvider;
-use Webkernel\Providers\WebkernelPoliciesServiceProvider;
+use Webkernel\Providers\WebkernelViewServiceProvider;
+use Webkernel\Providers\WebkernelBladeServiceProvider;
+use Webkernel\Providers\WebkernelRouteServiceProvider;
+use Webkernel\Providers\WebkernelConfigServiceProvider;
+use Webkernel\Providers\WebkernelHelperServiceProvider;
 use Webkernel\Providers\WebkernelWidgetServiceProvider;
+use Webkernel\Providers\WebkernelCommandServiceProvider;
+use Webkernel\Providers\WebkernelFactoryServiceProvider;
 
 // Filament customizations
-use Filament\Forms\Components\Fieldset;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\Section;
+use Webkernel\Providers\WebkernelLivewireServiceProvider;
+use Webkernel\Providers\WebkernelPoliciesServiceProvider;
+use Webkernel\Providers\WebkernelMigrationServiceProvider;
 
 class WebkernelServiceProvider extends ServiceProvider
 {

@@ -3,32 +3,32 @@
 namespace Webkernel\Providers\Filament;
 
 //Filament
-use Webkernel\Filament\Pages\Dashboard;
-use Filament\Widgets\AccountWidget;
-use Filament\Widgets\FilamentInfoWidget;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\AuthenticateSession;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Filament\Pages;
 use Filament\Panel;
-use Filament\PanelProvider;
-use Filament\Support\Colors\Color;
 use Filament\Widgets;
-//Illuminate
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\Support\Facades\File;
-use Illuminate\Support\HtmlString;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
-//Webkernel
+use Filament\PanelProvider;
 use Filament\Resources\Resource;
+use Filament\Support\Colors\Color;
+use Illuminate\Support\HtmlString;
+use Filament\Widgets\AccountWidget;
+use Illuminate\Support\Facades\File;
 use Webkernel\Http\Middleware\SetLang;
-use Webkernel\Models\CorePlatformSettings;
+//Illuminate
+use Webkernel\Filament\Pages\Dashboard;
+use Filament\Widgets\FilamentInfoWidget;
+use Filament\Http\Middleware\Authenticate;
 use Webkernel\Filament\Pages\Auth\EditProfile;
+use Webkernel\Filament\Pages\PlatformSettings;
+use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Cookie\Middleware\EncryptCookies;
+use Filament\Http\Middleware\AuthenticateSession;
+//Webkernel
+use Illuminate\Routing\Middleware\SubstituteBindings;
+use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Filament\Http\Middleware\DisableBladeIconComponents;
+use Filament\Http\Middleware\DispatchServingFilamentEvent;
+use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
+use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
 
 
 class SystemPanelProvider extends PanelProvider

@@ -1,38 +1,55 @@
 <?php
+
 namespace Webkernel\Filament\Resources;
 
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\Toggle;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Actions\ActionGroup;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Webkernel\Filament\Resources\LanguageResource\Pages\ListLanguages;
-use Webkernel\Filament\Resources\LanguageResource\Pages\CreateLanguage;
-use Webkernel\Filament\Resources\LanguageResource\Pages\EditLanguage;
-use Webkernel\Filament\Resources\LanguageResource\Pages\ViewLanguage;
-use Webkernel\Filament\Resources\LanguageResource\Pages;
-use Webkernel\Models\Language;
-use Filament\Forms;
-use Filament\Resources\Resource;
+use BackedEnum;
 use Filament\Tables;
 use Filament\Tables\Table;
-use Illuminate\Database\Eloquent\Builder;
-use Illuminate\Database\Eloquent\SoftDeletingScope;
-use Webkernel\Filament\Resources\LanguageResource\RelationManagers\LanguageTranslationsRelationManager;
-use Filament\Tables\Columns\ToggleColumn;
+use Filament\Schemas\Schema;
+use Webkernel\Models\Language;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Resources\Resource;
+use Filament\Actions\ActionGroup;
+use Filament\Support\Enums\IconSize;
+use Filament\Actions\BulkActionGroup;
+use Filament\Forms\Components\Toggle;
+use Filament\Tables\Columns\IconColumn;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Support\Enums\IconPosition;
 use Filament\Tables\Actions\DeleteAction;
+use Filament\Tables\Columns\ToggleColumn;
+use Illuminate\Database\Eloquent\Builder;
+use Illuminate\Contracts\Support\Htmlable;
+use Filament\Tables\Actions\DeleteBulkAction;
+use Illuminate\Database\Eloquent\SoftDeletingScope;
+use Webkernel\Filament\Resources\LanguageResource\Pages;
+use Webkernel\Filament\Resources\LanguageResource\Pages\EditLanguage;
+use Webkernel\Filament\Resources\LanguageResource\Pages\ViewLanguage;
+use Webkernel\Filament\Resources\LanguageResource\Pages\ListLanguages;
+use Webkernel\Filament\Resources\LanguageResource\Pages\CreateLanguage;
+use Webkernel\Filament\Resources\LanguageResource\RelationManagers\LanguageTranslationsRelationManager;
 
 class LanguageResource extends Resource
 {
     protected static ?string $model = Language::class;
-    protected static ?string $navigationIcon = 'heroicon-o-language';
 
-    public static function form(Forms\Form $form): Forms\Form
+
+public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
+{
+
+        return 'heroicon-o-language';
+    }
+
+    public static function getNavigationBadge(): ?string
     {
-        return $form
+        return static::getModel()::count();
+    }
+
+    public static function form(Schema $schema): Schema
+    {
+        return $schema
             ->schema([
                 TextInput::make('code')
                     ->required()

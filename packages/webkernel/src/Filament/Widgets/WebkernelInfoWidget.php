@@ -6,7 +6,7 @@ use Filament\Widgets\Widget;
 
 class WebkernelInfoWidget extends Widget
 {
-    protected static string $view = 'webkernel::widgets.webkernel-info-widget';
+    protected string $view = 'webkernel::widgets.webkernel-info-widget';
 
     // Force immediate loading
     protected static bool $isLazy = false;

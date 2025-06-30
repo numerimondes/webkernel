@@ -2,40 +2,41 @@
 
 namespace Webkernel\Layouts\User;
 
-use Filament\Forms\Form;
-use Filament\Forms\Components\Section;
-use Filament\Forms\Components\Grid;
-use Filament\Forms\Components\FileUpload;
-use Filament\Forms\Components\TextInput;
-use Filament\Forms\Components\DatePicker;
-use Filament\Forms\Components\Tabs;
-use Filament\Forms\Components\Tabs\Tab;
-use Filament\Forms\Components\Textarea;
-use Filament\Forms\Components\Select;
-use Filament\Forms\Components\DateTimePicker;
-use Filament\Forms\Components\Toggle;
-use Filament\Forms\Components\CheckboxList;
-use Filament\Tables\Columns\ImageColumn;
-use Filament\Tables\Columns\TextColumn;
-use Filament\Tables\Columns\BadgeColumn;
-use Filament\Tables\Filters\SelectFilter;
-use Filament\Tables\Actions\ViewAction;
-use Filament\Tables\Actions\EditAction;
-use Filament\Tables\Actions\DeleteAction;
-use Filament\Tables\Actions\BulkActionGroup;
-use Filament\Tables\Actions\DeleteBulkAction;
-use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
-use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
-use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
 use Filament\Forms;
 use Filament\Tables;
+use Filament\Forms\Form;
 use Filament\Tables\Table;
+use Filament\Schemas\Schema;
+use Filament\Actions\EditAction;
+use Filament\Actions\ViewAction;
+use Filament\Actions\DeleteAction;
+use Filament\Actions\BulkActionGroup;
+use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Toggle;
+use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\Tabs;
+use Filament\Actions\DeleteBulkAction;
+use Filament\Forms\Components\Textarea;
+use Filament\Tables\Columns\TextColumn;
+use Filament\Forms\Components\TextInput;
+use Filament\Schemas\Components\Section;
+use Filament\Tables\Columns\BadgeColumn;
+use Filament\Tables\Columns\ImageColumn;
+use Filament\Forms\Components\DatePicker;
+use Filament\Forms\Components\FileUpload;
+use Filament\Schemas\Components\Tabs\Tab;
+use Filament\Tables\Filters\SelectFilter;
+use Filament\Forms\Components\CheckboxList;
+use Filament\Forms\Components\DateTimePicker;
+use Webkernel\Filament\Resources\UserResource\Pages\EditUser;
+use Webkernel\Filament\Resources\UserResource\Pages\ListUsers;
+use Webkernel\Filament\Resources\UserResource\Pages\CreateUser;
 
 class AvatarLayout
 {
-    public static function form(Form $form): Form
+     public static function form(Schema $schema): Schema
     {
-        return $form
+        return $schema
             ->schema([
                 // PARTIE 1 - Informations principales avec avatar
                 Section::make('Profil utilisateur')

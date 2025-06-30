@@ -30,8 +30,8 @@
     $poweredLinkBrand = "https://numerimondes.com";
     $brandLink = "Numerimondes";
 
+        // exclude : fi-sidebar-close-overlay fixed inset-0 z-30 bg-gray-950/50 transition duration-500 dark:bg-gray-950/75 lg:hidden
 
-    // exclude : fi-sidebar-close-overlay fixed inset-0 z-30 bg-gray-950/50 transition duration-500 dark:bg-gray-950/75 lg:hidden
 
 @endphp
 
@@ -95,22 +95,20 @@
         color: rgb(255, 255, 255);
     }
 
-    /* Styles for the main badge - automatic theme adaptation */
-.credit-badge-ui-main {
-    border: 1px solid rgba(31, 41, 55, 0.2) !important; /* Dark border in light mode */
-}
-.dark .credit-badge-ui-main {
-    border: 1px solid rgba(255, 255, 255, 0.2) !important; /* White border in dark mode */
-}
+    .credit-badge-ui-main {
+        border: 1px solid rgba(31, 41, 55, 0.2) !important;
+    }
+    .dark .credit-badge-ui-main {
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
 
-    /* Styles pour le bouton d'aide - adaptation automatique au thème */
     .universal-help-ui-button {
-        color: rgb(31, 41, 55) !important; /* Couleur foncée par défaut (light mode) */
-        border: 1px solid rgba(31, 41, 55, 0.2) !important; /* Bordure foncée en light mode */
+        color: rgb(31, 41, 55) !important;
+        border: 1px solid rgba(31, 41, 55, 0.2) !important;
     }
     .dark .universal-help-ui-button {
-        color: rgb(255, 255, 255) !important; /* Blanc en dark mode */
-        border: 1px solid rgba(255, 255, 255, 0.2) !important; /* Bordure blanche en dark mode */
+        color: rgb(255, 255, 255) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
     }
 
     .universal-help-ui-dropdown .fi-dropdown-panel {
@@ -126,10 +124,9 @@
 </style>
 
 <div id="{{ $id }}" class="credit-badge-ui-container" style="{{ $positionSide }} position: fixed; bottom: 10px; display: flex; align-items: center; gap: 8px; z-index: 9999;">
-
     @include('webkernel::components.webkernel.ui.organism.universal-badge.parts.badge-white-label')
-
 </div>
+
 <script>
 (function() {
     'use strict';
@@ -201,9 +198,14 @@
     }
 
     function handleConflictingElement(element) {
-        if (element.closest(`#${BADGE_ID}`)) return;
-        if (element.closest('.fi-dropdown-panel')) return;
-        if (element.closest('[data-fi-dropdown-panel]')) return;
+        // Skip Filament modals and their overlays to prevent interference
+        if (element.closest(`#${BADGE_ID}`) ||
+            element.closest('.fi-dropdown-panel') ||
+            element.closest('[data-fi-dropdown-panel]') ||
+            element.classList.contains('fi-modal') ||
+            element.classList.contains('fi-modal-close-overlay')) {
+            return;
+        }
 
         const style = getComputedStyle(element);
         if (style.position === 'fixed' &&
@@ -217,8 +219,12 @@
     }
 
     function restoreShiftedElements() {
-        const shiftedElements = document.querySelectorAll('[data-credit-badge-shifted="true"]');
+        const shiftedElements = document.querySelectorAll('[data-credit-badge-shifted="false"]');
         shiftedElements.forEach(element => {
+            // Ensure Filament modals are not affected
+            if (element.classList.contains('fi-modal') || element.classList.contains('fi-modal-close-overlay')) {
+                return;
+            }
             element.style.transform = '';
             element.removeAttribute('data-credit-badge-shifted');
         });
@@ -255,8 +261,9 @@
                     const hasRelevantChanges = [...mutation.addedNodes, ...mutation.removedNodes].some(node => {
                         if (node.nodeType !== Node.ELEMENT_NODE) return false;
                         const style = node.style || {};
-                        return style.position === 'fixed' ||
-                               node.querySelector && node.querySelector('[style*="position: fixed"]');
+                        return style.position === 'fixed' &&
+                               !node.classList.contains('fi-modal') &&
+                               !node.classList.contains('fi-modal-close-overlay');
                     });
                     if (hasRelevantChanges) {
                         shouldProcess = true;
@@ -266,7 +273,9 @@
                 if (mutation.type === 'attributes' &&
                     (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
                     const element = mutation.target;
-                    if (getComputedStyle(element).position === 'fixed') {
+                    if (getComputedStyle(element).position === 'fixed' &&
+                        !element.classList.contains('fi-modal') &&
+                        !element.classList.contains('fi-modal-close-overlay')) {
                         shouldProcess = true;
                         break;
                     }
@@ -330,7 +339,7 @@
                                 panelMutations.forEach((panelMutation) => {
                                     if (panelMutation.type === 'childList' && panelMutation.removedNodes.length > 0) {
                                         setTimeout(releaseBadge, 300);
-                                        panelCloseObserver.close();
+                                        panelCloseObserver.disconnect();
                                     }
                                 });
                             });
