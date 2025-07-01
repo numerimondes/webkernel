@@ -6,6 +6,51 @@ use Webkernel\Models\PlatformSetting;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
 
+if (!function_exists('corePlatformInfos')) {
+    function corePlatformInfos(string $key): mixed
+    {
+        $defaults = [
+            'brandName' => 'Webkernel',
+            'cssTitle' => 'Webkernel - by Numerimondes',
+            'description' => 'A production-ready Laravel foundation that transforms development workflow from day one',
+            'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('packages/webkernel/src/resources/repo-assets/credits/ream.svg'),
+        ];
+
+        $fallbacks = [
+            'brandName' => 'Numerimondes Platform',
+            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/ream.svg',
+        ];
+
+        if (!empty($GLOBALS['__corePlatformInfos']['infos'][$key])) {
+            return $GLOBALS['__corePlatformInfos']['infos'][$key];
+        }
+
+        if (empty(glob(base_path('platform/*')))) {
+            return $defaults[$key] ?? null;
+        }
+
+        return $fallbacks[$key] ?? null;
+    }
+}
+
+
+if (!function_exists('setCorePlatformInfos')) {
+    function setCorePlatformInfos(array $infos, int $priority = 0): void
+    {
+        static $data = ['infos' => [], 'priority' => -INF];
+        if ($priority > $data['priority']) {
+            if (isset($infos['logoLink'])) {
+                $infos['logoLink'] = platformAbsoluteUrlAnyPrivatetoPublic($infos['logoLink']);
+            }
+            $data['infos'] = array_merge($data['infos'], $infos);
+            $data['priority'] = $priority;
+        }
+        $GLOBALS['__corePlatformInfos'] = $data;
+    }
+}
+
+
+
 /*
 |--------------------------------------------------------------------------
 | Usage Examples for PlatformSettingsHelper
@@ -108,12 +153,20 @@ if (!function_exists('getPlatformDescription')) {
     }
 }
 
+
 if (!function_exists('getPlatformLogo')) {
-    function getPlatformLogo(?int $tenantId = null): ?string
+    function getPlatformLogo(?int $tenantId = null): string|\Closure
     {
-        return PlatformSetting::getAbsoluteUrl('PLATFORM_LOGO', $tenantId);
+        $logoPath = PlatformSetting::getAbsoluteUrl('PLATFORM_LOGO', $tenantId);
+
+        if (!empty($logoPath)) {
+            return $logoPath;
+        } else {
+            return asset(corePlatformInfos('logoLink'));
+        }
     }
 }
+
 
 if (!function_exists('doesPlatformHaveFavicon')) {
     function doesPlatformHaveFavicon(?int $tenantId = null): bool
@@ -711,43 +764,6 @@ if (!function_exists('getVerifiedStoredData')) {
 
 
 
-
-if (!function_exists('setCorePlatformInfos')) {
-    function setCorePlatformInfos(array $infos, int $priority = 0): void
-    {
-        static $data = ['infos' => [], 'priority' => -INF];
-        if ($priority > $data['priority']) {
-            if (isset($infos['logoLink'])) {
-                $infos['logoLink'] = platformAbsoluteUrlAnyPrivatetoPublic($infos['logoLink']);
-            }
-            $data['infos'] = array_merge($data['infos'], $infos);
-            $data['priority'] = $priority;
-        }
-        $GLOBALS['__corePlatformInfos'] = $data;
-    }
-}
-
-if (!function_exists('corePlatformInfos')) {
-    function corePlatformInfos(string $key)
-    {
-        $hasPlatformContent = !empty(glob(base_path('platform/*')));
-        if (!$hasPlatformContent) {
-            $defaults = [
-                'brandName' => 'Webkernel',
-                'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('packages/webkernel/src/resources/repo-assets/credits/numerimondes.png'),
-            ];
-            return $defaults[$key] ?? null;
-        }
-        if (isset($GLOBALS['__corePlatformInfos']) && array_key_exists($key, $GLOBALS['__corePlatformInfos']['infos'])) {
-            return $GLOBALS['__corePlatformInfos']['infos'][$key];
-        }
-        $fallbacks = [
-            'brandName' => 'Numerimondes Platform',
-            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
-        ];
-        return $fallbacks[$key] ?? null;
-    }
-}
 
 
 if (!function_exists('generate_dynamic_css')) {

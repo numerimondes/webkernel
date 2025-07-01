@@ -1,6 +1,6 @@
 @php
     $inFooter = $inFooter ?? false;
-    $fontSize = $fontSize ?? '90%';
+    $fontSize = $fontSize ?? '98%';
 @endphp
 
 
@@ -43,7 +43,7 @@
                 });
             }, 1000);
         }
-    }" class="text-gray-700 dark:text-white force-inter-ltr" style="margin-right:9px; font-size: {{ $fontSize }};">
+    }" class="text-gray-700 bold dark:text-white force-inter-ltr" style="margin-right:9px; font-size: {{ $fontSize }};">
         <span x-text="time" style="margin-right:9px;"></span>{{ CurrentUserTimezone() }}
     </div>
 @endif

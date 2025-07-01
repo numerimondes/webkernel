@@ -10,7 +10,6 @@ use Illuminate\Support\ServiceProvider;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Fieldset;
 use Illuminate\Contracts\Foundation\Application;
-use Webkernel\Providers\WebkernelUserServiceProvider;
 use Webkernel\Providers\WebkernelViewServiceProvider;
 use Webkernel\Providers\WebkernelBladeServiceProvider;
 use Webkernel\Providers\WebkernelRouteServiceProvider;
@@ -19,12 +18,13 @@ use Webkernel\Providers\WebkernelHelperServiceProvider;
 use Webkernel\Providers\WebkernelWidgetServiceProvider;
 use Webkernel\Providers\WebkernelCommandServiceProvider;
 use Webkernel\Providers\WebkernelFactoryServiceProvider;
-use Webkernel\Providers\WebkernelPlatformServiceProvider;
 
 // Filament customizations
 use Webkernel\Providers\WebkernelLivewireServiceProvider;
+use Webkernel\Providers\WebkernelPlatformServiceProvider;
 use Webkernel\Providers\WebkernelPoliciesServiceProvider;
 use Webkernel\Providers\WebkernelMigrationServiceProvider;
+use Webkernel\Providers\WebkernelAllPanelsServiceProvider;
 
 class WebkernelServiceProvider extends ServiceProvider
 {
@@ -46,6 +46,7 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelWidgetServiceProvider::class);
         $this->app->register(WebkernelConfigServiceProvider::class);
         $this->app->register(WebkernelPlatformServiceProvider::class);
+        $this->app->register(WebkernelAllPanelsServiceProvider::class);
 
         // Register providers from platform and packages
         $this->registerPlatformProviders();

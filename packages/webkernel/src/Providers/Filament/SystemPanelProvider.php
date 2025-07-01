@@ -51,7 +51,6 @@ class SystemPanelProvider extends PanelProvider
             ->path('system')
             ->login()
             ->registration()
-
             /**
              * End of custom Fortify parameters
              */

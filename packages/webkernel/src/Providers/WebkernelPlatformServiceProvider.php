@@ -41,12 +41,10 @@ class WebkernelPlatformServiceProvider extends ServiceProvider
     {
         $publicPath = public_path('storage');
 
-        // S'assurer que le dossier storage existe
         if (!File::exists($publicPath)) {
             File::makeDirectory($publicPath, 0755, true);
         }
 
-        // Créer le lien pour webkernel
         $webkernelSource = base_path('packages/webkernel/src/resources');
         $webkernelTarget = $publicPath . '/packages/webkernel/src/resources';
 
@@ -54,15 +52,12 @@ class WebkernelPlatformServiceProvider extends ServiceProvider
             File::makeDirectory(dirname($webkernelTarget), 0755, true);
 
             if (PHP_OS_FAMILY === 'Windows') {
-                // Sur Windows, utiliser une copie récursive
                 File::copyDirectory($webkernelSource, $webkernelTarget);
             } else {
-                // Sur Unix/Linux, utiliser un lien symbolique
                 symlink($webkernelSource, $webkernelTarget);
             }
         }
 
-        // Vous pouvez ajouter d'autres packages ici
         $this->createSymlinksForOtherPackages($publicPath);
     }
 

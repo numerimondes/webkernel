@@ -198,26 +198,67 @@
                 rect.top > protectedZoneRect.bottom);
     }
 
+    // Liste des sélecteurs à exclure de la protection
+    function isExcludedElement(element) {
+        const excludedSelectors = [
+            `#${BADGE_ID}`,
+            '.fi-dropdown-panel',
+            '[data-fi-dropdown-panel]',
+            '.fi-modal',
+            '.fi-main-sidebar',
+            '.fi-modal-close-overlay',
+            '.fi-sidebar-close-overlay', // Ajouté pour l'overlay de sidebar
+            '.fi-modal-content',
+            '.fi-modal-header',
+            '.fi-modal-footer',
+            '.fi-ac-modal', // Modals Action
+            '.fi-fo-modal', // Modals Form
+            '.fi-in-modal', // Modals Infolist
+            '.fi-no-modal', // Modals Notification
+            '.fi-sc-modal', // Modals Section
+            '.fi-ta-modal', // Modals Table
+            '.fi-wi-modal', // Modals Widget
+        ];
+
+        // Vérifier si l'élément correspond à un sélecteur exclu
+        for (const selector of excludedSelectors) {
+            if (selector.startsWith('#') || selector.startsWith('.') || selector.startsWith('[')) {
+                if (element.matches && element.matches(selector)) return true;
+                if (element.closest && element.closest(selector)) return true;
+            }
+        }
+
+        // Vérifier les classes qui commencent par 'fi-' (composants Filament)
+        const classList = element.classList;
+        if (classList) {
+            for (const className of classList) {
+                if (className.startsWith('fi-') && (
+                    className.includes('modal') ||
+                    className.includes('overlay') ||
+                    className.includes('dropdown') ||
+                    className.includes('sidebar')
+                )) {
+                    return true;
+                }
+            }
+        }
+
+        // Vérifier si l'élément est un overlay de modal
+        const style = getComputedStyle(element);
+        if (style.position === 'fixed' &&
+            style.zIndex &&
+            parseInt(style.zIndex) > 1000 &&
+            (style.backgroundColor.includes('rgba') || style.background.includes('rgba'))) {
+            // C'est probablement un overlay de modal
+            return true;
+        }
+
+        return false;
+    }
+
     function handleConflictingElement(element) {
-        if (
-            element.closest(`#${BADGE_ID}`) ||
-            element.closest('.fi-dropdown-panel') ||
-            element.closest('[data-fi-dropdown-panel]') ||
-            element.classList.contains('fi-modal') ||
-            element.classList.contains('fi-main-sidebar') ||
-            element.classList.contains('fi-modal-close-overlay') ||
-            element.classList.contains('fi-ac') ||
-            element.classList.contains('fi-fo') ||
-            element.classList.contains('fi-in') ||
-            element.classList.contains('fi-no') ||
-            element.classList.contains('fi-sc') ||
-            element.classList.contains('fi-ta') ||
-            element.classList.contains('fi-wi') ||
-            element.classList.contains('btn') ||
-            element.classList.contains('col') ||
-            element.classList.contains('ctn') ||
-            element.classList.contains('wrp')
-        ) {
+        // Exclure les éléments protégés
+        if (isExcludedElement(element)) {
             return;
         }
 
@@ -228,22 +269,27 @@
             style.visibility !== 'hidden' &&
             isInProtectedZone(element)
         ) {
+            // Vérification supplémentaire pour éviter les faux positifs
+            const zIndex = parseInt(style.zIndex) || 0;
+            if (zIndex > 9999) {
+                // Si l'élément a un z-index très élevé, il est probablement important
+                return;
+            }
+
             const shift = protectedZoneRect.bottom - element.getBoundingClientRect().top + 10;
             element.style.transform = `translateY(-${shift}px)`;
             element.setAttribute('data-credit-badge-shifted', 'true');
         }
     }
 
-
     function restoreShiftedElements() {
-        const shiftedElements = document.querySelectorAll('[data-credit-badge-shifted="false"]');
+        const shiftedElements = document.querySelectorAll('[data-credit-badge-shifted="true"]');
         shiftedElements.forEach(element => {
-            // Ensure Filament modals are not affected
-            if (element.classList.contains('fi-modal') || element.classList.contains('fi-modal-close-overlay')) {
-                return;
+            // Double vérification pour s'assurer de ne pas affecter les modals
+            if (!isExcludedElement(element)) {
+                element.style.transform = '';
+                element.removeAttribute('data-credit-badge-shifted');
             }
-            element.style.transform = '';
-            element.removeAttribute('data-credit-badge-shifted');
         });
     }
 
@@ -277,10 +323,12 @@
                 if (mutation.type === 'childList') {
                     const hasRelevantChanges = [...mutation.addedNodes, ...mutation.removedNodes].some(node => {
                         if (node.nodeType !== Node.ELEMENT_NODE) return false;
-                        const style = node.style || {};
-                        return style.position === 'fixed' &&
-                               !node.classList.contains('fi-modal') &&
-                               !node.classList.contains('fi-modal-close-overlay');
+
+                        // Ignorer les changements dans les modals et overlays
+                        if (isExcludedElement(node)) return false;
+
+                        const style = getComputedStyle(node);
+                        return style.position === 'fixed';
                     });
                     if (hasRelevantChanges) {
                         shouldProcess = true;
@@ -290,9 +338,11 @@
                 if (mutation.type === 'attributes' &&
                     (mutation.attributeName === 'style' || mutation.attributeName === 'class')) {
                     const element = mutation.target;
-                    if (getComputedStyle(element).position === 'fixed' &&
-                        !element.classList.contains('fi-modal') &&
-                        !element.classList.contains('fi-modal-close-overlay')) {
+
+                    // Ignorer les changements d'attributs sur les éléments exclus
+                    if (isExcludedElement(element)) continue;
+
+                    if (getComputedStyle(element).position === 'fixed') {
                         shouldProcess = true;
                         break;
                     }

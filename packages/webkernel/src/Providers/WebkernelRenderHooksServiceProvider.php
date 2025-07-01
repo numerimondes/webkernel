@@ -19,6 +19,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+
         $this->registerPanelsRenderHooks();
         $this->forceSidebarCollapsible();
     }
@@ -114,7 +115,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
 
         if ($panel && $panel->getId() !== 'admin') {
             FilamentView::registerRenderHook(
-                PanelsRenderHook::PAGE_START,
+                PanelsRenderHook::TOPBAR_AFTER,
                 fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.you-are-in-system-panel')
             );
         }

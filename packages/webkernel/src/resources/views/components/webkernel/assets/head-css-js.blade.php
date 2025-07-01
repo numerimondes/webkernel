@@ -101,4 +101,12 @@
     }
 })();
 </script>
+
+<script>
+const element = document.querySelector('.fi-modal-close-overlay');
+if (element) {
+    element.remove();
+}
+</script>
+
 @endpush
