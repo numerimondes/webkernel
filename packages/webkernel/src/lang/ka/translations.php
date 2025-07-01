@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:23',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'მართეთ მომხმარებლები',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:34',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'მომხმარებლები',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'სუფთა პროგრამის',
+            'generated_at' => '2025-07-01 08:33:57',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'გამოიყენე ტექსტი, რომელიც უნდა აითვისო.',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:30',
+            'protected' => false,
+        ],
     ],
 ];

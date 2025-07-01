@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:34',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'صارفین کا نظم کریں',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:44',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'صارفین <)>>>> ("ان") <<<<(< سافٹ ویئر کے',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'програмного забезпечення',
+            'generated_at' => '2025-07-01 08:35:56',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'صارف',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:39',
+            'protected' => false,
+        ],
     ],
 ];

@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:49',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Beheer gebruikers',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:01',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Gebruikers',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'van de software',
+            'generated_at' => '2025-07-01 08:34:26',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Gebruiker',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:56',
+            'protected' => false,
+        ],
     ],
 ];

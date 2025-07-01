@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:19',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Hantera användare',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:32',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Användare',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'av mjukvaran',
+            'generated_at' => '2025-07-01 08:35:41',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Användare',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:26',
+            'protected' => false,
+        ],
     ],
 ];

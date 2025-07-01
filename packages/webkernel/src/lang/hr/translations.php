@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:29',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Upravljajte korisnicima',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:21',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Korisnici',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'softvera',
+            'generated_at' => '2025-07-01 08:33:42',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Korisnik',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:16',
+            'protected' => false,
+        ],
     ],
 ];

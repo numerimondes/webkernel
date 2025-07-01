@@ -35,6 +35,10 @@ class RenderHookSettingResource extends Resource
 {
     protected static ?string $model = RenderHookSetting::class;
 
+    public static function getNavigationGroup(): ?string
+{
+    return lang('system_menu_settings');
+}
     public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
     {
         return 'heroicon-o-ellipsis-horizontal-circle';
@@ -87,25 +91,25 @@ class RenderHookSettingResource extends Resource
                     ->html()
                     ->wrap()
                     ->color(fn($record) => self::originalViewExists($record) ? null : 'gray'),
-                SelectColumn::make('where_placed')
-                    ->label(lang('toggle_visibility'))
-                    ->options([
-                        'draft' => 'Draft',
-                        'reviewing' => 'Reviewing',
-                        'published' => 'Published',
-                    ]),
+               // SelectColumn::make('where_placed')
+               //     ->label(lang('toggle_visibility'))
+               //     ->options([
+               //         'draft' => 'Draft',
+               //         'reviewing' => 'Reviewing',
+               //         'published' => 'Published',
+               //     ]),
                 ToggleColumn::make('enabled')
                     ->label(lang('toggle_visibility'))
                     ->disabled(fn($record) => !self::originalViewExists($record))
                     ->afterStateUpdated(function ($livewire) {
-                        $livewire->dispatch('refresh');
-                    }),
+                        $livewire->js('window.location.reload()');
+                    })
             ])
             ->filters([])
             ->actions([
-                self::getCustomizeViewAction(),
-                self::getEditCustomViewAction(),
-                self::getDeleteCustomViewAction(),
+               // self::getCustomizeViewAction(),
+                //self::getEditCustomViewAction(),
+                //self::getDeleteCustomViewAction(),
                 EditAction::make()
                     ->iconButton()
                     ->label(lang('edit'))
@@ -430,8 +434,8 @@ class RenderHookSettingResource extends Resource
         return [
             'index' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\ListRenderHookSettings::route('/'),
             'create' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting::route('/create'),
-            'view' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting::route('/{record}'),
-            'edit' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting::route('/{record}/edit'),
+          //  'view' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting::route('/{record}'),
+          //  'edit' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting::route('/{record}/edit'),
         ];
     }
 }

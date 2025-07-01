@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:08',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Spravovať používateľov',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:22',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Používatelia',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'softvéru',
+            'generated_at' => '2025-07-01 08:35:28',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Používateľ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:16',
+            'protected' => false,
+        ],
     ],
 ];

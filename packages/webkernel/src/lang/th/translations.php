@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:26',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'จัดการผู้ใช้',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:38',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'ผู้ใช้',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ของซอฟต์แวร์',
+            'generated_at' => '2025-07-01 08:35:48',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'ผู้ใช้',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:32',
+            'protected' => false,
+        ],
     ],
 ];

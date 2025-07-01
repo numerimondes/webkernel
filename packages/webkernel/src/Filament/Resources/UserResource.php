@@ -22,7 +22,24 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
     {
         return 'heroicon-o-users';
     }
-    public static string $webkernel_layout = 'avatar'; // Layout avec avatar et structure 3 parties
+
+public static function getModelLabel(): string
+{
+    return lang('user');
+}
+
+public static function getPluralModelLabel(): string
+{
+    return lang('users');
+}
+protected static ?string $recordTitleAttribute = 'name';
+
+
+    public static function getNavigationGroup(): ?string
+{
+    return lang('system_menu_all_users_management');
+}
+    public static string $webkernel_layout = 'avatar';
 
     public static function form(Schema $schema): Schema
     {

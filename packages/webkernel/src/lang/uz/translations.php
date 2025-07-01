@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:35',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Foydalanuvchilarni boshqarish',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:46',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Foydalanuvchilar',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'dastur',
+            'generated_at' => '2025-07-01 08:35:58',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Foydalanuvchi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:41',
+            'protected' => false,
+        ],
     ],
 ];

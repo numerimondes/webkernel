@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:31',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Tvarkyti vartotojus',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:43',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Vartotojai',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'programinės įrangos',
+            'generated_at' => '2025-07-01 08:34:06',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Vartotojas',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:39',
+            'protected' => false,
+        ],
     ],
 ];

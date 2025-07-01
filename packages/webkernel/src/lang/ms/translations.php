@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:43',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Urus pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:55',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'perisian',
+            'generated_at' => '2025-07-01 08:34:19',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:50',
+            'protected' => false,
+        ],
     ],
 ];

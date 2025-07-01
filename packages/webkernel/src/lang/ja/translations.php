@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:21',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'ユーザーを管理する',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:32',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'ソフトウェアのユーザー',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '<<<(<',
+            'generated_at' => '2025-07-01 08:33:54',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'ユーザー',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:28',
+            'protected' => false,
+        ],
     ],
 ];

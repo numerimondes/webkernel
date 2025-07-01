@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:40',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Хэрэглэгчдийг удирдах',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:53',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Хэрэглэгчид',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'программыг',
+            'generated_at' => '2025-07-01 08:34:16',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Хэрэглэгч',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:48',
+            'protected' => false,
+        ],
     ],
 ];

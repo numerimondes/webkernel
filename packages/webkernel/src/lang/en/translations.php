@@ -138,5 +138,27 @@ return [
             'generated_at' => '2025-06-01 13:46:49',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Manage users',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:21:44',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Users',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'generated_at' => '2025-07-01 08:32:58',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'User',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:33',
+            'protected' => false,
+        ],
     ],
 ];

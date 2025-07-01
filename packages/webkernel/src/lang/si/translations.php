@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:05',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'පරිශීලකයන් කළමනාකරණය කරන්න',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:19',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'සොෆ්ට්වෙයාහි භාවිතා කරන්නන්',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '<<<(<',
+            'generated_at' => '2025-07-01 08:35:26',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'පරිශීලකයා',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:13',
+            'protected' => false,
+        ],
     ],
 ];

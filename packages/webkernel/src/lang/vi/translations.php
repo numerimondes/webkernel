@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:38',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Quản lý người dùng',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:48',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Người dùng',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'của phần mềm',
+            'generated_at' => '2025-07-01 08:36:00',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Người dùng',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:43',
+            'protected' => false,
+        ],
     ],
 ];

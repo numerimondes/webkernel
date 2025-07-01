@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:29',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Kullanıcıları yönet',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:40',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Kullanıcılar',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'yazılımın',
+            'generated_at' => '2025-07-01 08:35:50',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Kullanıcı',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:35',
+            'protected' => false,
+        ],
     ],
 ];

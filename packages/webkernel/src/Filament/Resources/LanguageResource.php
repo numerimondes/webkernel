@@ -47,6 +47,10 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
         return static::getModel()::count();
     }
 
+    public static function getNavigationGroup(): ?string
+{
+    return lang('system_menu_settings');
+}
     public static function form(Schema $schema): Schema
     {
         return $schema

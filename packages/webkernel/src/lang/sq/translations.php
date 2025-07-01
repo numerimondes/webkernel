@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:15',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Menaxho përdoruesit',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:28',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Përdoruesit',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'të softuerit',
+            'generated_at' => '2025-07-01 08:35:36',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Përdoruesi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:22',
+            'protected' => false,
+        ],
     ],
 ];

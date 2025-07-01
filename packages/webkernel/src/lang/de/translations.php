@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:12',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Benutzer verwalten',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:06',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Benutzer',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'der Software',
+            'generated_at' => '2025-07-01 08:33:25',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Benutzer',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:59',
+            'protected' => false,
+        ],
     ],
 ];

@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:24',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'נהל משתמשים',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:17',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'משתמשים',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'של התוכנה',
+            'generated_at' => '2025-07-01 08:33:38',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'משתמש',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:12',
+            'protected' => false,
+        ],
     ],
 ];

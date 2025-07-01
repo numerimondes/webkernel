@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:54',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'ਵਿਧਾਇਕਾਂ ਦਾ ਪ੍ਰਬੰਧ ਕਰੋ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:06',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'ਸਾਫਟਵੇਅਰ ਦੇ ਉਪਭੋਗਤਾ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'av programvaren',
+            'generated_at' => '2025-07-01 08:34:31',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'ਵਰਤੋਂਕਾਰ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:00',
+            'protected' => false,
+        ],
     ],
 ];

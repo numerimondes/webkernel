@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:38',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'ഉപയോക്താക്കളെ നയിക്കുക',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:50',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'ഉപയോക്താക്കളുടെ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => ')',
+            'generated_at' => '2025-07-01 08:34:14',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'ഉപയോക്താവിൽ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:46',
+            'protected' => false,
+        ],
     ],
 ];

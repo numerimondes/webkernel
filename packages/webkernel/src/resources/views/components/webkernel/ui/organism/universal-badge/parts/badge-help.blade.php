@@ -1,3 +1,28 @@
+@php
+    $dropdownLinks = [
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-book-open',
+            'label' => lang( 'documentation'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-chat-bubble-left-right',
+            'label' => lang( 'contact_support'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-information-circle',
+            'label' => lang('faq'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-bug-ant',
+            'label' => lang('report_bug'),
+        ],
+    ];
+@endphp
+
 <x-filament::dropdown :placement="$dropdownPlacement">
     <x-slot name="trigger">
         <button type="button" class="universal-help-ui-button"
@@ -23,24 +48,11 @@
     </x-slot>
 
     <x-filament::dropdown.list class="fi-dropdown-list">
-        <a href="https://numerimondes.com/docs" target="_blank" class="fi-dropdown-list-item fi-ac-grouped-action">
-            <x-filament::icon icon="heroicon-m-book-open" class="fi-icon fi-size-md" />
-            <span class="fi-dropdown-list-item-label">Documentation</span>
-        </a>
-
-        <a href="https://numerimondes.com/support" target="_blank" class="fi-dropdown-list-item fi-ac-grouped-action">
-            <x-filament::icon icon="heroicon-m-chat-bubble-left-right" class="fi-icon fi-size-md" />
-            <span class="fi-dropdown-list-item-label">Contact Support</span>
-        </a>
-
-        <a href="https://numerimondes.com/faq" target="_blank" class="fi-dropdown-list-item fi-ac-grouped-action">
-            <x-filament::icon icon="heroicon-m-information-circle" class="fi-icon fi-size-md" />
-            <span class="fi-dropdown-list-item-label">{{ lang('faq') }}</span>
-        </a>
-
-        <a href="https://numerimondes.com/bug-report" target="_blank" class="fi-dropdown-list-item fi-ac-grouped-action">
-            <x-filament::icon icon="heroicon-m-bug-ant" class="fi-icon fi-size-md" />
-            <span class="fi-dropdown-list-item-label">{{ lang('report_bug') }}</span>
-        </a>
+        @foreach ($dropdownLinks as $link)
+            <a href="{{ $link['href'] }}" target="_blank" class="fi-dropdown-list-item fi-ac-grouped-action">
+                <x-filament::icon icon="{{ $link['icon'] }}" class="fi-icon fi-size-md" />
+                <span class="fi-dropdown-list-item-label">{{ $link['label'] }}</span>
+            </a>
+        @endforeach
     </x-filament::dropdown.list>
 </x-filament::dropdown>

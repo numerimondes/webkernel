@@ -16,6 +16,7 @@ use BackedEnum;
 class TestPage extends Page
 {
 
+protected static ?string $navigationParentItem = 'Products';
 
 public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
 {

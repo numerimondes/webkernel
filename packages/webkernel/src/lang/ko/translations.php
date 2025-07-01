@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:27',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => '사용자 관리',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:39',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => '사용자',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '소프트웨어의',
+            'generated_at' => '2025-07-01 08:34:01',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => '사용자',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:35',
+            'protected' => false,
+        ],
     ],
 ];

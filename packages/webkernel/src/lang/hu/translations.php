@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:31',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Felhasználók kezelése',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:23',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'A szoftver felhasználói',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '<<<(<',
+            'generated_at' => '2025-07-01 08:33:45',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Felhasználó',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:19',
+            'protected' => false,
+        ],
     ],
 ];

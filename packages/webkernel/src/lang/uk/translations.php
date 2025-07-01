@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:31',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Керувати користувачами',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:42',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Користувачі',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'програмного забезпечення',
+            'generated_at' => '2025-07-01 08:35:53',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Користувач',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:37',
+            'protected' => false,
+        ],
     ],
 ];

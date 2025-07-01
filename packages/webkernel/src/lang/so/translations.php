@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:13',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Maaree isticmaaleyaasha',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:26',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Isticmaalayaasha',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ee software-ka',
+            'generated_at' => '2025-07-01 08:35:33',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Isticmaalaha',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:19',
+            'protected' => false,
+        ],
     ],
 ];

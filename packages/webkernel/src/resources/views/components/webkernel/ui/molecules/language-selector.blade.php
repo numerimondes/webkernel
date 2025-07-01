@@ -34,8 +34,8 @@
         $svgContent = file_exists($path) ? file_get_contents($path) : '';
         return $processSvg($svgContent);
     };
-@endphp
 
+@endphp
 <div x-data="{
     selectedLang: '{{ $currentLang }}',
     selectedLangLabel: '{{ $currentLangLabel }}',

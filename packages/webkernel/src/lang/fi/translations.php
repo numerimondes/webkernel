@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:22',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Hallitse käyttäjiä',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:15',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Käyttäjät',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ohjelmiston',
+            'generated_at' => '2025-07-01 08:33:35',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Käyttäjä',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:10',
+            'protected' => false,
+        ],
     ],
 ];

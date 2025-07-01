@@ -1,9 +1,10 @@
 <?php
 
+// packages/webkernel/src/Helpers/helpers_platformsettings.php
+
+use Webkernel\Models\PlatformSetting;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
-use Webkernel\Models\PlatformSetting;
-
 
 /*
 |--------------------------------------------------------------------------
@@ -75,7 +76,7 @@ if (!function_exists('getPlatformEditableSettings')) {
 if (!function_exists('updateValue')) {
     function updateValue(string $key, mixed $value, ?int $tenantId = null): bool
     {
-        return PlatformSetting::setTypedValue($key, $tenantId);
+        return PlatformSetting::setTypedValue($key, $value, $tenantId);
     }
 }
 
@@ -124,15 +125,30 @@ if (!function_exists('doesPlatformHaveFavicon')) {
 if (!function_exists('getPlatformFavicon')) {
     function getPlatformFavicon(?int $tenantId = null, int $size = 256): string
     {
-        $favicon = PlatformSetting::getVerifiedStoredData('PLATFORM_FAVICON', $tenantId);
+        $favicon = PlatformSetting::getAbsoluteUrl('PLATFORM_FAVICON', $tenantId);
         return $favicon ?? "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size={$size}";
     }
 }
 
+
 if (!function_exists('getPlatformFaviconHtml')) {
     function getPlatformFaviconHtml(?int $tenantId = null, int $size = 256): string
     {
-        $faviconUrl = getPlatformFavicon($tenantId, $size);
+        $faviconUrl = getAbsoluteUrl('PLATFORM_FAVICON', $tenantId);
+
+        $fallbackUrl = getPlatformValue('PLATFORM_FAVICON_FALLBACK', $tenantId)
+            ?? "https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size={$size}";
+
+        if (!$faviconUrl || !platformValidateUrl($faviconUrl)) {
+            \Log::debug("Favicon URL invalid or missing for tenant {$tenantId}, using fallback: {$fallbackUrl}", [
+                'original' => $faviconUrl,
+                'raw' => getRawStoredData('PLATFORM_FAVICON', $tenantId)
+            ]);
+            $faviconUrl = $fallbackUrl;
+        } else {
+            \Log::debug("Favicon URL valid for tenant {$tenantId}: {$faviconUrl}");
+        }
+
         $extension = strtolower(pathinfo(parse_url($faviconUrl, PHP_URL_PATH), PATHINFO_EXTENSION));
 
         $mimeTypes = [
@@ -146,9 +162,11 @@ if (!function_exists('getPlatformFaviconHtml')) {
         ];
 
         $mimeType = $mimeTypes[$extension] ?? 'image/x-icon';
-        return '<link rel="icon" href="' . e($faviconUrl) . '" type="' . e($mimeType) . '">' . PHP_EOL;
+
+        return '<link rel="icon" href="' . e($faviconUrl) . '" type="' . e($mimeType) . '" data-fallback="' . e($fallbackUrl) . '">' . PHP_EOL;
     }
 }
+
 
 if (!function_exists('getPlatformLicence')) {
     function getPlatformLicence(?int $tenantId = null): ?string
@@ -667,8 +685,11 @@ if (!function_exists('getPlatformAnalyticsTagsHtml')) {
 }
 
 if (!function_exists('getAbsoluteUrl')) {
-    function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = URL::asset()): ?string
+    function getAbsoluteUrl(string $key, ?int $tenantId = null, ?string $baseUrl = null): ?string
     {
+        if ($baseUrl === null) {
+            $baseUrl = URL::asset('/');
+        }
         return PlatformSetting::getAbsoluteUrl($key, $tenantId, $baseUrl);
     }
 }
@@ -681,8 +702,49 @@ if (!function_exists('getRawStoredData')) {
 }
 
 if (!function_exists('getVerifiedStoredData')) {
-    function getVerifiedStoredData(string $key, ?int $tenantId = null): ?string
+    function getVerifiedStoredData(string $key, ?int $tenantId = null, bool $skipVerification = true): ?string
     {
-        return PlatformSetting::getVerifiedStoredData($key, $tenantId);
+        return PlatformSetting::getVerifiedStoredData($key, $tenantId, $skipVerification);
+    }
+}
+
+
+
+
+
+if (!function_exists('setCorePlatformInfos')) {
+    function setCorePlatformInfos(array $infos, int $priority = 0): void
+    {
+        static $data = ['infos' => [], 'priority' => -INF];
+        if ($priority > $data['priority']) {
+            if (isset($infos['logoLink'])) {
+                $infos['logoLink'] = platformAbsoluteUrlAnyPrivatetoPublic($infos['logoLink']);
+            }
+            $data['infos'] = array_merge($data['infos'], $infos);
+            $data['priority'] = $priority;
+        }
+        $GLOBALS['__corePlatformInfos'] = $data;
+    }
+}
+
+if (!function_exists('corePlatformInfos')) {
+    function corePlatformInfos(string $key)
+    {
+        $hasPlatformContent = !empty(glob(base_path('platform/*')));
+        if (!$hasPlatformContent) {
+            $defaults = [
+                'brandName' => 'Webkernel',
+                'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('default-logo.png'),
+            ];
+            return $defaults[$key] ?? null;
+        }
+        if (isset($GLOBALS['__corePlatformInfos']) && array_key_exists($key, $GLOBALS['__corePlatformInfos']['infos'])) {
+            return $GLOBALS['__corePlatformInfos']['infos'][$key];
+        }
+        $fallbacks = [
+            'brandName' => 'Numerimondes Platform',
+            'logoLink' => 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256',
+        ];
+        return $fallbacks[$key] ?? null;
     }
 }

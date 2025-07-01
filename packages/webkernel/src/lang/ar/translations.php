@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:46:51',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'إدارة المستخدمين',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:21:46',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'المستخدمون',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'البرنامج',
+            'generated_at' => '2025-07-01 08:33:00',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'المستخدم',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:35',
+            'protected' => false,
+        ],
     ],
 ];

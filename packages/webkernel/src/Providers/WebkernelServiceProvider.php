@@ -19,6 +19,7 @@ use Webkernel\Providers\WebkernelHelperServiceProvider;
 use Webkernel\Providers\WebkernelWidgetServiceProvider;
 use Webkernel\Providers\WebkernelCommandServiceProvider;
 use Webkernel\Providers\WebkernelFactoryServiceProvider;
+use Webkernel\Providers\WebkernelPlatformServiceProvider;
 
 // Filament customizations
 use Webkernel\Providers\WebkernelLivewireServiceProvider;
@@ -44,6 +45,7 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelPoliciesServiceProvider::class);
         $this->app->register(WebkernelWidgetServiceProvider::class);
         $this->app->register(WebkernelConfigServiceProvider::class);
+        $this->app->register(WebkernelPlatformServiceProvider::class);
 
         // Register providers from platform and packages
         $this->registerPlatformProviders();

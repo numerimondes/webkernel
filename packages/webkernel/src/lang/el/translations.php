@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:14',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Διαχείριση χρηστών',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:09',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Χρήστες',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'του λογισμικού',
+            'generated_at' => '2025-07-01 08:33:27',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Χρήστης',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:01',
+            'protected' => false,
+        ],
     ],
 ];

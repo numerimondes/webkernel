@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:37',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Gestire gli utenti',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:30',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Utenti',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'del software',
+            'generated_at' => '2025-07-01 08:33:51',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Utente',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:26',
+            'protected' => false,
+        ],
     ],
 ];

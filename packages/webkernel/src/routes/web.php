@@ -6,6 +6,10 @@ use Illuminate\Auth\AuthManager as Auth;
 use Illuminate\Auth\Middleware;
 use Illuminate\Auth\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\File;
+
 
 Route::get('/', function () {
     return redirect_once('/system') ?? view('welcome');
@@ -81,3 +85,5 @@ Route::get('/service-worker.js', function () {
         'Cache-Control' => 'public, max-age=3600',
     ]);
 })->name('service-worker.js');
+
+

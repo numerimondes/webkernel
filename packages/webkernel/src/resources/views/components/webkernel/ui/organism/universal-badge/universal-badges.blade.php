@@ -1,4 +1,7 @@
 @php
+    $brand = corePlatformInfos('brandName');
+    $logo = corePlatformInfos('logoLink');
+
     $rtlLanguages = config('webkernel.translation.rtl_languages', []);
     $userLanguage = null;
     if (auth()->check()) {
@@ -13,15 +16,14 @@
     $isRTL = in_array($userLanguage, $rtlLanguages);
     $positionSide = $isRTL ? 'left: 10px;' : 'right: 10px;';
     $dropdownPlacement = $isRTL ? 'top-start' : 'top-end';
+
     if (!session()->has('credit_badge_session_id')) {
         session(['credit_badge_session_id' => 'credit-badge-ui-' . bin2hex(random_bytes(4))]);
     }
 
     $BADGE_SENSITIVITY_OPTIONS = ['clic', 'hover', 'nothing'];
-    $BADGE_SENSITIVITY = 'clic';
+    $BADGE_SENSITIVITY = 'nothing';
 
-    $brand = 'Webkernel';
-    $logo = 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256';
     $base_width = 32;
     $img_width = $base_width * 0.5;
     $svg_width = $base_width * 0.65;
@@ -30,9 +32,8 @@
     $poweredLinkBrand = "https://numerimondes.com";
     $brandLink = "Numerimondes";
 
+
         // exclude : fi-sidebar-close-overlay fixed inset-0 z-30 bg-gray-950/50 transition duration-500 dark:bg-gray-950/75 lg:hidden
-
-
 @endphp
 
 <style>

@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:03',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Gestioneu usuaris',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:21:58',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Usuaris',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'del programari',
+            'generated_at' => '2025-07-01 08:33:14',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Usuari',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:49',
+            'protected' => false,
+        ],
     ],
 ];

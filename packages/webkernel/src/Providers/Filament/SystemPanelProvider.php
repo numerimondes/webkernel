@@ -35,29 +35,30 @@ class SystemPanelProvider extends PanelProvider
 {
     public function panel(Panel $panel): Panel
     {
-       // $svgPath = __DIR__.'/../../resources/branding/webkernel.svg';
-//
-       // $svgContent = File::get($svgPath) . "<br>";
-//
-       // $svgContent = preg_replace(
-       //     '/<svg([^>]*)>/',
-       //     '<svg$1 style="height: 35px;  width: auto;">',
-       //     $svgContent
-       // );
-//
-       // $svgContent .= '<br>';
+        // $svgPath = __DIR__.'/../../resources/branding/webkernel.svg';
+        // $svgContent = File::get($svgPath) . "<br>";
+        // $svgContent = preg_replace(
+        //     '/<svg([^>]*)>/',
+        //     '<svg$1 style="height: 35px;  width: auto;">',
+        //     $svgContent
+        // );
+        // $svgContent .= '<br>';
 
         return $panel
+
             ->default()
             ->id('system')
             ->path('system')
             ->login()
             ->registration()
+
             /**
              * End of custom Fortify parameters
              */
-         //   ->brandLogo(new HtmlString($svgContent))
+
+            //->brandLogo(new HtmlString($svgContent))
             //->topNavigation()
+
             ->globalSearchKeyBindings(['command+k', 'ctrl+k'])
             ->profile(EditProfile::class, false)
             ->spa()
@@ -66,23 +67,15 @@ class SystemPanelProvider extends PanelProvider
             ->databaseTransactions(false)
             ->discoverClusters(in: base_path('packages/webkernel/src/Filament/Clusters'), for: 'Webkernel\\Filament\\Clusters')
             ->colors([
-                'primary' => Color::hex('#3276c3'),
+                'primary' => Color::hex('#3276c3')
             ])
-            /**
-             * End of custom Fortify parameters
-             */
-            // Découvrir automatiquement les ressources à partir du dossier spécifié
-            // Découverte pour Webkernel
+
             ->discoverResources(in: base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
             ->discoverPages(in: base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
             ->pages([
-                Dashboard::class,
             ])
-            //->resources([
-            // \Webkernel\Filament\Resources\UserResource::class,
-            // \Webkernel\Filament\Resources\LanguageResource::class,
-            //])
-            // Découvrir automatiquement les widgets à partir du dossier spécifié
+
+            ->resources([])
             ->discoverWidgets(in: app_path('packages/webkernel/src/Filament/Widgets'), for: 'Webkernel\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,

@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:17',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Управљање корисницима',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:30',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Корисници',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'софтвера',
+            'generated_at' => '2025-07-01 08:35:39',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Корисник',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:24',
+            'protected' => false,
+        ],
     ],
 ];

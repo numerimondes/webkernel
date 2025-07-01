@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:45',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'အသုံးပြုသူများကိုစီမံပါ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:56',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'အသုံးပြုသူများ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'အဆိုပါဆိုက်ဖ်ဝဲ၏',
+            'generated_at' => '2025-07-01 08:34:21',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'အသုံးပြုသူ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:52',
+            'protected' => false,
+        ],
     ],
 ];

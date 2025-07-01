@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:24',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'பயனர்களை நிர்வகிக்கவும்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:36',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'பயனர்கள் <)>>>> ("உள்ள") <<<<(< மென்பொருளின்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ya programu',
+            'generated_at' => '2025-07-01 08:35:46',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'பயனர்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:31',
+            'protected' => false,
+        ],
     ],
 ];

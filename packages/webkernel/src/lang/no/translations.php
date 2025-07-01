@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:51',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Administrere brukere',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:03',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Brukere',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'av programvaren',
+            'generated_at' => '2025-07-01 08:34:28',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Bruker',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:58',
+            'protected' => false,
+        ],
     ],
 ];

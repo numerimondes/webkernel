@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:25',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'គ្រប់គ្រងអ្នកប្រើប្រាស់',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:37',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'អ្នកប្រើ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'នៃកម្មវិធី',
+            'generated_at' => '2025-07-01 08:33:59',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'អ្នកប្រើ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:33',
+            'protected' => false,
+        ],
     ],
 ];

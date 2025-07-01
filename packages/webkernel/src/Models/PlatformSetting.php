@@ -2,12 +2,11 @@
 
 namespace Webkernel\Models;
 
-use Illuminate\Support\Facades\URL;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Support\Facades\Http;
-use Illuminate\Support\Facades\Cache;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\Casts\Attribute;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Http;
 
 class PlatformSetting extends Model
 {
@@ -26,6 +25,10 @@ class PlatformSetting extends Model
     ];
 
     protected $with = ['editor'];
+
+    // Static cache for URLs to avoid repeated calls
+    protected static array $urlCache = [];
+    protected static array $verificationCache = [];
 
     public function editor()
     {
@@ -329,6 +332,11 @@ class PlatformSetting extends Model
         foreach ($patterns as $pattern) {
             Cache::forget($pattern);
         }
+
+        // Clear static caches
+        $cacheKey = $tenantId . '|' . $key;
+        unset(self::$urlCache[$cacheKey]);
+        unset(self::$verificationCache[$cacheKey]);
     }
 
     public function clearCache(): void
@@ -362,64 +370,101 @@ class PlatformSetting extends Model
         return $array;
     }
 
-    public static function getAbsoluteUrl(string $key, ?int $tenantId = null, string $baseUrl = URL::asset()): ?string
+    /**
+     * Get absolute URL for a setting - OPTIMIZED VERSION
+     * No HTTP calls, just URL building
+     */
+    public static function getAbsoluteUrl(string $key, ?int $tenantId = null, ?string $baseUrl = null): ?string
     {
+        $cacheKey = $tenantId . '|' . $key . '|' . ($baseUrl ?? 'default');
+
+        // Check static cache first
+        if (isset(self::$urlCache[$cacheKey])) {
+            return self::$urlCache[$cacheKey];
+        }
+
         $value = self::getPlatformTypedValue($key, $tenantId);
 
         if (empty($value)) {
+            self::$urlCache[$cacheKey] = null;
             return null;
         }
 
-        if (is_array($value)) {
-            $url = $value['value'] ?? null;
-        } else {
-            $url = $value;
-        }
+        $url = is_array($value) ? ($value['value'] ?? null) : $value;
 
         if (empty($url) || !is_string($url)) {
+            self::$urlCache[$cacheKey] = null;
             return null;
         }
 
-        if (filter_var($url, FILTER_VALIDATE_URL) && preg_match('#^https?://#i', $url)) {
+        // Use helper function - no HTTP calls
+        $absoluteUrl = platformAbsoluteUrl($url, $baseUrl);
+
+        // Basic validation only
+        if (!platformValidateUrl($absoluteUrl)) {
+            self::$urlCache[$cacheKey] = null;
+            return null;
+        }
+
+        self::$urlCache[$cacheKey] = $absoluteUrl;
+        return $absoluteUrl;
+    }
+
+    /**
+     * Get verified stored data - OPTIMIZED VERSION
+     * Only verify on demand, not automatically
+     */
+    public static function getVerifiedStoredData(string $key, ?int $tenantId = null, bool $skipVerification = false): ?string
+    {
+        $tenantId = $tenantId ?? 1;
+        $cacheKey = $tenantId . '|' . $key;
+
+        // Check static cache first
+        if (isset(self::$verificationCache[$cacheKey])) {
+            return self::$verificationCache[$cacheKey];
+        }
+
+        $value = self::getRawStoredData($key, $tenantId);
+
+        if (empty($value) || !is_string($value)) {
+            self::$verificationCache[$cacheKey] = null;
+            return null;
+        }
+
+        $url = self::getAbsoluteUrl($key, $tenantId);
+        if (!$url) {
+            self::$verificationCache[$cacheKey] = null;
+            return null;
+        }
+
+        // Skip HTTP verification if requested or if it's a local file
+        if ($skipVerification || str_contains($url, 'localhost') || str_starts_with($url, 'file://')) {
+            self::$verificationCache[$cacheKey] = $url;
             return $url;
         }
 
-        if (str_starts_with($url, '/')) {
-            return rtrim($baseUrl, '/') . $url;
-        }
+        // Use Redis/Database cache for HTTP verification (longer cache time)
+        $verifyCacheKey = "platform_url_verified_{$tenantId}_{$key}";
 
-        return $url;
+        return Cache::remember($verifyCacheKey, 21600, function () use ($url, $cacheKey) { // 6 hours cache
+            try {
+                $response = Http::timeout(5)->head($url);
+                $result = $response->status() === 200 ? $url : null;
+                self::$verificationCache[$cacheKey] = $result;
+                return $result;
+            } catch (\Exception $e) {
+                self::$verificationCache[$cacheKey] = null;
+                return null;
+            }
+        });
     }
 
+    /**
+     * Get raw stored data without processing
+     */
     public static function getRawStoredData(string $key, ?int $tenantId = null): mixed
     {
         $value = self::getPlatformTypedValue($key, $tenantId);
         return is_array($value) ? ($value['value'] ?? null) : $value;
-    }
-
-    public static function getVerifiedStoredData(string $key, ?int $tenantId = null): ?string
-    {
-        $tenantId = $tenantId ?? 1;
-        $cacheKey = "platform_settings_tenant_{$tenantId}_{$key}_verified";
-
-        return Cache::remember($cacheKey, 3600, function () use ($key, $tenantId) {
-            $value = self::getRawStoredData($key, $tenantId);
-
-            if (empty($value) || !is_string($value)) {
-                return null;
-            }
-
-            $url = self::getAbsoluteUrl($key, $tenantId);
-            if (!$url || !filter_var($url, FILTER_VALIDATE_URL)) {
-                return null;
-            }
-
-            try {
-                $response = Http::head($url);
-                return $response->status() === 200 ? $url : null;
-            } catch (\Exception $e) {
-                return null;
-            }
-        });
     }
 }

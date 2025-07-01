@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:01',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Sarrafa masu amfani',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:21:56',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Masu amfani <)>>>> ("ciki") <<<<(< na software',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'সফ্টওয়্যারের',
+            'generated_at' => '2025-07-01 08:33:12',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Mai amfani',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:47',
+            'protected' => false,
+        ],
     ],
 ];

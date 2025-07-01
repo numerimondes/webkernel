@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:29',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Bikarhêneran bi rê ve bibe',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:41',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Bikarhênerên di nivîsbariyê de',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '소프트웨어의',
+            'generated_at' => '2025-07-01 08:34:04',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Bikarhêner',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:37',
+            'protected' => false,
+        ],
     ],
 ];

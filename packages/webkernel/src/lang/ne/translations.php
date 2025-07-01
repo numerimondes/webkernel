@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:48:47',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'प्रयोगकर्ताहरू व्यवस्थापन गर्नुहोस्',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:59',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'सफ्टवेयरको प्रयोगकर्ताहरू',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '<<<(<',
+            'generated_at' => '2025-07-01 08:34:24',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'प्रयोगकर्ता',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:54',
+            'protected' => false,
+        ],
     ],
 ];

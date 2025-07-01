@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:32',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Հավելեք օգտագործողներ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:26',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Օգտագործողներ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ծրագրի',
+            'generated_at' => '2025-07-01 08:33:47',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Օգտագործող',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:22',
+            'protected' => false,
+        ],
     ],
 ];

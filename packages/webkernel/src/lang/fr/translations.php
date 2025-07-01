@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:46:53',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Gérer les utilisateurs',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:21:48',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Utilisateurs',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'du logiciel',
+            'generated_at' => '2025-07-01 08:33:02',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Utilisateur',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:43:37',
+            'protected' => false,
+        ],
     ],
 ];

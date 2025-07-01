@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:47:35',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Kelola pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:22:28',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'dari perangkat lunak',
+            'generated_at' => '2025-07-01 08:33:49',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Pengguna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:44:24',
+            'protected' => false,
+        ],
     ],
 ];

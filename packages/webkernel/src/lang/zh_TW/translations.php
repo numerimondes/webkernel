@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:43',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Manage users',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:53',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Users',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => '<<<(< 软件的',
+            'generated_at' => '2025-07-01 08:36:06',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'User',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:49',
+            'protected' => false,
+        ],
     ],
 ];

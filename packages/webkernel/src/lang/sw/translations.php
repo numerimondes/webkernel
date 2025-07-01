@@ -146,5 +146,28 @@ return [
             'generated_at' => '2025-06-01 13:49:21',
             'protected' => false,
         ],
+        'system_menu_all_users_management' => [
+            'label' => 'Dhibiti watumiaji',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:23:34',
+            'protected' => false,
+        ],
+        'users' => [
+            'label' => 'Watumiaji',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'of the software',
+            'context_destination' => 'ya programu',
+            'generated_at' => '2025-07-01 08:35:43',
+            'protected' => false,
+        ],
+        'user' => [
+            'label' => 'Mtumiaji',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 08:45:28',
+            'protected' => false,
+        ],
     ],
 ];
