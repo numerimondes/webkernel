@@ -2,6 +2,7 @@
     $brand = corePlatformInfos('brandName');
     $logo = platformAbsoluteUrlAnyPrivatetoPublic(corePlatformInfos('logoLink'));
 
+
     $rtlLanguages = config('webkernel.translation.rtl_languages', []);
     $userLanguage = null;
     if (auth()->check()) {

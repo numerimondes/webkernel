@@ -7,23 +7,8 @@ use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
 use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Str;
+use Illuminate\Support\Facades\Schema;
 
-if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
-    function platformAbsoluteUrlAnyPrivatetoPublic(string $path, int $expirationMinutes = 30): string
-    {
-        // Générer un token unique pour ce fichier
-        $token = Str::random(32);
-
-        // Stocker le mapping token -> path dans le cache
-        Cache::put("file_token:{$token}", [
-            'path' => $path,
-            'expires_at' => now()->addMinutes($expirationMinutes)
-        ], $expirationMinutes * 60);
-
-        // Retourner une URL propre
-        return url("/assets/{$token}");
-    }
-}
 
 
 if (!function_exists('platformAbsoluteUrl')) {

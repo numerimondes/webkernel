@@ -38,7 +38,8 @@ $spacing_between_elements = '8px'; // espacement entre image et texte
                 {{ $poweredByText }}
             </span>
         @endif
-        <span class="brand-text" style="color: currentColor; font-size: 14px; font-weight: {{ $text_font_weight }}; display: inline-block; vertical-align: middle; margin-right: {{ $spacing_between_elements }};">{{ $brand }}</span>
+        <span class="brand-text" style="color: currentColor; font-size: 14px; font-weight: {{ $text_font_weight }}; display: inline-block; vertical-align: middle; margin-right: {{ $spacing_between_elements }};">
+            {{ $brand }} </span>
         <img src="{{ $logo }}" alt="Logo"
             style="width: 20px !important; height: 20px !important; display: inline-block !important; vertical-align: middle !important; margin-right: {{ $spacing_between_elements }};"
             class="object-contain flex-shrink-0 group-hover:scale-110 transition-transform">
@@ -46,7 +47,8 @@ $spacing_between_elements = '8px'; // espacement entre image et texte
         <img src="{{ $logo }}" alt="Logo"
             style="width: 20px !important; height: 20px !important; margin-right: {{ $spacing_between_elements }};"
             class="object-contain flex-shrink-0 group-hover:scale-110 transition-transform">
-        <span class="brand-text text-base flex items-center" style="font-weight: {{ $text_font_weight }}; color: currentColor; margin-right: {{ $spacing_between_elements }};">{{ $brand }}</span>
+        <span class="brand-text text-base flex items-center" style="font-weight: {{ $text_font_weight }}; color: currentColor; margin-right: {{ $spacing_between_elements }};">
+            {{ $brand }} </span>
         @if ($BADGE_SENSITIVITY !== 'nothing')
             <span class="powered-by-text text-sm flex items-center" style="font-weight: {{ $text_font_weight }}; color: currentColor; margin-right: {{ $spacing_between_elements }};">
                 {{ $poweredByText }}

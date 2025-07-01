@@ -33,6 +33,7 @@
             "Database\\Factories\\": "database/factories/",
             "Database\\Seeders\\": "database/seeders/",
             "Webkernel\\": "packages/webkernel/src/",
+            "WebkernelSubPlatform\\": "platform/",
             "Webkernel\\Database\\Factories\\": "packages/webkernel/src/database/factories/",
             "Webkernel\\Database\\Seeders\\": "packages/webkernel/src/database/seeders/"
         },

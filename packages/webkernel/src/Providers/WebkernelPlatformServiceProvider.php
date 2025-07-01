@@ -4,24 +4,26 @@ namespace Webkernel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Webkernel\Providers\WebkernelRouteServiceProvider;
+use WebkernelSubPlatform\Platform;
 
 class WebkernelPlatformServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
-        //
+        // Rien ici
     }
 
     public function boot(): void
-    {
-        $routeProvider = new WebkernelRouteServiceProvider($this->app);
-        $routeProvider->loadRoutes();
-
-        $this->app->booted(function () {
-            $platformFile = base_path('platform/platform.php');
-            if (file_exists($platformFile)) {
-                require $platformFile;
-            }
-        });
+{
+    if (file_exists(base_path('platform/Platform.php'))) {
+        if (class_exists(Platform::class)) {
+            $platform = new Platform();
+            $platform->initialize();
+        }
     }
+
+    $routeProvider = new WebkernelRouteServiceProvider($this->app);
+    $routeProvider->loadRoutes();
+}
+
 }

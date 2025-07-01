@@ -5,49 +5,11 @@
 use Webkernel\Models\PlatformSetting;
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
-
-if (!function_exists('corePlatformInfos')) {
-    function corePlatformInfos(string $key): mixed
-    {
-        $defaults = [
-            'brandName' => 'Webkernel',
-            'cssTitle' => 'Webkernel - by Numerimondes',
-            'description' => 'A production-ready Laravel foundation that transforms development workflow from day one',
-            'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('packages/webkernel/src/resources/repo-assets/credits/ream.svg'),
-        ];
-
-        $fallbacks = [
-            'brandName' => 'Numerimondes Platform',
-            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
-        ];
-
-        if (!empty($GLOBALS['__corePlatformInfos']['infos'][$key])) {
-            return $GLOBALS['__corePlatformInfos']['infos'][$key];
-        }
-
-        if (empty(glob(base_path('platform/*')))) {
-            return $defaults[$key] ?? null;
-        }
-
-        return $fallbacks[$key] ?? null;
-    }
-}
-
-
-if (!function_exists('setCorePlatformInfos')) {
-    function setCorePlatformInfos(array $infos, int $priority = 0): void
-    {
-        static $data = ['infos' => [], 'priority' => -INF];
-        if ($priority > $data['priority']) {
-            if (isset($infos['logoLink'])) {
-                $infos['logoLink'] = platformAbsoluteUrlAnyPrivatetoPublic($infos['logoLink']);
-            }
-            $data['infos'] = array_merge($data['infos'], $infos);
-            $data['priority'] = $priority;
-        }
-        $GLOBALS['__corePlatformInfos'] = $data;
-    }
-}
+use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
+use Illuminate\Support\Facades\Cache;
+use Illuminate\Support\Facades\Schema;
 
 
 if (!function_exists('getPlatformValue')) {
