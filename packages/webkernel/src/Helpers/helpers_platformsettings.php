@@ -748,3 +748,32 @@ if (!function_exists('corePlatformInfos')) {
         return $fallbacks[$key] ?? null;
     }
 }
+
+
+if (!function_exists('generate_dynamic_css')) {
+    function generate_dynamic_css(): string
+    {
+        return '';
+    }
+}
+
+if (!function_exists('generate_dynamic_js')) {
+    function generate_dynamic_js(): string
+    {
+        return '';
+    }
+}
+
+if (!function_exists('generate_manifest_json')) {
+    function generate_manifest_json(): string
+    {
+        return '';
+    }
+}
+
+if (!function_exists('generate_service_worker')) {
+    function generate_service_worker(): string
+    {
+        return '';
+    }
+}

@@ -29,8 +29,7 @@ Route::get('notif', function () {
 });
 
 
-Route::middleware(['auth'])->get('lang/{lang}', function ($lang) {
-    /*
+Route::middleware([Authenticate::class])->get('lang/{lang}', function ($lang) {    /*
     |--------------------------------------------------------------------------
     | Change Language Route
     |--------------------------------------------------------------------------

@@ -33,6 +33,7 @@ class ImmediateWidgetComponent extends Component
      *
      * @return View|Closure|string
      */
+
     public function render()
     {
         if (!class_exists($this->widget) || !is_subclass_of($this->widget, Widget::class)) {
@@ -41,7 +42,7 @@ class ImmediateWidgetComponent extends Component
 
         $alias = $this->getLivewireAlias($this->widget);
 
-        return Livewire::mount($alias)->html();
+        return Livewire::test($alias)->html();
     }
 
     /**

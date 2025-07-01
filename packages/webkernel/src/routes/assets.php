@@ -35,8 +35,9 @@ Route::get('/assets/{token}', function (string $token, Request $request) {
 
     // Essayer d'abord via Storage
     if (Storage::disk('local')->exists($path)) {
-        $response = Storage::disk('local')->response($path);
-        return $response->header('Cache-Control', 'public, max-age=3600');
+    $response = Storage::disk('local')->response($path);
+    $response->headers->set('Cache-Control', 'public, max-age=3600');
+    return $response;
     }
 
     // Ensuite via le système de fichiers
@@ -90,15 +91,14 @@ Route::get('/assets/{hash}{extension?}', function (string $hash, string $extensi
 
     $path = $fileInfo['path'];
 
-    // Vérification de sécurité
     if (str_contains($path, '..') || str_contains($path, '\\')) {
         abort(403, 'Invalid path');
     }
 
-    // Servir le fichier
     if (Storage::disk('local')->exists($path)) {
-        return Storage::disk('local')->response($path)
-            ->header('Cache-Control', 'public, max-age=3600');
+        $response = Storage::disk('local')->response($path);
+        $response->headers->set('Cache-Control', 'public, max-age=3600');
+        return $response;
     }
 
     $fullPath = base_path($path);
