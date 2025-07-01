@@ -15,7 +15,7 @@ class WebkernelAllPanelsServiceProvider extends ServiceProvider
 
         foreach ($panels as $panel) {
             $panel->bootUsing(function ($panelInstance) use ($logoUrl) {
-                $panelInstance->brandLogo($logoUrl);
+                $panelInstance->brandLogo($logoUrl)->brandLogoHeight('2.5rem');
             });
         }
     }

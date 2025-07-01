@@ -16,6 +16,8 @@ $helpersPath = __DIR__;
 $excludedFiles = [
     basename(__FILE__),
     'no-file-excluded-for-the-moment.php',
+    //'helpers_platformHttp.php',
+    //'helpers_platformsettings.php',
 ];
 
 foreach (glob("$helpersPath/*.php") as $file) {

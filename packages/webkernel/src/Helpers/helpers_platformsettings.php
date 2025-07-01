@@ -3,8 +3,8 @@
 // packages/webkernel/src/Helpers/helpers_platformsettings.php
 
 use Webkernel\Models\PlatformSetting;
-use Illuminate\Support\Str;
 use Illuminate\Support\Facades\URL;
+use Illuminate\Support\Str;
 
 if (!function_exists('corePlatformInfos')) {
     function corePlatformInfos(string $key): mixed
@@ -18,7 +18,7 @@ if (!function_exists('corePlatformInfos')) {
 
         $fallbacks = [
             'brandName' => 'Numerimondes Platform',
-            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/ream.svg',
+            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
         ];
 
         if (!empty($GLOBALS['__corePlatformInfos']['infos'][$key])) {
@@ -49,32 +49,6 @@ if (!function_exists('setCorePlatformInfos')) {
     }
 }
 
-
-
-/*
-|--------------------------------------------------------------------------
-| Usage Examples for PlatformSettingsHelper
-|--------------------------------------------------------------------------
-|
-| // Get a setting value
-| $platformName = PlatformSettingsHelper::getValue('PLATFORM_NAME');
-|
-| // Get all layout settings
-| $layoutSettings = PlatformSettingsHelper::getSettingsByCategory('layout');
-|
-| // Get settings by card group
-| $brandingSettings = PlatformSettingsHelper::getSettingsByCardGroup('branding');
-|
-| // Update a setting
-| PlatformSettingsHelper::updateValue('PLATFORM_NAME', 'New App Name');
-|
-| // Bulk update
-| PlatformSettingsHelper::bulkUpdateValues([
-| 'PLATFORM_NAME' => 'Updated Name',
-| 'THEME_PRIMARY_COLOR' => '#ff0000'
-| ]);
-|
-*/
 
 if (!function_exists('getPlatformValue')) {
     function getPlatformValue(string $key, ?int $tenantId = null): mixed

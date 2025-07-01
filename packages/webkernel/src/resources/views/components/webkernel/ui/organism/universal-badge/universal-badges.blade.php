@@ -1,6 +1,6 @@
 @php
     $brand = corePlatformInfos('brandName');
-    $logo = corePlatformInfos('logoLink');
+    $logo = platformAbsoluteUrlAnyPrivatetoPublic(corePlatformInfos('logoLink'));
 
     $rtlLanguages = config('webkernel.translation.rtl_languages', []);
     $userLanguage = null;

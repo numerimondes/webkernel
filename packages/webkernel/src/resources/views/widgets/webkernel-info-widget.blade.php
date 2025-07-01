@@ -114,7 +114,7 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
                 <div class="fi-filament-info-widget-logo-container flex items-center justify-center overflow-hidden px-2" style="max-height: 59px; max-width: 100%; width: 100%;">
                     <span class="{{ $current_size['class'] }} numerimondes-logo"
                           style="font-family: 'Poppins', sans-serif; font-weight: 500; {{ $current_size['style'] }} white-space: nowrap; display: flex; align-items: baseline; color: currentColor;">
-                        <span>Numerimondes</span><span class="numerimondes-dot" style="color: var(--primary-600, #3b82f6);">.</span>
+                        {{ corePlatformInfos('brandName')}}
                     </span>
                 </div>
             </a>
