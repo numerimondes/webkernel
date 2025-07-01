@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:37',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Мови',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Це',
+            'generated_at' => '2025-07-01 11:34:32',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Основні налаштування',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:06:09',
+            'protected' => false,
+        ],
     ],
 ];

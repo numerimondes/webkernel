@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:22',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Gjuha <)>>>> ("në") <<<<(< Të',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:34:15',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Cilësimet thelbësore',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:05:30',
+            'protected' => false,
+        ],
     ],
 ];

@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:19',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Nyelvek',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'A',
+            'generated_at' => '2025-07-01 11:32:02',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Alapbeállítások',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:42',
+            'protected' => false,
+        ],
     ],
 ];

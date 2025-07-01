@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:39',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Kalbos',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Tas',
+            'generated_at' => '2025-07-01 11:32:34',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Pagrindiniai nustatymai',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:16',
+            'protected' => false,
+        ],
     ],
 ];

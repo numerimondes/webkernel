@@ -59,6 +59,10 @@ class LanguageTranslationsRelationManager extends RelationManager
                         ->label(lang('form_translation_key_label'))
                         ->live(onBlur: true)
                         ->afterStateUpdated(function ($state, Set $set, $livewire) {
+                            if (empty($state)) {
+                                return;
+                            }
+
                             $cleaned = Str::slug($state, '_');
                             if ($state !== $cleaned) {
                                 Notification::make()
@@ -69,28 +73,31 @@ class LanguageTranslationsRelationManager extends RelationManager
                                 $set('lang_ref', $cleaned);
                             }
 
-                            if (!empty($cleaned)) {
-                                // Simply check if the key exists
-                                $existingTranslation = LanguageTranslation::where('lang_ref', $cleaned)->first();
-                                if ($existingTranslation) {
-                                    Notification::make()
-                                        ->title(lang('form_translation_key_exists_notification_title'))
-                                        ->body("Key '{$cleaned}' already exists")
-                                        ->warning()
-                                        ->send();
+                            // Vérifier si la clé existe déjà
+                            $existingTranslation = LanguageTranslation::where('lang_ref', $cleaned)->first();
+                            if ($existingTranslation) {
+                                Notification::make()
+                                    ->title(lang('form_translation_key_exists_notification_title'))
+                                    ->body("Key '{$cleaned}' already exists")
+                                    ->warning()
+                                    ->send();
 
-                                    // Get all translations for this key
-                                    $translationsQuery = LanguageTranslation::where('lang_ref', $cleaned)->get();
-
-                                    // Prepare translations for the form fields
-                                    foreach ($translationsQuery as $translation) {
-                                        // Get language code from ID
-                                        $language = Language::find($translation->lang);
-                                        if ($language) {
-                                            $set("translations.{$language->code}", $translation->translation);
-                                        }
+                                // Charger toutes les traductions pour cette clé
+                                $translationsQuery = LanguageTranslation::where('lang_ref', $cleaned)->get();
+                                foreach ($translationsQuery as $translation) {
+                                    $language = Language::find($translation->lang);
+                                    if ($language) {
+                                        $set("translations.{$language->code}", $translation->translation);
                                     }
-                                    $set('is_edit_mode', true);
+                                }
+                                $set('is_edit_mode', true);
+                            } else {
+                                // Réinitialiser le mode édition si c'est une nouvelle clé
+                                $set('is_edit_mode', false);
+                                // Vider les traductions existantes
+                                $languages = Language::all();
+                                foreach ($languages as $lang) {
+                                    $set("translations.{$lang->code}", '');
                                 }
                             }
                         }),
@@ -115,22 +122,33 @@ class LanguageTranslationsRelationManager extends RelationManager
                 ->label(lang('Translations'))
                 ->schema(
                     $languages->map(function ($lang) {
+                        // Créer le contenu du label avec un SVG correctement aligné
+                        $flagPath = base_path("packages/webkernel/src/public/assets/flags/language/{$lang->code}.svg");
+                        $flagSvg = '';
+
+                        if (file_exists($flagPath)) {
+                            $svgContent = file_get_contents($flagPath);
+                            // Ajouter des classes CSS pour l'alignement et la taille
+                            $flagSvg = preg_replace(
+                                '/<svg/',
+                                '<svg class="inline-block w-4 h-4 mr-2 align-text-bottom"',
+                                $svgContent
+                            );
+                        }
+
+                        $labelHtml = '<div class="flex items-center">' .
+                                    $flagSvg .
+                                    '<span>' . lang('repeater_title_translation') . ' ' . $lang->label . " ({$lang->code})" . '</span>' .
+                                    '</div>';
+
                         return Textarea::make("translations.{$lang->code}")
-                            ->label(new HtmlString(
-                                lang('repeater_title_translation') .
-                                ' <span class="inline-flex items-center align-middle mx-1">' .
-                                preg_replace(
-                                    '/<svg/',
-                                    '<svg width="16" height="16"',
-                                    file_get_contents(base_path("packages/webkernel/src/public/assets/flags/language/{$lang->code}.svg"))
-                                ) .
-                                '</span>' .
-                                $lang->label . " ({$lang->code})"
-                            ))
+                            ->label(new HtmlString($labelHtml))
                             ->maxLength(1000)
+                            ->rows(3)
+                            ->columnSpanFull()
                             ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set) {
-                                // Ensure at least one translation is present
+                                // Vérifier qu'au moins une traduction est présente
                                 $hasTranslation = false;
                                 $languages = Language::all();
                                 foreach ($languages as $lang) {
@@ -139,33 +157,37 @@ class LanguageTranslationsRelationManager extends RelationManager
                                         break;
                                     }
                                 }
-                                // Set a flag to track if we have translations
                                 $set('has_translations', $hasTranslation);
-                            })
-                            ->columnSpanFull();
+                            });
                     })->toArray()
                 )
                 ->columns(1),
 
-            // Hidden field to store language ID mapping
+            // Champs cachés pour la gestion des états
             Hidden::make('language_mapping')
-                ->default(json_encode($languageOptions))
+                ->default(json_encode($languageOptions)),
+
+            Hidden::make('is_edit_mode')
+                ->default(false),
+
+            Hidden::make('has_translations')
+                ->default(false),
         ])->columns(1);
     }
 
     public function table(Table $table): Table
     {
-        // Get all languages for filters
+        // Récupérer toutes les langues pour les filtres
         $languages = Language::all();
         $languagesOptions = $languages->pluck('label', 'id')->toArray();
 
-        // Get all available applications
+        // Récupérer toutes les applications disponibles
         $appOptions = LanguageTranslation::select('app')
             ->distinct()
             ->pluck('app', 'app')
             ->toArray();
 
-        // Get all available themes
+        // Récupérer tous les thèmes disponibles
         $themeOptions = LanguageTranslation::select('theme')
             ->distinct()
             ->pluck('theme', 'theme')
@@ -197,11 +219,27 @@ class LanguageTranslationsRelationManager extends RelationManager
             ->headerActions([
                 CreateAction::make()
                     ->mutateFormDataUsing(function (array $data): array {
-                        // Structure translations data for processing
-                        if (isset($data['translations']) && !isset($data['translations'][0])) {
-                            // Keep flat structure - form now uses flat structure
-                            // This is compatible with the new form structure
+                        // Valider qu'au moins une traduction est fournie
+                        $hasTranslation = false;
+                        if (isset($data['translations']) && is_array($data['translations'])) {
+                            foreach ($data['translations'] as $translation) {
+                                if (!empty(trim($translation))) {
+                                    $hasTranslation = true;
+                                    break;
+                                }
+                            }
                         }
+
+                        if (!$hasTranslation) {
+                            Notification::make()
+                                ->title('Validation Error')
+                                ->body('At least one translation must be provided.')
+                                ->danger()
+                                ->send();
+
+                            throw new \Exception('At least one translation must be provided.');
+                        }
+
                         return $data;
                     })
                     ->using(function (array $data, string $model): \Illuminate\Database\Eloquent\Model {
@@ -210,64 +248,41 @@ class LanguageTranslationsRelationManager extends RelationManager
                             $langRef = $data['lang_ref'];
                             $app = $data['app'];
                             $theme = $data['theme'];
+                            $translations = $data['translations'] ?? [];
 
-                            // Check if key already exists
+                            // Vérifier si la clé existe déjà
                             $keyExists = LanguageTranslation::where('lang_ref', $langRef)
                                 ->where('app', $app)
                                 ->where('theme', $theme)
                                 ->exists();
 
                             if ($keyExists && !$isEditMode) {
-                                Notification::make()
-                                    ->title('Key already exists')
-                                    ->body("The key '$langRef' already exists. Use edit mode to modify it.")
-                                    ->warning()
-                                    ->send();
-
-                                // Return an existing translation to avoid null
-                                $existingTranslation = LanguageTranslation::where('lang_ref', $langRef)
-                                    ->where('app', $app)
-                                    ->where('theme', $theme)
-                                    ->first();
-                                return $existingTranslation;
+                                throw new \Exception("The key '$langRef' already exists for this app/theme combination.");
                             }
 
-                            $translations = [];
-                            // Get translations directly from the flat structure
-                            $texts = $data['translations'] ?? [];
-                            $createdTranslation = null;
+                            $createdTranslations = [];
+                            $mainTranslation = null;
 
-                            // Debug the structure
-                            Log::debug('Translation data structure: ', ['data' => $data]);
-
-                            // Ensure we have at least one translation
-                            if (empty($texts)) {
-                                // Get the first available language
-                                $firstLang = Language::first();
-                                if ($firstLang) {
-                                    $texts[$firstLang->code] = '';
-                                } else {
-                                    $texts['en'] = '';
+                            // Traiter chaque traduction
+                            foreach ($translations as $langCode => $text) {
+                                // Ignorer les traductions vides
+                                if (empty(trim($text))) {
+                                    continue;
                                 }
-                            }
 
-                            // Process each translation
-                            foreach ($texts as $langCode => $text) {
+                                // Récupérer l'ID de la langue à partir du code
+                                $language = Language::where('code', $langCode)->first();
+                                if (!$language) {
+                                    Log::warning("Language not found for code: {$langCode}");
+                                    continue;
+                                }
+
                                 try {
-                                    // Get language ID from code
-                                    $language = Language::where('code', $langCode)->first();
-                                    if (!$language) {
-                                        Log::warning("Could not find language with code: {$langCode}");
-                                        continue;
-                                    }
-
-                                    $langId = $language->id;
-
-                                    if ($isEditMode || $keyExists) {
+                                    if ($isEditMode) {
                                         $translation = LanguageTranslation::updateOrCreate(
                                             [
                                                 'lang_ref' => $langRef,
-                                                'lang' => $langId,
+                                                'lang' => $language->id,
                                                 'app' => $app,
                                                 'theme' => $theme,
                                             ],
@@ -276,34 +291,32 @@ class LanguageTranslationsRelationManager extends RelationManager
                                     } else {
                                         $translation = LanguageTranslation::create([
                                             'lang_ref' => $langRef,
-                                            'lang' => $langId,
+                                            'lang' => $language->id,
                                             'translation' => $text,
                                             'app' => $app,
                                             'theme' => $theme,
                                         ]);
                                     }
 
-                                    $translations[] = $translation;
-                                    if ($translation) {
-                                        $createdTranslation = $translation;
+                                    $createdTranslations[] = $translation;
+                                    if (!$mainTranslation) {
+                                        $mainTranslation = $translation;
                                     }
+
                                 } catch (QueryException $e) {
                                     if (str_contains($e->getMessage(), 'Duplicate entry')) {
-                                        Notification::make()
-                                            ->title('Duplicate error')
-                                            ->body("A translation for key '$langRef' and language '$langCode' already exists.")
-                                            ->danger()
-                                            ->send();
-
+                                        // Récupérer la traduction existante
                                         $existingTranslation = LanguageTranslation::where('lang_ref', $langRef)
-                                            ->where('lang', $langId)
+                                            ->where('lang', $language->id)
                                             ->where('app', $app)
                                             ->where('theme', $theme)
                                             ->first();
 
                                         if ($existingTranslation) {
-                                            $translations[] = $existingTranslation;
-                                            $createdTranslation = $existingTranslation;
+                                            $createdTranslations[] = $existingTranslation;
+                                            if (!$mainTranslation) {
+                                                $mainTranslation = $existingTranslation;
+                                            }
                                         }
                                     } else {
                                         throw $e;
@@ -311,45 +324,23 @@ class LanguageTranslationsRelationManager extends RelationManager
                                 }
                             }
 
-                            // Send notification for new translations
-                            if ($createdTranslation && !$isEditMode) {
-                                $createdAt = $createdTranslation->created_at instanceof Carbon
-                                    ? $createdTranslation->created_at
-                                    : Carbon::parse($createdTranslation->created_at);
-
-                                $delay = $createdAt->diffInSeconds(now()) + 60;
-
-                                Notification::make()
-                                    ->title('Translation key deletion')
-                                    ->body("If you plan to delete the translation key `{$data['lang_ref']}`, you have {$delay} seconds to do so.")
-                                    ->icon('heroicon-o-document-text')
-                                    ->color('danger')
-                                    ->seconds(9)
-                                    ->danger()
-                                    ->send()
-                                    ->actions([
-                                        Action::make('view')
-                                            ->button(),
-                                        Action::make('undo')
-                                            ->color('gray'),
-                                    ]);
-                            }
-
-                            // Success notification
+                            // Notification de succès
                             $action = $isEditMode ? 'updated' : 'created';
+                            $translationCount = count($createdTranslations);
+
                             Notification::make()
                                 ->title('Translation ' . $action)
-                                ->body("The translation for '{$langRef}' has been {$action} successfully.")
+                                ->body("The translation key '{$langRef}' has been {$action} with {$translationCount} language(s).")
                                 ->success()
                                 ->send();
 
-                            // Return the first created translation or fallback
-                            return $createdTranslation ?? $translations[0] ?? new LanguageTranslation([
+                            // Retourner la traduction principale ou créer un fallback
+                            return $mainTranslation ?? LanguageTranslation::create([
                                 'lang_ref' => $langRef,
                                 'app' => $app,
                                 'theme' => $theme,
                                 'lang' => Language::first()->id ?? 1,
-                                'translation' => ''
+                                'translation' => array_values($translations)[0] ?? ''
                             ]);
                         });
                     }),
@@ -357,91 +348,63 @@ class LanguageTranslationsRelationManager extends RelationManager
             ->actions([
                 EditAction::make()
                     ->mutateRecordDataUsing(function (array $data, LanguageTranslation $record): array {
-                        $langRef = $data['lang_ref'] ?? $record->lang_ref;
-                        if (!$langRef) {
-                            throw new Exception('Missing "lang_ref" key.');
-                        }
+                        $langRef = $record->lang_ref;
 
-                        // Get all translations for this record
+                        // Récupérer toutes les traductions pour cette clé
                         $translations = LanguageTranslation::where('lang_ref', $langRef)
                             ->where('app', $record->app)
                             ->where('theme', $record->theme)
                             ->get();
 
-                        // Map translations to language codes
+                        // Mapper les traductions aux codes de langue
                         $translationsData = [];
                         foreach ($translations as $translation) {
-                            // Get language code from ID
                             $language = Language::find($translation->lang);
                             if ($language) {
                                 $translationsData[$language->code] = $translation->translation;
                             }
                         }
 
-                        // Use the new flat structure
                         $data['translations'] = $translationsData;
                         $data['is_edit_mode'] = true;
+                        $data['lang_ref'] = $langRef;
+                        $data['app'] = $record->app;
+                        $data['theme'] = $record->theme;
 
                         return $data;
                     })
-                    ->schema(function (LanguageTranslation $record) {
-                        $languages = Language::all();
-                        return [
-                            Grid::make(3)
-                                ->schema([
-                                    TextInput::make('lang_ref')
-                                        ->required()
-                                        ->default($record->lang_ref)
-                                        ->disabled(),
-                                    TextInput::make('app')
-                                        ->default($record->app),
-                                    TextInput::make('theme')
-                                        ->default($record->theme),
-                                    Hidden::make('is_edit_mode')
-                                        ->default(true),
-                                ]),
-                            Fieldset::make('translations')
-                                ->label(lang('Translations'))
-                                ->schema(
-                                    $languages->map(function ($lang) {
-                                        return Textarea::make("translations.{$lang->code}")
-                                            ->label("Translation - {$lang->label} ({$lang->code})")
-                                            ->debounce(500)
-                                            ->columnSpanFull();
-                                    })->toArray()
-                                )
-                                ->columns(1)
-                        ];
-                    })
                     ->using(function (LanguageTranslation $record, array $data) {
                         return DB::transaction(function () use ($record, $data) {
-                            $langRef = $data['lang_ref'] ?? $record->lang_ref;
-                            if (!$langRef) {
-                                throw new Exception('Missing "lang_ref" key.');
-                            }
-
-                            // Get translations data in flat structure
+                            $langRef = $record->lang_ref;
                             $translationData = $data['translations'] ?? [];
 
                             foreach ($translationData as $langCode => $text) {
-                                // Get language ID from code
                                 $language = Language::where('code', $langCode)->first();
                                 if (!$language) {
-                                    continue; // Skip if language not found
+                                    continue;
                                 }
 
-                                LanguageTranslation::updateOrCreate(
-                                    [
-                                        'lang_ref' => $langRef,
-                                        'lang' => $language->id,
-                                        'app' => $data['app'],
-                                        'theme' => $data['theme'],
-                                    ],
-                                    ['translation' => $text]
-                                );
+                                if (empty(trim($text))) {
+                                    // Supprimer la traduction si elle est vide
+                                    LanguageTranslation::where('lang_ref', $langRef)
+                                        ->where('lang', $language->id)
+                                        ->where('app', $data['app'])
+                                        ->where('theme', $data['theme'])
+                                        ->delete();
+                                } else {
+                                    // Mettre à jour ou créer la traduction
+                                    LanguageTranslation::updateOrCreate(
+                                        [
+                                            'lang_ref' => $langRef,
+                                            'lang' => $language->id,
+                                            'app' => $data['app'],
+                                            'theme' => $data['theme'],
+                                        ],
+                                        ['translation' => $text]
+                                    );
+                                }
                             }
 
-                            // Success notification
                             Notification::make()
                                 ->title('Translation updated')
                                 ->body("The translation for '{$langRef}' has been updated successfully.")
@@ -453,15 +416,22 @@ class LanguageTranslationsRelationManager extends RelationManager
                     }),
 
                 DeleteAction::make()
-                    ->hidden(fn($record) => !$record->isDeletable())
                     ->using(function (LanguageTranslation $record) {
-                        LanguageTranslation::where('lang_ref', $record->lang_ref)
-                            ->where('app', $record->app)
-                            ->where('theme', $record->theme)
-                            ->delete();
+                        return DB::transaction(function () use ($record) {
+                            // Supprimer toutes les traductions pour cette clé
+                            $deletedCount = LanguageTranslation::where('lang_ref', $record->lang_ref)
+                                ->where('app', $record->app)
+                                ->where('theme', $record->theme)
+                                ->delete();
 
-                        // Return a boolean to confirm deletion
-                        return true;
+                            Notification::make()
+                                ->title('Translation deleted')
+                                ->body("Translation key '{$record->lang_ref}' and all its {$deletedCount} language variants have been deleted.")
+                                ->success()
+                                ->send();
+
+                            return true;
+                        });
                     })
             ])
             ->filters([
@@ -499,7 +469,6 @@ class LanguageTranslationsRelationManager extends RelationManager
                         Select::make('prefix')
                             ->label('Common prefix')
                             ->options(function () {
-                                // Get all unique prefixes (part before first "_")
                                 $prefixes = LanguageTranslation::selectRaw('SUBSTRING_INDEX(lang_ref, "_", 1) as prefix')
                                     ->distinct()
                                     ->pluck('prefix')

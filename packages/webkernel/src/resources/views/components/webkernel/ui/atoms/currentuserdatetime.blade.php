@@ -1,6 +1,8 @@
 @php
-    $inFooter = isset($inFooter) ? $inFooter : false;
+    $inFooter = $inFooter ?? false;
+    $fontSize = $fontSize ?? '90%';
 @endphp
+
 
 @if ($inFooter)
     <span x-data="{
@@ -20,7 +22,7 @@
                 });
             }, 1000);
         }
-    }">
+    }" style="font-size: {{ $fontSize }};">
         <span x-text="time"></span>
     </span>
 @else
@@ -41,7 +43,7 @@
                 });
             }, 1000);
         }
-    }" class="text-sm text-gray-900 dark:text-white force-inter-ltr" style="margin-right:9px;">
+    }" class="text-gray-700 dark:text-white force-inter-ltr" style="margin-right:9px; font-size: {{ $fontSize }};">
         <span x-text="time" style="margin-right:9px;"></span>{{ CurrentUserTimezone() }}
     </div>
 @endif

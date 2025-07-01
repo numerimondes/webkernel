@@ -8,8 +8,7 @@ use App\Models\User;
 use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
-use Filament\Tables\Actions\Action;
-use Filament\Tables\Actions\BulkAction;
+use Filament\Actions\BulkAction;
 use Filament\Schemas\Schema;
 use Webkernel\Models\Session;
 use Webkernel\Models\Language;
@@ -20,11 +19,13 @@ use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Facades\Cache;
+use Filament\Actions\Action as Action;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Forms\Components\FileUpload;
@@ -33,7 +34,6 @@ use Illuminate\Validation\Rules\Password;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Contracts\Support\Htmlable;
 use Filament\Tables\Concerns\InteractsWithTable;
-use Filament\Forms\Components\Actions\Action as FormAction;
 use Filament\Auth\Pages\EditProfile as BaseEditProfile;
 
 class EditProfile extends BaseEditProfile implements HasForms, HasTable
@@ -55,15 +55,14 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                 // Contextual Help Section
                 Section::make('need_help')
                     ->description('need_help_description')
+                    ->hidden()
                     ->schema([
                         Placeholder::make('help_info')
                             ->label('')
                             ->content(new \Illuminate\Support\HtmlString('
                                 <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
                                     <div class="flex items-start space-x-3">
-                                        <svg class="w-5 h-5 text-blue-500 mt-0.5" fill="currentColor" viewBox="0 0 20 20">
-                                            <path fill-rule="evenodd" d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z" clip-rule="evenodd"></path>
-                                        </svg>
+
                                         <div>
                                             <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">profile_help_title</h4>
                                             <p class="mt-1 text-sm text-blue-700 dark:text-blue-300">profile_help_content</p>
@@ -146,8 +145,8 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                     ->columnSpan(1),
                             ]),
 
-                        \Filament\Forms\Components\Actions::make([
-                            FormAction::make('change_email')
+                        Actions::make([
+                            Action::make('change_email')
                                 ->label('request_email_change')
                                 ->icon('heroicon-o-envelope')
                                 ->color('gray')
@@ -174,7 +173,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            FormAction::make('resend_verification')
+                            Action::make('resend_verification')
                                 ->label('resend_verification')
                                 ->icon('heroicon-o-check-circle')
                                 ->color('primary')
@@ -329,8 +328,8 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     ->description('gdpr_description')
                     ->aside()
                     ->schema([
-                        \Filament\Forms\Components\Actions::make([
-                            FormAction::make('export_data')
+                        Actions::make([
+                            Action::make('export_data')
                                 ->label('export_my_data')
                                 ->icon('heroicon-o-arrow-down-tray')
                                 ->color('info')
@@ -344,7 +343,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            FormAction::make('request_data_deletion')
+                            Action::make('request_data_deletion')
                                 ->label('request_data_deletion')
                                 ->icon('heroicon-o-trash')
                                 ->color('warning')
@@ -401,8 +400,8 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                     ->description('danger_zone_description')
                     ->aside()
                     ->schema([
-                        \Filament\Forms\Components\Actions::make([
-                            FormAction::make('logout_other_sessions')
+                        Actions::make([
+                            Action::make('logout_other_sessions')
                                 ->label('logout_other_sessions')
                                 ->icon('heroicon-o-computer-desktop')
                                 ->color('warning')
@@ -422,7 +421,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                         ->send();
                                 }),
 
-                            FormAction::make('deactivate_account')
+                            Action::make('deactivate_account')
                                 ->label('deactivate_account')
                                 ->icon('heroicon-o-no-symbol')
                                 ->color('danger')

@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:46',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ഭാഷകള്‍',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Tas',
+            'generated_at' => '2025-07-01 11:32:44',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'മൂല്യം ക്രമീകരണങ്ങൾ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:27',
+            'protected' => false,
+        ],
     ],
 ];

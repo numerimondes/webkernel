@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:43',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Език <)>>>> ("во") <<<<(< Тие',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Tas',
+            'generated_at' => '2025-07-01 11:32:42',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Основни поставки',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:24',
+            'protected' => false,
+        ],
     ],
 ];

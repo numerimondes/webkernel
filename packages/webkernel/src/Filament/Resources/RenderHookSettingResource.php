@@ -36,9 +36,16 @@ class RenderHookSettingResource extends Resource
     protected static ?string $model = RenderHookSetting::class;
 
     public static function getNavigationGroup(): ?string
-{
-    return lang('system_menu_settings');
-}
+    {
+        return lang('system_menu_core_settings');
+
+    }
+
+    public static function getNavigationParentItem(): ?string
+    {
+        return 'Settings';
+    }
+
     public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
     {
         return 'heroicon-o-ellipsis-horizontal-circle';

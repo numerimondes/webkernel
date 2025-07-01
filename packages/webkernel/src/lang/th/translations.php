@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:32',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ภาษา',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'เดอะ',
+            'generated_at' => '2025-07-01 11:34:27',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'การตั้งค่าหลัก',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:06:00',
+            'protected' => false,
+        ],
     ],
 ];

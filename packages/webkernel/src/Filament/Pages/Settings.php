@@ -36,19 +36,22 @@ class Settings extends Page implements HasForms
         return 'heroicon-o-document-text';
     }
 
-public static function getNavigationBadge(): ?string
-{
-    return (string) PlatformSetting::count();
-}
+    public static function getNavigationBadge(): ?string
+    {
+        return (string) PlatformSetting::count();
+    }
 
     public static function getNavigationGroup(): ?string
-{
-    return lang('system_menu_settings');
-}
+    {
+        return lang('system_menu_core_settings');
+    }
     protected string $view = 'webkernel::filament.pages.setting';
-    protected static ?string $title = 'Settings';
-    protected static ?string $navigationLabel = 'Settings';
-    protected static ?int $navigationSort = 999;
+    public static function getNavigationLabel(): string
+    {
+        return 'Settings';
+    }
+
+    protected static ?int $navigationSort = 1;
 
     protected array $slugToCategory = [];
     protected ?Collection $allSettingsData = null;

@@ -199,26 +199,41 @@
     }
 
     function handleConflictingElement(element) {
-
-        if (element.closest(`#${BADGE_ID}`) ||
+        if (
+            element.closest(`#${BADGE_ID}`) ||
             element.closest('.fi-dropdown-panel') ||
             element.closest('[data-fi-dropdown-panel]') ||
             element.classList.contains('fi-modal') ||
             element.classList.contains('fi-main-sidebar') ||
-            element.classList.contains('fi-modal-close-overlay')) {
+            element.classList.contains('fi-modal-close-overlay') ||
+            element.classList.contains('fi-ac') ||
+            element.classList.contains('fi-fo') ||
+            element.classList.contains('fi-in') ||
+            element.classList.contains('fi-no') ||
+            element.classList.contains('fi-sc') ||
+            element.classList.contains('fi-ta') ||
+            element.classList.contains('fi-wi') ||
+            element.classList.contains('btn') ||
+            element.classList.contains('col') ||
+            element.classList.contains('ctn') ||
+            element.classList.contains('wrp')
+        ) {
             return;
         }
 
         const style = getComputedStyle(element);
-        if (style.position === 'fixed' &&
+        if (
+            style.position === 'fixed' &&
             style.display !== 'none' &&
             style.visibility !== 'hidden' &&
-            isInProtectedZone(element)) {
+            isInProtectedZone(element)
+        ) {
             const shift = protectedZoneRect.bottom - element.getBoundingClientRect().top + 10;
             element.style.transform = `translateY(-${shift}px)`;
             element.setAttribute('data-credit-badge-shifted', 'true');
         }
     }
+
 
     function restoreShiftedElements() {
         const shiftedElements = document.querySelectorAll('[data-credit-badge-shifted="false"]');

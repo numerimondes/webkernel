@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:43:37',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Les langues',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Le',
+            'generated_at' => '2025-07-01 11:30:45',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Paramètres principaux',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:05',
+            'protected' => false,
+        ],
     ],
 ];

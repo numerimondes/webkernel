@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:00',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ਭਾਸਾਵਾਂ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'ਦਿ',
+            'generated_at' => '2025-07-01 11:33:03',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'ਕੋਰ ਸੈਟਿੰਗਜ਼',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:59',
+            'protected' => false,
+        ],
     ],
 ];

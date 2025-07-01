@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:43:47',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Harsuna',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:30:56',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Saitunan Core',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:14',
+            'protected' => false,
+        ],
     ],
 ];

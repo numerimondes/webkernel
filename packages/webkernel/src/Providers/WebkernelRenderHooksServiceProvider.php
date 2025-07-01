@@ -109,6 +109,19 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             );
         }
 
+\Filament\Facades\Filament::serving(function () {
+        $panel = \Filament\Facades\Filament::getCurrentPanel();
+
+        if ($panel && $panel->getId() !== 'admin') {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::PAGE_START,
+                fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.you-are-in-system-panel')
+            );
+        }
+    });
+
+
+
         /*
          if ($this->isRenderHookEnabled('footer_partial')) {
             FilamentView::registerRenderHook(

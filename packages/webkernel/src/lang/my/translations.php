@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:52',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ဘာသာစကား',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'တ',
+            'generated_at' => '2025-07-01 11:32:53',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'အထိမ်းအမှတ်များ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:42',
+            'protected' => false,
+        ],
     ],
 ];

@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:31',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'மொழிகள்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'தெரி',
+            'generated_at' => '2025-07-01 11:34:24',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'மூல அமைப்புகள்',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:05:55',
+            'protected' => false,
+        ],
     ],
 ];

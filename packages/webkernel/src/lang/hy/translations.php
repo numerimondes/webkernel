@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:22',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Լեզուներ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:32:07',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Հիմնական կարգավորումներ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:45',
+            'protected' => false,
+        ],
     ],
 ];

@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:24',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Bahasa',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Yang',
+            'generated_at' => '2025-07-01 11:32:11',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Pengaturan Inti',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:47',
+            'protected' => false,
+        ],
     ],
 ];

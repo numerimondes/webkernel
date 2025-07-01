@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:30',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ენები',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'ისტორია',
+            'generated_at' => '2025-07-01 11:32:23',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'ქვეული პარამეტრები',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:00',
+            'protected' => false,
+        ],
     ],
 ];

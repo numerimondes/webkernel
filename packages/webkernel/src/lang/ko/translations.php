@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:35',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => '언어',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => '그',
+            'generated_at' => '2025-07-01 11:32:29',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => '핵심 설정',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:07',
+            'protected' => false,
+        ],
     ],
 ];

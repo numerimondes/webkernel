@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:43',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Ngôn ngữ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:34:40',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Cài đặt chính',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:06:20',
+            'protected' => false,
+        ],
     ],
 ];

@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:45:41',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Tillar',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:34:37',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Asosiy sozlamalar',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:06:16',
+            'protected' => false,
+        ],
     ],
 ];

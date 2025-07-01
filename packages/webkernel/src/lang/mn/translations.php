@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:48',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Хэлүүд',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Эх',
+            'generated_at' => '2025-07-01 11:32:47',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Бодлогын үндсэн тохиргоо',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:33',
+            'protected' => false,
+        ],
     ],
 ];

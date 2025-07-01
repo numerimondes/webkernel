@@ -734,7 +734,7 @@ if (!function_exists('corePlatformInfos')) {
         if (!$hasPlatformContent) {
             $defaults = [
                 'brandName' => 'Webkernel',
-                'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('default-logo.png'),
+                'logoLink' => platformAbsoluteUrlAnyPrivatetoPublic('packages/webkernel/src/resources/repo-assets/credits/numerimondes.png'),
             ];
             return $defaults[$key] ?? null;
         }
@@ -743,7 +743,7 @@ if (!function_exists('corePlatformInfos')) {
         }
         $fallbacks = [
             'brandName' => 'Numerimondes Platform',
-            'logoLink' => 'https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=256',
+            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
         ];
         return $fallbacks[$key] ?? null;
     }

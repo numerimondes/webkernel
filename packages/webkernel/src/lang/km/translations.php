@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:33',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'ភាសា',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'ទ',
+            'generated_at' => '2025-07-01 11:32:26',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'ការកំណត់សំខាន់',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:03',
+            'protected' => false,
+        ],
     ],
 ];

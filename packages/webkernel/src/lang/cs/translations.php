@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:43:54',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Jazyky',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'The',
+            'generated_at' => '2025-07-01 11:31:12',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Jádrová nastavení',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:20',
+            'protected' => false,
+        ],
     ],
 ];

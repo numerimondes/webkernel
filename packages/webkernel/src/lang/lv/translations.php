@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:41',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Valodas',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Tas',
+            'generated_at' => '2025-07-01 11:32:39',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Pamatiestatījumi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:21',
+            'protected' => false,
+        ],
     ],
 ];

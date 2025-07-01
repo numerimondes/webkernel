@@ -48,9 +48,27 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
     }
 
     public static function getNavigationGroup(): ?string
-{
-    return lang('system_menu_settings');
-}
+    {
+    return lang('system_menu_core_settings');
+    }
+
+    public static function getModelLabel(): string
+    {
+        return lang('language');
+    }
+
+    public static function getPluralModelLabel(): string
+    {
+        return lang('languages');
+    }
+    public static function getNavigationParentItem(): ?string
+    {
+        return 'Settings';
+    }
+    protected static ?string $recordTitleAttribute = 'name';
+
+    protected static ?int $navigationSort = 999;
+
     public static function form(Schema $schema): Schema
     {
         return $schema

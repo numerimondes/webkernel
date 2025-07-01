@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:37',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Di zimanê',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => '그',
+            'generated_at' => '2025-07-01 11:32:31',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Mîhengên Bingehîn',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:04:11',
+            'protected' => false,
+        ],
     ],
 ];

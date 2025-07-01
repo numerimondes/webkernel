@@ -169,5 +169,21 @@ return [
             'generated_at' => '2025-07-01 08:44:01',
             'protected' => false,
         ],
+        'languages' => [
+            'label' => 'Γλώσσες',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'context' => 'The',
+            'context_destination' => 'Το',
+            'generated_at' => '2025-07-01 11:31:27',
+            'protected' => false,
+        ],
+        'system_menu_core_settings' => [
+            'label' => 'Κεντρικές Ρυθμίσεις',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-01 12:03:27',
+            'protected' => false,
+        ],
     ],
 ];
