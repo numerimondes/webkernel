@@ -1,67 +1,157 @@
 <?php
 
 use Illuminate\Support\Facades\File;
+use Filament\Resources\Resource;
+use Filament\Widgets\Widget;
+use Filament\Clusters\Cluster;
 
 if (!function_exists('discover_platform_modules_components')) {
     /**
-     * Discover all Filament components (resources, pages, widgets, clusters) from platform/Modules/ * /src/Filament/
+     * Découvre dynamiquement toutes les classes Filament des modules Numerimondes\Modules\*,
+     * en se basant sur la config PSR-4 du composer.json racine.
+     * Retourne un tableau associatif avec ressources, widgets, clusters.
      *
-     * @param string $panelId The ID of the panel to filter registration (e.g., 'system').
-     * @return void
+     * @param string $panelId
+     * @return array<string, array<int, string|array>>
      */
-    function discover_platform_modules_components(string $panelId): void
+    function discover_platform_modules_components(string $panelId): array
     {
-        $modulesDir = base_path('platform/Modules');
-        if (!File::isDirectory($modulesDir)) {
-            return;
+        static $discoveredComponents = [];
+        
+        // Cache pour éviter la redécouverte multiple
+        if (isset($discoveredComponents[$panelId])) {
+            return $discoveredComponents[$panelId];
+        }
+        
+        $result = [
+            'resources' => [],
+            'widgets' => [],
+            'clusters' => [],
+        ];
+
+        $composerJsonPath = base_path('composer.json');
+        if (!File::exists($composerJsonPath)) {
+            return $discoveredComponents[$panelId] = $result;
         }
 
-        $moduleDirs = File::directories($modulesDir);
-        foreach ($moduleDirs as $moduleDir) {
-            $filamentDir = $moduleDir . '/src/Filament';
-            if (!File::isDirectory($filamentDir)) {
+        $composerJson = json_decode(File::get($composerJsonPath), true);
+        if (!isset($composerJson['autoload']['psr-4'])) {
+            return $discoveredComponents[$panelId] = $result;
+        }
+
+        $psr4 = $composerJson['autoload']['psr-4'];
+        
+        foreach ($psr4 as $namespaceRoot => $pathRelative) {
+            if (!str_starts_with($namespaceRoot, 'Numerimondes\\Modules\\')) {
                 continue;
             }
 
-            // Convert module path to namespace (e.g., platform/Modules/ream -> PlatformModules\Ream)
-            $moduleName = basename($moduleDir);
-            $namespacePrefix = 'PlatformModules\\' . str_replace(['-', '_'], '', ucwords($moduleName, '-_'));
-
-            // Discover Resources
-            $resourcesDir = $filamentDir . '/Resources';
-            if (File::isDirectory($resourcesDir)) {
-                \Filament\Facades\Filament::getPanel($panelId)->discoverResources(
-                    in: $resourcesDir,
-                    for: $namespacePrefix . '\\Filament\\Resources'
-                );
+            $srcPath = base_path(rtrim($pathRelative, '/'));
+            if (!File::isDirectory($srcPath)) {
+                continue;
             }
 
-            // Discover Pages
-            $pagesDir = $filamentDir . '/Resources/Pages';
-            if (File::isDirectory($pagesDir)) {
-                \Filament\Facades\Filament::getPanel($panelId)->discoverPages(
-                    in: $pagesDir,
-                    for: $namespacePrefix . '\\Filament\\Resources\\Pages'
-                );
-            }
+            // Découverte des Resources
+            $result['resources'] = array_merge(
+                $result['resources'], 
+                discoverFilamentComponents($srcPath, $namespaceRoot, 'Resources', Resource::class, $panelId)
+            );
 
-            // Discover Widgets
-            $widgetsDir = $filamentDir . '/Widgets';
-            if (File::isDirectory($widgetsDir)) {
-                \Filament\Facades\Filament::getPanel($panelId)->discoverWidgets(
-                    in: $widgetsDir,
-                    for: $namespacePrefix . '\\Filament\\Widgets'
-                );
-            }
+            // Découverte des Widgets
+            $result['widgets'] = array_merge(
+                $result['widgets'], 
+                discoverFilamentComponents($srcPath, $namespaceRoot, 'Widgets', Widget::class, $panelId)
+            );
 
-            // Discover Clusters
-            $clustersDir = $filamentDir . '/Clusters';
+            // Découverte des Clusters
+            $clustersDir = $srcPath . '/Filament/Clusters';
             if (File::isDirectory($clustersDir)) {
-                \Filament\Facades\Filament::getPanel($panelId)->discoverClusters(
-                    in: $clustersDir,
-                    for: $namespacePrefix . '\\Filament\\Clusters'
-                );
+                $result['clusters'][] = [
+                    'dir' => $clustersDir,
+                    'namespace' => $namespaceRoot . 'Filament\\Clusters',
+                ];
             }
         }
+
+        return $discoveredComponents[$panelId] = $result;
+    }
+}
+
+if (!function_exists('discoverFilamentComponents')) {
+    /**
+     * Découvre les composants Filament d'un type spécifique
+     *
+     * @param string $srcPath
+     * @param string $namespaceRoot
+     * @param string $componentType
+     * @param string $baseClass
+     * @param string $panelId
+     * @return array<int, string>
+     */
+    function discoverFilamentComponents(string $srcPath, string $namespaceRoot, string $componentType, string $baseClass, string $panelId): array
+    {
+        $components = [];
+        $componentDir = $srcPath . '/Filament/' . $componentType;
+        
+        if (!File::isDirectory($componentDir)) {
+            return $components;
+        }
+
+        $files = File::allFiles($componentDir);
+        
+        foreach ($files as $file) {
+            if ($file->getExtension() !== 'php') {
+                continue;
+            }
+
+            $relativeFilePath = str_replace($srcPath . '/', '', $file->getPathname());
+            $relativeClassPath = substr($relativeFilePath, 0, -4);
+            $classNamespace = str_replace('/', '\\', $relativeClassPath);
+            $fullClassName = $namespaceRoot . $classNamespace;
+
+            // Vérifications de base
+            if (!class_exists($fullClassName)) {
+                continue;
+            }
+
+            if (!is_subclass_of($fullClassName, $baseClass)) {
+                continue;
+            }
+
+            // Vérification pour les classes abstraites
+            $reflection = new ReflectionClass($fullClassName);
+            if ($reflection->isAbstract()) {
+                continue;
+            }
+
+            // Vérification spécifique pour les ressources avec put_in_panel
+            if ($baseClass === Resource::class && method_exists($fullClassName, 'put_in_panel')) {
+                $allowedPanels = $fullClassName::put_in_panel();
+                if (!in_array($panelId, $allowedPanels) && !in_array(system_panel_id(), $allowedPanels)) {
+                    continue;
+                }
+            }
+
+            // Vérification pour la méthode isDiscovered (si elle existe)
+            if (method_exists($fullClassName, 'isDiscovered') && !$fullClassName::isDiscovered()) {
+                continue;
+            }
+
+            $components[] = $fullClassName;
+        }
+
+        return $components;
+    }
+}
+
+if (!function_exists('system_panel_id')) {
+    /**
+     * Retourne l'ID du panel système
+     *
+     * @return string
+     */
+    function system_panel_id(): string
+    {
+        return 'system';
     }
 }
