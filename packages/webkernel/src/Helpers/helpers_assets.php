@@ -17,11 +17,18 @@ use Illuminate\Support\Carbon;
  * @param bool $forceRefresh Forcer le rafraîchissement du token et cache
  * @return string URL publique sécurisée vers le fichier
  */
+
 if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
     function platformAbsoluteUrlAnyPrivatetoPublic(string $path, int $expirationMinutes = 30, bool $forceRefresh = false): string
     {
         $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
         $cacheKey = "file_token_by_path:" . md5($cleanPath);
+
+        $generateUrl = function (string $token) {
+            return function () use ($token) {
+                return url("/assets/{$token}");
+            };
+        };
 
         $cacheIsReady = true;
         try {
@@ -33,7 +40,12 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
         if ($cacheIsReady && !$forceRefresh) {
             $cachedTokenData = Cache::get($cacheKey);
             if ($cachedTokenData && Carbon::now()->lt(Carbon::parse($cachedTokenData['expires_at']))) {
-                return url("/assets/{$cachedTokenData['token']}");
+                $url = null;
+                app()->booted(function () use (&$url, $cachedTokenData) {
+                    $url = url("/assets/{$cachedTokenData['token']}");
+                });
+
+                return $url ?? "/assets/{$cachedTokenData['token']}";
             }
         }
 
@@ -52,9 +64,15 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
             ], $expirationMinutes * 60);
         }
 
-        return url("/assets/{$token}");
+        $url = null;
+        app()->booted(function () use (&$url, $token) {
+            $url = url("/assets/{$token}");
+        });
+
+        return $url ?? "/assets/{$token}";
     }
 }
+
 
 /**
  * Supprime le cache lié à un asset (flush) pour forcer la régénération du token.

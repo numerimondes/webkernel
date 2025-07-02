@@ -8,85 +8,133 @@ use Illuminate\Support\Facades\File;
 
 class WebkernelCommandServiceProvider extends ServiceProvider
 {
-    /**
-     * Initialize the service provider.
-     */
-    public function boot(): void
+    protected array $coreCommands = [
+        \Webkernel\Console\Package\PlatformComposer::class,
+    ];
+
+    public function register(): void
     {
-        $this->registerWebkernelCommands();
+        $this->commands($this->coreCommands);
     }
 
-    /**
-     * Register commands if in console mode.
-     */
-    protected function registerWebkernelCommands(): void
+    public function boot(): void
     {
         if ($this->app->runningInConsole()) {
-            $commandPaths = $this->getCommandPaths();
-            $allCommands = [];
+            $this->registerDynamicCommands();
+        }
+    }
 
-            foreach ($commandPaths as $path => $namespace) {
-                $commands = collect(glob("{$path}/*.php"))
-                    ->map(fn($file) => $namespace . basename($file, '.php'))
-                    ->filter(fn($class) => class_exists($class) && is_subclass_of($class, Command::class))
-                    ->toArray();
+    protected function registerDynamicCommands(): void
+    {
+        $commandPaths = $this->getCommandPaths();
+        $allCommands = [];
 
-                $allCommands = array_merge($allCommands, $commands);
+        foreach ($commandPaths as $path => $namespace) {
+            if (!File::isDirectory($path)) {
+                continue;
             }
 
+            $commands = collect(File::glob("{$path}/*.php"))
+                ->map(fn($file) => $namespace . basename($file, '.php'))
+                ->filter(fn($class) => $this->isValidCommand($class))
+                ->toArray();
+
+            $allCommands = array_merge($allCommands, $commands);
+        }
+
+        if (!empty($allCommands)) {
             $this->commands($allCommands);
         }
     }
 
-    /**
-     * Get command paths and their namespaces
-     *
-     * @return array
-     */
     protected function getCommandPaths(): array
     {
-        $paths = [
-            base_path('packages/webkernel/src/Console/Commands') => 'Webkernel\\Console\\Commands\\',
-            base_path('packages/webkernel/src/Console/Install') => 'Webkernel\\Console\\Install\\',
-            base_path('packages/webkernel/src/Console/Package') => 'Webkernel\\Console\\Package\\',
-        ];
-
+        $paths = $this->getCoreCommandPaths();
         $autoloadNamespaces = $this->getAutoloadNamespaces();
-        foreach ($autoloadNamespaces as $namespace => $path) {
-            $commandPaths = [
-                $path . '/Console' => $namespace . 'Console\\',
-                $path . '/Console/Commands' => $namespace . 'Console\\Commands\\',
-                $path . '/Console/Install' => $namespace . 'Console\\Install\\',
-                $path . '/Console/Package' => $namespace . 'Console\\Package\\',
-            ];
-            foreach ($commandPaths as $commandPath => $commandNamespace) {
-                if (File::isDirectory($commandPath)) {
-                    $paths[$commandPath] = $commandNamespace;
-                }
-            }
+
+        foreach ($autoloadNamespaces as $namespace => $basePath) {
+            $commandDirectories = $this->getCommandDirectories($basePath, $namespace);
+            $paths = array_merge($paths, $commandDirectories);
         }
 
         return $paths;
     }
 
-    /**
-     * Get PSR-4 namespaces from composer.json
-     *
-     * @return array
-     */
+    protected function getCoreCommandPaths(): array
+    {
+        $basePath = base_path('packages/webkernel/src');
+        
+        return [
+            $basePath . '/Console/Commands' => 'Webkernel\\Console\\Commands\\',
+            $basePath . '/Console/Install' => 'Webkernel\\Console\\Install\\',
+            $basePath . '/Console/Package' => 'Webkernel\\Console\\Package\\',
+        ];
+    }
+
+    protected function getCommandDirectories(string $basePath, string $namespace): array
+    {
+        $directories = [];
+        $consolePaths = [
+            '/Console',
+            '/Console/Commands',
+            '/Console/Install',
+            '/Console/Package',
+        ];
+
+        foreach ($consolePaths as $consolePath) {
+            $fullPath = $basePath . $consolePath;
+            if (File::isDirectory($fullPath)) {
+                $directories[$fullPath] = $namespace . 'Console\\' . 
+                    ($consolePath === '/Console' ? '' : trim(str_replace('/', '\\', $consolePath), '\\Console\\') . '\\');
+            }
+        }
+
+        return $directories;
+    }
+
     protected function getAutoloadNamespaces(): array
     {
-        $composerJson = json_decode(File::get(base_path('composer.json')), true);
-        $namespaces = [];
+        $composerPath = base_path('composer.json');
+        
+        if (!File::exists($composerPath)) {
+            return [];
+        }
 
-        if (isset($composerJson['autoload']['psr-4'])) {
-            foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
-                if (str_starts_with($path, 'platform/') || (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/')) {
-                    $namespaces[rtrim($namespace, '\\') . '\\'] = base_path($path);
-                }
+        $composerJson = json_decode(File::get($composerPath), true);
+        
+        if (!isset($composerJson['autoload']['psr-4'])) {
+            return [];
+        }
+
+        $namespaces = [];
+        
+        foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
+            if ($this->isPlatformNamespace($path)) {
+                $namespaces[rtrim($namespace, '\\') . '\\'] = base_path($path);
             }
         }
 
         return $namespaces;
+    }
+
+    protected function isPlatformNamespace(string $path): bool
+    {
+        return str_starts_with($path, 'platform/') || 
+               (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/');
+    }
+
+    protected function isValidCommand(string $class): bool
+    {
+        if (!class_exists($class)) {
+            return false;
+        }
+
+        try {
+            $reflection = new \ReflectionClass($class);
+            return $reflection->isSubclassOf(Command::class) && 
+                   !$reflection->isAbstract();
+        } catch (\ReflectionException $e) {
+            return false;
+        }
     }
 }

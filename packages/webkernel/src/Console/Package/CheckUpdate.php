@@ -19,7 +19,7 @@ class CheckUpdate extends Command
 
     private const DEFAULT_LOCAL_PATH = 'packages/webkernel';
     private const DEFAULT_REMOTE_REPO = 'https://github.com/numerimondes/webkernel';
-    private const REMOTE_PACKAGES_PATH = 'packages/webkernel/src/constants/Application.php';
+    private const REMOTE_PACKAGES_PATH = 'packages/webkernel/src/Constants/Application.php';
 
     public function handle()
     {
@@ -272,7 +272,7 @@ class CheckUpdate extends Command
 
     private function getLocalVersion(string $localPath, string $defaultVersion): string
     {
-        $applicationPhpPath = base_path($localPath . '/src/constants/Application.php');
+        $applicationPhpPath = base_path($localPath . '/src/Constants/Application.php');
         $versions = $this->extractVersionsFromFile($applicationPhpPath);
         return $versions['webkernel'] ?? $defaultVersion;
     }

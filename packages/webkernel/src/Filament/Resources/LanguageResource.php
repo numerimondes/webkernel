@@ -65,7 +65,7 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
     {
         return 'Settings';
     }
-    protected static ?string $recordTitleAttribute = 'name';
+    protected static ?string $recordTitleAttribute = 'label';
 
     protected static ?int $navigationSort = 999;
 

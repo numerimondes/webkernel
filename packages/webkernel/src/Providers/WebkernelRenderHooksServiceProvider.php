@@ -113,7 +113,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
 \Filament\Facades\Filament::serving(function () {
         $panel = \Filament\Facades\Filament::getCurrentPanel();
 
-        if ($panel && $panel->getId() !== 'admin') {
+        if ($panel && $panel->getId() === 'system') {
             FilamentView::registerRenderHook(
                 PanelsRenderHook::TOPBAR_AFTER,
                 fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.you-are-in-system-panel')

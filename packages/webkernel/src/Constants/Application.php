@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\constants;
+namespace Webkernel\Constants;
 
 use Illuminate\Foundation\Application as LaravelApplication;
 
