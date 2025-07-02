@@ -99,6 +99,9 @@ class CheckUpdate extends Command
             } else {
                 $this->info('[OK]');
             }
+            
+            (new \Symfony\Component\Process\Process(['composer', 'update', '--ansi']))->setTty(true)->run();
+
         }
 
         return empty($errors) ? self::SUCCESS : self::FAILURE;
