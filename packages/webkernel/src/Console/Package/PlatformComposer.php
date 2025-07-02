@@ -752,6 +752,7 @@ class PlatformComposerGenerator
  $rootNamespace = rtrim($rootNamespace, '\\');
 
  return [
+ 'App\\' => 'app/',
  $rootNamespace . '\\' => 'platform/',
  'Webkernel\\' => 'packages/webkernel/src/',
  'Database\\Factories\\' => 'database/factories/',
