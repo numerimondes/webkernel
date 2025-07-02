@@ -36,7 +36,7 @@
   <p>This single command sets up a complete Laravel + FilamentPHP environment with pre-configured modules, translations, and development tools.
 </p>
 <p style="max-width: 600px; margin-top: auto; line-height: 1.6;">
-  <img src="packages/webkernel/src/resources/repo-assets/credits/yassine.png" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;"><br>
+  <img src="packages/webkernel/src/Resources/repo-assets/credits/yassine.png" style="width: 150px; height: 150px; border-radius: 50%; object-fit: cover; margin-bottom: 10px;"><br>
   Created by <a href="https://www.linkedin.com/in/elmoumenyassine/" target="_blank" rel="noopener noreferrer">
   El Moumen Yassine</a>, for <a href="https://numerimondes.com" target="_blank" rel="noopener noreferrer">Numerimondes</a>
 </p>
@@ -60,7 +60,7 @@
 
 WebKernel follows a modular architecture with multiple specialized service providers, ensuring clean separation of concerns and maximum maintainability.
 
-<img src="packages/webkernel/src/resources/repo-assets/readme/v2/mermaid-diagram-2025-05-31-141023.png" width="1500px">
+<img src="packages/webkernel/src/Resources/repo-assets/readme/v2/mermaid-diagram-2025-05-31-141023.png" width="1500px">
 
 ## 🌍 Enterprise Translation System
 
