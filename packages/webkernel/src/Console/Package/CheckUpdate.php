@@ -36,6 +36,12 @@ class CheckUpdate extends Command
         $remoteRepo = $this->option('remote-repo') ?? self::DEFAULT_REMOTE_REPO;
         $packages = Application::getWebkernelPackages();
         $remotePackages = $this->fetchRemotePackages($remoteRepo);
+        
+        if (empty($remotePackages)) {
+            $this->error('[ERROR] Unable to fetch remote package information. Update aborted.');
+            return self::FAILURE;
+        }
+
         $updatesPerformed = false;
         $errors = [];
 
@@ -101,7 +107,6 @@ class CheckUpdate extends Command
             }
             
             (new \Symfony\Component\Process\Process(['composer', 'update', '--ansi']))->setTty(true)->run();
-
         }
 
         return empty($errors) ? self::SUCCESS : self::FAILURE;
@@ -123,98 +128,23 @@ class CheckUpdate extends Command
 
             if (!$response->successful()) {
                 $this->error("[ERROR] Failed to fetch remote Application.php: {$response->status()}");
+                $this->line("[DEBUG] URL attempted: {$url}");
                 return [];
             }
 
             $content = $response->body();
-            $packages = [];
+            $this->line("[DEBUG] Successfully fetched remote content (" . strlen($content) . " bytes)");
+            
+            $packages = $this->parseRemotePackages($content);
 
-            // Essayer d'abord de parser le tableau WEBKERNEL_PACKAGES
-            if (preg_match("/const\s+WEBKERNEL_PACKAGES\s*=\s*\[(.*?)\];/s", $content, $matches)) {
-                $packageDefs = $matches[1];
-
-                // Pattern pour extraire chaque package
-                $pattern = "/'([^']+)'\s*=>\s*\[\s*'path'\s*=>\s*'([^']+)',\s*'minimum_stable_version_required'\s*=>\s*([^,\]]+)(?:,\s*'dependencies'\s*=>\s*\[[^\]]*\])?\s*\]/";
-
-                if (preg_match_all($pattern, $packageDefs, $packageMatches, PREG_SET_ORDER)) {
-                    foreach ($packageMatches as $match) {
-                        $version = trim($match[3], "'\"");
-
-                        // Si la version est une constante (comme self::WEBKERNEL_VERSION), on doit l'extraire
-                        if (strpos($version, 'self::') !== false) {
-                            $constantName = str_replace('self::', '', $version);
-                            if (preg_match("/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"];/", $content, $constMatch)) {
-                                $version = $constMatch[1];
-                            }
-                        }
-
-                        $packages[$match[1]] = [
-                            'path' => $match[2],
-                            'version' => $version
-                        ];
-                    }
-                }
-            }
-
-            // Si aucun package trouvé avec la méthode principale, essayer l'approche alternative
             if (empty($packages)) {
                 $this->warn('[WARNING] No packages found in remote Application.php');
-                $this->line('[DEBUG] Trying alternative parsing...');
-
-                // Définir les packages et leurs versions attendues depuis les constantes
-                $packageDefinitions = [
-                    'webkernel' => [
-                        'path' => 'packages/webkernel',
-                        'version_constants' => ['WEBKERNEL_VERSION', 'STABLE_VERSION']
-                    ],
-                    'webkernel-website-builder' => [
-                        'path' => 'packages/webkernel-website-builder',
-                        'version_constants' => ['WEBSITE_BUILDER_VERSION']
-                    ],
-                    'webkernel-video-tools' => [
-                        'path' => 'packages/webkernel-video-tools',
-                        'version_constants' => ['VIDEO_TOOLS_VERSION']
-                    ]
-                ];
-
-                // Chercher les constantes de version dans le contenu
-                foreach ($packageDefinitions as $packageName => $packageInfo) {
-                    foreach ($packageInfo['version_constants'] as $constantName) {
-                        $pattern = "/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"];/";
-                        if (preg_match($pattern, $content, $matches)) {
-                            $packages[$packageName] = [
-                                'path' => $packageInfo['path'],
-                                'version' => $matches[1]
-                            ];
-                            break; // Prendre la première version trouvée pour ce package
-                        }
-                    }
+                $this->line('[DEBUG] Content preview: ' . substr(str_replace(["\n", "\r"], ' ', $content), 0, 200) . '...');
+            } else {
+                $this->line("[DEBUG] Successfully parsed " . count($packages) . " packages from remote repository");
+                foreach ($packages as $name => $package) {
+                    $this->line("  - {$name}: {$package['version']} (path: {$package['path']})");
                 }
-
-                // Si toujours rien trouvé, essayer de parser les minimum_stable_version_required dans le texte
-                if (empty($packages)) {
-                    $this->line('[DEBUG] Trying to parse minimum_stable_version_required values...');
-
-                    // Chercher les valeurs de minimum_stable_version_required
-                    $versionMatches = [];
-                    if (preg_match_all("/'minimum_stable_version_required'\s*=>\s*['\"]([^'\"]+)['\"]/", $content, $versionMatches, PREG_SET_ORDER)) {
-                        $versionIndex = 0;
-                        foreach (['webkernel', 'webkernel-website-builder', 'webkernel-video-tools'] as $packageName) {
-                            if (isset($versionMatches[$versionIndex])) {
-                                $packages[$packageName] = [
-                                    'path' => "packages/{$packageName}",
-                                    'version' => $versionMatches[$versionIndex][1]
-                                ];
-                                $versionIndex++;
-                            }
-                        }
-                    }
-                }
-            }
-
-            $this->line("[DEBUG] Found " . count($packages) . " packages in remote repository");
-            foreach ($packages as $name => $package) {
-                $this->line("  - {$name}: {$package['version']}");
             }
 
             return $packages;
@@ -223,6 +153,173 @@ class CheckUpdate extends Command
             $this->error("[ERROR] Error fetching remote package list: {$e->getMessage()}");
             return [];
         }
+    }
+
+    private function parseRemotePackages(string $content): array
+    {
+        $packages = [];
+
+        // Méthode 1: Parser le tableau WEBKERNEL_PACKAGES complet
+        $packages = $this->parseWebkernelPackagesArray($content);
+        if (!empty($packages)) {
+            $this->line("[DEBUG] Method 1 successful: Found packages in WEBKERNEL_PACKAGES array");
+            return $packages;
+        }
+
+        // Méthode 2: Parser les constantes de version individuelles
+        $packages = $this->parseVersionConstants($content);
+        if (!empty($packages)) {
+            $this->line("[DEBUG] Method 2 successful: Found packages via version constants");
+            return $packages;
+        }
+
+        // Méthode 3: Parser les versions dans les minimum_stable_version_required
+        $packages = $this->parseMinimumVersions($content);
+        if (!empty($packages)) {
+            $this->line("[DEBUG] Method 3 successful: Found packages via minimum_stable_version_required");
+            return $packages;
+        }
+
+        $this->warn("[DEBUG] All parsing methods failed");
+        return [];
+    }
+
+    private function parseWebkernelPackagesArray(string $content): array
+    {
+        $packages = [];
+        
+        // Pattern amélioré pour capturer le tableau WEBKERNEL_PACKAGES
+        $patterns = [
+            // Pattern principal avec support des espaces et retours à la ligne
+            "/const\s+WEBKERNEL_PACKAGES\s*=\s*\[(.*?)\];/s",
+            // Pattern alternatif si le tableau est sur une seule ligne
+            "/WEBKERNEL_PACKAGES\s*=\s*\[([^\]]+)\]/s"
+        ];
+
+        foreach ($patterns as $pattern) {
+            if (preg_match($pattern, $content, $matches)) {
+                $packageDefs = $matches[1];
+                $this->line("[DEBUG] Found WEBKERNEL_PACKAGES array definition");
+
+                // Pattern pour extraire chaque package du tableau
+                $packagePattern = "/'([^']+)'\s*=>\s*\[\s*'path'\s*=>\s*'([^']+)',\s*'minimum_stable_version_required'\s*=>\s*([^,\]]+)(?:,\s*'dependencies'\s*=>\s*\[[^\]]*\])?\s*\]/";
+                
+                if (preg_match_all($packagePattern, $packageDefs, $packageMatches, PREG_SET_ORDER)) {
+                    foreach ($packageMatches as $match) {
+                        $packageName = $match[1];
+                        $packagePath = $match[2];
+                        $version = trim($match[3], "'\"");
+
+                        // Résoudre les références aux constantes
+                        $version = $this->resolveVersionConstant($version, $content);
+
+                        $packages[$packageName] = [
+                            'path' => $packagePath,
+                            'version' => $version
+                        ];
+                        
+                        $this->line("[DEBUG] Parsed package: {$packageName} -> {$version}");
+                    }
+                    break; // Sortir de la boucle si on a trouvé des packages
+                }
+            }
+        }
+
+        return $packages;
+    }
+
+    private function parseVersionConstants(string $content): array
+    {
+        $packages = [];
+        
+        // Définitions des packages avec leurs constantes de version possibles
+        $packageDefinitions = [
+            'webkernel' => [
+                'path' => 'packages/webkernel',
+                'version_constants' => ['WEBKERNEL_VERSION', 'STABLE_VERSION']
+            ],
+            'webkernel-website-builder' => [
+                'path' => 'packages/webkernel-website-builder',
+                'version_constants' => ['WEBSITE_BUILDER_VERSION']
+            ],
+            'webkernel-video-tools' => [
+                'path' => 'packages/webkernel-video-tools',
+                'version_constants' => ['VIDEO_TOOLS_VERSION']
+            ]
+        ];
+
+        foreach ($packageDefinitions as $packageName => $packageInfo) {
+            foreach ($packageInfo['version_constants'] as $constantName) {
+                // Pattern amélioré pour capturer les constantes
+                $patterns = [
+                    "/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"];/",
+                    "/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"]/"
+                ];
+                
+                foreach ($patterns as $pattern) {
+                    if (preg_match($pattern, $content, $matches)) {
+                        $packages[$packageName] = [
+                            'path' => $packageInfo['path'],
+                            'version' => $matches[1]
+                        ];
+                        $this->line("[DEBUG] Found {$constantName}: {$matches[1]} for {$packageName}");
+                        break 2; // Sortir des deux boucles
+                    }
+                }
+            }
+        }
+
+        return $packages;
+    }
+
+    private function parseMinimumVersions(string $content): array
+    {
+        $packages = [];
+        
+        // Chercher toutes les occurrences de minimum_stable_version_required
+        if (preg_match_all("/'minimum_stable_version_required'\s*=>\s*([^,\]]+)/", $content, $versionMatches, PREG_SET_ORDER)) {
+            $packageNames = ['webkernel', 'webkernel-website-builder', 'webkernel-video-tools'];
+            
+            foreach ($versionMatches as $index => $match) {
+                if (isset($packageNames[$index])) {
+                    $version = trim($match[1], "'\"");
+                    $version = $this->resolveVersionConstant($version, $content);
+                    
+                    $packages[$packageNames[$index]] = [
+                        'path' => "packages/{$packageNames[$index]}",
+                        'version' => $version
+                    ];
+                    
+                    $this->line("[DEBUG] Found minimum version: {$version} for {$packageNames[$index]}");
+                }
+            }
+        }
+
+        return $packages;
+    }
+
+    private function resolveVersionConstant(string $version, string $content): string
+    {
+        // Si la version est une référence à une constante (comme self::WEBKERNEL_VERSION)
+        if (strpos($version, 'self::') !== false) {
+            $constantName = str_replace('self::', '', $version);
+            
+            $patterns = [
+                "/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"];/",
+                "/const\s+{$constantName}\s*=\s*['\"]([^'\"]+)['\"]/"
+            ];
+            
+            foreach ($patterns as $pattern) {
+                if (preg_match($pattern, $content, $constMatch)) {
+                    $this->line("[DEBUG] Resolved constant {$constantName}: {$constMatch[1]}");
+                    return $constMatch[1];
+                }
+            }
+            
+            $this->warn("[DEBUG] Could not resolve constant: {$constantName}");
+        }
+
+        return $version;
     }
 
     private function processPackage(string $packageName, array $package, array $remotePackages, string $remoteRepo): array
@@ -234,6 +331,7 @@ class CheckUpdate extends Command
 
         if (!isset($remotePackages[$packageName])) {
             $this->warn("[WARNING] Package {$packageName} not found in remote repository");
+            $this->line("[DEBUG] Available remote packages: " . implode(', ', array_keys($remotePackages)));
             return ['status' => self::SUCCESS, 'updated' => false, 'error' => null];
         }
 
