@@ -13,7 +13,8 @@ class CheckUpdate extends Command
                             {--local-path= : Custom path to local webkernel directory}
                             {--remote-repo= : Custom remote repository URL}
                             {--revert : Show available backups and revert to selected one}
-                            {--automatic : Setup automatic daily updates via cron}';
+                            {--automatic : Setup automatic daily updates via cron}
+                            {--force : Force update even if remote version is not newer}';
 
     protected $description = 'Update Webkernel packages by comparing and replacing with remote repository versions';
 
@@ -346,9 +347,17 @@ class CheckUpdate extends Command
         $remoteVersion = $remotePackages[$packageName]['version'];
         $this->info("Remote version: {$remoteVersion}");
 
-        if ($this->checkIfUpdateNeeded($localVersion, $remoteVersion)) {
-            $this->warn("[UPDATE] Update available for {$packageName}!");
-            $this->line("Update: {$localVersion} → {$remoteVersion}");
+        $forceUpdate = $this->option('force');
+        $updateNeeded = $forceUpdate || $this->checkIfUpdateNeeded($localVersion, $remoteVersion);
+
+        if ($updateNeeded) {
+            if ($forceUpdate) {
+                $this->warn("[FORCE] Forcing update for {$packageName}!");
+                $this->line("Force update: {$localVersion} → {$remoteVersion}");
+            } else {
+                $this->warn("[UPDATE] Update available for {$packageName}!");
+                $this->line("Update: {$localVersion} → {$remoteVersion}");
+            }
             $this->newLine();
             $this->line('[WARNING] This will:');
             $this->line("  * Create a backup in {$localPath}/.trash/");

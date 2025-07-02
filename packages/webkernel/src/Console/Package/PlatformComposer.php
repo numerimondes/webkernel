@@ -401,41 +401,48 @@ class PlatformComposer extends Command
  * @param array $changes
  * @return bool
  */
- protected function processAutoloadPsr4(array &$composerJson, array $additions, PlatformComposerGenerator $generator, array &$changes): bool
- {
- $hasChanges = false;
+ 
+protected function processAutoloadPsr4(array &$composerJson, array $additions, PlatformComposerGenerator $generator, array &$changes): bool
+{
+    $hasChanges = false;
 
- $composerJson['autoload'] = $composerJson['autoload'] ?? [];
- $composerJson['autoload']['psr-4'] = $composerJson['autoload']['psr-4'] ?? [];
+    $composerJson['autoload'] = $composerJson['autoload'] ?? [];
+    $composerJson['autoload']['psr-4'] = $composerJson['autoload']['psr-4'] ?? [];
 
- // Map paths to their correct namespaces
- $pathToNamespace = [];
- foreach ($additions['autoload']['psr-4'] ?? [] as $namespace => $path) {
- $pathToNamespace[$path] = $namespace;
- if (!isset($composerJson['autoload']['psr-4'][$namespace]) ||
- $composerJson['autoload']['psr-4'][$namespace] !== $path) {
- $composerJson['autoload']['psr-4'][$namespace] = $path;
- $changes['added'][] = "PSR-4: \"{$namespace}\" => \"{$path}\"";
- $hasChanges = true;
- }
- }
 
- // Remove conflicting or invalid namespaces
- $namespacesToRemove = [];
- foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
- if ($generator->shouldRemoveNamespace($namespace, $path, $pathToNamespace)) {
- $namespacesToRemove[] = $namespace;
- $changes['removed'][] = "PSR-4: \"{$namespace}\" (path not found or conflicting: {$path})";
- $hasChanges = true;
- }
- }
+    $pathToNamespace = [];
+    foreach ($additions['autoload']['psr-4'] ?? [] as $namespace => $path) {
+        $pathToNamespace[$path] = $namespace;
+        if (!isset($composerJson['autoload']['psr-4'][$namespace]) ||
+            $composerJson['autoload']['psr-4'][$namespace] !== $path) {
+            $composerJson['autoload']['psr-4'][$namespace] = $path;
+            $changes['added'][] = "PSR-4: \"{$namespace}\" => \"{$path}\"";
+            $hasChanges = true;
+        }
+    }
 
- foreach ($namespacesToRemove as $namespace) {
- unset($composerJson['autoload']['psr-4'][$namespace]);
- }
 
- return $hasChanges;
- }
+    $protectedNamespaces = array_keys($this->getStaticPathMappings($additions['root_namespace'] ?? 'App'));
+
+    $namespacesToRemove = [];
+    foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
+        if (in_array($namespace, $protectedNamespaces, true)) {
+            continue; 
+        }
+
+        if ($generator->shouldRemoveNamespace($namespace, $path, $pathToNamespace)) {
+            $namespacesToRemove[] = $namespace;
+            $changes['removed'][] = "PSR-4: \"{$namespace}\" (path not found or conflicting: {$path})";
+            $hasChanges = true;
+        }
+    }
+
+    foreach ($namespacesToRemove as $namespace) {
+        unset($composerJson['autoload']['psr-4'][$namespace]);
+    }
+
+    return $hasChanges;
+}
 
  /**
  * Process autoload files in composer.json.
