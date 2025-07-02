@@ -8,25 +8,10 @@ class Application extends LaravelApplication
     const WEBKERNEL_VERSION = '0.0.16';
     const STABLE_VERSION = '0.0.16';
 
-    const WEBKERNEL_PACKAGES = [
-        'webkernel' => [
-            'path' => 'packages/webkernel',
-            'minimum_stable_version_required' => self::WEBKERNEL_VERSION,
-            'dependencies' => []
-        ]
-    ];
+    const WEBKERNEL_PACKAGES = [];
 
 
-    const BUSINESS_APPLICATIONS = [
-        'solecoles' => [
-            'path' => 'platform/',
-            'type' => 'business',
-            'update_strategy' => 'separate_repo',
-            'dependencies' => [
-                'webkernel',
-            ]
-        ]
-    ];
+    const BUSINESS_APPLICATIONS = [];
 
     /**
      * Get the main package name

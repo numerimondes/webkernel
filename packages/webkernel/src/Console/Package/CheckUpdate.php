@@ -5,7 +5,7 @@ use Exception;
 use Illuminate\Console\Command;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\File;
-use Webkernel\constants\Application;
+use Webkernel\Constants\Application;
 
 class CheckUpdate extends Command
 {
