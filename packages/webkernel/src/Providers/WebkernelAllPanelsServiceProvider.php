@@ -11,6 +11,7 @@ class WebkernelAllPanelsServiceProvider extends ServiceProvider
     public function boot()
     {
         $logoUrl = platformAbsoluteUrlAnyPrivatetoPublic(corePlatformInfos('logoLink'));
+
         $panels = Filament::getPanels();
 
         foreach ($panels as $panel) {
@@ -25,5 +26,4 @@ class WebkernelAllPanelsServiceProvider extends ServiceProvider
             });
         }
     }
-
 }

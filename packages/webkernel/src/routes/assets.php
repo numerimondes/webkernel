@@ -1,27 +1,16 @@
 <?php
 
 use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Auth\Middleware;
+use Illuminate\Support\Facades\Cache;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Storage;
-use Filament\Notifications\Notification;
-use Illuminate\Auth\AuthManager as Auth;
-use Illuminate\Auth\Middleware\Authenticate;
-use Illuminate\Session\Middleware\StartSession;
-
-
-
 
 /**
- * Route pour servir un fichier privé via token (URL: /assets/{token}).
- *
- * Vérifie le token, expiration, existence du fichier, puis retourne le fichier avec cache headers.
+ * Route to serve private file via token (URL: /assets/{token}).
  */
 Route::get('/assets/{token}', function (string $token) {
     $fileInfo = Cache::get("file_token:{$token}");
-
     if (!$fileInfo) {
         abort(404, 'File not found or expired');
     }
@@ -37,14 +26,12 @@ Route::get('/assets/{token}', function (string $token) {
         abort(403, 'Invalid path');
     }
 
-    // Vérifier dans storage local
     if (Storage::disk('local')->exists($path)) {
         $response = Storage::disk('local')->response($path);
         $response->headers->set('Cache-Control', 'public, max-age=3600');
         return $response;
     }
 
-    // Sinon vérifier dans base_path
     $fullPath = base_path($path);
     if (File::exists($fullPath) && File::isFile($fullPath)) {
         return response()->file($fullPath, [
@@ -56,11 +43,9 @@ Route::get('/assets/{token}', function (string $token) {
     abort(404, 'File not found');
 })->name('private-asset')->where('token', '[a-zA-Z0-9]{32}');
 
+
 /**
- * Version alternative : URL propre avec hash + extension (ex: /assets/abcdef1234567890.png)
- *
- * Génère un hash basé sur le chemin + timestamp pour expiration automatique.
- * Sert les fichiers comme pour la route au-dessus.
+ * Generate clean asset URL with hash + extension.
  */
 if (!function_exists('platformCleanAssetUrl')) {
     function platformCleanAssetUrl(string $path, int $expirationMinutes = 30): string

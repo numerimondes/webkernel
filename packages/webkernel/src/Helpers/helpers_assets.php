@@ -1,51 +1,35 @@
 <?php
 
-use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Cache;
-use Illuminate\Support\Facades\Storage;
-use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 
 /**
- * Génère une URL sécurisée vers un asset privé avec token.
- * Utilise le cache pour éviter de régénérer un token à chaque appel.
+ * Generate a secure public URL for a private asset with token.
  *
- * @param string $path Chemin relatif vers le fichier (ex: 'packages/.../logo.svg')
- * @param int $expirationMinutes Durée de validité du token
- * @param bool $forceRefresh Forcer le rafraîchissement du token et cache
- * @return string URL publique sécurisée vers le fichier
+ * @param string $path Relative file path
+ * @param int $expirationMinutes Token validity duration in minutes
+ * @param bool $forceRefresh Force cache refresh
+ * @return string
  */
-
 if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
     function platformAbsoluteUrlAnyPrivatetoPublic(string $path, int $expirationMinutes = 30, bool $forceRefresh = false): string
     {
         $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
         $cacheKey = "file_token_by_path:" . md5($cleanPath);
 
-        $generateUrl = function (string $token) {
-            return function () use ($token) {
-                return url("/assets/{$token}");
-            };
-        };
-
         $cacheIsReady = true;
         try {
             $cacheIsReady = Schema::hasTable('cache');
-        } catch (\Exception $e) {
+        } catch (\Exception) {
             $cacheIsReady = false;
         }
 
         if ($cacheIsReady && !$forceRefresh) {
             $cachedTokenData = Cache::get($cacheKey);
             if ($cachedTokenData && Carbon::now()->lt(Carbon::parse($cachedTokenData['expires_at']))) {
-                $url = null;
-                app()->booted(function () use (&$url, $cachedTokenData) {
-                    $url = url("/assets/{$cachedTokenData['token']}");
-                });
-
-                return $url ?? "/assets/{$cachedTokenData['token']}";
+                return url("/assets/{$cachedTokenData['token']}");
             }
         }
 
@@ -64,20 +48,14 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
             ], $expirationMinutes * 60);
         }
 
-        $url = null;
-        app()->booted(function () use (&$url, $token) {
-            $url = url("/assets/{$token}");
-        });
-
-        return $url ?? "/assets/{$token}";
+        return url("/assets/{$token}");
     }
 }
 
-
 /**
- * Supprime le cache lié à un asset (flush) pour forcer la régénération du token.
+ * Flush cached token for asset to force regeneration.
  *
- * @param string $path Chemin relatif vers le fichier
+ * @param string $path
  * @return void
  */
 if (!function_exists('platformFlushAssetCache')) {
@@ -95,9 +73,7 @@ if (!function_exists('platformFlushAssetCache')) {
 }
 
 /**
- * Retourne une info de configuration plateforme (brandName, logoLink, etc.)
- * Si setCorePlatformInfos a été appelé, retourne l’info prioritaire,
- * sinon retourne les defaults ou fallback.
+ * Return platform info for given key, fallback on defaults or fallback values.
  *
  * @param string $key
  * @return mixed|null
@@ -109,15 +85,19 @@ if (!function_exists('corePlatformInfos')) {
             'brandName' => 'Webkernel',
             'cssTitle' => 'Webkernel - by Numerimondes',
             'description' => 'A production-ready Laravel foundation that transforms development workflow from day one',
-            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
+            'logoLink' => 'packages/webkernel/src/Resources/repo-assets/credits/numerimondes.png',
         ];
 
         $fallbacks = [
             'brandName' => 'Numerimondes Platform',
-            'logoLink' => 'packages/webkernel/src/resources/repo-assets/credits/numerimondes.png',
+            'logoLink' => 'packages/webkernel/src/Resources/repo-assets/credits/numerimondes.png',
         ];
 
-        if (!empty($GLOBALS['__corePlatformInfos']['infos'][$key])) {
+        if (
+            isset($GLOBALS['__corePlatformInfos']['infos']) &&
+            is_array($GLOBALS['__corePlatformInfos']['infos']) &&
+            array_key_exists($key, $GLOBALS['__corePlatformInfos']['infos'])
+        ) {
             return $GLOBALS['__corePlatformInfos']['infos'][$key];
         }
 
@@ -130,8 +110,7 @@ if (!function_exists('corePlatformInfos')) {
 }
 
 /**
- * Définit les infos plateforme avec priorité.
- * Si 'logoLink' est défini, le transforme en URL sécurisée.
+ * Set platform info with priority.
  *
  * @param array $infos
  * @param int $priority
@@ -142,9 +121,6 @@ if (!function_exists('setCorePlatformInfos')) {
     {
         static $data = ['infos' => [], 'priority' => -INF];
         if ($priority > $data['priority']) {
-            if (isset($infos['logoLink'])) {
-                // we do nothing
-            }
             $data['infos'] = array_merge($data['infos'], $infos);
             $data['priority'] = $priority;
         }
