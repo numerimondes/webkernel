@@ -4,7 +4,7 @@ namespace Webkernel\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use Webkernel\Providers\WebkernelRouteServiceProvider;
-use WebkernelSubPlatform\Platform;
+use Numerimondes\Platform;
 
 class WebkernelPlatformServiceProvider extends ServiceProvider
 {

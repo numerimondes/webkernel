@@ -21,13 +21,13 @@ class WebkernelViewServiceProvider extends ServiceProvider
     protected function loadViewsFromPackage(): void
     {
         // Load Webkernel views
-        $this->loadViewsFrom(base_path('packages/webkernel/src/resources/views'), 'webkernel');
-        view()->addNamespace('webkernel', base_path('packages/webkernel/src/resources/views'));
+        $this->loadViewsFrom(base_path('packages/webkernel/src/Resources/Views'), 'webkernel');
+        view()->addNamespace('webkernel', base_path('packages/webkernel/src/Resources/Views'));
 
         // Load views from platform and other packages
         $autoloadNamespaces = $this->getAutoloadNamespaces();
         foreach ($autoloadNamespaces as $namespace => $path) {
-            $viewPath = $path . '/resources/views';
+            $viewPath = $path . '/Resources/Views';
             if (File::isDirectory($viewPath)) {
                 $viewNamespace = strtolower(str_replace('\\', '.', $namespace));
                 $this->loadViewsFrom($viewPath, $viewNamespace);

@@ -422,7 +422,7 @@ protected function processAutoloadPsr4(array &$composerJson, array $additions, P
     }
 
 
-    $protectedNamespaces = array_keys($this->getStaticPathMappings($additions['root_namespace'] ?? 'App'));
+    $protectedNamespaces = array_keys(PlatformComposerGenerator::getStaticPathMappings($additions['root_namespace'] ?? 'App'));
 
     $namespacesToRemove = [];
     foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
@@ -729,24 +729,21 @@ class PlatformComposerGenerator
  *
  * @return array
  */
- public function discoverAutoloadPaths(): array
- {
- $paths = [];
- $rootNamespace = $this->getProjectRootNamespace();
-
- $staticPaths = $this->getStaticPathMappings($rootNamespace);
- foreach ($staticPaths as $namespace => $relativePath) {
- $fullPath = base_path($relativePath);
- if (File::isDirectory($fullPath)) {
- $paths[$namespace] = $relativePath;
- }
- }
-
- $dynamicPaths = $this->scanForDynamicPaths($rootNamespace);
- $paths = array_merge($paths, $dynamicPaths);
-
- return $paths;
- }
+public function discoverAutoloadPaths(): array
+{
+    $paths = [];
+    $rootNamespace = $this->getProjectRootNamespace();
+    $staticPaths = static::getStaticPathMappings($rootNamespace);
+    foreach ($staticPaths as $namespace => $relativePath) {
+        $fullPath = base_path($relativePath);
+        if (File::isDirectory($fullPath)) {
+            $paths[$namespace] = $relativePath;
+        }
+    }
+    $dynamicPaths = $this->scanForDynamicPaths($rootNamespace);
+    $paths = array_merge($paths, $dynamicPaths);
+    return $paths;
+}
 
  /**
  * Get static PSR-4 path mappings.
@@ -754,19 +751,19 @@ class PlatformComposerGenerator
  * @param string $rootNamespace
  * @return array
  */
- protected function getStaticPathMappings(string $rootNamespace): array
- {
- $rootNamespace = rtrim($rootNamespace, '\\');
+public static function getStaticPathMappings(string $rootNamespace): array
+{
+    $rootNamespace = rtrim($rootNamespace, '\\');
+    return [
+        'App\\' => 'app/',
+        $rootNamespace . '\\' => 'platform/',
+        'Webkernel\\' => 'packages/webkernel/src/',
+        'Database\\Factories\\' => 'database/factories/',
+        'Database\\Seeders\\' => 'database/seeders/',
+        'Webkernel\\Database\\Seeders\\' => 'packages/webkernel/src/database/seeders/',
+    ];
+}
 
- return [
- 'App\\' => 'app/',
- $rootNamespace . '\\' => 'platform/',
- 'Webkernel\\' => 'packages/webkernel/src/',
- 'Database\\Factories\\' => 'database/factories/',
- 'Database\\Seeders\\' => 'database/seeders/',
- 'Webkernel\\Database\\Seeders\\' => 'packages/webkernel/src/database/seeders/',
- ];
- }
 
  /**
  * Scan for dynamic PSR-4 paths in packages and modules.

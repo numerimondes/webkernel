@@ -122,7 +122,7 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
             <div class="fi-filament-info-widget-version text-xs text-gray-600" style="margin-top: 0.25rem;justify-content: flex-start; flex-wrap: wrap; max-width: 100%; overflow: hidden;">
                 <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap;">
                     <span>Webkernel</span>
-                    <span>&nbsp;v{{ Webkernel\constants\Application::WEBKERNEL_VERSION }}&nbsp;</span>
+                    <span>&nbsp;v{{ Webkernel\Constants\Application::WEBKERNEL_VERSION }}&nbsp;</span>
                 </span>
 
                 <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="version-hover-container" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap;">
