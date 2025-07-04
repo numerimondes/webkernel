@@ -1,3 +1,5 @@
+
+
 <?php
 
 /**
@@ -16,7 +18,7 @@
  * {{ webkernelPlatform('app_location') }}
  * 
  * // Get information from specific platform
- * {{ getPlatformInfo('student.flow', 'name') }}
+ * {{ getPlatformInfo('student_flow', 'name') }}
  * {{ getPlatformInfo('webkernel', 'series') }}
  * 
  * // Check if platform is active
@@ -53,7 +55,7 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
             'webkernel' => [
                 'app_location' => 'Webkernel\\',
                 'detection' => [
-                    'class_exists' => [],
+                    'class_exists' => ['Webkernel\\Application'],
                     'file_exists' => [],
                     'constant_defined' => ['Application::WEBKERNEL_VERSION'],
                     'default_active' => true,
@@ -62,7 +64,6 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                     'constant' => 'Application::WEBKERNEL_VERSION',
                     'fallback' => '1.0.0',
                 ],
-                'official_subplatform' => false,
                 'subplatforms' => [
                     'student_flow' => [
                         'app_location' => 'StudentFlow\\',
@@ -82,33 +83,33 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                                 'operator' => '<',
                                 'version' => '1.0.0',
                                 'config' => [
-                                    'name' => 'StudentFlow - Gestion Étudiante',
-                                    'brandName' => 'StudentFlow',
-                                    'description' => 'Plateforme de gestion complète pour étudiants et établissements',
+                                    'name' => 'platform_student_flow_name',
+                                    'brandName' => 'platform_student_flow_brand_name',
+                                    'description' => 'platform_student_flow_description',
                                     'cssTitle' => 'student-flow-style',
                                     'logos' => [
                                         'default_logo' => '/logos/student-flow-default.png',
                                         'light_logo' => '/logos/student-flow-light.png',
                                         'dark_logo' => '/logos/student-flow-dark.png',
-                                        'alt' => 'StudentFlow Logo',
+                                        'alt' => 'platform_student_flow_logo_alt',
                                     ],
-                                    'codename' => 'Academic Stream',
+                                    'codename' => 'platform_student_flow_codename',
                                     'series' => '24.12',
                                     'checksum' => 'sha256-studentflow-v0',
                                     'metadata' => [
-                                        'title' => 'StudentFlow - Gestion Étudiante',
-                                        'description' => 'Plateforme moderne de gestion étudiante',
-                                        'keywords' => 'étudiants, gestion, académique, formation',
+                                        'title' => 'platform_student_flow_meta_title',
+                                        'description' => 'platform_student_flow_meta_description',
+                                        'keywords' => 'platform_student_flow_meta_keywords',
                                         'author' => 'El Moumen Yassine',
                                         'robots' => 'index, follow',
                                     ],
                                     'opengraph' => [
-                                        'title' => 'StudentFlow - Gestion Étudiante',
-                                        'description' => 'Plateforme moderne de gestion étudiante',
+                                        'title' => 'platform_student_flow_og_title',
+                                        'description' => 'platform_student_flow_og_description',
                                         'image' => '/logos/student-flow-og.png',
                                         'type' => 'website',
                                         'url' => '',
-                                        'site_name' => 'StudentFlow',
+                                        'site_name' => 'platform_student_flow_og_site_name',
                                     ],
                                     'to_change_in_system_panel' => [
                                         'name' => true,
@@ -127,10 +128,13 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                         ],
                     ],
                     'ream' => [
-                        'app_location' => 'REAM\\',
+                        'app_location' => 'Numerimondes\\Modules\\ReamMar\\',
                         'detection' => [
-                            'class_exists' => ['REAM\\REAMServiceProvider'],
-                            'file_exists' => [],
+                            'class_exists' => ['Numerimondes\\Modules\\ReamMar\\Providers\\Filament\\MarPanelProvider'],
+                            'file_exists' => [
+                                'platform/Modules/ReamMar/src/Providers/Filament/MarPanelProvider.php',
+                                'platform/Platform.php'
+                            ],
                             'constant_defined' => ['Application::REAM_VERSION'],
                             'default_active' => false,
                         ],
@@ -144,33 +148,33 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                                 'operator' => '<',
                                 'version' => '1.0.0',
                                 'config' => [
-                                    'name' => 'REAM - Audit Énergies Renouvelables',
-                                    'brandName' => 'REAM',
-                                    'description' => 'Gestion des audits d\'énergies renouvelables',
+                                    'name' => 'platform_ream_name',
+                                    'brandName' => 'platform_ream_brand_name',
+                                    'description' => 'platform_ream_description',
                                     'cssTitle' => 'ream-style',
                                     'logos' => [
                                         'default_logo' => '/packages/webkernel/src/Resources/repo-assets/credits/ream.svg',
                                         'light_logo' => '/packages/webkernel/src/Resources/repo-assets/credits/ream.svg',
                                         'dark_logo' => '/packages/webkernel/src/Resources/repo-assets/credits/ream.svg',
-                                        'alt' => 'REAM Logo',
+                                        'alt' => 'platform_ream_logo_alt',
                                     ],
-                                    'codename' => 'Green Audit',
+                                    'codename' => 'platform_ream_codename',
                                     'series' => '24.12',
                                     'checksum' => 'sha256-ream-v0',
                                     'metadata' => [
-                                        'title' => 'REAM - Audit Énergies Renouvelables',
-                                        'description' => 'Plateforme de gestion des audits énergétiques',
-                                        'keywords' => 'audit, énergie, renouvelable, environnement',
+                                        'title' => 'platform_ream_meta_title',
+                                        'description' => 'platform_ream_meta_description',
+                                        'keywords' => 'platform_ream_meta_keywords',
                                         'author' => 'El Moumen Yassine',
                                         'robots' => 'index, follow',
                                     ],
                                     'opengraph' => [
-                                        'title' => 'REAM - Audit Énergies Renouvelables',
-                                        'description' => 'Plateforme de gestion des audits énergétiques',
+                                        'title' => 'platform_ream_og_title',
+                                        'description' => 'platform_ream_og_description',
                                         'image' => '/packages/webkernel/src/Resources/repo-assets/credits/ream.svg',
                                         'type' => 'website',
                                         'url' => '',
-                                        'site_name' => 'REAM',
+                                        'site_name' => 'platform_ream_og_site_name',
                                     ],
                                     'to_change_in_system_panel' => [
                                         'name' => true,
@@ -194,33 +198,33 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                         'operator' => '<',
                         'version' => '1.0.0',
                         'config' => [
-                            'name' => 'Webkernel Framework',
-                            'brandName' => 'Webkernel',
-                            'description' => 'Framework de développement web moderne',
+                            'name' => 'platform_webkernel_name',
+                            'brandName' => 'platform_webkernel_brand_name',
+                            'description' => 'platform_webkernel_description',
                             'cssTitle' => 'webkernel-style',
                             'logos' => [
                                 'default_logo' => '/logos/webkernel-default.png',
                                 'light_logo' => '/logos/webkernel-light.png',
                                 'dark_logo' => '/logos/webkernel-dark.png',
-                                'alt' => 'Webkernel Logo',
+                                'alt' => 'platform_webkernel_logo_alt',
                             ],
-                            'codename' => 'Core Framework',
+                            'codename' => 'platform_webkernel_codename',
                             'series' => '24.12',
                             'checksum' => 'sha256-webkernel-v0',
                             'metadata' => [
-                                'title' => 'Webkernel Framework',
-                                'description' => 'Framework de développement web moderne',
-                                'keywords' => 'framework, web, développement, php',
+                                'title' => 'platform_webkernel_meta_title',
+                                'description' => 'platform_webkernel_meta_description',
+                                'keywords' => 'platform_webkernel_meta_keywords',
                                 'author' => 'El Moumen Yassine',
                                 'robots' => 'index, follow',
                             ],
                             'opengraph' => [
-                                'title' => 'Webkernel Framework',
-                                'description' => 'Framework de développement web moderne',
+                                'title' => 'platform_webkernel_og_title',
+                                'description' => 'platform_webkernel_og_description',
                                 'image' => '/logos/webkernel-og.png',
                                 'type' => 'website',
                                 'url' => '',
-                                'site_name' => 'Webkernel',
+                                'site_name' => 'platform_webkernel_og_site_name',
                             ],
                             'to_change_in_system_panel' => [
                                 'name' => true,
@@ -369,10 +373,16 @@ if (!function_exists('getActivePlatform')) {
     {
         $config = getMergedBrandingConfig();
         
-        // First check webkernel subplatforms
+        // First check webkernel subplatforms in priority order
         if (isset($config['webkernel']['subplatforms'])) {
+            // Check REAM first since it's more specific
+            if (isset($config['webkernel']['subplatforms']['ream']) && platformExists('ream')) {
+                return 'ream';
+            }
+            
+            // Then check other subplatforms
             foreach ($config['webkernel']['subplatforms'] as $subplatform => $subConfig) {
-                if (platformExists($subplatform)) {
+                if ($subplatform !== 'ream' && platformExists($subplatform)) {
                     return $subplatform;
                 }
             }
@@ -381,7 +391,7 @@ if (!function_exists('getActivePlatform')) {
         // Then check main platforms
         $sortedPlatforms = [];
         foreach ($config as $platform => $platformConfig) {
-            if ($platformConfig['official_subplatform'] ?? false) {
+            if (isset($platformConfig['official_subplatform']) && $platformConfig['official_subplatform']) {
                 array_unshift($sortedPlatforms, $platform);
             } else {
                 $sortedPlatforms[] = $platform;
@@ -428,7 +438,7 @@ if (!function_exists('platformExists')) {
         
         if (!empty($detection['file_exists'])) {
             foreach ($detection['file_exists'] as $file) {
-                if (file_exists($file)) {
+                if (file_exists(base_path($file))) {
                     return true;
                 }
             }
@@ -462,8 +472,24 @@ if (!function_exists('getCurrentPlatformVersion')) {
         
         $versionDetection = $platformConfig['version_detection'] ?? [];
         
-        if (!empty($versionDetection['constant']) && defined($versionDetection['constant'])) {
-            return constant($versionDetection['constant']);
+        if (!empty($versionDetection['constant'])) {
+            $constantName = $versionDetection['constant'];
+            
+            // Handle Application::CONSTANT format
+            if (str_contains($constantName, '::')) {
+                $parts = explode('::', $constantName);
+                $className = $parts[0];
+                $constantName = $parts[1];
+                
+                if (class_exists($className)) {
+                    $reflection = new ReflectionClass($className);
+                    if ($reflection->hasConstant($constantName)) {
+                        return $reflection->getConstant($constantName);
+                    }
+                }
+            } elseif (defined($constantName)) {
+                return constant($constantName);
+            }
         }
         
         if (isset($platformConfig['current_version'])) {
@@ -521,7 +547,27 @@ if (!function_exists('getPlatformBrandingConfig')) {
             }
         }
         
+        // Process language keys
+        $result = processLanguageKeys($result);
+        
         return $result;
+    }
+}
+
+if (!function_exists('processLanguageKeys')) {
+    function processLanguageKeys(array $config): array
+    {
+        foreach ($config as $key => &$value) {
+            if (is_array($value)) {
+                $value = processLanguageKeys($value);
+            } elseif (is_string($value) && str_starts_with($value, 'platform_')) {
+                if (function_exists('lang')) {
+                    $value = lang($value);
+                }
+            }
+        }
+        
+        return $config;
     }
 }
 
@@ -577,6 +623,8 @@ if (!function_exists('webkernelPlatformDebug')) {
             'config' => $config,
             'detection_info' => getPlatformDetectionInfo($activePlatform),
             'editable_fields' => getSystemPanelEditableFields(),
+            'version_detection_debug' => getVersionDetectionDebug($activePlatform),
+            'platform_detection_debug' => getPlatformDetectionDebug(),
             'cache_info' => [
                 'cache_key' => md5(serialize(getWebkernelUltimateBrandingConfig()) . filemtime(__FILE__)),
                 'file_time' => filemtime(__FILE__),
@@ -587,6 +635,106 @@ if (!function_exists('webkernelPlatformDebug')) {
         return '<pre style="background: #f5f5f5; padding: 15px; border: 1px solid #ddd; border-radius: 5px; overflow-x: auto;">' . 
                htmlspecialchars(json_encode($debugData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES), ENT_QUOTES, 'UTF-8') . 
                '</pre>';
+    }
+}
+
+if (!function_exists('getVersionDetectionDebug')) {
+    function getVersionDetectionDebug(string $platform): array
+    {
+        $config = getMergedBrandingConfig();
+        
+        if (isset($config['webkernel']['subplatforms'][$platform])) {
+            $platformConfig = $config['webkernel']['subplatforms'][$platform];
+        } elseif (isset($config[$platform])) {
+            $platformConfig = $config[$platform];
+        } else {
+            return [];
+        }
+        
+        $versionDetection = $platformConfig['version_detection'] ?? [];
+        $constantName = $versionDetection['constant'] ?? '';
+        
+        $debug = [
+            'constant_name' => $constantName,
+            'constant_exists' => false,
+            'constant_value' => null,
+            'reflection_available' => false,
+            'class_exists' => false,
+            'fallback_used' => false,
+        ];
+        
+        if (str_contains($constantName, '::')) {
+            $parts = explode('::', $constantName);
+            $className = $parts[0];
+            $constantName = $parts[1];
+            
+            $debug['class_exists'] = class_exists($className);
+            
+            if ($debug['class_exists']) {
+                $debug['reflection_available'] = true;
+                $reflection = new ReflectionClass($className);
+                $debug['constant_exists'] = $reflection->hasConstant($constantName);
+                
+                if ($debug['constant_exists']) {
+                    $debug['constant_value'] = $reflection->getConstant($constantName);
+                }
+            }
+        } elseif (defined($constantName)) {
+            $debug['constant_exists'] = true;
+            $debug['constant_value'] = constant($constantName);
+        }
+        
+        if (!$debug['constant_exists']) {
+            $debug['fallback_used'] = true;
+        }
+        
+        return $debug;
+    }
+}
+
+if (!function_exists('getPlatformDetectionDebug')) {
+    function getPlatformDetectionDebug(): array
+    {
+        $config = getMergedBrandingConfig();
+        $debug = [];
+        
+        foreach ($config as $platform => $platformConfig) {
+            if (isset($platformConfig['subplatforms'])) {
+                foreach ($platformConfig['subplatforms'] as $subplatform => $subConfig) {
+                    $debug[$subplatform] = [
+                        'is_subplatform' => true,
+                        'exists' => platformExists($subplatform),
+                        'detection' => $subConfig['detection'] ?? [],
+                        'class_checks' => [],
+                        'file_checks' => [],
+                        'constant_checks' => [],
+                    ];
+                    
+                    // Check classes
+                    if (!empty($subConfig['detection']['class_exists'])) {
+                        foreach ($subConfig['detection']['class_exists'] as $class) {
+                            $debug[$subplatform]['class_checks'][$class] = class_exists($class);
+                        }
+                    }
+                    
+                    // Check files
+                    if (!empty($subConfig['detection']['file_exists'])) {
+                        foreach ($subConfig['detection']['file_exists'] as $file) {
+                            $debug[$subplatform]['file_checks'][$file] = file_exists(base_path($file));
+                        }
+                    }
+                    
+                    // Check constants
+                    if (!empty($subConfig['detection']['constant_defined'])) {
+                        foreach ($subConfig['detection']['constant_defined'] as $constant) {
+                            $debug[$subplatform]['constant_checks'][$constant] = defined($constant);
+                        }
+                    }
+                }
+            }
+        }
+        
+        return $debug;
     }
 }
 
@@ -624,6 +772,8 @@ if (!function_exists('getAvailablePlatforms')) {
     }
 }
 
+//FROM HERE CORRECT IC PLEASE
+
 if (!function_exists('getAvailableSubplatforms')) {
     function getAvailableSubplatforms(): array
     {
@@ -637,6 +787,9 @@ if (!function_exists('getAvailableSubplatforms')) {
     }
 }
 
+//FROM HERE CORRECT IC PLEASE
+
+// Fix the duplicate function definition issue
 if (!function_exists('getOfficialSubplatforms')) {
     function getOfficialSubplatforms(): array
     {
@@ -645,7 +798,7 @@ if (!function_exists('getOfficialSubplatforms')) {
         
         // Check main platforms
         foreach ($config as $platform => $platformConfig) {
-            if ($platformConfig['official_subplatform'] ?? false) {
+            if (($platformConfig['official_subplatform'] ?? false) && $platform !== 'webkernel') {
                 $officialSubplatforms[] = $platform;
             }
         }

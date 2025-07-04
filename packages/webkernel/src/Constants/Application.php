@@ -5,8 +5,8 @@ use Illuminate\Foundation\Application as LaravelApplication;
 
 class Application extends LaravelApplication
 {
-    const WEBKERNEL_VERSION = '0.0.23';
-    const STABLE_VERSION = '0.0.23';
+    const WEBKERNEL_VERSION = '0.0.24';
+    const STABLE_VERSION = '0.0.24';
 
     const WEBKERNEL_PACKAGES = [
         'webkernel' => [
