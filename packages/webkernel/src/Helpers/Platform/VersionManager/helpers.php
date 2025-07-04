@@ -35,8 +35,8 @@
  * // Get current version
  * <p>Version: {{ getCurrentPlatformVersion(getActivePlatform()) }}</p>
  * 
- * // Debug information
- * {{ webkernelPlatformDebug() }}
+ * // Debug information (now safe for Blade)
+ * {!! webkernelPlatformDebug() !!}
  * 
  * El Moumen Yassine - Numerimondes
  * <yassine@numerimondes.com>
@@ -498,13 +498,13 @@ if (!function_exists('getPlatformBrandingConfig')) {
 }
 
 if (!function_exists('webkernelPlatform')) {
-    function webkernelPlatform(?string $key = null)
+    function webkernelPlatform(?string $key = null): mixed
     {
         $activePlatform = getActivePlatform();
         $config = getPlatformBrandingConfig($activePlatform);
         
         if ($key === null) {
-            return $config;
+            return json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
         
         if (str_contains($key, '.')) {
@@ -513,32 +513,33 @@ if (!function_exists('webkernelPlatform')) {
             
             foreach ($keys as $subKey) {
                 if (!is_array($value) || !isset($value[$subKey])) {
-                    return null;
+                    return '';
                 }
                 $value = $value[$subKey];
             }
             
-            return $value;
+            return is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_SLASHES);
         }
         
-        return $config[$key] ?? null;
+        $result = $config[$key] ?? '';
+        return is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 }
 
 if (!function_exists('webkernelPlatfom')) {
-    function webkernelPlatfom(?string $key = null)
+    function webkernelPlatfom(?string $key = null): mixed
     {
         return webkernelPlatform($key);
     }
 }
 
 if (!function_exists('webkernelPlatformDebug')) {
-    function webkernelPlatformDebug(): array
+    function webkernelPlatformDebug(): string
     {
         $activePlatform = getActivePlatform();
         $config = getPlatformBrandingConfig($activePlatform);
         
-        return [
+        $debugData = [
             'active_platform' => $activePlatform,
             'current_version' => getCurrentPlatformVersion($activePlatform),
             'platform_exists' => platformExists($activePlatform),
@@ -552,14 +553,16 @@ if (!function_exists('webkernelPlatformDebug')) {
                 'file_time' => filemtime(__FILE__),
             ],
         ];
+
+        return '<pre>' . json_encode($debugData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . '</pre>';
     }
 }
 
 if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
-    function platformAbsoluteUrlAnyPrivatetoPublic(?string $path): ?string
+    function platformAbsoluteUrlAnyPrivatetoPublic(?string $path): string
     {
         if (!$path) {
-            return null;
+            return '';
         }
         
         if (str_starts_with($path, '/')) {
@@ -599,12 +602,12 @@ if (!function_exists('getOfficialSubplatforms')) {
 }
 
 if (!function_exists('getPlatformInfo')) {
-    function getPlatformInfo(string $platform, ?string $key = null)
+    function getPlatformInfo(string $platform, ?string $key = null): mixed
     {
         $config = getPlatformBrandingConfig($platform);
         
         if ($key === null) {
-            return $config;
+            return json_encode($config, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
         }
         
         if (str_contains($key, '.')) {
@@ -613,15 +616,16 @@ if (!function_exists('getPlatformInfo')) {
             
             foreach ($keys as $subKey) {
                 if (!is_array($value) || !isset($value[$subKey])) {
-                    return null;
+                    return '';
                 }
                 $value = $value[$subKey];
             }
             
-            return $value;
+            return is_string($value) ? $value : json_encode($value, JSON_UNESCAPED_SLASHES);
         }
         
-        return $config[$key] ?? null;
+        $result = $config[$key] ?? '';
+        return is_string($result) ? $result : json_encode($result, JSON_UNESCAPED_SLASHES);
     }
 }
 
@@ -663,10 +667,10 @@ if (!function_exists('getSystemPanelEditableFields')) {
 }
 
 if (!function_exists('getPlatformLocation')) {
-    function getPlatformLocation(string $platform): ?string
+    function getPlatformLocation(string $platform): string
     {
         $config = getMergedBrandingConfig();
-        return $config[$platform]['app_location'] ?? null;
+        return $config[$platform]['app_location'] ?? '';
     }
 }
 
