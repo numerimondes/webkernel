@@ -144,6 +144,7 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
         </div>
 
         <div class="fi-filament-info-widget-links flex flex-col sm:flex-row gap-2 sm:gap-4 items-center justify-center" style="max-width: 100%; overflow: hidden; flex-wrap: wrap;">
+            
             <x-filament::link
                 color="gray"
                 href="https://numerimondes.com/docs"
