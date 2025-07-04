@@ -1,19 +1,54 @@
 <?php
 
-$excludedDirs = ['vendor', '.git'];
-$excludedFiles = ['helpers.php'];
+/**
+ * Main Webkernel helpers file
+ * This file automatically includes all other helper files
+ * in the current directory and its subdirectories
+ * 
+ * El Moumen Yassine - Numerimondes
+ * <yassine@numerimondes.com>
+ * www.numerimondes.com
+ * 
+ */
+
+
+$helpersDir = __DIR__;
+
+$excludeDirs = [];
+$excludeFiles = [];
+
+$iterator = new RecursiveIteratorIterator(
+    new RecursiveDirectoryIterator($helpersDir, RecursiveDirectoryIterator::SKIP_DOTS)
+);
 
 foreach ($iterator as $file) {
-    $filePath = $file->getRealPath();
-    $relativePath = str_replace($basePath . DIRECTORY_SEPARATOR, '', $filePath);
-
-    if (
-        $file->isFile() &&
-        $file->getExtension() === 'php' &&
-        !in_array(basename($filePath), $excludedFiles) &&
-        !str_contains($relativePath, implode(DIRECTORY_SEPARATOR, $excludedDirs))
-    ) {
-        require_once $filePath;
+    if (!$file->isFile() || $file->getExtension() !== 'php') {
+        continue;
     }
+    
+    $filePath = $file->getRealPath();
+    
+    if ($filePath === __FILE__) {
+        continue;
+    }
+    
+    $relativePath = str_replace($helpersDir . DIRECTORY_SEPARATOR, '', $filePath);
+    
+    if (in_array($relativePath, $excludeFiles)) {
+        continue;
+    }
+    
+    $shouldExclude = false;
+    foreach ($excludeDirs as $excludeDir) {
+        if (strpos($relativePath, $excludeDir . DIRECTORY_SEPARATOR) === 0) {
+            $shouldExclude = true;
+            break;
+        }
+    }
+    
+    if ($shouldExclude) {
+        continue;
+    }
+    
+    require_once $filePath;
 }
-
