@@ -11,18 +11,18 @@ use Filament\Forms\Form;
 use Illuminate\Support\Facades\Cookie;
 use Illuminate\Support\Facades\Redirect;
 
-$helpersPath = __DIR__;
+$basePath = __DIR__;
 
-$excludedFiles = [
-    basename(__FILE__),
-    'no-file-excluded-for-the-moment.php',
-    //'helpers_platformHttp.php',
-    //'helpers_platformsettings.php',
-];
+$directoryIterator = new RecursiveDirectoryIterator($basePath, RecursiveDirectoryIterator::SKIP_DOTS);
+$iterator = new RecursiveIteratorIterator($directoryIterator);
 
-foreach (glob("$helpersPath/*.php") as $file) {
-    if (!in_array(basename($file), $excludedFiles)) {
-        require_once $file;
+foreach ($iterator as $file) {
+    if (
+        $file->isFile() &&
+        $file->getExtension() === 'php' &&
+        $file->getRealPath() !== __FILE__ // exclure helpers.php lui-même
+    ) {
+        require_once $file->getRealPath();
     }
 }
 
