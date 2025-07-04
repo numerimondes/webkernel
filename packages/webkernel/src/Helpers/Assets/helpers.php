@@ -6,12 +6,7 @@ use Illuminate\Support\Str;
 use Illuminate\Support\Carbon;
 
 
-if (!function_exists('appIsWebkernelSubPlatform')) {
-    function appIsWebkernelSubPlatform(): bool
-    {
-        return !empty(glob(base_path('platform/*')));
-    }
-}
+
 
 /**
  * Generate a secure public URL for a private asset with token.
