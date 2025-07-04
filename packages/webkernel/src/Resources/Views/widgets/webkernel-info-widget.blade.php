@@ -83,10 +83,14 @@
         }
     }
 </style>
+
 @endpush
 
 @php
-$adaptation_sys_logo = 'large'; // small, medium, large
+
+if (appIsWebkernelSubPlatform() === true) { $state = 'no'; } else { $state = 'yes'; }
+
+$adaptation_sys_logo = 'large'; 
 
 $logo_sizes = [
     'small' => [
@@ -148,10 +152,10 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
                 rel="noopener noreferrer"
                 target="_blank"
                 class="text-sm"
-                style="max-width: 100%;"
-            >
-                Documentation
-            </x-filament::link>
+                style="max-width: 100%;">
+                {{ $state  }}
+            
+        </x-filament::link>
 
             <x-filament::link
                 color="gray"
