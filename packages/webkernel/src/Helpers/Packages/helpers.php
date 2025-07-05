@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Helpers;
+namespace Webkernel\Helpers\Packages;
 
 use Illuminate\Support\Facades\File;
 

@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Resources\Views\Components;
+namespace Webkernel\Resources\Views\components;
 
 use Illuminate\View\View;
 use Closure;

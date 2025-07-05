@@ -1,6 +1,8 @@
 <?php
 declare(strict_types=1);
 
+//packages/webkernel/src/Helpers/Platform/VersionManager/helpers.php
+
 /**
  * Webkernel Platform Branding System
  * Dynamic branding detection and configuration management with local cache
@@ -171,40 +173,65 @@ if (!function_exists('isOfficialSubplatform')) {
 if (!function_exists('getActivePlatform')) {
     function getActivePlatform(): string
     {
-        $config = getMergedBrandingConfig();
-        
-        // First check webkernel subplatforms in priority order
-        if (isset($config['webkernel']['subplatforms'])) {
-            // Check REAM first since it's more specific
-            if (isset($config['webkernel']['subplatforms']['ream']) && platformExists('ream')) {
-                return 'ream';
-            }
+        try {
+            $config = getMergedBrandingConfig();
             
-            // Then check other subplatforms
-            foreach ($config['webkernel']['subplatforms'] as $subplatform => $subConfig) {
-                if ($subplatform !== 'ream' && platformExists($subplatform)) {
-                    return $subplatform;
+            // First check webkernel subplatforms in priority order
+            if (isset($config['webkernel']['subplatforms'])) {
+                // Check REAM first since it's more specific
+                if (isset($config['webkernel']['subplatforms']['ream'])) {
+                    try {
+                        if (platformExists('ream')) {
+                            return 'ream';
+                        }
+                    } catch (Exception $e) {
+                        // Continue to next platform
+                    }
+                }
+                
+                // Then check other subplatforms
+                foreach ($config['webkernel']['subplatforms'] as $subplatform => $subConfig) {
+                    if ($subplatform !== 'ream') {
+                        try {
+                            if (platformExists($subplatform)) {
+                                return $subplatform;
+                            }
+                        } catch (Exception $e) {
+                            // Continue to next platform
+                            continue;
+                        }
+                    }
                 }
             }
-        }
-        
-        // Then check main platforms
-        $sortedPlatforms = [];
-        foreach ($config as $platform => $platformConfig) {
-            if (isset($platformConfig['official_subplatform']) && $platformConfig['official_subplatform']) {
-                array_unshift($sortedPlatforms, $platform);
-            } else {
-                $sortedPlatforms[] = $platform;
+            
+            // Then check main platforms
+            $sortedPlatforms = [];
+            foreach ($config as $platform => $platformConfig) {
+                if (isset($platformConfig['official_subplatform']) && $platformConfig['official_subplatform']) {
+                    array_unshift($sortedPlatforms, $platform);
+                } else {
+                    $sortedPlatforms[] = $platform;
+                }
             }
-        }
-        
-        foreach ($sortedPlatforms as $platform) {
-            if (platformExists($platform)) {
-                return $platform;
+            
+            foreach ($sortedPlatforms as $platform) {
+                try {
+                    if (platformExists($platform)) {
+                        return $platform;
+                    }
+                } catch (Exception $e) {
+                    // Continue to next platform
+                    continue;
+                }
             }
+            
+            // Always return webkernel as fallback
+            return 'webkernel';
+            
+        } catch (Exception $e) {
+            // Ultimate fallback
+            return 'webkernel';
         }
-        
-        return 'webkernel';
     }
 }
 
@@ -230,24 +257,40 @@ if (!function_exists('platformExists')) {
         
         if (!empty($detection['class_exists'])) {
             foreach ($detection['class_exists'] as $class) {
-                if (class_exists($class)) {
-                    return true;
+                try {
+                    if (class_exists($class)) {
+                        return true;
+                    }
+                } catch (Exception $e) {
+                    // Continue checking other methods
+                    continue;
                 }
             }
         }
         
         if (!empty($detection['file_exists'])) {
             foreach ($detection['file_exists'] as $file) {
-                if (file_exists(base_path($file))) {
-                    return true;
+                try {
+                    $fullPath = base_path($file);
+                    if (file_exists($fullPath)) {
+                        return true;
+                    }
+                } catch (Exception $e) {
+                    // Continue checking other methods
+                    continue;
                 }
             }
         }
         
         if (!empty($detection['constant_defined'])) {
             foreach ($detection['constant_defined'] as $constant) {
-                if (defined($constant)) {
-                    return true;
+                try {
+                    if (defined($constant)) {
+                        return true;
+                    }
+                } catch (Exception $e) {
+                    // Continue checking other methods
+                    continue;
                 }
             }
         }
@@ -259,44 +302,58 @@ if (!function_exists('platformExists')) {
 if (!function_exists('getCurrentPlatformVersion')) {
     function getCurrentPlatformVersion(string $platform): string
     {
-        $config = getMergedBrandingConfig();
-        
-        // Check if it's a subplatform
-        if (isset($config['webkernel']['subplatforms'][$platform])) {
-            $platformConfig = $config['webkernel']['subplatforms'][$platform];
-        } elseif (isset($config[$platform])) {
-            $platformConfig = $config[$platform];
-        } else {
-            return '1.0.0';
-        }
-        
-        $versionDetection = $platformConfig['version_detection'] ?? [];
-        
-        if (!empty($versionDetection['constant'])) {
-            $constantName = $versionDetection['constant'];
+        try {
+            $config = getMergedBrandingConfig();
             
-            // Handle Application::CONSTANT format
-            if (str_contains($constantName, '::')) {
-                $parts = explode('::', $constantName);
-                $className = $parts[0];
-                $constantName = $parts[1];
+            // Check if it's a subplatform
+            if (isset($config['webkernel']['subplatforms'][$platform])) {
+                $platformConfig = $config['webkernel']['subplatforms'][$platform];
+            } elseif (isset($config[$platform])) {
+                $platformConfig = $config[$platform];
+            } else {
+                return '1.0.0';
+            }
+            
+            $versionDetection = $platformConfig['version_detection'] ?? [];
+            
+            if (!empty($versionDetection['constant'])) {
+                $constantName = $versionDetection['constant'];
                 
-                if (class_exists($className)) {
-                    $reflection = new ReflectionClass($className);
-                    if ($reflection->hasConstant($constantName)) {
-                        return $reflection->getConstant($constantName);
+                if (str_contains($constantName, '::')) {
+                    $parts = explode('::', $constantName);
+                    $className = $parts[0];
+                    $constantName = $parts[1];
+                    
+                    try {
+                        if (class_exists($className)) {
+                            $reflection = new ReflectionClass($className);
+                            if ($reflection->hasConstant($constantName)) {
+                                return $reflection->getConstant($constantName);
+                            }
+                        }
+                    } catch (Exception $e) {
+                        // Continue to other methods
+                    }
+                } else {
+                    try {
+                        if (defined($constantName)) {
+                            return constant($constantName);
+                        }
+                    } catch (Exception $e) {
+                        // Continue to other methods
                     }
                 }
-            } elseif (defined($constantName)) {
-                return constant($constantName);
             }
+            
+            if (isset($platformConfig['current_version'])) {
+                return $platformConfig['current_version'];
+            }
+            
+            return $versionDetection['fallback'] ?? '1.0.0';
+            
+        } catch (Exception $e) {
+            return '1.0.0';
         }
-        
-        if (isset($platformConfig['current_version'])) {
-            return $platformConfig['current_version'];
-        }
-        
-        return $versionDetection['fallback'] ?? '1.0.0';
     }
 }
 

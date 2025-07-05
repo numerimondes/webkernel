@@ -9,7 +9,7 @@ use Illuminate\Support\Facades\File;
 class WebkernelCommandServiceProvider extends ServiceProvider
 {
     protected array $coreCommands = [
-        \Webkernel\Console\Package\PlatformComposer::class,
+        \Webkernel\Console\Platform\PlatformComposer::class,
     ];
 
     public function register(): void
@@ -34,9 +34,9 @@ class WebkernelCommandServiceProvider extends ServiceProvider
                 continue;
             }
 
-            $commands = collect(File::glob("{$path}/*.php"))
-                ->map(fn($file) => $namespace . basename($file, '.php'))
-                ->filter(fn($class) => $this->isValidCommand($class))
+            $commands = collect(File::glob($path . '/*.php'))
+                ->map(fn ($file) => $namespace . basename($file, '.php'))
+                ->filter(fn ($class) => $this->isValidCommand($class))
                 ->toArray();
 
             $allCommands = array_merge($allCommands, $commands);
@@ -53,8 +53,7 @@ class WebkernelCommandServiceProvider extends ServiceProvider
         $autoloadNamespaces = $this->getAutoloadNamespaces();
 
         foreach ($autoloadNamespaces as $namespace => $basePath) {
-            $commandDirectories = $this->getCommandDirectories($basePath, $namespace);
-            $paths = array_merge($paths, $commandDirectories);
+            $paths = array_merge($paths, $this->getCommandDirectories($basePath, $namespace));
         }
 
         return $paths;
@@ -63,29 +62,35 @@ class WebkernelCommandServiceProvider extends ServiceProvider
     protected function getCoreCommandPaths(): array
     {
         $basePath = base_path('packages/webkernel/src');
-        
+
         return [
             $basePath . '/Console/Commands' => 'Webkernel\\Console\\Commands\\',
             $basePath . '/Console/Install' => 'Webkernel\\Console\\Install\\',
             $basePath . '/Console/Package' => 'Webkernel\\Console\\Package\\',
+            $basePath . '/Console/Platform' => 'Webkernel\\Console\\Platform\\',
         ];
     }
 
     protected function getCommandDirectories(string $basePath, string $namespace): array
     {
-        $directories = [];
-        $consolePaths = [
-            '/Console',
-            '/Console/Commands',
-            '/Console/Install',
-            '/Console/Package',
+        $paths = [
+            'Console',
+            'Console/Commands',
+            'Console/Install',
+            'Console/Package',
+            'Console/Platform',
         ];
 
-        foreach ($consolePaths as $consolePath) {
-            $fullPath = $basePath . $consolePath;
+        $directories = [];
+
+        foreach ($paths as $pathSuffix) {
+            $fullPath = $basePath . '/' . $pathSuffix;
+
             if (File::isDirectory($fullPath)) {
-                $directories[$fullPath] = $namespace . 'Console\\' . 
-                    ($consolePath === '/Console' ? '' : trim(str_replace('/', '\\', $consolePath), '\\Console\\') . '\\');
+                $nsSuffix = trim(str_replace('/', '\\', $pathSuffix), '\\');
+                $fullNamespace = rtrim($namespace, '\\') . '\\' . $nsSuffix . '\\';
+
+                $directories[$fullPath] = $fullNamespace;
             }
         }
 
@@ -95,22 +100,23 @@ class WebkernelCommandServiceProvider extends ServiceProvider
     protected function getAutoloadNamespaces(): array
     {
         $composerPath = base_path('composer.json');
-        
+
         if (!File::exists($composerPath)) {
             return [];
         }
 
         $composerJson = json_decode(File::get($composerPath), true);
-        
+
         if (!isset($composerJson['autoload']['psr-4'])) {
             return [];
         }
 
         $namespaces = [];
-        
+
         foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
+            // Ignorer Webkernel déjà inclus dans getCoreCommandPaths()
             if ($this->isPlatformNamespace($path)) {
-                $namespaces[rtrim($namespace, '\\') . '\\'] = base_path($path);
+                $namespaces[$namespace] = base_path($path);
             }
         }
 
@@ -119,8 +125,8 @@ class WebkernelCommandServiceProvider extends ServiceProvider
 
     protected function isPlatformNamespace(string $path): bool
     {
-        return str_starts_with($path, 'platform/') || 
-               (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/');
+        return str_starts_with($path, 'platform/')
+            || (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/');
     }
 
     protected function isValidCommand(string $class): bool
@@ -131,9 +137,10 @@ class WebkernelCommandServiceProvider extends ServiceProvider
 
         try {
             $reflection = new \ReflectionClass($class);
-            return $reflection->isSubclassOf(Command::class) && 
-                   !$reflection->isAbstract();
-        } catch (\ReflectionException $e) {
+
+            return $reflection->isSubclassOf(Command::class)
+                && !$reflection->isAbstract();
+        } catch (\ReflectionException) {
             return false;
         }
     }

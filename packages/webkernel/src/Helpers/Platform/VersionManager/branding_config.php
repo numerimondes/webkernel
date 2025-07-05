@@ -7,7 +7,7 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
             'webkernel' => [
                 'app_location' => 'Webkernel\\',
                 'detection' => [
-                    'class_exists' => ['Webkernel\\Application'],
+                    'class_exists' => ['Webkernel\\Application\\Constants'],
                     'file_exists' => [],
                     'constant_defined' => ['Application::WEBKERNEL_VERSION'],
                     'default_active' => true,
@@ -82,9 +82,8 @@ if (!function_exists('getWebkernelUltimateBrandingConfig')) {
                     'ream' => [
                         'app_location' => 'Numerimondes\\Modules\\ReamMar\\',
                         'detection' => [
-                            'class_exists' => ['Numerimondes\\Modules\\ReamMar\\Providers\\Filament\\MarPanelProvider'],
+                            'class_exists' => [''],
                             'file_exists' => [
-                                'platform/Modules/ReamMar/src/Providers/Filament/MarPanelProvider.php',
                                 'platform/Platform.php'
                             ],
                             'constant_defined' => ['Application::REAM_VERSION'],

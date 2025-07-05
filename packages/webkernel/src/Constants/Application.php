@@ -16,7 +16,6 @@ class Application extends LaravelApplication
         ]
     ];
 
-
     const BUSINESS_APPLICATIONS = [];
 
     /**
