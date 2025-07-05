@@ -48,9 +48,9 @@
     },
     "scripts": {
         "pre-autoload-dump": [
-            "@php artisan webkernel:prepare-platform-composer"
         ],
         "post-autoload-dump": [
+            "@php artisan webkernel:composer-action --post-autoload-dump",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade"
