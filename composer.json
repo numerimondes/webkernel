@@ -34,11 +34,11 @@
             "Database\\Seeders\\": "database/seeders/",
             "Webkernel\\": "packages/webkernel/src/",
             "Numerimondes\\": "platform/",
-            "Webkernel\\Database\\Seeders\\": "packages/webkernel/src/database/seeders/",
             "App\\": "app/"
         },
         "files": [
-            "packages/webkernel/src/Helpers/helpers.php"
+            "packages/webkernel/src/Core/Helpers/helpers.php",
+            "packages/webkernel/src/PlatformConfig/ConfigFiles/webkernel.php"
         ]
     },
     "autoload-dev": {
@@ -47,10 +47,8 @@
         }
     },
     "scripts": {
-        "pre-autoload-dump": [
-        ],
+        "pre-autoload-dump": [],
         "post-autoload-dump": [
-            "@php artisan webkernel:composer-action --post-autoload-dump",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade"

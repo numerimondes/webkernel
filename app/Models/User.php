@@ -10,7 +10,7 @@ use Illuminate\Notifications\Notifiable;
 
 
 
-use Webkernel\Traits\UserExtensions as OnlyGetTheActivePackageUserTrait;
+use Webkernel\Core\Traits\UserExtensions as OnlyGetTheActivePackageUserTrait;
 
 class User extends Authenticatable
 {
