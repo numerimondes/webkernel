@@ -12,6 +12,10 @@ class SetLang
     | Handle the incoming request
     |--------------------------------------------------------------------------
     |
+    | To invoque this class use 
+    | WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE 
+    | WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED 
+    |
     | This method is responsible for setting the language of the application.
     | It checks if the user is authenticated and applies their preferred language.
     | If not authenticated, it uses the language stored in the session or defaults to 'en'.
@@ -20,20 +24,17 @@ class SetLang
 
     public function handle(Request $request, Closure $next)
     {
-        // Check if a language is set in the session or use the default language 'en'
-        $locale = session('locale', 'en');  // 'en' is the default language
+        $locale = session('locale', 'en');  
 
-        // If the user is authenticated, use their preferred language, otherwise use the session's language
         if (auth()->check()) {
-            // Retrieve the user's preferred language or fallback to the session language
+
             $userLang = auth()->user()->user_lang ?? $locale;
-            app()->setLocale($userLang); // Set the application locale
+            app()->setLocale($userLang); 
         } else {
-            // If the user is not authenticated, use the language from the session
-            app()->setLocale($locale); // Set the application locale
+
+            app()->setLocale($locale);
         }
 
-        // Proceed with the next request
         return $next($request);
     }
 }

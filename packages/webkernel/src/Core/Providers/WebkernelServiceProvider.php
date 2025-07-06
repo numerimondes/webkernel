@@ -47,6 +47,7 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelPlatformServiceProvider::class);
         $this->app->register(WebkernelAllPanelsServiceProvider::class);
         $this->app->register(PlatformConfigServiceProvider::class);
+        $this->app->register(WebkernelConstantsServiceProvider::class);
 
         // Register providers from platform and packages
         $this->registerPlatformProviders();

@@ -204,7 +204,7 @@ class CoreTranslationsGenerator extends Command
         ];
 
         if (empty($this->baseDir)) {
-            $this->baseDir = base_path('packages/webkernel/src/lang');
+            $this->baseDir = base_path(WEBKERNEL_CORE_PATH . '/lang');
         }
 
         $this->output('info', 'Using basic configuration for recovery');
@@ -233,7 +233,7 @@ class CoreTranslationsGenerator extends Command
         $this->config = config('webkernel', []);
 
         if (empty($this->config)) {
-            $packageConfigPath = base_path('packages/webkernel/src/config/webkernel.php');
+            $packageConfigPath = base_path(WEBKERNEL_CORE_PATH . '/config/webkernel.php');
             if (file_exists($packageConfigPath)) {
                 $packageConfig = include $packageConfigPath;
 
@@ -446,7 +446,7 @@ class CoreTranslationsGenerator extends Command
     {
         $locations = [];
 
-        $webkernelLangDir = 'packages/webkernel/src/lang';
+        $webkernelLangDir = WEBKERNEL_CORE_PATH . '/lang';
         if (is_dir(base_path($webkernelLangDir))) {
             $locations[$webkernelLangDir] = $webkernelLangDir;
         }
@@ -458,7 +458,7 @@ class CoreTranslationsGenerator extends Command
                 if ($package === '.' || $package === '..' || $package === 'webkernel') {
                     continue;
                 }
-                $langDir = "packages/{$package}/src/lang";
+                $langDir = WEBKERNEL_BASE_PATH . "{$package}/lang";
                 $fullPath = base_path($langDir);
                 if (is_dir($fullPath)) {
                     $locations[$langDir] = $langDir;
@@ -488,7 +488,7 @@ class CoreTranslationsGenerator extends Command
         );
 
         if ($choice === null) {
-            $this->output('error', 'Invalid selection. Defaulting to packages/webkernel/src/lang');
+            $this->output('error', sprintf('Invalid selection. Defaulting to %s/lang', WEBKERNEL_CORE_PATH));
             $choice = array_key_first($locations);
         } else {
             $choice = $indexedLocations[intval($choice)];
@@ -497,7 +497,7 @@ class CoreTranslationsGenerator extends Command
         if ($choice === 'database') {
             $this->baseDir = 'database';
             $this->output('info', 'Target location: Database (webkernel_lang_words table)');
-            $this->output('info', 'Model: Webkernel\\Models\\LanguageTranslation');
+            $this->output('info', sprintf('Model: %s', WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED));
             $this->output('warning', 'Database insertion temporarily disabled - structure changes pending');
         } else {
             $this->baseDir = base_path($choice);

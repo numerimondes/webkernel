@@ -12,7 +12,7 @@ use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\File;
-use Webkernel\Core\Http\Middleware\SetLang;
+use WEBKERNEL_LANGUAGE_MIDDLEWARE as SetLang;
 //Illuminate
 use Webkernel\Core\Filament\Pages\Dashboard;
 use Filament\Widgets\FilamentInfoWidget;

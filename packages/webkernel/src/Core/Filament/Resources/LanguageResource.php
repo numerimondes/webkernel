@@ -6,7 +6,7 @@ use BackedEnum;
 use Filament\Tables;
 use Filament\Tables\Table;
 use Filament\Schemas\Schema;
-use Webkernel\Core\Models\Language;
+use WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE as Language;
 use Filament\Actions\EditAction;
 use Filament\Actions\ViewAction;
 use Filament\Resources\Resource;

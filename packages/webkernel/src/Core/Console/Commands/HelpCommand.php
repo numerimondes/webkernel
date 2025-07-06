@@ -559,7 +559,7 @@ class HelpCommand extends Command
  */
 protected function saveComponentDetailsToCsv($componentType, $section, $role, $complexity, $fileType, $componentName, $filePath)
 {
-    $savePath = base_path('packages/webkernel/src/resources/components.csv');
+    $savePath = base_path(WEBKERNEL_PRIVATE_RESOURCE_PATH . '/components.csv');
     $now = Carbon::now();
     $date = $now->format('Y-m-d');
     $time = $now->format('H:i:s');

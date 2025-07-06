@@ -2,11 +2,12 @@
 
 namespace Webkernel\Core\Observers;
 
-use Webkernel\Core\Models\LanguageTranslation;
+use WEBKERNEL_LANGUAGE_TRANSLATION_MODEL as LanguageTranslation;
 use Illuminate\Support\Facades\Cache;
 
 class LanguageTranslationObserver
 {
+    
     /**
      * Handle the LanguageTranslation "created" event.
      */
