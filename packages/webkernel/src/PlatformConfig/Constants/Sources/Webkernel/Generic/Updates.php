@@ -1,7 +1,7 @@
 <?php
-namespace Webkernel\PlatformConfig\ConfigFiles;
+namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic;
 
-class WebkernelConfigUpdateFile
+class Updates
 {
     public const WEBKERNEL_DEFAULT_LOCAL_PATH                  = 'packages/webkernel';
     public const WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO          = 'https://github.com/numerimondes/webkernel';

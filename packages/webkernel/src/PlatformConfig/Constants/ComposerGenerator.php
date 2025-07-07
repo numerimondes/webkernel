@@ -1,13 +1,13 @@
 <?php
 declare(strict_types=1);
 
-namespace Webkernel\Core\Console\Platform;
+namespace Webkernel\PlatformConfig\Constants;
 
 use RecursiveIteratorIterator;
 use RecursiveDirectoryIterator;
 use Exception;
 
-class UpdatePlatformComposer
+class ComposerGenerator
 {
     private array $namespaceMap;
     private array $specialDirectoryMappings;
@@ -530,9 +530,7 @@ class ComposerUpdater
 
     public function updateFilesAutoloading(array $composerData): array
     {
-        $requiredFiles = [
-            'packages/webkernel/src/PlatformConfig/ConfigFiles/webkernel.php'
-        ];
+        $requiredFiles = [ ];
 
         echo "Searching for autoload files...\n";
 
@@ -624,5 +622,5 @@ class ComposerUpdater
 }
 
 $customNamespaceMap = [];
-$composer = new UpdatePlatformComposer($customNamespaceMap);
+$composer = new ComposerGenerator($customNamespaceMap);
 exit($composer->run());

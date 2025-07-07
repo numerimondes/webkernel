@@ -17,6 +17,7 @@
 $helpersDirs = [
     __DIR__,
    // 'packages/webkernel/src/PlatformConfig/Helpers',
+    'packages/webkernel/src/PlatformConfig/Constants/Static/',
     'packages/webkernel/src/Settings/Helpers',
     'platform/Modules/ReamMar/Core/Helpers',
 ];

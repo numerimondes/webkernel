@@ -1,7 +1,7 @@
 <?php
-namespace Webkernel\PlatformConfig\ConfigFiles;
+namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic;
 
-class WebkernelConfigApiFile
+class Api
 {
     public const WEBKERNEL_API_RATE_LIMIT_DEFAULT = '100,1';
     public const WEBKERNEL_API_RATE_LIMIT_STRICT  = '30,1';

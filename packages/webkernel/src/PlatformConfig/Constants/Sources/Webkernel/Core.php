@@ -1,7 +1,7 @@
 <?php
 
-namespace Webkernel\PlatformConfig\ConfigFiles;
-class WebkernelConfigCoreFile
+namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel;
+class Core
 {
     public const WEBKERNEL_VERSION                  = '0.0.26';
     public const WEBKERNEL_REMOTE_STABLE_VERSION    = '0.0.26';

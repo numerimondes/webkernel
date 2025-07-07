@@ -1,7 +1,7 @@
 <?php
-namespace Webkernel\PlatformConfig\ConfigFiles;
+namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic;
 
-class WebkernelConfigCacheFile
+class Cache
 {
     public const WEBKERNEL_CACHE_TTL_PACKAGES     = 3600;
     public const WEBKERNEL_CACHE_TTL_MODULES      = 1800;

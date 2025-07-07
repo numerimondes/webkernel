@@ -38,8 +38,7 @@
             "App\\": "app/"
         },
         "files": [
-            "packages/webkernel/src/Core/Helpers/helpers.php",
-            "packages/webkernel/src/PlatformConfig/ConfigFiles/webkernel.php"
+            "packages/webkernel/src/Core/Helpers/helpers.php"
         ]
     },
     "autoload-dev": {
@@ -48,8 +47,11 @@
         }
     },
     "scripts": {
-        "pre-autoload-dump": [],
+        "pre-autoload-dump": [
+            "@php packages/webkernel/src/PlatformConfig/Constants/webkernel.php"
+        ],
         "post-autoload-dump": [
+            "@php packages/webkernel/src/PlatformConfig/Constants/ComposerGenerator.php",
             "Illuminate\\Foundation\\ComposerScripts::postAutoloadDump",
             "@php artisan package:discover --ansi",
             "@php artisan filament:upgrade"

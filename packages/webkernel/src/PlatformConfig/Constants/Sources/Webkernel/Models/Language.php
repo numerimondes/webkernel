@@ -1,7 +1,7 @@
 <?php
-namespace Webkernel\PlatformConfig\ConfigFiles\LanguageModel;
+namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Models;
 
-class WebkernelConfigFile
+class Language
 {
     public const WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED     = 'Webkernel\\Core\\Models\\Language';
     public const WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE     = 'Webkernel\Core\Models\Language';

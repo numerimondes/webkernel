@@ -1,8 +1,11 @@
 <?php
-// Auto-generated autoload stubs - DO NOT EDIT
-// Generated: 2025-07-06 23:32:44
+/**
+ * Auto-generated autoload stubs - DO NOT EDIT
+ * Generated: 2025-07-07 02:20:49
+ * Total aliases: 3
+ */
 
-// Class aliases for *_CLASS_ALIAS_SIMPLE
+// Class aliases for *_CLASS_ALIAS_SIMPLE constants
 if (!class_exists('WEBKERNEL_LANGUAGE_MODEL') && !interface_exists('WEBKERNEL_LANGUAGE_MODEL') && !trait_exists('WEBKERNEL_LANGUAGE_MODEL')) {
     if (class_exists('Webkernel\Core\Models\Language') || interface_exists('Webkernel\Core\Models\Language') || trait_exists('Webkernel\Core\Models\Language')) {
         class_alias('Webkernel\Core\Models\Language', 'WEBKERNEL_LANGUAGE_MODEL');
@@ -19,8 +22,8 @@ if (!class_exists('WEBKERNEL_LANGUAGE_MIDDLEWARE') && !interface_exists('WEBKERN
     }
 }
 
-// Escaped class references for *_CLASS_ESCAPED
-// WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED = Webkernel\Core\Models\Language
-// WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED = Webkernel\Core\Models\LanguageTranslation
-// WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED = Webkernel\Core\Http\Middleware\SetLang
+// Escaped class references for *_CLASS_ESCAPED constants
+// WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED = 'Webkernel\\Core\\Models\\Language'
+// WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED = 'Webkernel\\Core\\Models\\LanguageTranslation'
+// WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED = 'Webkernel\\Core\\Http\\Middleware\\SetLang'
 
