@@ -1,14 +1,14 @@
 <?php
 /**
  * Auto-generated constants - DO NOT EDIT
- * Generated: 2025-07-07 02:20:49
- * Generation time: 1.31ms
+ * Generated: 2025-07-07 17:06:44
+ * Generation time: 1.1ms
  * Total constants: 120
  * Total classes: 6
  */
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Core
-// Source: Sources/Webkernel/Core.php
+// Webkernel\Constants\Definitions\Webkernel\Core
+// Source: Definitions/Webkernel/Core.php
 if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.26');
 if (!defined('WEBKERNEL_REMOTE_STABLE_VERSION')) define('WEBKERNEL_REMOTE_STABLE_VERSION', '0.0.26');
 if (!defined('WEBKERNEL_BRANDING_VERSION_OR_LESS')) define('WEBKERNEL_BRANDING_VERSION_OR_LESS', '1.0.0');
@@ -46,8 +46,8 @@ if (!defined('WEBKERNEL_VERSION_FILE_PREFIX')) define('WEBKERNEL_VERSION_FILE_PR
 if (!defined('WEBKERNEL_VERSION_FILE_EXTENSION')) define('WEBKERNEL_VERSION_FILE_EXTENSION', '.php');
 if (!defined('WEBKERNEL_PACKAGE_CONFIG_FILE')) define('WEBKERNEL_PACKAGE_CONFIG_FILE', 'composer.json');
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic\Api
-// Source: Sources/Webkernel/Generic/Api.php
+// Webkernel\Constants\Definitions\Webkernel\Generic\Api
+// Source: Definitions/Webkernel/Generic/Api.php
 if (!defined('WEBKERNEL_API_RATE_LIMIT_DEFAULT')) define('WEBKERNEL_API_RATE_LIMIT_DEFAULT', '100,1');
 if (!defined('WEBKERNEL_API_RATE_LIMIT_STRICT')) define('WEBKERNEL_API_RATE_LIMIT_STRICT', '30,1');
 if (!defined('WEBKERNEL_API_TIMEOUT')) define('WEBKERNEL_API_TIMEOUT', 30);
@@ -55,8 +55,8 @@ if (!defined('WEBKERNEL_ASSET_VERSION_CACHE_TTL')) define('WEBKERNEL_ASSET_VERSI
 if (!defined('WEBKERNEL_ASSET_MINIFY_ENABLED')) define('WEBKERNEL_ASSET_MINIFY_ENABLED', true);
 if (!defined('WEBKERNEL_ASSET_COMPRESSION_ENABLED')) define('WEBKERNEL_ASSET_COMPRESSION_ENABLED', true);
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic\Cache
-// Source: Sources/Webkernel/Generic/Cache.php
+// Webkernel\Constants\Definitions\Webkernel\Generic\Cache
+// Source: Definitions/Webkernel/Generic/Cache.php
 if (!defined('WEBKERNEL_CACHE_TTL_PACKAGES')) define('WEBKERNEL_CACHE_TTL_PACKAGES', 3600);
 if (!defined('WEBKERNEL_CACHE_TTL_MODULES')) define('WEBKERNEL_CACHE_TTL_MODULES', 1800);
 if (!defined('WEBKERNEL_CACHE_TTL_VERSIONS')) define('WEBKERNEL_CACHE_TTL_VERSIONS', 7200);
@@ -74,8 +74,8 @@ if (!defined('WEBKERNEL_MAX_LOG_SIZE')) define('WEBKERNEL_MAX_LOG_SIZE', 50);
 if (!defined('WEBKERNEL_MAX_MODULES_COUNT')) define('WEBKERNEL_MAX_MODULES_COUNT', 100);
 if (!defined('WEBKERNEL_MAX_SUBMODULES_COUNT')) define('WEBKERNEL_MAX_SUBMODULES_COUNT', 50);
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic\Updates
-// Source: Sources/Webkernel/Generic/Updates.php
+// Webkernel\Constants\Definitions\Webkernel\Generic\Updates
+// Source: Definitions/Webkernel/Generic/Updates.php
 if (!defined('WEBKERNEL_DEFAULT_LOCAL_PATH')) define('WEBKERNEL_DEFAULT_LOCAL_PATH', 'packages/webkernel');
 if (!defined('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO')) define('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO', 'https://github.com/numerimondes/webkernel');
 if (!defined('WEBKERNEL_DEFAULT_ISSUES_LINK')) define('WEBKERNEL_DEFAULT_ISSUES_LINK', 'https://github.com/numerimondes/webkernel/issues');
@@ -94,17 +94,17 @@ if (!defined('WEBKERNEL_CACHE_CLEAR')) define('WEBKERNEL_CACHE_CLEAR', 'webkerne
 if (!defined('WEBKERNEL_CONFIG_CACHE')) define('WEBKERNEL_CONFIG_CACHE', 'webkernel:config-cache');
 if (!defined('WEBKERNEL_ARTISAN_CMD_UPDATER')) define('WEBKERNEL_ARTISAN_CMD_UPDATER', 'php artisan webkernel:update');
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Models\Language
-// Source: Sources/Webkernel/Models/Language.php
-if (!defined('WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
+// Webkernel\Constants\Definitions\Webkernel\Models\Language
+// Source: Definitions/Webkernel/Models/Language.php
+if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
 if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\Language');
 if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\LanguageTranslation');
 if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\LanguageTranslation');
 if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
 if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
 
-// Webkernel\PlatformConfig\Constants\Sources\Webkernel\Security\Main
-// Source: Sources/Webkernel/Security/Main.php
+// Webkernel\Constants\Definitions\Webkernel\Security\Main
+// Source: Definitions/Webkernel/Security/Main.php
 if (!defined('WEBKERNEL_ALLOWED_CONFIG_FILE_EXTENSIONS')) define('WEBKERNEL_ALLOWED_CONFIG_FILE_EXTENSIONS', '["php","json","yaml","yml","env"]');
 if (!defined('WEBKERNEL_ALLOWED_UPLOAD_FILE_EXTENSIONS')) define('WEBKERNEL_ALLOWED_UPLOAD_FILE_EXTENSIONS', '["jpg","jpeg","png","gif","bmp","webp","svg","ico","tiff","tif","pdf","doc","docx","xls","xlsx","ppt","pptx","odt","ods","odp","rtf","txt","csv","mp3","wav","ogg","flac","aac","m4a","wma","mp4","avi","mov","wmv","flv","webm","mkv","m4v","3gp","zip","rar","7z","tar","gz","ttf","otf","woff","woff2","eot","json","xml","yml","yaml","psd","ai","sketch","fig","xd"]');
 if (!defined('WEBKERNEL_EXCLUDED_UPLOAD_FILE_EXTENSIONS')) define('WEBKERNEL_EXCLUDED_UPLOAD_FILE_EXTENSIONS', '["exe","bat","cmd","com","pif","scr","msi","dll","app","deb","rpm","run","php","php3","php4","php5","php7","php8","phtml","phar","asp","aspx","jsp","jspx","pl","py","rb","sh","bash","zsh","fish","ps1","vbs","vb","js","ts","jsx","tsx","vue","svelte","htaccess","htpasswd","conf","config","ini","cfg","toml","nginx","apache","httpd","lighttpd","env","environment","artisan","sql","db","sqlite","sqlite3","mdb","accdb","dbf","sys","tmp","temp","log","bak","old","orig","swp","swo","swf","fla","as","actionscript","docm","xlsm","pptm","dotm","xltm","potm","c","cpp","cc","cxx","h","hpp","cs","java","class","jar","go","rs","swift","kt","scala","clj","lisp","hs","apk","ipa","xap","appx","dmg","iso","img","bin","hex","raw","torrent","lnk","url","desktop","reg","crt","key","pem","p12","pfx","blade","stub","lock"]');

@@ -23,7 +23,6 @@ use Webkernel\Core\Providers\WebkernelPlatformServiceProvider;
 use Webkernel\Core\Providers\WebkernelPoliciesServiceProvider;
 use Webkernel\Core\Providers\WebkernelAllPanelsServiceProvider;
 use Webkernel\Core\Providers\WebkernelMigrationServiceProvider;
-use Webkernel\PlatformConfig\Providers\PlatformConfigServiceProvider;
 
 class WebkernelServiceProvider extends ServiceProvider
 {
@@ -46,8 +45,6 @@ class WebkernelServiceProvider extends ServiceProvider
         $this->app->register(WebkernelConfigServiceProvider::class);
         $this->app->register(WebkernelPlatformServiceProvider::class);
         $this->app->register(WebkernelAllPanelsServiceProvider::class);
-        $this->app->register(PlatformConfigServiceProvider::class);
-        $this->app->register(WebkernelConstantsServiceProvider::class);
 
         // Register providers from platform and packages
         $this->registerPlatformProviders();

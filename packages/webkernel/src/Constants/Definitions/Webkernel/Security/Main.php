@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Security;
+namespace Webkernel\Constants\Definitions\Webkernel\Security;
 
 class Main
 {

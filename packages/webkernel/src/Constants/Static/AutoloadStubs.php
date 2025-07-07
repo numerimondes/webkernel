@@ -1,8 +1,9 @@
 <?php
 /**
  * Auto-generated autoload stubs - DO NOT EDIT
- * Generated: 2025-07-07 02:20:49
+ * Generated: 2025-07-07 17:06:44
  * Total aliases: 3
+ * Total escaped: 3
  */
 
 // Class aliases for *_CLASS_ALIAS_SIMPLE constants
@@ -23,7 +24,7 @@ if (!class_exists('WEBKERNEL_LANGUAGE_MIDDLEWARE') && !interface_exists('WEBKERN
 }
 
 // Escaped class references for *_CLASS_ESCAPED constants
-// WEBKERNEL_LANGUAGE_TMODEL_CLASS_ESCAPED = 'Webkernel\\Core\\Models\\Language'
+// WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED = 'Webkernel\\Core\\Models\\Language'
 // WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED = 'Webkernel\\Core\\Models\\LanguageTranslation'
 // WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED = 'Webkernel\\Core\\Http\\Middleware\\SetLang'
 

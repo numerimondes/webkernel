@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\PlatformConfig\Constants\Sources\Webkernel\Generic;
+namespace Webkernel\Constants\Definitions\Webkernel\Generic;
 
 class Cache
 {

@@ -1,68 +1,74 @@
 <?php
 
-/**
- * Main Webkernel helpers file
- * 
- * > packages/webkernel/src/Core/Helpers/helpers.php
- * 
- * This file automatically includes all other helper files
- * in the current directory and its subdirectories
- * 
- * El Moumen Yassine - Numerimondes
- * <yassine@numerimondes.com>
- * www.numerimondes.com
- * 
- */
+$basePath = dirname(__DIR__, 4);
+
+$criticalFiles = [
+
+];
 
 $helpersDirs = [
     __DIR__,
-   // 'packages/webkernel/src/PlatformConfig/Helpers',
-    'packages/webkernel/src/PlatformConfig/Constants/Static/',
-    'packages/webkernel/src/Settings/Helpers',
-    'platform/Modules/ReamMar/Core/Helpers',
+    $basePath . '/packages/webkernel/src/Settings/Helpers',
+    $basePath . '/platform/Modules/ReamMar/Core/Helpers',
 ];
 
 $excludeDirs = [];
 $excludeFiles = [];
 
-foreach ($helpersDirs as $helpersDir) {
-    if (!is_dir($helpersDir)) {
-        continue;
-    }
+function cleanPhpContent($content) {
+    $content = preg_replace('/^\s*<\?php\s*/', '', $content);
+    $content = preg_replace('/\s*\?>\s*$/', '', $content);
+    $content = preg_replace('/^\s*(require|include)(_once)?\s*[^;]*;?\s*$/m', '', $content);
+    return trim($content);
+}
+
+function getAllPhpFiles($dir, $excludeDirs = [], $excludeFiles = []) {
+    $files = [];
+    if (!is_dir($dir)) return $files;
     
     $iterator = new RecursiveIteratorIterator(
-        new RecursiveDirectoryIterator($helpersDir, RecursiveDirectoryIterator::SKIP_DOTS)
+        new RecursiveDirectoryIterator($dir, RecursiveDirectoryIterator::SKIP_DOTS)
     );
     
     foreach ($iterator as $file) {
-        if (!$file->isFile() || $file->getExtension() !== 'php') {
-            continue;
-        }
+        if (!$file->isFile() || $file->getExtension() !== 'php') continue;
         
         $filePath = $file->getRealPath();
+        if ($filePath === __FILE__) continue;
         
-        if ($filePath === __FILE__) {
-            continue;
-        }
+        $relativePath = str_replace($dir . DIRECTORY_SEPARATOR, '', $filePath);
         
-        $relativePath = str_replace($helpersDir . DIRECTORY_SEPARATOR, '', $filePath);
+        if (in_array($relativePath, $excludeFiles)) continue;
         
-        if (in_array($relativePath, $excludeFiles)) {
-            continue;
-        }
-        
-        $shouldExclude = false;
         foreach ($excludeDirs as $excludeDir) {
-            if (strpos($relativePath, $excludeDir . DIRECTORY_SEPARATOR) === 0) {
-                $shouldExclude = true;
-                break;
+            if (str_starts_with($relativePath, $excludeDir . DIRECTORY_SEPARATOR)) {
+                continue 2;
             }
         }
         
-        if ($shouldExclude) {
-            continue;
+        $files[] = $filePath;
+    }
+    
+    return $files;
+}
+
+foreach ($criticalFiles as $file) {
+    if (file_exists($file)) {
+        $content = file_get_contents($file);
+        $cleanContent = cleanPhpContent($content);
+        if ($cleanContent) {
+            eval($cleanContent);
         }
-        
-        require_once $filePath;
+    }
+}
+
+foreach ($helpersDirs as $dir) {
+    $files = getAllPhpFiles($dir, $excludeDirs, $excludeFiles);
+    foreach ($files as $file) {
+        $content = file_get_contents($file);
+        $cleanContent = cleanPhpContent($content);
+        if ($cleanContent) {
+            eval($cleanContent);
+        }
     }
 }

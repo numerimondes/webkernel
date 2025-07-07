@@ -5,6 +5,7 @@ use Filament\Resources\Resource;
 use Filament\Widgets\Widget;
 use Filament\Clusters\Cluster;
 
+
 if (!function_exists('discover_platform_modules_components')) {
     /**
      * Découvre dynamiquement toutes les classes Filament des modules Numerimondes\Modules\*,
