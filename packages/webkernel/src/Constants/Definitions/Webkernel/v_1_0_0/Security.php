@@ -1,7 +1,7 @@
 <?php
-namespace Webkernel\Constants\Definitions\Webkernel\Security;
+namespace Webkernel\Constants\Definitions\Webkernel\v_1_0_0;
 
-class Main
+class Security
 {
     public const WEBKERNEL_ALLOWED_CONFIG_FILE_EXTENSIONS   = ['php', 'json', 'yaml', 'yml', 'env'];
     public const WEBKERNEL_ALLOWED_UPLOAD_FILE_EXTENSIONS   = [

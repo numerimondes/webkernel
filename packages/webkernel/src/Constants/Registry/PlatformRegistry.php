@@ -7,6 +7,7 @@ namespace Webkernel\Constants\Registry;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Cache;
 
+
 class PlatformRegistry
 {
     private static ?string $tenantId = null;
@@ -230,4 +231,36 @@ class PlatformRegistry
         }
         return [];
     }
+
+    public static function dumpDefinitions(): void
+    {
+        static::initialize();
+        print_r(static::$definitions);
+    }
+}
+
+if (__FILE__ === realpath($_SERVER['SCRIPT_FILENAME'])) {
+    $autoloadPaths = [
+        __DIR__ . '/../../../../../vendor/autoload.php',
+    ];
+
+    $autoloadFound = false;
+    foreach ($autoloadPaths as $autoloadPath) {
+        if (file_exists($autoloadPath)) {
+            require_once $autoloadPath;
+            $autoloadFound = true;
+            break;
+        }
+    }
+
+    if (!$autoloadFound) {
+        echo "Error: Could not find vendor/autoload.php\n";
+        exit(1);
+    }
+
+    PlatformRegistry::dumpDefinitions();
+
+    echo "\n===== PlatformRegistry::\$definitions =====\n";
+    print_r((new \ReflectionClass(PlatformRegistry::class))
+        ->getStaticProperties()['definitions']);
 }

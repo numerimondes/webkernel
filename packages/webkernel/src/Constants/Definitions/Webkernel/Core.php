@@ -1,10 +1,14 @@
 <?php
-
 namespace Webkernel\Constants\Definitions\Webkernel;
 
 class Core
 {
     public const WEBKERNEL_VERSION                  = '0.0.26';
+    public const DEFAULT_TIMEOUT = 30;
+    public const MAX_RETRIES = 3;
+    public const CACHE_TTL = 3600;
+    public const WEBKERNEL_ROUTE_PATH = "packages/webkernel/src/Core/routes";
+    public const WEBKERNEL_MODULES_NAMESPACE = "Numerimondes\\";
     public const WEBKERNEL_REMOTE_STABLE_VERSION    = '0.0.26';
     public const WEBKERNEL_BRANDING_VERSION_OR_LESS = '1.0.0'; 
     public const WEBKERNEL_NAME                     = 'Webkernel';
@@ -12,10 +16,8 @@ class Core
     public const WEBKERNEL_PLATFORM_NAME            = '';
     public const WEBKERNEL_API_VERSION              = 'v1';
     public const WEBKERNEL_MODULES_BASE_PATH        = 'platform/';
-    public const WEBKERNEL_MODULES_NAMESPACE        = 'Numerimondes\\';
     public const WEBKERNEL_BASE_PATH                = 'packages/webkernel/src';
     public const WEBKERNEL_CORE_PATH                = 'packages/webkernel/src/Core';
-    public const WEBKERNEL_ROUTE_PATH               = 'packages/webkernel/src/Core/routes';
     public const WEBKERNEL_NAMESPACE                = 'Webkernel\\';
     public const WEBKERNEL_MAIN_HELPER_FILE         = 'packages/webkernel/src/Core/Helpers/helpers.php';
     public const WEBKERNEL_PROVIDERS_BASE_PATH      = 'packages/webkernel/src/PlatformConfig/Providers';

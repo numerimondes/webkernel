@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Constants\Definitions\Webkernel\Generic;
+namespace Webkernel\Constants\Definitions\Webkernel\v_1_0_0;
 
 class Api
 {

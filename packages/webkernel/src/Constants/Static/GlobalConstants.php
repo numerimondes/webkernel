@@ -1,15 +1,26 @@
 <?php
 /**
  * Auto-generated constants - DO NOT EDIT
- * Generated: 2025-07-07 17:06:44
- * Generation time: 1.1ms
- * Total constants: 120
- * Total classes: 6
+ * Generated: 2025-07-07 20:31:16
+ * Generation time: 1.9ms
+ * Total constants: 135
+ * Total classes: 10
  */
+
+// Webkernel\Constants\Definitions\ReamMar\Core\v_1_0_0\Core
+// Source: Definitions/ReamMar/Core/v_1_0_0/Core.php
+if (!defined('PLATFORM_NAME')) define('PLATFORM_NAME', 'ReamMar');
+if (!defined('PLATFORM_LOGO')) define('PLATFORM_LOGO', 'logo.png');
+if (!defined('PLATFORM_URL')) define('PLATFORM_URL', 'https://reammar.com');
 
 // Webkernel\Constants\Definitions\Webkernel\Core
 // Source: Definitions/Webkernel/Core.php
 if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.26');
+if (!defined('DEFAULT_TIMEOUT')) define('DEFAULT_TIMEOUT', 30);
+if (!defined('MAX_RETRIES')) define('MAX_RETRIES', 3);
+if (!defined('CACHE_TTL')) define('CACHE_TTL', 3600);
+if (!defined('WEBKERNEL_ROUTE_PATH')) define('WEBKERNEL_ROUTE_PATH', 'packages/webkernel/src/Core/routes');
+if (!defined('WEBKERNEL_MODULES_NAMESPACE')) define('WEBKERNEL_MODULES_NAMESPACE', 'Numerimondes\\');
 if (!defined('WEBKERNEL_REMOTE_STABLE_VERSION')) define('WEBKERNEL_REMOTE_STABLE_VERSION', '0.0.26');
 if (!defined('WEBKERNEL_BRANDING_VERSION_OR_LESS')) define('WEBKERNEL_BRANDING_VERSION_OR_LESS', '1.0.0');
 if (!defined('WEBKERNEL_NAME')) define('WEBKERNEL_NAME', 'Webkernel');
@@ -17,10 +28,8 @@ if (!defined('WEBKERNEL_LICENCE')) define('WEBKERNEL_LICENCE', 'MPL-2.0');
 if (!defined('WEBKERNEL_PLATFORM_NAME')) define('WEBKERNEL_PLATFORM_NAME', '');
 if (!defined('WEBKERNEL_API_VERSION')) define('WEBKERNEL_API_VERSION', 'v1');
 if (!defined('WEBKERNEL_MODULES_BASE_PATH')) define('WEBKERNEL_MODULES_BASE_PATH', 'platform/');
-if (!defined('WEBKERNEL_MODULES_NAMESPACE')) define('WEBKERNEL_MODULES_NAMESPACE', 'Numerimondes\\');
 if (!defined('WEBKERNEL_BASE_PATH')) define('WEBKERNEL_BASE_PATH', 'packages/webkernel/src');
 if (!defined('WEBKERNEL_CORE_PATH')) define('WEBKERNEL_CORE_PATH', 'packages/webkernel/src/Core');
-if (!defined('WEBKERNEL_ROUTE_PATH')) define('WEBKERNEL_ROUTE_PATH', 'packages/webkernel/src/Core/routes');
 if (!defined('WEBKERNEL_NAMESPACE')) define('WEBKERNEL_NAMESPACE', 'Webkernel\\');
 if (!defined('WEBKERNEL_MAIN_HELPER_FILE')) define('WEBKERNEL_MAIN_HELPER_FILE', 'packages/webkernel/src/Core/Helpers/helpers.php');
 if (!defined('WEBKERNEL_PROVIDERS_BASE_PATH')) define('WEBKERNEL_PROVIDERS_BASE_PATH', 'packages/webkernel/src/PlatformConfig/Providers');
@@ -46,8 +55,14 @@ if (!defined('WEBKERNEL_VERSION_FILE_PREFIX')) define('WEBKERNEL_VERSION_FILE_PR
 if (!defined('WEBKERNEL_VERSION_FILE_EXTENSION')) define('WEBKERNEL_VERSION_FILE_EXTENSION', '.php');
 if (!defined('WEBKERNEL_PACKAGE_CONFIG_FILE')) define('WEBKERNEL_PACKAGE_CONFIG_FILE', 'composer.json');
 
-// Webkernel\Constants\Definitions\Webkernel\Generic\Api
-// Source: Definitions/Webkernel/Generic/Api.php
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Core
+// Source: Definitions/Webkernel/v_1_0_0/Core.php
+if (!defined('API_VERSION')) define('API_VERSION', '1.0.0');
+if (!defined('FEATURE_FLAGS')) define('FEATURE_FLAGS', '["feature_a","feature_b"]');
+if (!defined('DEBUG_MODE')) define('DEBUG_MODE', false);
+
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Api
+// Source: Definitions/Webkernel/v_1_0_0/Api.php
 if (!defined('WEBKERNEL_API_RATE_LIMIT_DEFAULT')) define('WEBKERNEL_API_RATE_LIMIT_DEFAULT', '100,1');
 if (!defined('WEBKERNEL_API_RATE_LIMIT_STRICT')) define('WEBKERNEL_API_RATE_LIMIT_STRICT', '30,1');
 if (!defined('WEBKERNEL_API_TIMEOUT')) define('WEBKERNEL_API_TIMEOUT', 30);
@@ -55,8 +70,8 @@ if (!defined('WEBKERNEL_ASSET_VERSION_CACHE_TTL')) define('WEBKERNEL_ASSET_VERSI
 if (!defined('WEBKERNEL_ASSET_MINIFY_ENABLED')) define('WEBKERNEL_ASSET_MINIFY_ENABLED', true);
 if (!defined('WEBKERNEL_ASSET_COMPRESSION_ENABLED')) define('WEBKERNEL_ASSET_COMPRESSION_ENABLED', true);
 
-// Webkernel\Constants\Definitions\Webkernel\Generic\Cache
-// Source: Definitions/Webkernel/Generic/Cache.php
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Cache
+// Source: Definitions/Webkernel/v_1_0_0/Cache.php
 if (!defined('WEBKERNEL_CACHE_TTL_PACKAGES')) define('WEBKERNEL_CACHE_TTL_PACKAGES', 3600);
 if (!defined('WEBKERNEL_CACHE_TTL_MODULES')) define('WEBKERNEL_CACHE_TTL_MODULES', 1800);
 if (!defined('WEBKERNEL_CACHE_TTL_VERSIONS')) define('WEBKERNEL_CACHE_TTL_VERSIONS', 7200);
@@ -74,28 +89,8 @@ if (!defined('WEBKERNEL_MAX_LOG_SIZE')) define('WEBKERNEL_MAX_LOG_SIZE', 50);
 if (!defined('WEBKERNEL_MAX_MODULES_COUNT')) define('WEBKERNEL_MAX_MODULES_COUNT', 100);
 if (!defined('WEBKERNEL_MAX_SUBMODULES_COUNT')) define('WEBKERNEL_MAX_SUBMODULES_COUNT', 50);
 
-// Webkernel\Constants\Definitions\Webkernel\Generic\Updates
-// Source: Definitions/Webkernel/Generic/Updates.php
-if (!defined('WEBKERNEL_DEFAULT_LOCAL_PATH')) define('WEBKERNEL_DEFAULT_LOCAL_PATH', 'packages/webkernel');
-if (!defined('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO')) define('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO', 'https://github.com/numerimondes/webkernel');
-if (!defined('WEBKERNEL_DEFAULT_ISSUES_LINK')) define('WEBKERNEL_DEFAULT_ISSUES_LINK', 'https://github.com/numerimondes/webkernel/issues');
-if (!defined('NUMERIMONDES_DOT_COM')) define('NUMERIMONDES_DOT_COM', 'https://numerimondes.com');
-if (!defined('WEBKERNEL_GITHUB_MAIN_BRANCH_NAME')) define('WEBKERNEL_GITHUB_MAIN_BRANCH_NAME', 'main');
-if (!defined('WEBKERNEL_GITHUB_URL_ARGUMENTS')) define('WEBKERNEL_GITHUB_URL_ARGUMENTS', '');
-if (!defined('WEBKERNEL_DEFAULT_NUMERIMONDES_REMOTE_REPO')) define('WEBKERNEL_DEFAULT_NUMERIMONDES_REMOTE_REPO', '');
-if (!defined('WEBKERNEL_DEFAULT_NUMERIMONDES_URL_ARGUMENTS')) define('WEBKERNEL_DEFAULT_NUMERIMONDES_URL_ARGUMENTS', '');
-if (!defined('WEBKERNEL_IS_NUMERIMONDES_REPO_USABLE')) define('WEBKERNEL_IS_NUMERIMONDES_REPO_USABLE', false);
-if (!defined('WEBKERNEL_REMOTE_PACKAGES_PATH')) define('WEBKERNEL_REMOTE_PACKAGES_PATH', 'packages/webkernel/src/PlatformConfig/WebkernelConfigCoreFile.php');
-if (!defined('WEBKERNEL_UPDATER')) define('WEBKERNEL_UPDATER', 'webkernel:update');
-if (!defined('WEBKERNEL_MODULES_UPDATER')) define('WEBKERNEL_MODULES_UPDATER', 'webkernel:platform-update');
-if (!defined('WEBKERNEL_INSTALLER')) define('WEBKERNEL_INSTALLER', 'webkernel:install');
-if (!defined('WEBKERNEL_COMPOSER_GENERATOR')) define('WEBKERNEL_COMPOSER_GENERATOR', 'webkernel:composer-generate');
-if (!defined('WEBKERNEL_CACHE_CLEAR')) define('WEBKERNEL_CACHE_CLEAR', 'webkernel:cache-clear');
-if (!defined('WEBKERNEL_CONFIG_CACHE')) define('WEBKERNEL_CONFIG_CACHE', 'webkernel:config-cache');
-if (!defined('WEBKERNEL_ARTISAN_CMD_UPDATER')) define('WEBKERNEL_ARTISAN_CMD_UPDATER', 'php artisan webkernel:update');
-
-// Webkernel\Constants\Definitions\Webkernel\Models\Language
-// Source: Definitions/Webkernel/Models/Language.php
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Language
+// Source: Definitions/Webkernel/v_1_0_0/Language.php
 if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
 if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\Language');
 if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\LanguageTranslation');
@@ -103,8 +98,8 @@ if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED')) define('WEBK
 if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
 if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
 
-// Webkernel\Constants\Definitions\Webkernel\Security\Main
-// Source: Definitions/Webkernel/Security/Main.php
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Security
+// Source: Definitions/Webkernel/v_1_0_0/Security.php
 if (!defined('WEBKERNEL_ALLOWED_CONFIG_FILE_EXTENSIONS')) define('WEBKERNEL_ALLOWED_CONFIG_FILE_EXTENSIONS', '["php","json","yaml","yml","env"]');
 if (!defined('WEBKERNEL_ALLOWED_UPLOAD_FILE_EXTENSIONS')) define('WEBKERNEL_ALLOWED_UPLOAD_FILE_EXTENSIONS', '["jpg","jpeg","png","gif","bmp","webp","svg","ico","tiff","tif","pdf","doc","docx","xls","xlsx","ppt","pptx","odt","ods","odp","rtf","txt","csv","mp3","wav","ogg","flac","aac","m4a","wma","mp4","avi","mov","wmv","flv","webm","mkv","m4v","3gp","zip","rar","7z","tar","gz","ttf","otf","woff","woff2","eot","json","xml","yml","yaml","psd","ai","sketch","fig","xd"]');
 if (!defined('WEBKERNEL_EXCLUDED_UPLOAD_FILE_EXTENSIONS')) define('WEBKERNEL_EXCLUDED_UPLOAD_FILE_EXTENSIONS', '["exe","bat","cmd","com","pif","scr","msi","dll","app","deb","rpm","run","php","php3","php4","php5","php7","php8","phtml","phar","asp","aspx","jsp","jspx","pl","py","rb","sh","bash","zsh","fish","ps1","vbs","vb","js","ts","jsx","tsx","vue","svelte","htaccess","htpasswd","conf","config","ini","cfg","toml","nginx","apache","httpd","lighttpd","env","environment","artisan","sql","db","sqlite","sqlite3","mdb","accdb","dbf","sys","tmp","temp","log","bak","old","orig","swp","swo","swf","fla","as","actionscript","docm","xlsm","pptm","dotm","xltm","potm","c","cpp","cc","cxx","h","hpp","cs","java","class","jar","go","rs","swift","kt","scala","clj","lisp","hs","apk","ipa","xap","appx","dmg","iso","img","bin","hex","raw","torrent","lnk","url","desktop","reg","crt","key","pem","p12","pfx","blade","stub","lock"]');
@@ -144,4 +139,36 @@ if (!defined('WEBKERNEL_SECURITY_SANITIZE_FILENAMES')) define('WEBKERNEL_SECURIT
 if (!defined('WEBKERNEL_SECURITY_VALIDATE_FILE_CONTENT')) define('WEBKERNEL_SECURITY_VALIDATE_FILE_CONTENT', true);
 if (!defined('WEBKERNEL_SECURITY_ALLOWED_MIME_TYPES')) define('WEBKERNEL_SECURITY_ALLOWED_MIME_TYPES', '["image/jpeg","image/jpg","image/png","image/gif","image/bmp","image/webp","image/svg+xml","image/x-icon","image/tiff","application/pdf","application/msword","application/vnd.openxmlformats-officedocument.wordprocessingml.document","application/vnd.ms-excel","application/vnd.openxmlformats-officedocument.spreadsheetml.sheet","application/vnd.ms-powerpoint","application/vnd.openxmlformats-officedocument.presentationml.presentation","application/vnd.oasis.opendocument.text","application/vnd.oasis.opendocument.spreadsheet","application/vnd.oasis.opendocument.presentation","application/rtf","text/plain","text/csv","audio/mpeg","audio/wav","audio/ogg","audio/flac","audio/aac","audio/x-m4a","audio/x-ms-wma","video/mp4","video/avi","video/quicktime","video/x-ms-wmv","video/x-flv","video/webm","video/x-matroska","video/x-m4v","video/3gpp","application/zip","application/x-rar-compressed","application/x-7z-compressed","application/x-tar","application/gzip","font/ttf","font/otf","font/woff","font/woff2","application/vnd.ms-fontobject","application/json","application/xml","text/xml","application/x-yaml","text/yaml"]');
 if (!defined('WEBKERNEL_SECURITY_BLOCKED_MIME_TYPES')) define('WEBKERNEL_SECURITY_BLOCKED_MIME_TYPES', '["application/x-php","application/x-httpd-php","application/php","text/x-php","application/x-executable","application/x-msdownload","application/x-msdos-program","application/x-sh","application/x-shellscript","text/x-shellscript","application/javascript","text/javascript","application/x-javascript","application/x-asp","application/x-aspx","application/x-jsp"]');
+
+// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Updates
+// Source: Definitions/Webkernel/v_1_0_0/Updates.php
+if (!defined('WEBKERNEL_DEFAULT_LOCAL_PATH')) define('WEBKERNEL_DEFAULT_LOCAL_PATH', 'packages/webkernel');
+if (!defined('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO')) define('WEBKERNEL_DEFAULT_GITHUB_REMOTE_REPO', 'https://github.com/numerimondes/webkernel');
+if (!defined('WEBKERNEL_DEFAULT_ISSUES_LINK')) define('WEBKERNEL_DEFAULT_ISSUES_LINK', 'https://github.com/numerimondes/webkernel/issues');
+if (!defined('NUMERIMONDES_DOT_COM')) define('NUMERIMONDES_DOT_COM', 'https://numerimondes.com');
+if (!defined('WEBKERNEL_GITHUB_MAIN_BRANCH_NAME')) define('WEBKERNEL_GITHUB_MAIN_BRANCH_NAME', 'main');
+if (!defined('WEBKERNEL_GITHUB_URL_ARGUMENTS')) define('WEBKERNEL_GITHUB_URL_ARGUMENTS', '');
+if (!defined('WEBKERNEL_DEFAULT_NUMERIMONDES_REMOTE_REPO')) define('WEBKERNEL_DEFAULT_NUMERIMONDES_REMOTE_REPO', '');
+if (!defined('WEBKERNEL_DEFAULT_NUMERIMONDES_URL_ARGUMENTS')) define('WEBKERNEL_DEFAULT_NUMERIMONDES_URL_ARGUMENTS', '');
+if (!defined('WEBKERNEL_IS_NUMERIMONDES_REPO_USABLE')) define('WEBKERNEL_IS_NUMERIMONDES_REPO_USABLE', false);
+if (!defined('WEBKERNEL_REMOTE_PACKAGES_PATH')) define('WEBKERNEL_REMOTE_PACKAGES_PATH', 'packages/webkernel/src/PlatformConfig/WebkernelConfigCoreFile.php');
+if (!defined('WEBKERNEL_UPDATER')) define('WEBKERNEL_UPDATER', 'webkernel:update');
+if (!defined('WEBKERNEL_MODULES_UPDATER')) define('WEBKERNEL_MODULES_UPDATER', 'webkernel:platform-update');
+if (!defined('WEBKERNEL_INSTALLER')) define('WEBKERNEL_INSTALLER', 'webkernel:install');
+if (!defined('WEBKERNEL_COMPOSER_GENERATOR')) define('WEBKERNEL_COMPOSER_GENERATOR', 'webkernel:composer-generate');
+if (!defined('WEBKERNEL_CACHE_CLEAR')) define('WEBKERNEL_CACHE_CLEAR', 'webkernel:cache-clear');
+if (!defined('WEBKERNEL_CONFIG_CACHE')) define('WEBKERNEL_CONFIG_CACHE', 'webkernel:config-cache');
+if (!defined('WEBKERNEL_ARTISAN_CMD_UPDATER')) define('WEBKERNEL_ARTISAN_CMD_UPDATER', 'php artisan webkernel:update');
+
+// Webkernel\Constants\Definitions\ReamMar\Mpr\v_1_0_0\Api
+// Source: Definitions/ReamMar/Mpr/v_1_0_0/Api.php
+if (!defined('API_ENDPOINT')) define('API_ENDPOINT', '/api/mpr');
+if (!defined('API_KEY_REQUIRED')) define('API_KEY_REQUIRED', true);
+if (!defined('RATE_LIMIT')) define('RATE_LIMIT', 100);
+
+// Webkernel\Constants\Definitions\ReamMar\Mpr\v_1_0_0\Mpr
+// Source: Definitions/ReamMar/Mpr/v_1_0_0/Mpr.php
+if (!defined('MODULE_NAME')) define('MODULE_NAME', 'Mpr');
+if (!defined('MODULE_VERSION')) define('MODULE_VERSION', '1.0.0');
+if (!defined('ENABLED')) define('ENABLED', true);
 

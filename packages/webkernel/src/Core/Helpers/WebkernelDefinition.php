@@ -1,85 +1,112 @@
 <?php
+// packages/webkernel/src/Core/Helpers/helpers.php
 
-declare(strict_types=1);
-
-namespace Webkernel\Core\Helpers;
-
-use Illuminate\Support\Facades\File;
-
-if (!function_exists('webkernel_assets_version')) {
-    function webkernel_assets_version(): string
+if (!function_exists('platform_constant')) {
+    /**
+     * Get a platform constant value with optional default
+     */
+    function platform_constant(string $name, mixed $default = null): mixed
     {
-        $version = \Webkernel\Constants\Definitions\Webkernel\Core::WEBKERNEL_VERSION;
-        $timestamp = File::exists(base_path('packages/webkernel/src/Core/Assets')) ? File::mtime(base_path('packages/webkernel/src/Core/Assets')) : time();
-        return $version . '.' . substr(md5((string)$timestamp), 0, 8);
+        return defined($name) ? constant($name) : $default;
     }
 }
 
-if (!function_exists('webkernel_build_hash')) {
-    function webkernel_build_hash(): string
+if (!function_exists('platform_version')) {
+    /**
+     * Get the version of a platform module
+     */
+    function platform_version(string $module, string $subModule = 'Core'): ?string
     {
-        $version = \Webkernel\Constants\Definitions\Webkernel\Core::WEBKERNEL_VERSION;
-        $hash = $version;
-        $files = [
-            base_path('packages/webkernel/src/Constants/Definitions/Webkernel/Core.php'),
-            base_path('packages/webkernel/src/Constants/Definitions/BrandingDefinition.php'),
-            base_path('packages/webkernel/src/Constants/Registry/PlatformRegistry.php'),
-            base_path('packages/webkernel/src/Constants/ConstantsGenerator.php'),
-        ];
-        foreach ($files as $file) {
-            if (File::exists($file)) {
-                $hash .= File::mtime($file);
-            }
-        }
-        return substr(md5($hash), 0, 12);
+        $constantName = strtoupper("PLATFORM_{$module}_{$subModule}_VERSION");
+        return defined($constantName) ? constant($constantName) : null;
     }
 }
 
-if (!function_exists('webkernel_installation_id')) {
-    function webkernel_installation_id(): string
+if (!function_exists('platform_enabled')) {
+    /**
+     * Check if a platform module is enabled
+     */
+    function platform_enabled(string $module, string $subModule = 'Core'): bool
     {
-        $file = base_path('.webkernel_installation_id');
-        if (File::exists($file)) {
-            return trim(File::get($file));
-        }
-        $id = 'wk_' . bin2hex(random_bytes(16));
-        File::put($file, $id);
-        return $id;
+        $constantName = strtoupper("PLATFORM_{$module}_{$subModule}_ENABLED");
+        return defined($constantName) ? (bool)constant($constantName) : false;
     }
 }
 
-if (!function_exists('webkernel_available_modules')) {
-    function webkernel_available_modules(): array
+if (!function_exists('platform_config')) {
+    /**
+     * Get platform configuration value
+     */
+    function platform_config(string $key, mixed $default = null): mixed
     {
-        $platformPath = base_path('platform');
-        $modules = [];
-        if (!is_dir($platformPath)) {
-            return [];
+        $constantName = strtoupper("PLATFORM_CONFIG_{$key}");
+        return defined($constantName) ? constant($constantName) : $default;
+    }
+}
+
+if (!function_exists('webkernel_version')) {
+    /**
+     * Get Webkernel version
+     */
+    function webkernel_version(): string
+    {
+        return defined('WEBKERNEL_VERSION') ? WEBKERNEL_VERSION : '1.0.0';
+    }
+}
+
+if (!function_exists('is_debug_mode')) {
+    /**
+     * Check if debug mode is enabled
+     */
+    function is_debug_mode(): bool
+    {
+        return defined('DEBUG_MODE') ? (bool)DEBUG_MODE : false;
+    }
+}
+
+if (!function_exists('get_tenant_constant')) {
+    /**
+     * Get tenant-specific constant value
+     */
+    function get_tenant_constant(string $name, mixed $default = null): mixed
+    {
+        $tenantConstant = "TENANT_{$name}";
+        if (defined($tenantConstant)) {
+            return constant($tenantConstant);
         }
-        $directories = array_diff(scandir($platformPath), ['.', '..']);
-        foreach ($directories as $dir) {
-            $modulePath = $platformPath . '/' . $dir;
-            if (!is_dir($modulePath)) {
-                continue;
-            }
-            $moduleInfo = [
-                'name' => $dir,
-                'path' => $modulePath,
-                'has_core' => is_dir($modulePath . '/Core'),
-                'has_definition' => File::exists(base_path("packages/webkernel/src/Constants/Definitions/Modules/{$dir}/ModuleDefinition.php")),
-                'has_core_definition' => File::exists(base_path("packages/webkernel/src/Constants/Definitions/Modules/{$dir}/CoreDefinition.php")),
-                'enabled' => true,
-            ];
-            if ($moduleInfo['has_definition']) {
-                $definition = include base_path("packages/webkernel/src/Constants/Definitions/Modules/{$dir}/ModuleDefinition.php");
-                if (is_array($definition)) {
-                    $moduleInfo['version'] = $definition['MODULE_VERSION'] ?? '0.0.1';
-                    $moduleInfo['description'] = $definition['MODULE_DESCRIPTION'] ?? '';
-                    $moduleInfo['enabled'] = $definition['MODULE_ENABLED'] ?? true;
-                }
-            }
-            $modules[$dir] = $moduleInfo;
-        }
-        return $modules;
+        return platform_constant($name, $default);
+    }
+}
+
+if (!function_exists('feature_enabled')) {
+    /**
+     * Check if a feature flag is enabled
+     */
+    function feature_enabled(string $feature): bool
+    {
+        $constantName = strtoupper("FEATURE_{$feature}_ENABLED");
+        return defined($constantName) ? (bool)constant($constantName) : false;
+    }
+}
+
+if (!function_exists('get_api_endpoint')) {
+    /**
+     * Get API endpoint for a module
+     */
+    function get_api_endpoint(string $module, string $subModule = 'Api'): ?string
+    {
+        $constantName = strtoupper("API_{$module}_{$subModule}_ENDPOINT");
+        return defined($constantName) ? constant($constantName) : null;
+    }
+}
+
+if (!function_exists('get_rate_limit')) {
+    /**
+     * Get rate limit for a module
+     */
+    function get_rate_limit(string $module, string $subModule = 'Api'): int
+    {
+        $constantName = strtoupper("API_{$module}_{$subModule}_RATE_LIMIT");
+        return defined($constantName) ? (int)constant($constantName) : 100;
     }
 }

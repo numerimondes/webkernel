@@ -46,6 +46,7 @@ if (!function_exists('discover_platform_modules_components')) {
             if (!str_starts_with($namespaceRoot, WEBKERNEL_MODULES_NAMESPACE)) {
                 continue;
             }
+            
 
             $srcPath = base_path(rtrim($pathRelative, '/'));
             if (!File::isDirectory($srcPath)) {

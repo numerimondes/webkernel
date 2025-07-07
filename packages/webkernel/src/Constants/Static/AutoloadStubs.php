@@ -1,7 +1,7 @@
 <?php
 /**
  * Auto-generated autoload stubs - DO NOT EDIT
- * Generated: 2025-07-07 17:06:44
+ * Generated: 2025-07-07 20:31:16
  * Total aliases: 3
  * Total escaped: 3
  */

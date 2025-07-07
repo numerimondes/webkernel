@@ -52,12 +52,38 @@ function getAllPhpFiles($dir, $excludeDirs = [], $excludeFiles = []) {
     return $files;
 }
 
+function safeEval($code, $filePath = '') {
+    try {
+
+        if (preg_match('/\b(?:WEBKERNEL_\w+)\b/', $code, $matches)) {
+            foreach ($matches as $constant) {
+                if (!defined($constant)) {
+                    error_log("Warning: Undefined constant '$constant' in file: $filePath");
+                    return false;
+                }
+            }
+        }
+        
+        eval($code);
+        return true;
+    } catch (ParseError $e) {
+        error_log("Parse error in file $filePath: " . $e->getMessage());
+        return false;
+    } catch (Error $e) {
+        error_log("Fatal error in file $filePath: " . $e->getMessage());
+        return false;
+    } catch (Exception $e) {
+        error_log("Exception in file $filePath: " . $e->getMessage());
+        return false;
+    }
+}
+
 foreach ($criticalFiles as $file) {
     if (file_exists($file)) {
         $content = file_get_contents($file);
         $cleanContent = cleanPhpContent($content);
         if ($cleanContent) {
-            eval($cleanContent);
+            safeEval($cleanContent, $file);
         }
     }
 }
@@ -68,7 +94,7 @@ foreach ($helpersDirs as $dir) {
         $content = file_get_contents($file);
         $cleanContent = cleanPhpContent($content);
         if ($cleanContent) {
-            eval($cleanContent);
+            safeEval($cleanContent, $file);
         }
     }
 }
