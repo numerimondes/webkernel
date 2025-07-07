@@ -51,4 +51,40 @@ class Core
     public const WEBKERNEL_VERSION_FILE_PREFIX           = 'v_'; //v_11_10_97 => v11.10.97
     public const WEBKERNEL_VERSION_FILE_EXTENSION        = '.php';
     public const WEBKERNEL_PACKAGE_CONFIG_FILE           = 'composer.json';
+
+    /*
+    |--------------------------------------------------------------------------
+    | Webkernel Constant path and Namespaces
+    |--------------------------------------------------------------------------
+    |
+    | Author: El Moumen Yassine
+    | Email: yassine@numerimondes.com
+    | Phone/WhatsApp: +212 6 20 99 06 92
+    | Website: www.numerimondes.com
+    |
+    | License: Mozilla Public License (MPL)
+    |
+    | This configuration file contains all the NOO (NO OVERRIDE) 
+    | for the Webkernel system.
+    |
+    | Webkernel is a comprehensive Laravel framework extension that provides
+    | robust translation management, widget systems, and advanced features
+    | for modern web applications.
+    |
+    */
+
+    public const WEBKERNEL__LANGUAGE__MODEL__CLASS_ESCAPED     = 'Webkernel\\Core\\Models\\Language';
+    public const WEBKERNEL__LANGUAGE__MODEL__CLASS_ALIAS_SIMPLE     = 'Webkernel\Core\Models\Language';
+    public const WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ALIAS_SIMPLE     = 'Webkernel\Core\Models\LanguageTranslation';
+    public const WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ESCAPED     = 'Webkernel\\Core\\Models\\LanguageTranslation';
+    public const WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ALIAS_SIMPLE     = 'Webkernel\Core\Http\Middleware\SetLang';
+    public const WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED     = 'Webkernel\\Core\\Http\\Middleware\\SetLang';
+    public const WEBKERNEL__CORE__CLUSTERS__PATH = 'packages/webkernel/src/Filament/Clusters';
+    public const WEBKERNEL__CORE__CLUSTERS__CLASS_ALIAS_SIMPLE= 'Webkernel\\Filament\\Clusters';
+    public const WEBKERNEL__CORE__RESOURCES__PATH = 'packages/webkernel/src/Filament/Resources';
+    public const WEBKERNEL__CORE__RESOURCES__CLASS_ALIAS_SIMPLE= 'Webkernel\\Filament\\Resources';
+    public const WEBKERNEL__CORE__PAGES__PATH = 'packages/webkernel/src/Filament/Pages';
+    public const WEBKERNEL__CORE__PAGES__CLASS_ALIAS_SIMPLE= 'Webkernel\\Filament\\Pages';
+    public const WEBKERNEL__CORE__WIDGETS__PATH = 'packages/webkernel/src/Filament/Widgets';
+    public const WEBKERNEL__CORE__WIDGETS__CLASS_ALIAS_SIMPLE= 'Webkernel\\Filament\\Widgets';
 }

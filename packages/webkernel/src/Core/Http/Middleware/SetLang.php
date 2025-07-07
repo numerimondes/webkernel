@@ -13,8 +13,8 @@ class SetLang
     |--------------------------------------------------------------------------
     |
     | To invoque this class use 
-    | WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE 
-    | WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED 
+    | WEBKERNEL__LANGUAGE__MIDDLEWARE 
+    | WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED 
     |
     | This method is responsible for setting the language of the application.
     | It checks if the user is authenticated and applies their preferred language.

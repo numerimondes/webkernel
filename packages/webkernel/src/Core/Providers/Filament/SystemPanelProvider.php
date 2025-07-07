@@ -12,7 +12,7 @@ use Filament\Support\Colors\Color;
 use Illuminate\Support\HtmlString;
 use Filament\Widgets\AccountWidget;
 use Illuminate\Support\Facades\File;
-use WEBKERNEL_LANGUAGE_MIDDLEWARE as SetLang;
+use WEBKERNEL__LANGUAGE__MIDDLEWARE as SetLang;
 //Illuminate
 use Webkernel\Core\Filament\Pages\Dashboard;
 use Filament\Widgets\FilamentInfoWidget;
@@ -69,14 +69,14 @@ class SystemPanelProvider extends PanelProvider
                 'primary' => Color::hex('#3276c3')
             ])
 
-            ->discoverResources(in: base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
-            ->discoverPages(in: base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
+            ->discoverResources( base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
+            ->discoverPages( base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
             ])
 
             ->resources([])
-            ->discoverWidgets(in: app_path('packages/webkernel/src/Filament/Widgets'), for: 'Webkernel\\Filament\\Widgets')
+            ->discoverWidgets(in: base_path('packages/webkernel/src/Filament/Widgets'), for: 'Webkernel\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,

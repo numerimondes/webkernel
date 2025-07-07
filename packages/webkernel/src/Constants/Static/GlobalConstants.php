@@ -1,9 +1,9 @@
 <?php
 /**
  * Auto-generated constants - DO NOT EDIT
- * Generated: 2025-07-07 20:31:16
- * Generation time: 1.9ms
- * Total constants: 135
+ * Generated: 2025-07-07 22:50:06
+ * Generation time: 1.46ms
+ * Total constants: 143
  * Total classes: 10
  */
 
@@ -54,6 +54,20 @@ if (!defined('WEBKERNEL_SUBMODULE_CONFIG_FILE')) define('WEBKERNEL_SUBMODULE_CON
 if (!defined('WEBKERNEL_VERSION_FILE_PREFIX')) define('WEBKERNEL_VERSION_FILE_PREFIX', 'v_');
 if (!defined('WEBKERNEL_VERSION_FILE_EXTENSION')) define('WEBKERNEL_VERSION_FILE_EXTENSION', '.php');
 if (!defined('WEBKERNEL_PACKAGE_CONFIG_FILE')) define('WEBKERNEL_PACKAGE_CONFIG_FILE', 'composer.json');
+if (!defined('WEBKERNEL__LANGUAGE__MODEL__CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__MODEL__CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
+if (!defined('WEBKERNEL__LANGUAGE__MODEL__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__MODEL__CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\Language');
+if (!defined('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\LanguageTranslation');
+if (!defined('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\LanguageTranslation');
+if (!defined('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
+if (!defined('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
+if (!defined('WEBKERNEL__CORE__CLUSTERS__PATH')) define('WEBKERNEL__CORE__CLUSTERS__PATH', 'packages/webkernel/src/Filament/Clusters');
+if (!defined('WEBKERNEL__CORE__CLUSTERS__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__CLUSTERS__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Clusters');
+if (!defined('WEBKERNEL__CORE__RESOURCES__PATH')) define('WEBKERNEL__CORE__RESOURCES__PATH', 'packages/webkernel/src/Filament/Resources');
+if (!defined('WEBKERNEL__CORE__RESOURCES__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__RESOURCES__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Resources');
+if (!defined('WEBKERNEL__CORE__PAGES__PATH')) define('WEBKERNEL__CORE__PAGES__PATH', 'packages/webkernel/src/Filament/Pages');
+if (!defined('WEBKERNEL__CORE__PAGES__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__PAGES__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Pages');
+if (!defined('WEBKERNEL__CORE__WIDGETS__PATH')) define('WEBKERNEL__CORE__WIDGETS__PATH', 'packages/webkernel/src/Filament/Widgets');
+if (!defined('WEBKERNEL__CORE__WIDGETS__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__WIDGETS__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Widgets');
 
 // Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Core
 // Source: Definitions/Webkernel/v_1_0_0/Core.php
@@ -88,15 +102,6 @@ if (!defined('WEBKERNEL_MAX_MB_WEBKERNEL_CACHE_SIZE')) define('WEBKERNEL_MAX_MB_
 if (!defined('WEBKERNEL_MAX_LOG_SIZE')) define('WEBKERNEL_MAX_LOG_SIZE', 50);
 if (!defined('WEBKERNEL_MAX_MODULES_COUNT')) define('WEBKERNEL_MAX_MODULES_COUNT', 100);
 if (!defined('WEBKERNEL_MAX_SUBMODULES_COUNT')) define('WEBKERNEL_MAX_SUBMODULES_COUNT', 50);
-
-// Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Language
-// Source: Definitions/Webkernel/v_1_0_0/Language.php
-if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
-if (!defined('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\Language');
-if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\LanguageTranslation');
-if (!defined('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_TRANSLATION_MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\LanguageTranslation');
-if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
-if (!defined('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED')) define('WEBKERNEL_LANGUAGE_MIDDLEWARE_CLASS_ESCAPED', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
 
 // Webkernel\Constants\Definitions\Webkernel\v_1_0_0\Security
 // Source: Definitions/Webkernel/v_1_0_0/Security.php

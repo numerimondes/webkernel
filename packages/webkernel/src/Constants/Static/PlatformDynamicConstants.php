@@ -1,14 +1,11 @@
 <?php
 /**
  * Auto-generated platform constants - DO NOT EDIT
- * Generated: 2025-07-07 20:33:47
- * Generation time: 0.99ms
- * Total constants: 42
+ * Generated: 2025-07-07 22:45:51
+ * Generation time: 0.97ms
+ * Total constants: 53
  */
 
-if (!defined('PLATFORM_NAME')) define('PLATFORM_NAME', 'ReamMar');
-if (!defined('PLATFORM_LOGO')) define('PLATFORM_LOGO', 'logo.png');
-if (!defined('PLATFORM_URL')) define('PLATFORM_URL', 'https://reammar.com');
 if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.26');
 if (!defined('DEFAULT_TIMEOUT')) define('DEFAULT_TIMEOUT', 30);
 if (!defined('MAX_RETRIES')) define('MAX_RETRIES', 3);
@@ -48,3 +45,17 @@ if (!defined('WEBKERNEL_SUBMODULE_CONFIG_FILE')) define('WEBKERNEL_SUBMODULE_CON
 if (!defined('WEBKERNEL_VERSION_FILE_PREFIX')) define('WEBKERNEL_VERSION_FILE_PREFIX', 'v_');
 if (!defined('WEBKERNEL_VERSION_FILE_EXTENSION')) define('WEBKERNEL_VERSION_FILE_EXTENSION', '.php');
 if (!defined('WEBKERNEL_PACKAGE_CONFIG_FILE')) define('WEBKERNEL_PACKAGE_CONFIG_FILE', 'composer.json');
+if (!defined('WEBKERNEL__LANGUAGE__MODEL__CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__MODEL__CLASS_ESCAPED', 'Webkernel\\Core\\Models\\Language');
+if (!defined('WEBKERNEL__LANGUAGE__MODEL__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__MODEL__CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\Language');
+if (!defined('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Models\\LanguageTranslation');
+if (!defined('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__TRANSLATION__MODEL_CLASS_ESCAPED', 'Webkernel\\Core\\Models\\LanguageTranslation');
+if (!defined('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ALIAS_SIMPLE', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
+if (!defined('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED')) define('WEBKERNEL__LANGUAGE__MIDDLEWARE__CLASS_ESCAPED', 'Webkernel\\Core\\Http\\Middleware\\SetLang');
+if (!defined('WEBKERNEL__CORE__CLUSTERS__PATH')) define('WEBKERNEL__CORE__CLUSTERS__PATH', 'packages/webkernel/src/Filament/Clusters');
+if (!defined('WEBKERNEL__CORE__CLUSTERS__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__CLUSTERS__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Clusters');
+if (!defined('WEBKERNEL__CORE__RESOURCES__PATH')) define('WEBKERNEL__CORE__RESOURCES__PATH', 'packages/webkernel/src/Filament/Resources');
+if (!defined('WEBKERNEL__CORE__RESOURCES__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__RESOURCES__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Resources');
+if (!defined('WEBKERNEL__CORE__PAGES__PATH')) define('WEBKERNEL__CORE__PAGES__PATH', 'packages/webkernel/src/Filament/Pages');
+if (!defined('WEBKERNEL__CORE__PAGES__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__PAGES__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Pages');
+if (!defined('WEBKERNEL__CORE__WIDGETS__PATH')) define('WEBKERNEL__CORE__WIDGETS__PATH', 'packages/webkernel/src/Filament/Widgets');
+if (!defined('WEBKERNEL__CORE__WIDGETS__CLASS_ALIAS_SIMPLE')) define('WEBKERNEL__CORE__WIDGETS__CLASS_ALIAS_SIMPLE', 'Webkernel\\Filament\\Widgets');

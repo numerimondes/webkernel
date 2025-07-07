@@ -328,10 +328,10 @@ foreach ($constants as $name => $info) {
         'file' => $info['file'],
     ];
 
-    if (str_ends_with($name, '_CLASS_ALIAS_SIMPLE') && isValidClassName($info['value'])) {
-        $aliasName = str_replace('_CLASS_ALIAS_SIMPLE', '', $name);
+    if (str_ends_with($name, '__CLASS_ALIAS_SIMPLE') && isValidClassName($info['value'])) {
+        $aliasName = str_replace('__CLASS_ALIAS_SIMPLE', '', $name);
         $classAliases[$aliasName] = $info['value'];
-    } elseif (str_ends_with($name, '_CLASS_ESCAPED') && isValidClassName($info['value'])) {
+    } elseif (str_ends_with($name, '__CLASS_ESCAPED') && isValidClassName($info['value'])) {
         $classEscaped[$name] = $info['value'];
     }
 }
