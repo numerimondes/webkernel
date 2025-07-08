@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:03:45',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Իմ անհատական պրոֆիլը',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:56:15',
+            'protected' => false,
+        ],
     ],
 ];

@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:04:33',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Миний хувийн танилцуулга',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:56:44',
+            'protected' => false,
+        ],
     ],
 ];

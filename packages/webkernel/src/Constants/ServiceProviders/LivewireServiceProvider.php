@@ -12,7 +12,7 @@ class LivewireServiceProvider extends ServiceProvider
     public function boot(): void
     {
         // 1. Register views path
-        $this->loadViewsFrom(__DIR__ . '/../../resources/views', 'webkernel');
+        $this->loadViewsFrom(base_path('packages/webkernel/src/Core/Resources/Views'), 'webkernel');
 
         // 2. Auto-discover components from Webkernel and platform/packages
         $livewirePaths = $this->getLivewirePaths();

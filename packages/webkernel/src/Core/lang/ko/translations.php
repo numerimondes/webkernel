@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:04:07',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => '내 개인 프로필',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:56:29',
+            'protected' => false,
+        ],
     ],
 ];

@@ -245,7 +245,7 @@ if (!function_exists('getTranslationFromSource')) {
                 return getTranslationFromFiles(app_path("lang/{$langCode}/translations.php"), $key);
 
             case 'webkernel':
-                return getTranslationFromFiles(base_path("packages/webkernel/src/lang/{$langCode}/translations.php"), $key);
+                return getTranslationFromFiles(base_path("packages/webkernel/src/Core/lang/{$langCode}/translations.php"), $key);
 
             case 'other_packages':
                 return getTranslationFromOtherPackages($key, $langCode);
@@ -380,7 +380,7 @@ if (!function_exists('getTranslationFromOtherPackages')) {
      */
     function getTranslationFromOtherPackages($key, $langCode)
     {
-        $packageDirs = glob(base_path('packages/*/src/lang'));
+        $packageDirs = glob(base_path('packages/*/src/Core/lang'));
 
         foreach ($packageDirs as $packageDir) {
             // Skip webkernel as it's handled separately

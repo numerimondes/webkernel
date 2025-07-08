@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:04:42',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'ငါ့ပုဂ္ဂိုလ်ရေးအချက်အလက်',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:56:48',
+            'protected' => false,
+        ],
     ],
 ];

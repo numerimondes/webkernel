@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:06:05',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Kişisel Profilim',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:57:36',
+            'protected' => false,
+        ],
     ],
 ];

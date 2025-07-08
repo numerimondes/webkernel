@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:03:25',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Mein persönliches Profil',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:55:54',
+            'protected' => false,
+        ],
     ],
 ];

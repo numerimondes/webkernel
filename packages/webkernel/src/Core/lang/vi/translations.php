@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:06:20',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Hồ Sơ Cá Nhân Của Tôi',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:57:46',
+            'protected' => false,
+        ],
     ],
 ];

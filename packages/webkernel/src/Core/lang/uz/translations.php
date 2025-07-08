@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:06:16',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'Mening shaxsiy profiling',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:57:43',
+            'protected' => false,
+        ],
     ],
 ];

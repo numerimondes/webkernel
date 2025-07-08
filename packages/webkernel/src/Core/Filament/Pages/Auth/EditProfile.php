@@ -5,14 +5,13 @@ namespace Webkernel\Core\Filament\Pages\Auth;
 use BackedEnum;
 use DateTimeZone;
 use App\Models\User;
-use Filament\Forms\Form;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
 use Filament\Actions\BulkAction;
-use Filament\Schemas\Schema;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Support\HtmlString;
 use Webkernel\Core\Models\Session;
 use Webkernel\Core\Models\Language;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
@@ -20,21 +19,24 @@ use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
 use Illuminate\Support\Facades\Cache;
 use Filament\Actions\Action as Action;
+use Filament\Forms\Components\Actions;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
-use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Forms\Components\FileUpload;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Validation\Rules\Password;
+use Webkernel\Core\Models\HistorySession;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Contracts\Support\Htmlable;
+use Filament\Infolists\Components\ImageEntry;
 use Filament\Tables\Concerns\InteractsWithTable;
 use Filament\Auth\Pages\EditProfile as BaseEditProfile;
+use Filament\Schemas\Components\View;
 
 class EditProfile extends BaseEditProfile implements HasForms, HasTable
 {
@@ -43,438 +45,259 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
     protected static ?string $model = User::class;
     protected static bool $shouldRegisterNavigation = true;
 
+    protected string $previousUrl = '/';
+
+    public function mount(): void
+    {
+        if (method_exists(get_parent_class($this), 'mount')) {
+            parent::mount();
+        }
+        $referer = url()->previous();
+        if ($referer && !str_contains($referer, request()->url())) {
+            $this->previousUrl = $referer;
+        }
+    }
+
     public static function getNavigationIcon(): string | BackedEnum | Htmlable | null
     {
         return 'heroicon-o-user-circle';
     }
 
-    public function form(Schema $schema): Schema
+    public function getHeaderActions(): array
+    {
+        return [
+            Action::make('back')
+                ->label('Retour')
+                ->icon('heroicon-o-arrow-left')
+                ->url($this->previousUrl),
+            Action::make('save')
+                ->label('Sauvegarder')
+                ->icon('heroicon-o-check')
+                ->action('save'),
+        ];
+    }
+
+    public function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
     {
         return $schema
             ->schema([
-                // Contextual Help Section
-                Section::make('need_help')
-                    ->description('need_help_description')
-                    ->hidden()
+                Grid::make(6)
                     ->schema([
-                        Placeholder::make('help_info')
-                            ->label('')
-                            ->content(new \Illuminate\Support\HtmlString('
-                                <div class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg border border-blue-200 dark:border-blue-800">
-                                    <div class="flex items-start space-x-3">
-
-                                        <div>
-                                            <h4 class="text-sm font-medium text-blue-800 dark:text-blue-200">profile_help_title</h4>
-                                            <p class="mt-1 text-sm text-blue-700 dark:text-blue-300">profile_help_content</p>
-                                        </div>
-                                    </div>
-                                </div>
-                            '))
-                    ])
-                    ->collapsible()
-                    ->collapsed(false)
-                    ->icon('heroicon-o-question-mark-circle')
-                    ->columnSpanFull(),
-
-                // Personal Information Section
-                Section::make('personal_information')
-                    ->description('personal_information_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(3)
-                            ->schema([
-                                FileUpload::make('avatar')
-                                    ->label('profile_photo')
-                                    ->image()
-                                    ->avatar()
-                                    ->imageEditor()
-                                    ->circleCropper()
-                                    ->directory('avatars')
-                                    ->visibility('public')
-                                    ->acceptedFileTypes(['image/jpeg', 'image/png', 'image/webp'])
-                                    ->maxSize(2048)
-                                    ->helperText('avatar_helper')
-                                    ->hint('drag_drop_hint')
-                                    ->columnSpanFull(),
-
-                                TextInput::make('name')
-                                    ->label('name')
-                                    ->required()
-                                    ->maxLength(255)
-                                    ->rules(['regex:/^[a-zA-ZÀ-ÿ\s\-\'\.]+$/u'])
-                                    ->columnSpan(2)
-                                    ->extraAttributes(['class' => 'font-medium']),
-
-                                TextInput::make('username')
-                                    ->label('username')
-                                    ->unique(ignoreRecord: true)
-                                    ->alphaDash()
-                                    ->minLength(3)
-                                    ->maxLength(50)
-                                    ->rules(['regex:/^[a-zA-Z0-9_-]+$/'])
-                                    ->helperText('username_helper')
-                                    ->columnSpan(1)
-                                    ->suffixIcon('heroicon-o-at-symbol'),
-                            ]),
-                    ])
-                    ->icon('heroicon-o-user-circle'),
-
-                // Email & Verification Section
-                Section::make('email_verification')
-                    ->description('email_verification_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('email')
-                                    ->label('email')
-                                    ->email()
-                                    ->required()
-                                    ->disabled()
-                                    ->suffixIcon('heroicon-o-envelope')
-                                    ->columnSpan(1),
-
-                                Placeholder::make('email_status')
-                                    ->label('email_status')
-                                    ->content(function () {
-                                        $user = auth()->user();
-                                        return $user->email_verified_at
-                                            ? 'verified_on ' . $user->email_verified_at->format('M d, Y')
-                                            : 'not_verified';
-                                    })
-                                    ->columnSpan(1),
-                            ]),
-
-                        Actions::make([
-                            Action::make('change_email')
-                                ->label('request_email_change')
-                                ->icon('heroicon-o-envelope')
-                                ->color('gray')
-                                ->size('sm')
-                                ->requiresConfirmation()
-                                ->form([
-                                    TextInput::make('new_email')
-                                        ->label('new_email')
-                                        ->email()
-                                        ->required()
-                                        ->unique('users', 'email', ignoreRecord: true),
-
-                                    TextInput::make('password')
-                                        ->label('current_password')
-                                        ->password()
-                                        ->required()
-                                        ->rules(['current_password']),
-                                ])
-                                ->action(function (array $data) {
-                                    Notification::make()
-                                        ->title('email_change_requested')
-                                        ->body('email_change_instructions')
-                                        ->info()
-                                        ->send();
-                                }),
-
-                            Action::make('resend_verification')
-                                ->label('resend_verification')
-                                ->icon('heroicon-o-check-circle')
-                                ->color('primary')
-                                ->size('sm')
-                                ->visible(fn () => !auth()->user()->email_verified_at)
-                                ->requiresConfirmation()
-                                ->action(function () {
-                                    auth()->user()->sendEmailVerificationNotification();
-                                    Notification::make()
-                                        ->title('verification_email_sent')
-                                        ->success()
-                                        ->send();
-                                }),
-                        ])->columnSpanFull(),
-                    ])
-                    ->icon('heroicon-o-at-symbol'),
-
-                // Password & Security Section
-                Section::make('password_security')
-                    ->description('password_security_description')
-                    ->aside()
-                    ->schema([
+                        // Sidebar (colonne gauche)
                         Grid::make(1)
+                            ->columnSpan(2)
                             ->schema([
-                                TextInput::make('current_password')
-                                    ->label('current_password')
-                                    ->password()
-                                    ->revealable()
-                                    ->rules(['current_password'])
-                                    ->helperText('current_password_helper')
-                                    ->suffixIcon('heroicon-o-lock-closed')
-                                    ->dehydrated(false),
-
-                                Grid::make(2)
+                                Section::make('Profil')
                                     ->schema([
-                                        TextInput::make('password')
-                                            ->label('new_password')
-                                            ->password()
-                                            ->revealable()
-                                            ->rules([
-                                                Password::min(8)
-                                                    ->letters()
-                                                    ->mixedCase()
-                                                    ->numbers()
-                                                    ->symbols()
-                                                    ->uncompromised()
-                                            ])
-                                            ->helperText('password_requirements')
-                                            ->columnSpan(1),
-
-                                        TextInput::make('password_confirmation')
-                                            ->label('confirm_password')
-                                            ->password()
-                                            ->revealable()
-                                            ->same('password')
-                                            ->columnSpan(1),
-                                    ]),
+                                        FileUpload::make('avatar')
+                                            ->avatar()
+                                            ->circleCropper()
+                                            ->directory('avatars')
+                                            ->visibility('public'),
+                                        TextInput::make('username')->label('Nom d\'utilisateur')->required()->maxLength(50),
+                                        TextInput::make('name')->label('Nom complet')->required()->maxLength(255),
+                                        TextInput::make('country')->label('Pays')->maxLength(100),
+                                        Placeholder::make('joined_at')
+                                            ->label('Inscrit le')
+                                            ->content(fn () => auth()->user()->created_at?->format('d/m/Y') ?? 'N/A'),
+                                        Placeholder::make('last_seen_at')
+                                            ->label('Dernière visite')
+                                            ->content(fn () => auth()->user()->last_login_at?->diffForHumans() ?? 'jamais'),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Stats & Badges')
+                                    ->schema([
+                                        Placeholder::make('reputation')
+                                            ->label('Réputation')
+                                            ->content(fn () => auth()->user()->reputation ?? 0),
+                                        Placeholder::make('solutions_count')
+                                            ->label('Solutions')
+                                            ->content(fn () => auth()->user()->solutions_count ?? 0),
+                                        Placeholder::make('posts_count')
+                                            ->label('Messages')
+                                            ->content(fn () => auth()->user()->posts_count ?? 0),
+                                        Placeholder::make('badges')
+                                            ->label('Badges')
+                                            ->content(fn () =>
+                                                collect(auth()->user()->badges ?? [])->isEmpty()
+                                                    ? 'Aucun badge'
+                                                    : collect(auth()->user()->badges)->map(fn($badge) =>
+                                                        "<span class='inline-block bg-yellow-100 text-yellow-800 text-xs px-2 py-1 rounded-full mr-1'>{$badge}</span>"
+                                                    )->implode('')
+                                            ),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Visiteurs récents')
+                                    ->schema([
+                                        Placeholder::make('recent_visitors')
+                                            ->label('Visiteurs récents')
+                                            ->content(fn () => 'Fonctionnalité à venir'),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('À venir (sidebar)')
+                                    ->schema([
+                                        Placeholder::make('coming_soon_sidebar')
+                                            ->content('De nouveaux widgets arriveront ici !'),
+                                    ])
+                                    ->columnSpanFull(),
                             ]),
-                    ])
-                    ->icon('heroicon-o-shield-check'),
 
-                // Personal Preferences Section
-                Section::make('personal_preferences')
-                    ->description('personal_preferences_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Select::make('timezone')
-                                    ->label('timezone')
-                                    ->options(static::getTimezoneOptions())
-                                    ->default(auth()->user()?->timezone ?? config('app.timezone'))
-                                    ->required()
-                                    ->searchable()
-                                    ->getSearchResultsUsing(fn (string $search) => static::searchTimezones($search))
-                                    ->columnSpan(1)
-                                    ->suffixIcon('heroicon-o-globe-alt'),
-
-                                Select::make('user_lang')
-                                    ->label('language')
-                                    ->options(static::getAvailableLanguages())
-                                    ->default(app()->getLocale())
-                                    ->required()
-                                    ->columnSpan(1)
-                                    ->suffixIcon('heroicon-o-language'),
-                            ]),
-                    ])
-                    ->icon('heroicon-o-cog-6-tooth'),
-
-                // Contact Information Section
-                Section::make('contact_information')
-                    ->description('contact_information_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                TextInput::make('mobile')
-                                    ->label('mobile_phone')
-                                    ->tel()
-                                    ->nullable()
-                                    ->mask('+999 99 999 99 99')
-                                    ->placeholder('+212 6 12 34 56 78')
-                                    ->helperText('international_format')
-                                    ->rules(['regex:/^\+?[1-9]\d{1,14}$/'])
-                                    ->columnSpan(1)
-                                    ->suffixIcon('heroicon-o-device-phone-mobile'),
-
-                                TextInput::make('whatsapp')
-                                    ->label('whatsapp_number')
-                                    ->tel()
-                                    ->nullable()
-                                    ->mask('+999 99 999 99 99')
-                                    ->placeholder('+212 6 12 34 56 78')
-                                    ->helperText('whatsapp_helper')
-                                    ->rules(['regex:/^\+?[1-9]\d{1,14}$/'])
-                                    ->columnSpan(1)
-                                    ->suffixIcon('heroicon-o-chat-bubble-left-right'),
-                            ]),
-                    ])
-                    ->icon('heroicon-o-phone'),
-
-                // Communication Preferences Section
-                Section::make('communication_preferences')
-                    ->description('communication_preferences_description')
-                    ->aside()
-                    ->schema([
+                        // Main (colonne droite)
                         Grid::make(1)
+                            ->columnSpan(4)
                             ->schema([
-                                Toggle::make('marketing_callable')
-                                    ->label('phone_call_notifications')
-                                    ->helperText('phone_call_helper')
-                                    ->default(true)
-                                    ->inline(false),
+                                View::make('webkernel::components.webkernel.rolebased.common.edit-profile.banner-profile')
+                                    ->columnSpanFull(),
+                                Section::make('Informations personnelles')
+                                    ->schema([
+                                        TextInput::make('mobile')
+                                            ->label('Téléphone mobile')
+                                            ->tel()
+                                            ->maxLength(20),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Informations personnelles')
+                                    ->schema([
+                                        TextInput::make('mobile')
+                                            ->label('Téléphone mobile')
+                                            ->tel()
+                                            ->maxLength(20),
+                                        TextInput::make('whatsapp')
+                                            ->label('Numéro WhatsApp')
+                                            ->tel()
+                                            ->maxLength(20),
+                                        Select::make('user_lang')
+                                            ->label('Langue')
+                                            ->searchable()
+                                            ->options(static::getAvailableLanguages())
+                                            ->required(),
+                                        Select::make('timezone')
+                                            ->label('Fuseau horaire')
+                                            ->searchable()
+                                            ->options(static::getTimezoneOptions())
+                                            ->required(),
+                                        Toggle::make('is_active')
+                                            ->label('Compte actif'),
+                                        Toggle::make('forceChangePassword')
+                                            ->label('Exiger le changement de mot de passe'),
+                                        Toggle::make('marketing_callable')
+                                            ->label('Appels marketing'),
+                                        Toggle::make('marketing_whatsappable')
+                                            ->label('WhatsApp marketing'),
+                                        Toggle::make('marketing_smsable')
+                                            ->label('SMS marketing'),
+                                    ])
+                                    ->columnSpanFull(),
+                                    View::make('webkernel::components.webkernel.rolebased.common.edit-profile.system-news'),
 
-                                Toggle::make('marketing_whatsappable')
-                                    ->label('whatsapp_messages')
-                                    ->helperText('whatsapp_messages_helper')
-                                    ->default(true)
-                                    ->inline(false),
+                                Section::make('Sessions actives')
+                                    ->schema([
+                                        $this->getSessionsTable(),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Données & RGPD')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Placeholder::make('export_data')
+                                                    ->label('Exporter mes données')
+                                                    ->content('Recevez une copie de vos données par email.'),
+                                                Action::make('export_data')
+                                                    ->label('Exporter')
+                                                    ->icon('heroicon-o-arrow-down-tray')
+                                                    ->color('info')
+                                                    ->action(fn () => $this->exportUserData()),
+                                            ]),
+                                        Grid::make(2)
+                                            ->schema([
+                                                Placeholder::make('request_deletion')
+                                                    ->label('Demander la suppression')
+                                                    ->content('Demandez la suppression de votre compte et de vos données.'),
+                                                Action::make('request_deletion')
+                                                    ->label('Demander')
+                                                    ->icon('heroicon-o-trash')
+                                                    ->color('warning')
+                                                    ->requiresConfirmation()
+                                                    ->action(fn () => $this->requestAccountDeletion()),
+                                            ]),
+                                    ])
+                                    ->columnSpanFull(),
+                                Section::make('Signaler un problème')
+                                    ->schema([
+                                        Grid::make(2)
+                                            ->schema([
+                                                Placeholder::make('report_issue')
+                                                    ->label('Signaler un problème')
+                                                    ->content('Un bug ou une suggestion ? Faites-le nous savoir.'),
+                                                Action::make('report_issue')
+                                                    ->label('Signaler')
+                                                    ->icon('heroicon-o-flag')
+                                                    ->color('primary')
+                                                    ->url('https://github.com/tonrepo/issues'), // à adapter
+                                            ]),
+                                    ])
+                                    ->columnSpanFull(),
+                                
+                                    Section::make(lang('danger_zone'))
+                                    ->extraAttributes(['class' => 'border-2 border-red-500 rounded-lg'])
+                                    ->schema([
+                                        // Désactiver le compte
+                                        Grid::make(1)
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->columns(2)
+                                                    ->schema([
+                                                        Placeholder::make('deactivate_account')
+                                                            ->label(fn () =>
+                                                                '<strong>' . lang('disable_account') . '</strong><br>' .
+                                                                '<small>' . lang('disable_account_description') . '</small>'
+                                                            )
+                                                            ->html() // <- Permet d’interpréter le HTML dans le label
+                                                            ->extraAttributes(['class' => 'whitespace-pre-wrap']),
+                                                        Action::make('deactivate_account')
+                                                            ->label(lang('disable'))
+                                                            ->color('danger')
+                                                            ->requiresConfirmation()
+                                                            ->action(fn () => $this->deactivateAccount())
+                                                            ->extraAttributes(['class' => 'justify-self-end']),
+                                                    ]),
+                                            ]),
+                                            
+                                        // Déconnecter les autres sessions
+                                        Grid::make(1)
+                                            ->schema([
+                                                Grid::make(2)
+                                                    ->columns(2)
+                                                    ->schema([
+                                                        Placeholder::make('logout_other_sessions')
+                                                            ->label(fn () =>
+                                                                '<strong>' . lang('logout_other_sessions') . '</strong><br>' .
+                                                                '<small>' . lang('logout_other_sessions_description') . '</small>'
+                                                            )
+                                                            ->html()
+                                                            ->extraAttributes(['class' => 'whitespace-pre-wrap']),
+                                                        Action::make('logout_other_sessions')
+                                                            ->label(lang('logout'))
+                                                            ->color('danger')
+                                                            ->requiresConfirmation()
+                                                            ->action(fn () => $this->logoutOtherSessions())
+                                                            ->extraAttributes(['class' => 'justify-self-end']),
+                                                    ]),
+                                            ]),
+                                    ])
+                                    ->columnSpanFull(),
+                                
 
-                                Toggle::make('dae')
-                                    ->label('sms_notifications')
-                                    ->helperText('sms_helper')
-                                    ->default(true)
-                                    ->inline(false),
+
+
+                                Section::make('À venir')
+                                    ->schema([
+                                        Placeholder::make('coming_soon')
+                                            ->content('De nouvelles fonctionnalités arriveront bientôt !'),
+                                    ])
+                                    ->columnSpanFull(),
                             ]),
-                    ])
-                    ->icon('heroicon-o-bell'),
-
-                // GDPR & Data Portability Section
-                Section::make('gdpr_data_portability')
-                    ->description('gdpr_description')
-                    ->aside()
-                    ->schema([
-                        Actions::make([
-                            Action::make('export_data')
-                                ->label('export_my_data')
-                                ->icon('heroicon-o-arrow-down-tray')
-                                ->color('info')
-                                ->requiresConfirmation()
-                                ->action(function () {
-                                    $userData = $this->exportUserData();
-                                    Notification::make()
-                                        ->title('data_export_initiated')
-                                        ->body('data_export_email_sent')
-                                        ->success()
-                                        ->send();
-                                }),
-
-                            Action::make('request_data_deletion')
-                                ->label('request_data_deletion')
-                                ->icon('heroicon-o-trash')
-                                ->color('warning')
-                                ->requiresConfirmation()
-                                ->form([
-                                    TextInput::make('password')
-                                        ->label('current_password')
-                                        ->password()
-                                        ->required()
-                                        ->rules(['current_password']),
-
-                                    TextInput::make('confirmation')
-                                        ->label('type_delete_to_confirm')
-                                        ->required()
-                                        ->rules(['in:DELETE']),
-                                ])
-                                ->action(function (array $data) {
-                                    Notification::make()
-                                        ->title('deletion_request_submitted')
-                                        ->body('deletion_request_processed')
-                                        ->warning()
-                                        ->send();
-                                }),
-                        ])->columnSpanFull(),
-                    ])
-                    ->icon('heroicon-o-shield-exclamation'),
-
-                // Advanced Settings Section
-                Section::make('advanced_settings')
-                    ->description('advanced_settings_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(2)
-                            ->schema([
-                                Toggle::make('is_active')
-                                    ->label('account_active')
-                                    ->helperText('account_active_helper')
-                                    ->default(true)
-                                    ->columnSpan(1),
-
-                                Toggle::make('forceChangePassword')
-                                    ->label('require_password_change')
-                                    ->helperText('password_change_helper')
-                                    ->default(false)
-                                    ->columnSpan(1),
-                            ]),
-                    ])
-                    ->collapsible()
-                    ->collapsed(true)
-                    ->icon('heroicon-o-wrench-screwdriver'),
-
-                // Danger Zone Section
-                Section::make('danger_zone')
-                    ->description('danger_zone_description')
-                    ->aside()
-                    ->schema([
-                        Actions::make([
-                            Action::make('logout_other_sessions')
-                                ->label('logout_other_sessions')
-                                ->icon('heroicon-o-computer-desktop')
-                                ->color('warning')
-                                ->requiresConfirmation()
-                                ->form([
-                                    TextInput::make('password')
-                                        ->label('current_password')
-                                        ->password()
-                                        ->required()
-                                        ->rules(['current_password']),
-                                ])
-                                ->action(function (array $data) {
-                                    $this->logoutOtherBrowserSessions($data['password']);
-                                    Notification::make()
-                                        ->title('other_sessions_logged_out')
-                                        ->success()
-                                        ->send();
-                                }),
-
-                            Action::make('deactivate_account')
-                                ->label('deactivate_account')
-                                ->icon('heroicon-o-no-symbol')
-                                ->color('danger')
-                                ->requiresConfirmation()
-                                ->form([
-                                    TextInput::make('password')
-                                        ->label('current_password')
-                                        ->password()
-                                        ->required()
-                                        ->rules(['current_password']),
-                                ])
-                                ->action(function (array $data) {
-                                    auth()->user()->update(['is_active' => false]);
-                                    Auth::logout();
-                                    Notification::make()
-                                        ->title('account_deactivated')
-                                        ->warning()
-                                        ->send();
-                                }),
-                        ])->columnSpanFull(),
-                    ])
-                    ->collapsible()
-                    ->icon('heroicon-o-exclamation-triangle'),
-
-                // Account Metadata Section
-                Section::make('account_metadata')
-                    ->description('account_metadata_description')
-                    ->aside()
-                    ->schema([
-                        Grid::make(3)
-                            ->schema([
-                                Placeholder::make('account_created')
-                                    ->label('account_created')
-                                    ->content(fn () => auth()->user()->created_at?->format('M d, Y H:i')),
-
-                                Placeholder::make('last_login')
-                                    ->label('last_login')
-                                    ->content(fn () => auth()->user()->last_login_at?->format('M d, Y H:i') ?? 'never'),
-
-                                Placeholder::make('account_id')
-                                    ->label('account_id')
-                                    ->content(fn () => '#' . auth()->user()->id),
-
-                                TextInput::make('belongs_to')
-                                    ->label('organization_id')
-                                    ->nullable()
-                                    ->numeric()
-                                    ->disabled(),
-                            ]),
-                    ])
-                    ->collapsible()
-                    ->collapsed(true)
-                    ->icon('heroicon-o-information-circle'),
+                    ]),
             ])
             ->model(auth()->user())
             ->statePath('data');
@@ -486,55 +309,70 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             ->query($this->getTableQuery())
             ->columns([
                 TextColumn::make('ip_address')
-                    ->label('ip_address')
+                    ->label('Adresse IP')
                     ->searchable()
                     ->sortable(),
 
                 TextColumn::make('user_agent')
-                    ->label('browser')
+                    ->label('Navigateur')
                     ->formatStateUsing(fn (string $state): string => $this->parseUserAgent($state))
                     ->limit(50),
 
                 TextColumn::make('last_activity')
-                    ->label('last_activity')
+                    ->label('Dernière activité')
                     ->dateTime()
                     ->sortable()
                     ->since(),
 
                 BadgeColumn::make('is_current')
-                    ->label('status')
+                    ->label('Statut')
                     ->getStateUsing(fn ($record) => $record->id === session()->getId())
-                    ->formatStateUsing(fn (bool $state): string => $state ? 'current_session' : 'other_session')
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'Session courante' : 'Autre session')
                     ->colors([
                         'success' => true,
                         'secondary' => false,
                     ]),
 
                 TextColumn::make('location')
-                    ->label('location')
+                    ->label('Localisation')
                     ->getStateUsing(fn ($record) => $this->getLocationFromIP($record->ip_address))
-                    ->placeholder('unknown_location'),
+                    ->placeholder('Localisation inconnue'),
             ])
             ->filters([])
             ->actions([
                 Action::make('terminate')
-                    ->label('terminate')
+                    ->label('Terminer')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->visible(fn ($record) => $record->id !== session()->getId())
                     ->requiresConfirmation()
                     ->action(function ($record) {
-                        DB::table('sessions')->where('id', $record->id)->delete();
+                        // Archiver la session avant de la supprimer
+                        try {
+                            HistorySession::create([
+                                'session_id' => $record->id,
+                                'user_id' => $record->user_id,
+                                'ip_address' => $record->ip_address,
+                                'user_agent' => $record->user_agent,
+                                'last_activity' => $record->last_activity,
+                                'archived_at' => now(),
+                            ]);
+                        } catch (\Exception $e) {
+                            // Si l'archivage échoue, on continue quand même
+                        }
+                        
+                        $record->delete();
                         Cache::forget('user_sessions_' . auth()->id());
+                        
                         Notification::make()
-                            ->title('session_terminated')
+                            ->title('Session terminée')
                             ->success()
                             ->send();
                     }),
             ])
             ->bulkActions([
                 BulkAction::make('terminate_selected')
-                    ->label('terminate_selected')
+                    ->label('Terminer les sessions sélectionnées')
                     ->icon('heroicon-o-x-mark')
                     ->color('danger')
                     ->requiresConfirmation()
@@ -542,18 +380,20 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                         $sessionIds = $records->pluck('id')->toArray();
                         $currentSessionId = session()->getId();
                         $sessionIds = array_filter($sessionIds, fn ($id) => $id !== $currentSessionId);
+                        
                         DB::table('sessions')->whereIn('id', $sessionIds)->delete();
                         Cache::forget('user_sessions_' . auth()->id());
+                        
                         Notification::make()
-                            ->title('sessions_terminated')
+                            ->title('Sessions terminées')
                             ->success()
                             ->send();
                     }),
             ])
-            ->heading('active_sessions')
-            ->description('active_sessions_description')
-            ->emptyStateHeading('no_active_sessions')
-            ->emptyStateDescription('no_sessions_description')
+            ->heading('Sessions actives')
+            ->description('Gérez vos sessions actives')
+            ->emptyStateHeading('Aucune session active')
+            ->emptyStateDescription('Vous n\'avez aucune session active')
             ->emptyStateIcon('heroicon-o-device-phone-mobile')
             ->poll('30s');
     }
@@ -565,42 +405,87 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             ->orderBy('last_activity', 'desc');
     }
 
-    protected function exportUserData(): array
+    protected function exportUserData(): void
     {
         $user = auth()->user();
-        return [
+        $data = [
             'profile' => $user->toArray(),
             'sessions' => Session::where('user_id', $user->id)->get()->toArray(),
             'exported_at' => now()->toISOString(),
         ];
+
+        // Ici vous pourriez envoyer les données par email ou les télécharger
+        Notification::make()
+            ->title('Export des données')
+            ->body('Vos données ont été exportées avec succès')
+            ->success()
+            ->send();
+    }
+
+    protected function requestAccountDeletion(): void
+    {
+        // Logique pour demander la suppression du compte
+        Notification::make()
+            ->title('Demande de suppression')
+            ->body('Votre demande de suppression a été enregistrée')
+            ->warning()
+            ->send();
+    }
+
+    protected function deactivateAccount(): void
+    {
+        $user = auth()->user();
+        $user->update(['is_active' => false]);
+        
+        Notification::make()
+            ->title('Compte désactivé')
+            ->body('Votre compte a été désactivé')
+            ->warning()
+            ->send();
+    }
+
+    protected function logoutOtherSessions(): void
+    {
+        DB::table('sessions')
+            ->where('user_id', auth()->id())
+            ->where('id', '!=', session()->getId())
+            ->delete();
+
+        Cache::forget('user_sessions_' . auth()->id());
+        
+        Notification::make()
+            ->title('Sessions déconnectées')
+            ->body('Toutes les autres sessions ont été déconnectées')
+            ->success()
+            ->send();
     }
 
     protected function getLocationFromIP(string $ip): string
     {
         if ($ip === '127.0.0.1' || $ip === '::1') {
-            return 'localhost';
+            return 'Localhost';
         }
-        return 'unknown_location';
+        return 'Localisation inconnue';
     }
 
     protected function parseUserAgent(string $userAgent): string
     {
         if (Str::contains($userAgent, 'Chrome')) {
-            return 'Chrome Browser';
+            return 'Chrome';
         } elseif (Str::contains($userAgent, 'Firefox')) {
-            return 'Firefox Browser';
+            return 'Firefox';
         } elseif (Str::contains($userAgent, 'Safari')) {
-            return 'Safari Browser';
+            return 'Safari';
         } elseif (Str::contains($userAgent, 'Edge')) {
-            return 'Edge Browser';
+            return 'Edge';
         }
-        return 'Unknown Browser';
+        return 'Navigateur inconnu';
     }
 
     protected function logoutOtherBrowserSessions(string $password): void
     {
         if (!Hash::check($password, auth()->user()->getAuthPassword())) {
-            throw new \Exception('invalid_password');
+            throw new \Exception('Mot de passe invalide');
         }
 
         DB::table('sessions')
@@ -616,47 +501,42 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
         return Cache::remember('timezone_options', now()->addDays(7), function () {
             $timezones = DateTimeZone::listIdentifiers();
             return collect($timezones)->mapWithKeys(function ($timezone) {
-                $offset = now()->setTimezone($timezone)->format('P');
-                return [$timezone => "($offset) $timezone"];
+                try {
+                    $offset = now()->setTimezone($timezone)->format('P');
+                    return [$timezone => "($offset) $timezone"];
+                } catch (\Exception $e) {
+                    return [$timezone => $timezone];
+                }
             })->toArray();
         });
-    }
-
-    public static function searchTimezones(string $search): array
-    {
-        $timezones = DateTimeZone::listIdentifiers();
-        return collect($timezones)
-            ->filter(fn ($tz) => str_contains(strtolower($tz), strtolower($search)))
-            ->mapWithKeys(function ($timezone) {
-                $offset = now()->setTimezone($timezone)->format('P');
-                return [$timezone => "($offset) $timezone"];
-            })
-            ->take(20)
-            ->toArray();
     }
 
     public static function getAvailableLanguages(): array
     {
         return Cache::remember('available_languages', now()->addHour(), function () {
-            return Language::where('is_active', true)
-                ->pluck('label', 'code')
-                ->toArray();
+            try {
+                return Language::where('is_active', true)
+                    ->pluck('label', 'code')
+                    ->toArray();
+            } catch (\Exception $e) {
+                return ['en' => 'English', 'fr' => 'Français'];
+            }
         });
     }
 
     public static function getLabel(): string
     {
-        return lang('my_personal_profile');
+        return 'Mon profil personnel';
     }
 
     public function getTitle(): string
     {
-        return 'profile_settings';
+        return 'Paramètres du profil';
     }
 
     public function getSubheading(): ?string
     {
-        return 'profile_settings_description';
+        return 'Gérez vos informations personnelles et paramètres de compte';
     }
 
     public static function getRelations(): array
@@ -668,8 +548,8 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
     {
         return Notification::make()
             ->success()
-            ->title('profile_updated')
-            ->body('profile_updated_successfully');
+            ->title('Profil mis à jour')
+            ->body('Votre profil a été mis à jour avec succès');
     }
 
     protected function getRedirectUrl(): string
@@ -688,5 +568,100 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
         if ($this->record->wasChanged('user_lang')) {
             Cache::forget('available_languages');
         }
+    }
+
+    protected function getSessionsTable(): Table
+    {
+        return Table::make($this)
+            ->query($this->getTableQuery())
+            ->columns([
+                TextColumn::make('ip_address')
+                    ->label('Adresse IP')
+                    ->searchable()
+                    ->sortable(),
+
+                TextColumn::make('user_agent')
+                    ->label('Navigateur')
+                    ->formatStateUsing(fn (string $state): string => $this->parseUserAgent($state))
+                    ->limit(50),
+
+                TextColumn::make('last_activity')
+                    ->label('Dernière activité')
+                    ->dateTime()
+                    ->sortable()
+                    ->since(),
+
+                BadgeColumn::make('is_current')
+                    ->label('Statut')
+                    ->getStateUsing(fn ($record) => $record->id === session()->getId())
+                    ->formatStateUsing(fn (bool $state): string => $state ? 'Session courante' : 'Autre session')
+                    ->colors([
+                        'success' => true,
+                        'secondary' => false,
+                    ]),
+
+                TextColumn::make('location')
+                    ->label('Localisation')
+                    ->getStateUsing(fn ($record) => $this->getLocationFromIP($record->ip_address))
+                    ->placeholder('Localisation inconnue'),
+            ])
+            ->filters([])
+            ->actions([
+                Action::make('terminate')
+                    ->label('Terminer')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->visible(fn ($record) => $record->id !== session()->getId())
+                    ->requiresConfirmation()
+                    ->action(function ($record) {
+                        // Archiver la session avant de la supprimer
+                        try {
+                            HistorySession::create([
+                                'session_id' => $record->id,
+                                'user_id' => $record->user_id,
+                                'ip_address' => $record->ip_address,
+                                'user_agent' => $record->user_agent,
+                                'last_activity' => $record->last_activity,
+                                'archived_at' => now(),
+                            ]);
+                        } catch (\Exception $e) {
+                            // Si l'archivage échoue, on continue quand même
+                        }
+                        
+                        $record->delete();
+                        Cache::forget('user_sessions_' . auth()->id());
+                        
+                        Notification::make()
+                            ->title('Session terminée')
+                            ->success()
+                            ->send();
+                    }),
+            ])
+            ->bulkActions([
+                BulkAction::make('terminate_selected')
+                    ->label('Terminer les sessions sélectionnées')
+                    ->icon('heroicon-o-x-mark')
+                    ->color('danger')
+                    ->requiresConfirmation()
+                    ->action(function ($records) {
+                        $sessionIds = $records->pluck('id')->toArray();
+                        $currentSessionId = session()->getId();
+                        $sessionIds = array_filter($sessionIds, fn ($id) => $id !== $currentSessionId);
+                        
+                        DB::table('sessions')->whereIn('id', $sessionIds)->delete();
+                        Cache::forget('user_sessions_' . auth()->id());
+                        
+                        Notification::make()
+                            ->title('Sessions terminées')
+                            ->success()
+                            ->send();
+                    }),
+            ])
+            ->heading('Sessions actives')
+            ->description('Gérez vos sessions actives')
+            ->emptyStateHeading('Aucune session active')
+            ->emptyStateDescription('Vous n\'avez aucune session active')
+            ->emptyStateIcon('heroicon-o-device-phone-mobile')
+            ->poll('30s');
     }
 }

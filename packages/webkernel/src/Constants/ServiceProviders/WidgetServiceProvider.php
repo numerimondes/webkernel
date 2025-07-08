@@ -51,7 +51,7 @@ class WidgetServiceProvider extends ServiceProvider
 
         // Publish widget assets for immediate loading
         $this->publishes([
-            base_path('packages/webkernel/src/resources/views/widgets') => resource_path('views/vendor/webkernel/widgets'),
+            base_path('packages/webkernel/src/Core/Resources/Views/widgets') => resource_path('views/vendor/webkernel/widgets'),
         ], 'webkernel-widget-views');
     }
 

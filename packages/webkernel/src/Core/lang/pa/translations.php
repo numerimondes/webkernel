@@ -185,5 +185,12 @@ return [
             'generated_at' => '2025-07-01 12:04:59',
             'protected' => false,
         ],
+        'my_personal_profile' => [
+            'label' => 'ਮੇਰੀ ਨਿੱਜੀ ਪ੍ਰੋਫਾਈਲ',
+            'auto_generated' => true,
+            'engine_used' => 'bing',
+            'generated_at' => '2025-07-08 12:56:58',
+            'protected' => false,
+        ],
     ],
 ];

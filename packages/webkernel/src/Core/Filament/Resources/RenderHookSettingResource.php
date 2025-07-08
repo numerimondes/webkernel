@@ -316,7 +316,7 @@ class RenderHookSettingResource extends Resource
             Log::warning('Empty original view path for hook_key: ' . $hookKey);
             return '';
         }
-        $path = base_path('packages/webkernel/src/resources/views/' . str_replace('.', '/', $viewPath) . '.blade.php');
+        $path = base_path('packages/webkernel/src/Core/Resources/Views/' . str_replace('.', '/', $viewPath) . '.blade.php');
         Log::info('Resolved original view path: ' . $path);
         return $path;
     }
@@ -338,7 +338,7 @@ class RenderHookSettingResource extends Resource
         }
 
         $relativePath = str_replace('.', '/', $viewPath) . '.blade.php';
-        $source = base_path('packages/webkernel/src/resources/views/' . $relativePath);
+        $source = base_path('packages/webkernel/src/Core/Resources/Views/' . $relativePath);
         $destination = resource_path('views/' . $relativePath);
 
         Log::info('Source path: ' . $source);
@@ -406,7 +406,7 @@ class RenderHookSettingResource extends Resource
         }
 
         $relativePath = str_replace('.', '/', $viewPath) . '.blade.php';
-        $source = base_path('packages/webkernel/src/resources/views/' . $relativePath);
+        $source = base_path('packages/webkernel/src/Core/Resources/Views/' . $relativePath);
         $destination = resource_path('views/' . $relativePath);
 
         try {

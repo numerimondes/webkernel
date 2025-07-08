@@ -471,7 +471,7 @@ class {$serviceProviderName} extends ServiceProvider
      */
     private function registerViews(): void
     {
-        \$this->loadViewsFrom(__DIR__ . '/../resources/views', Application::TRANSLATION_NAMESPACE);
+        \$this->loadViewsFrom(__DIR__ . '/../Core/Resources/Views', Application::TRANSLATION_NAMESPACE);
     }
 
     /**
