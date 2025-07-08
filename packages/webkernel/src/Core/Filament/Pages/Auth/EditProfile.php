@@ -646,7 +646,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
 
     public static function getLabel(): string
     {
-        return 'my_profile';
+        return lang('my_personal_profile');
     }
 
     public function getTitle(): string
