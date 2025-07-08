@@ -76,24 +76,45 @@ class PlatformUpdateCommand extends Command
     protected $description = 'Update Webkernel platform by comparing local and remote versions';
 
     /**
+     * Force constants regeneration
+     */
+    private function forceConstantsRegeneration(): bool
+    {
+        $constantsFile = base_path('packages/webkernel/src/Constants/ConstantsGenerator.php');
+        if (!file_exists($constantsFile)) {
+            $this->error("Le générateur de constantes est introuvable : {$constantsFile}");
+            return false;
+        }
+        
+        try {
+            // Supprimer le fichier de hash pour forcer la régénération
+            $staticDir = base_path('packages/webkernel/src/Constants/Static');
+            $hashFile = $staticDir . DIRECTORY_SEPARATOR . 'constants_hash.txt';
+            if (file_exists($hashFile)) {
+                unlink($hashFile);
+            }
+            
+            include_once $constantsFile;
+            
+            if (!defined('WEBKERNEL_VERSION')) {
+                $this->error("La constante WEBKERNEL_VERSION n'a pas été générée après régénération forcée.");
+                return false;
+            }
+            
+            return true;
+        } catch (\Throwable $e) {
+            $this->error("Erreur lors de la génération des constantes : " . $e->getMessage());
+            return false;
+        }
+    }
+
+    /**
      * Execute the console command.
      */
     public function handle(): int
     {
         // Toujours régénérer les constantes avant toute opération
-        $constantsFile = base_path('packages/webkernel/src/Constants/ConstantsGenerator.php');
-        if (!file_exists($constantsFile)) {
-            $this->error("Le générateur de constantes est introuvable : {$constantsFile}");
-            return self::FAILURE;
-        }
-        try {
-            include_once $constantsFile;
-        } catch (\Throwable $e) {
-            $this->error("Erreur lors de la génération des constantes : " . $e->getMessage());
-            return self::FAILURE;
-        }
-        if (!defined('WEBKERNEL_VERSION')) {
-            $this->error("La constante WEBKERNEL_VERSION n'a pas été générée. Arrêt de la commande.");
+        if (!$this->forceConstantsRegeneration()) {
             return self::FAILURE;
         }
 
@@ -177,11 +198,25 @@ class PlatformUpdateCommand extends Command
      */
     private function getLocalVersion(): string
     {
+        // Toujours essayer d'abord la constante générée globalement
         if (defined('WEBKERNEL_VERSION')) {
             return WEBKERNEL_VERSION;
         }
         
-        // Try to read from Core.php file
+        // Si la constante n'est pas définie, forcer la régénération
+        $constantsFile = base_path('packages/webkernel/src/Constants/ConstantsGenerator.php');
+        if (file_exists($constantsFile)) {
+            try {
+                include_once $constantsFile;
+                if (defined('WEBKERNEL_VERSION')) {
+                    return WEBKERNEL_VERSION;
+                }
+            } catch (\Throwable $e) {
+                // Ignorer les erreurs et continuer avec la lecture directe
+            }
+        }
+        
+        // Fallback: lire directement depuis le fichier Core.php
         $coreFilePath = base_path(self::CORE_FILE_PATH);
         if (File::exists($coreFilePath)) {
             $content = File::get($coreFilePath);
@@ -1234,4 +1269,4 @@ class PlatformUpdateCommand extends Command
     {
         return $this->updateStatus;
     }
-} 
+}

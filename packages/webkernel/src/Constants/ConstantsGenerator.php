@@ -23,6 +23,7 @@ const WK_EXCLUDE_FILES = [];
 const WK_CORE_PRIORITY = 0;
 const WK_WEBKERNEL_PRIORITY = 1;
 const WK_DEFAULT_PRIORITY = 2;
+const WK_CONSTANTS_HASH_FILE = "constants_hash.txt";
 
 // ================================
 // MAIN EXECUTION
@@ -252,6 +253,105 @@ function getNewestSourceTime($baseDir, $sourcesDir, $excludeDirs): int
     return $newestTime;
 }
 
+function calculateConstantsHash($baseDir, $sourcesDir, $excludeDirs): string
+{
+    $hashData = [];
+    
+    if (!is_dir($baseDir)) {
+        return md5('no_dir');
+    }
+
+    $iterator = new RecursiveIteratorIterator(
+        new RecursiveDirectoryIterator(
+            $baseDir,
+            RecursiveDirectoryIterator::SKIP_DOTS
+        )
+    );
+
+    foreach ($iterator as $file) {
+        if (!$file->isFile() || $file->getExtension() !== "php") {
+            continue;
+        }
+
+        $filePath = $file->getRealPath();
+        if ($filePath === __FILE__) {
+            continue;
+        }
+
+        $relativePath = str_replace(
+            $baseDir . DIRECTORY_SEPARATOR,
+            "",
+            $filePath
+        );
+        $excluded = false;
+        foreach ($excludeDirs as $excludeDir) {
+            if (
+                strpos($relativePath, $excludeDir . DIRECTORY_SEPARATOR) ===
+                    0 ||
+                strpos($relativePath, $excludeDir) === 0
+            ) {
+                $excluded = true;
+                break;
+            }
+        }
+        if ($excluded) {
+            continue;
+        }
+
+        $sourceRelativePath = str_replace(
+            $sourcesDir . DIRECTORY_SEPARATOR,
+            "",
+            $filePath
+        );
+        if (
+            $sourceRelativePath === $filePath &&
+            !shouldIncludeDirectory($filePath, $relativePath)
+        ) {
+            continue;
+        }
+
+        // Lire le contenu du fichier et extraire les constantes
+        $content = file_get_contents($filePath);
+        if ($content === false) {
+            continue;
+        }
+
+        // Extraire les constantes avec leurs valeurs
+        if (preg_match_all('/const\s+([A-Z_][A-Z0-9_]*)\s*=\s*([^;]+);/m', $content, $matches, PREG_SET_ORDER)) {
+            foreach ($matches as $match) {
+                $constantName = $match[1];
+                $constantValue = trim($match[2]);
+                $hashData[$relativePath][$constantName] = $constantValue;
+            }
+        }
+    }
+
+    // Trier pour avoir un hash cohérent
+    ksort($hashData);
+    foreach ($hashData as &$constants) {
+        ksort($constants);
+    }
+
+    return md5(serialize($hashData));
+}
+
+function getStoredConstantsHash($staticDir): ?string
+{
+    $hashFile = $staticDir . DIRECTORY_SEPARATOR . WK_CONSTANTS_HASH_FILE;
+    if (!file_exists($hashFile)) {
+        return null;
+    }
+    
+    $hash = file_get_contents($hashFile);
+    return $hash ? trim($hash) : null;
+}
+
+function storeConstantsHash($staticDir, string $hash): void
+{
+    $hashFile = $staticDir . DIRECTORY_SEPARATOR . WK_CONSTANTS_HASH_FILE;
+    file_put_contents($hashFile, $hash);
+}
+
 function needsRegeneration(
     $constantsFilePath,
     $autoloadStubsPath,
@@ -279,6 +379,15 @@ function needsRegeneration(
         $excludeDirs
     );
     if ($newestSourceTime > $staticFileTime) {
+        return true;
+    }
+
+    // Vérifier si les valeurs des constantes ont changé
+    $staticDir = dirname($constantsFilePath);
+    $currentHash = calculateConstantsHash($baseDir, $sourcesDir, $excludeDirs);
+    $storedHash = getStoredConstantsHash($staticDir);
+    
+    if ($storedHash !== $currentHash) {
         return true;
     }
 
@@ -551,6 +660,10 @@ if (file_exists($constantsFilePath)) {
 if (file_exists($autoloadStubsPath)) {
     require_once $autoloadStubsPath;
 }
+
+// Sauvegarder le hash des constantes pour la prochaine vérification
+$currentHash = calculateConstantsHash($baseDir, $sourcesDir, WK_EXCLUDE_DIRS);
+storeConstantsHash($staticDir, $currentHash);
 
 echo "Constants generation completed in {$executionTime}ms\n";
 echo "Processed " .
