@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
@@ -9,7 +9,7 @@ use Livewire\Livewire;
 use Filament\Widgets\Widget;
 use ReflectionClass;
 
-class WebkernelWidgetServiceProvider extends ServiceProvider
+class WidgetServiceProvider extends ServiceProvider
 {
     /**
      * Register services.

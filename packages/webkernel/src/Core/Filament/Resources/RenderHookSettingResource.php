@@ -439,10 +439,10 @@ class RenderHookSettingResource extends Resource
     public static function getPages(): array
     {
         return [
-            'index' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\ListRenderHookSettings::route('/'),
-            'create' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting::route('/create'),
-          //  'view' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting::route('/{record}'),
-          //  'edit' => \Webkernel\Filament\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting::route('/{record}/edit'),
+            'index' => \Webkernel\Core\Filament\Resources\RenderHookSettingResource\Pages\ListRenderHookSettings::route('/'),
+            'create' => \Webkernel\Core\Filament\Resources\RenderHookSettingResource\Pages\CreateRenderHookSetting::route('/create'),
+          //  'view' => \Webkernel\Core\Filament\Resources\RenderHookSettingResource\Pages\ViewRenderHookSetting::route('/{record}'),
+          //  'edit' => \Webkernel\Core\Filament\Resources\RenderHookSettingResource\Pages\EditRenderHookSetting::route('/{record}/edit'),
         ];
     }
 }

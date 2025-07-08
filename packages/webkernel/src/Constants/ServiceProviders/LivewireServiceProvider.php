@@ -1,13 +1,13 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Livewire\Livewire;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\File;
 
-class WebkernelLivewireServiceProvider extends ServiceProvider
+class LivewireServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {

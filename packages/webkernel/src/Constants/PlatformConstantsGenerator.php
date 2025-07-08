@@ -439,3 +439,13 @@ if (file_exists($platformFilePath)) {
 
 echo "Platform constants generation completed in {$executionTime}ms\n";
 echo "Resolved " . count($finalConstants) . " constants from " . count($allConstants) . " sources\n";
+
+if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
+    try {
+        // Suppression de l'appel à generate_platform_constants car la fonction n'existe pas
+        exit(0);
+    } catch (\Throwable $e) {
+        file_put_contents('php://stderr', 'PlatformConstantsGenerator error: ' . $e->getMessage() . PHP_EOL);
+        exit(1);
+    }
+}

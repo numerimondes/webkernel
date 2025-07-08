@@ -1,16 +1,17 @@
 <?php
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use DB;
+use view;
 use Exception;
+use Filament\Facades\Filament;
+use Filament\View\PanelsRenderHook;
+use Illuminate\Support\Facades\Schema;
 use Illuminate\Support\ServiceProvider;
 use Filament\Support\Facades\FilamentView;
-use Filament\View\PanelsRenderHook;
-use Filament\Facades\Filament;
-use Illuminate\Support\Facades\Schema;
 use Webkernel\Core\Models\RenderHookSetting;
 
-class WebkernelRenderHooksServiceProvider extends ServiceProvider
+class RenderHooksServiceProvider extends ServiceProvider
 {
     public function register(): void
     {
@@ -19,6 +20,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
 
     public function boot(): void
     {
+        \Log::info('RenderHooksServiceProvider booted');
 
         $this->registerPanelsRenderHooks();
         $this->forceSidebarCollapsible();
@@ -103,6 +105,7 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             );
         }
 
+
         if ($this->isRenderHookEnabled('search_hide')) {
             FilamentView::registerRenderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,
@@ -110,8 +113,8 @@ class WebkernelRenderHooksServiceProvider extends ServiceProvider
             );
         }
 
-\Filament\Facades\Filament::serving(function () {
-        $panel = \Filament\Facades\Filament::getCurrentPanel();
+        Filament::serving(function () {
+        $panel = Filament::getCurrentPanel();
 
         if ($panel && $panel->getId() === 'system') {
             FilamentView::registerRenderHook(

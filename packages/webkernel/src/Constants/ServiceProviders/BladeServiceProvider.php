@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Blade;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 
-class WebkernelBladeServiceProvider extends ServiceProvider
+class BladeServiceProvider extends ServiceProvider
 {
     /**
      * Register additional services.

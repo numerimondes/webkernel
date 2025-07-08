@@ -1,13 +1,13 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Str;
 
-class WebkernelPoliciesServiceProvider extends ServiceProvider
+class PoliciesServiceProvider extends ServiceProvider
 {
     public function register()
     {

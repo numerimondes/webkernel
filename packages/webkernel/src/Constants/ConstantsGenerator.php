@@ -671,3 +671,14 @@ echo "Processed " .
     " classes with " .
     count($constants) .
     " constants\n";
+
+if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
+    try {
+        // Replace this with the actual generation logic for ConstantsGenerator
+        // Suppression de l'appel à generate_constants car la fonction n'existe pas
+        exit(0);
+    } catch (\Throwable $e) {
+        file_put_contents('php://stderr', 'ConstantsGenerator error: ' . $e->getMessage() . PHP_EOL);
+        exit(1);
+    }
+}

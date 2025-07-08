@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\Facades\File;
 use Filament\Schemas\Components\Grid;
@@ -10,21 +10,24 @@ use Illuminate\Support\ServiceProvider;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Fieldset;
 use Illuminate\Contracts\Foundation\Application;
-use Webkernel\Core\Providers\WebkernelViewServiceProvider;
-use Webkernel\Core\Providers\WebkernelBladeServiceProvider;
-use Webkernel\Core\Providers\WebkernelRouteServiceProvider;
-use Webkernel\Core\Providers\WebkernelConfigServiceProvider;
-use Webkernel\Core\Providers\WebkernelWidgetServiceProvider;
-use Webkernel\Core\Providers\WebkernelCommandServiceProvider;
+use Webkernel\Constants\ServiceProviders\ViewServiceProvider;
+use Webkernel\Constants\ServiceProviders\BladeServiceProvider;
+use Webkernel\Constants\ServiceProviders\RouteServiceProvider;
+use Webkernel\Constants\ServiceProviders\ConfigServiceProvider;
+use Webkernel\Constants\ServiceProviders\WidgetServiceProvider;
+use Webkernel\Constants\ServiceProviders\CommandServiceProvider;
 
 // Filament customizations
-use Webkernel\Core\Providers\WebkernelLivewireServiceProvider;
-use Webkernel\Core\Providers\WebkernelPlatformServiceProvider;
-use Webkernel\Core\Providers\WebkernelPoliciesServiceProvider;
-use Webkernel\Core\Providers\WebkernelAllPanelsServiceProvider;
-use Webkernel\Core\Providers\WebkernelMigrationServiceProvider;
+use Webkernel\Constants\ServiceProviders\LivewireServiceProvider;
+use Webkernel\Constants\ServiceProviders\PoliciesServiceProvider;
+use Webkernel\Constants\ServiceProviders\PanelsServiceProvider;
+use Webkernel\Constants\ServiceProviders\MigrationServiceProvider;
+use Webkernel\Constants\ServiceProviders\RenderHooksServiceProvider;
 
-class WebkernelServiceProvider extends ServiceProvider
+// Webkernel
+use Webkernel\Core\Providers\SystemPanelProvider;
+
+class CoreServiceProvider extends ServiceProvider
 {
     public function __construct(Application $app)
     {
@@ -34,17 +37,18 @@ class WebkernelServiceProvider extends ServiceProvider
     public function register(): void
     {
         // Register core Webkernel providers
-        $this->app->register(WebkernelBladeServiceProvider::class);
-        $this->app->register(WebkernelMigrationServiceProvider::class);
-        $this->app->register(WebkernelViewServiceProvider::class);
-        $this->app->register(WebkernelCommandServiceProvider::class);
-        $this->app->register(WebkernelRouteServiceProvider::class);
-        $this->app->register(WebkernelLivewireServiceProvider::class);
-        $this->app->register(WebkernelPoliciesServiceProvider::class);
-        $this->app->register(WebkernelWidgetServiceProvider::class);
-        $this->app->register(WebkernelConfigServiceProvider::class);
-        $this->app->register(WebkernelPlatformServiceProvider::class);
-        $this->app->register(WebkernelAllPanelsServiceProvider::class);
+        $this->app->register(BladeServiceProvider::class);
+        $this->app->register(MigrationServiceProvider::class);
+        $this->app->register(ViewServiceProvider::class);
+        $this->app->register(CommandServiceProvider::class);
+        $this->app->register(RouteServiceProvider::class);
+        $this->app->register(LivewireServiceProvider::class);
+        $this->app->register(PoliciesServiceProvider::class);
+        $this->app->register(WidgetServiceProvider::class);
+        $this->app->register(ConfigServiceProvider::class);
+        $this->app->register(PanelsServiceProvider::class);
+        $this->app->register(SystemPanelProvider::class);
+        $this->app->register(RenderHooksServiceProvider::class);
 
         // Register providers from platform and packages
         $this->registerPlatformProviders();

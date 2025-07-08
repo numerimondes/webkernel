@@ -1,626 +1,338 @@
 <?php
+
 declare(strict_types=1);
 
 namespace Webkernel\Constants;
 
-use RecursiveIteratorIterator;
-use RecursiveDirectoryIterator;
-use Exception;
-
-class ComposerGenerator
+/**
+ * ComposerGenerator is the single source of truth for generating composer.json fields
+ * for Webkernel and its modules/submodules. It is designed to be used in pre-composer
+ * autoloading, CLI scripts, or Artisan commands to ensure composer.json is always up to date.
+ */
+final class ComposerGenerator
 {
-    private array $namespaceMap;
-    private array $specialDirectoryMappings;
-    private array $changes = [];
 
-    public function __construct(?array $namespaceMap = null, ?array $specialDirectoryMappings = null)
+    public static array $psr4Removals = [
+        'SomeClassToRemove\\',
+    ];
+
+    /**
+     * Core Webkernel composer.json requirements, matching the current composer.json.
+     */
+    public static array $webkernelCore = [
+        'name' => 'webkernel/webkernel',
+        'type' => 'project',
+        'description' => ' A ready-to-start foundation with pre-configured services and seamless modularity, enabling the rapid development of interconnected systems built on top of Laravel and FilamentPHP. By Numerimondes.',
+        'keywords' => [
+            'laravel', 'framework', 'filament', 'Webkernel', 'StarterKit'
+        ],
+        'license' => 'MPL-2.0',
+        'require' => [
+            'php' => '^8.2',
+            'filament/filament' => '^4.0@beta',
+            'laravel/framework' => '^12.0',
+            'laravel/tinker' => '^2.10.1',
+            'spatie/laravel-permission' => '^6.0'
+        ],
+        'require-dev' => [
+            'barryvdh/laravel-debugbar' => '*',
+            'fakerphp/faker' => '^1.23',
+            'filament/upgrade' => '^4.0',
+            'laravel/pail' => '^1.2.2',
+            'laravel/pint' => '^1.13',
+            'laravel/sail' => '^1.41',
+            'mockery/mockery' => '^1.6',
+            'nunomaduro/collision' => '^8.6',
+            'phpunit/phpunit' => '^11.5.3'
+        ],
+        'autoload' => [
+            'psr-4' => [
+                'Database\\Factories\\' => 'database/factories/',
+                'Database\\Seeders\\' => 'database/seeders/',
+                'Webkernel\\' => 'packages/webkernel/src/',
+                'Numerimondes\\' => 'platform/',
+                'App\\' => 'app/'
+            ],
+            'files' => [
+                'packages/webkernel/src/Constants/Static/AutoloadStubs.php',
+                'packages/webkernel/src/Constants/Static/GlobalConstants.php',
+                'packages/webkernel/src/Core/Helpers/helpers.php'
+            ]
+        ],
+        'autoload-dev' => [
+            'psr-4' => [
+                'Tests\\' => 'tests/'
+            ]
+        ],
+        'scripts' => [
+            'pre-autoload-dump' => [
+                '@php packages/webkernel/src/Constants/ConstantsGenerator.php',
+                '@php packages/webkernel/src/Constants/PlatformConstantsGenerator.php'
+            ],
+            'post-autoload-dump' => [
+                'Illuminate\\Foundation\\ComposerScripts::postAutoloadDump',
+                '@php artisan package:discover --ansi',
+                '@php artisan filament:upgrade'
+            ],
+            'post-update-cmd' => [
+                '@php artisan vendor:publish --tag=laravel-assets --ansi --force'
+            ],
+            'post-root-package-install' => [
+                '@php -r "file_exists(\'.env\') || copy(\'.env.example\', \' .env\');"'
+            ],
+            'post-create-project-cmd' => [
+                '@php artisan key:generate --ansi',
+                '@php -r "file_exists(\'database/database.sqlite\') || touch(\'database/database.sqlite\');"',
+                '@php artisan migrate --graceful --ansi',
+                '@php artisan webkernel:first-install'
+            ],
+            'dev' => [
+                'Composer\\Config::disableProcessTimeout',
+                'npx concurrently -c "#93c5fd,#c4b5fd,#fb7185,#fdba74" "php artisan serve" "php artisan queue:listen --tries=1" "php artisan pail --timeout=0" "npm run dev" --names=server,queue,logs,vite'
+            ],
+            'test' => [
+                '@php artisan config:clear --ansi',
+                '@php artisan test'
+            ]
+        ],
+        'extra' => [
+            'laravel' => [
+                'dont-discover' => []
+            ]
+        ],
+        'config' => [
+            'optimize-autoloader' => true,
+            'preferred-install' => 'dist',
+            'sort-packages' => true,
+            'allow-plugins' => [
+                'pestphp/pest-plugin' => true,
+                'php-http/discovery' => true
+            ]
+        ],
+        'minimum-stability' => 'beta',
+        'prefer-stable' => true,
+        'repositories' => [
+            [ 'type' => 'path', 'url' => 'packages/webkernel' ],
+            [ 'type' => 'path', 'url' => './packages/webkernel' ]
+        ]
+    ];
+
+    /**
+     * Module and submodule definitions. Add new modules here as needed.
+     */
+    public static array $modules = [
+        'ReamMar' => [
+            'name' => 'numerimondes/reammar',
+            'type' => 'project',
+            'description' => 'Renewable Energy Audit Management - All-in-one tool for audit firms.',
+            'keywords' => [
+                "renewable-energy", "audit", "management", 
+                "laravel", "filament", "energy-audit", "software", "audit-management"
+            ],
+       'submodules' => [
+            ],
+        ]
+    ];
+
+   
+
+    /**
+     * Helper to determine the current platform mode.
+     * Returns one of:
+     *   - 'only_webkernel'
+     *   - 'Module_With_No_SubModule'
+     *   - 'Module_With_Core'
+     *   - 'Module_With_SubModules'
+     *   - 'Unknown'
+     *
+     * @return string
+     */
+    public static function IsPlatformMode(): string
     {
-        $this->namespaceMap = $namespaceMap ?? $this->getDefaultNamespaceMap();
-        $this->specialDirectoryMappings = $specialDirectoryMappings ?? $this->getDefaultSpecialDirectoryMappings();
-    }
-
-    private function getDefaultNamespaceMap(): array
-    {
-        return [
-            "App\\" => "app/",
-            "Database\\Factories\\" => "database/factories/",
-            "Database\\Seeders\\" => "database/seeders/",
-            "Webkernel\\" => "packages/webkernel/src/",
-            "Numerimondes\\" => "platform/"
-        ];
-    }
-
-    private function getDefaultSpecialDirectoryMappings(): array
-    {
-        return [
-            'components' => 'components',
-            'dto' => 'DTO',
-        ];
-    }
-
-    public function run(): int
-    {
-        echo "Starting platform composer preparation...\n";
-
-        if (!$this->checkPrerequisites()) {
-            return 1;
+        $base = function_exists('base_path') ? base_path() : getcwd();
+        $modulesDir = $base . '/platform/Modules';
+        if (!is_dir($modulesDir)) {
+            return 'only_webkernel';
         }
-
-        if (!$this->validateComposerFile()) {
-            return 1;
-        }
-
-        $this->updateComposerAutoloading();
-        $this->validateAndFixNamespaces();
-
-        if (!empty($this->changes)) {
-            echo "Changes made:\n";
-            foreach ($this->changes as $change) {
-                echo "  - {$change}\n";
-            }
-        } else {
-            echo "No changes were necessary.\n";
-        }
-
-        echo "Platform composer preparation completed successfully.\n";
-        return 0;
-    }
-
-    private function checkPrerequisites(): bool
-    {
-        echo "Checking platform prerequisites...\n";
-
-        $vendorPath = getcwd() . '/vendor';
-        if (!is_dir($vendorPath)) {
-            echo "Vendor directory not found. Running composer install...\n";
-            return $this->runComposerInstall();
-        }
-
-        $autoloadPath = $vendorPath . '/autoload.php';
-        if (!file_exists($autoloadPath)) {
-            echo "Autoload file not found. Running composer install...\n";
-            return $this->runComposerInstall();
-        }
-
-        try {
-            $autoloadContent = file_get_contents($autoloadPath);
-            if (empty($autoloadContent)) {
-                echo "Autoload file is empty. Running composer install...\n";
-                return $this->runComposerInstall();
-            }
-        } catch (Exception $e) {
-            echo "Error reading autoload file: " . $e->getMessage() . "\n";
-            return $this->runComposerInstall();
-        }
-
-        $composerLockPath = getcwd() . '/composer.lock';
-        if (!file_exists($composerLockPath)) {
-            echo "Composer lock file not found. Running composer install...\n";
-            return $this->runComposerInstall();
-        }
-
-        foreach ($this->namespaceMap as $namespace => $path) {
-            $fullPath = getcwd() . '/' . rtrim($path, '/');
-            if (!is_dir($fullPath)) {
-                echo "Directory for namespace {$namespace} not found at {$path}. Creating directory...\n";
-                mkdir($fullPath, 0755, true);
-                $this->changes[] = "Created directory: {$path}";
-            }
-        }
-
-        echo "Platform prerequisites check completed successfully.\n";
-        return true;
-    }
-
-    private function runComposerInstall(): bool
-    {
-        echo "Executing composer install to establish autoloading...\n";
-
-        $composerBinary = $this->getComposerBinary();
-        if (!$composerBinary) {
-            echo "Composer binary not found. Please install Composer first.\n";
-            return false;
-        }
-
-        $command = "{$composerBinary} install --no-scripts --no-dev --optimize-autoloader";
-
-        echo "Running: {$command}\n";
-        exec($command . ' 2>&1', $output, $returnCode);
-
-        if ($returnCode !== 0) {
-            echo "Composer install failed with return code: {$returnCode}\n";
-            echo "Output: " . implode("\n", $output) . "\n";
-            return false;
-        }
-
-        echo "Composer install completed successfully.\n";
-        $this->changes[] = 'Executed composer install to establish autoloading';
-
-        $autoloadPath = getcwd() . '/vendor/autoload.php';
-        if (!file_exists($autoloadPath)) {
-            echo "Autoload file still not found after composer install.\n";
-            return false;
-        }
-
-        return true;
-    }
-
-    private function getComposerBinary(): ?string
-    {
-        $composerPaths = [
-            '/usr/local/bin/composer',
-            '/usr/bin/composer',
-            getcwd() . '/composer.phar',
-            'composer.phar',
-            'composer'
-        ];
-
-        foreach ($composerPaths as $path) {
-            if (is_executable($path)) {
-                return $path;
-            }
-        }
-
-        exec('which composer 2>/dev/null', $output, $returnCode);
-        if ($returnCode === 0 && !empty($output)) {
-            return trim($output[0]);
-        }
-
-        if (file_exists('composer.phar')) {
-            return 'php composer.phar';
-        }
-
-        return null;
-    }
-
-    private function validateComposerFile(): bool
-    {
-        $composerPath = getcwd() . '/composer.json';
-
-        if (!file_exists($composerPath)) {
-            echo "composer.json file not found in project root.\n";
-            return false;
-        }
-
-        $composerContent = file_get_contents($composerPath);
-        $composerData = json_decode($composerContent, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            echo "Invalid JSON in composer.json: " . json_last_error_msg() . "\n";
-            return false;
-        }
-
-        echo "composer.json validation passed.\n";
-        return true;
-    }
-
-    private function validateAndFixNamespaces(): void
-    {
-        $namespaceValidator = new NamespaceValidator($this->namespaceMap, $this->specialDirectoryMappings);
-
-        foreach ($this->namespaceMap as $namespace => $path) {
-            $fullPath = getcwd() . '/' . rtrim($path, '/');
-
-            if (!is_dir($fullPath)) {
-                continue;
-            }
-
-            echo "Validating namespaces in {$path}...\n";
-            $expectedNamespace = rtrim($namespace, '\\');
-            $violations = $namespaceValidator->validateDirectory($fullPath, $expectedNamespace);
-
-            if (!empty($violations)) {
-                echo "Found " . count($violations) . " namespace violations in {$path}\n";
-                $fixed = $namespaceValidator->fixViolations($violations);
-
-                foreach ($fixed as $file => $oldNamespace) {
-                    $this->changes[] = "Fixed namespace in {$file}";
-                }
-            }
-        }
-
-        $this->discoverAdditionalPackages();
-    }
-
-    private function discoverAdditionalPackages(): void
-    {
-        $packagesPath = getcwd() . '/packages';
-
-        if (!is_dir($packagesPath)) {
-            return;
-        }
-
-        $directories = glob($packagesPath . '/*', GLOB_ONLYDIR);
-
-        foreach ($directories as $directory) {
-            $packageName = basename($directory);
-
-            $alreadyMapped = false;
-            foreach ($this->namespaceMap as $namespace => $path) {
-                if (strpos($path, "packages/{$packageName}") !== false) {
-                    $alreadyMapped = true;
-                    break;
-                }
-            }
-
-            if ($alreadyMapped) {
-                continue;
-            }
-
-            $composerFile = $directory . '/composer.json';
-            if (file_exists($composerFile)) {
-                $packageComposer = json_decode(file_get_contents($composerFile), true);
-                $autoload = $packageComposer['autoload']['psr-4'] ?? [];
-
-                foreach ($autoload as $namespace => $path) {
-                    $this->namespaceMap[$namespace] = "packages/{$packageName}/" . ltrim($path, '/');
-
-                    echo "Discovered package {$packageName} with namespace {$namespace}\n";
-                    break;
-                }
-            }
-        }
-    }
-
-    private function updateComposerAutoloading(): void
-    {
-        echo "Updating composer autoloading...\n";
-
-        $composerUpdater = new ComposerUpdater($this->namespaceMap);
-        $composerPath = getcwd() . '/composer.json';
-
-        $composerContent = file_get_contents($composerPath);
-        $composerData = json_decode($composerContent, true);
-
-        if (json_last_error() !== JSON_ERROR_NONE) {
-            echo "Error reading composer.json: " . json_last_error_msg() . "\n";
-            return;
-        }
-
-        $originalData = $composerData;
-
-        echo "Updating PSR-4 namespaces...\n";
-        $composerData = $composerUpdater->updatePsr4Autoloading($composerData);
-
-        echo "Updating autoload files...\n";
-        $composerData = $composerUpdater->updateFilesAutoloading($composerData);
-
-        $generatedComposerData = $this->getGeneratedComposerData();
-        if ($generatedComposerData) {
-            echo "Merging with generated data...\n";
-            $composerData = $composerUpdater->mergeWithGeneratedData($composerData, $generatedComposerData);
-        }
-
-        if ($originalData !== $composerData) {
-            echo "Writing updated composer.json...\n";
-
-            $formattedJson = json_encode($composerData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-            if (file_put_contents($composerPath, $formattedJson) !== false) {
-                $this->changes[] = 'Updated composer.json with new autoloading configuration';
-                echo "composer.json updated successfully\n";
-            } else {
-                echo "Error writing composer.json\n";
-            }
-        } else {
-            echo "No changes necessary in composer.json\n";
-        }
-
-        if ($generatedComposerData) {
-            $outputPath = getcwd() . '/composer.generated.json';
-            $formattedGeneratedJson = json_encode($generatedComposerData, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES);
-
-            if (file_put_contents($outputPath, $formattedGeneratedJson) !== false) {
-                $this->changes[] = 'Generated composer.generated.json';
-                echo "composer.generated.json created successfully\n";
-            } else {
-                echo "Error creating composer.generated.json\n";
-            }
-        }
-
-        echo "Composer autoloading update completed\n";
-    }
-
-    private function getGeneratedComposerData(): ?array
-    {
-        if (class_exists('Webkernel\PlatformConfig\WebkernelConfigFile')) {
-            try {
-                return \Webkernel\PlatformConfig\WebkernelConfigFile::generateComposerArray();
-            } catch (Exception $e) {
-                echo "Warning: Could not generate composer data from WebkernelConfigFile: " . $e->getMessage() . "\n";
-            }
-        }
-
-        $configPath = getcwd() . '/platform/config/webkernel.php';
-        if (file_exists($configPath)) {
-            try {
-                $config = include $configPath;
-                return $this->generateComposerDataFromConfig($config);
-            } catch (Exception $e) {
-                echo "Warning: Could not load platform config: " . $e->getMessage() . "\n";
-            }
-        }
-
-        return null;
-    }
-
-    private function generateComposerDataFromConfig(array $config): array
-    {
-        $composerData = [];
-
-        if (isset($config['require'])) {
-            $composerData['require'] = $config['require'];
-        }
-
-        if (isset($config['require-dev'])) {
-            $composerData['require-dev'] = $config['require-dev'];
-        }
-
-        if (isset($config['autoload'])) {
-            $composerData['autoload'] = $config['autoload'];
-        }
-
-        if (isset($config['repositories'])) {
-            $composerData['repositories'] = $config['repositories'];
-        }
-
-        if (isset($config['scripts'])) {
-            $composerData['scripts'] = $config['scripts'];
-        }
-
-        return $composerData;
-    }
-}
-
-class NamespaceValidator
-{
-    private array $namespaceMap;
-    private array $specialDirectoryMappings;
-
-    public function __construct(array $namespaceMap, array $specialDirectoryMappings = [])
-    {
-        $this->namespaceMap = $namespaceMap;
-        $this->specialDirectoryMappings = $specialDirectoryMappings;
-    }
-
-    public function validateDirectory(string $directory, string $expectedNamespace): array
-    {
-        $violations = [];
-        $phpFiles = $this->getPhpFiles($directory);
-
-        foreach ($phpFiles as $file) {
-            $violation = $this->validateFile($file, $directory, $expectedNamespace);
-            if ($violation) {
-                $violations[] = $violation;
-            }
-        }
-
-        return $violations;
-    }
-
-    private function getPhpFiles(string $directory): array
-    {
-        $files = [];
-        $iterator = new RecursiveIteratorIterator(
-            new RecursiveDirectoryIterator($directory, RecursiveDirectoryIterator::SKIP_DOTS)
-        );
-
-        foreach ($iterator as $file) {
-            if ($file->getExtension() === 'php') {
-                $files[] = $file->getPathname();
-            }
-        }
-
-        return $files;
-    }
-
-    private function validateFile(string $filePath, string $baseDirectory, string $expectedNamespace): ?array
-    {
-        $content = file_get_contents($filePath);
-        $currentNamespace = $this->extractNamespace($content);
-
-        if (!$currentNamespace) {
-            return null;
-        }
-
-        $expectedFileNamespace = $this->calculateExpectedNamespace($filePath, $baseDirectory, $expectedNamespace);
-
-        if ($currentNamespace !== $expectedFileNamespace) {
-            return [
-                'file' => $filePath,
-                'current' => $currentNamespace,
-                'expected' => $expectedFileNamespace,
-                'content' => $content
-            ];
-        }
-
-        return null;
-    }
-
-    private function extractNamespace(string $content): ?string
-    {
-        if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $matches)) {
-            return trim($matches[1]);
-        }
-
-        return null;
-    }
-
-    private function calculateExpectedNamespace(string $filePath, string $baseDirectory, string $baseNamespace): string
-    {
-        $relativePath = str_replace($baseDirectory . '/', '', $filePath);
-        $directory = dirname($relativePath);
-
-        if ($directory === '.' || $directory === 'src') {
-            return $baseNamespace;
-        }
-
-        $cleanDirectory = preg_replace('/^src\//', '', $directory);
-
-        $namespaceParts = explode('/', $cleanDirectory);
-        $namespaceParts = array_filter($namespaceParts, function($part) {
-            return $part !== '.' && $part !== '';
+        $modules = array_filter(scandir($modulesDir), function($d) use ($modulesDir) {
+            return $d !== '.' && $d !== '..' && is_dir($modulesDir . '/' . $d);
         });
+        if (empty($modules)) {
+            return 'only_webkernel';
+        }
+        foreach ($modules as $module) {
+            $submodulesDir = $modulesDir . '/' . $module;
+            $submodules = array_filter(scandir($submodulesDir), function($d) use ($submodulesDir) {
+                return $d !== '.' && $d !== '..' && is_dir($submodulesDir . '/' . $d);
+            });
+            if (!empty($submodules)) {
+                return 'Module_With_SubModules';
+            }
+        }
+        // If we have modules but no submodules
+        return 'Module_With_No_SubModule';
+    }
 
-        $mappedParts = [];
-        foreach ($namespaceParts as $part) {
-            $lowerPart = strtolower($part);
-            if (isset($this->specialDirectoryMappings[$lowerPart])) {
-                $mappedParts[] = $this->specialDirectoryMappings[$lowerPart];
-            } else {
-                $mappedParts[] = ucfirst($part);
+    /**
+     * Merge core, valid modules, and valid submodules into a composer.json structure.
+     * Only includes modules/submodules whose directories exist.
+     *
+     * @return array The merged composer.json structure.
+     */
+    public static function generate(): array
+    {
+        $composerPath = function_exists('base_path') ? base_path('composer.json') : getcwd() . '/composer.json';
+        $existing = file_exists($composerPath) ? json_decode(file_get_contents($composerPath), true) : [];
+        $merged = self::$webkernelCore;
+
+        // If a module (like ReamMar) is present and has name/description/keywords, override core
+        foreach (self::$modules as $module) {
+            $validModule = false;
+            foreach (($module['psr-4'] ?? []) as $ns => $path) {
+                if (self::pathExists($path)) {
+                    $validModule = true;
+                }
+            }
+            if ($validModule) {
+                foreach (['name', 'description', 'keywords', 'type'] as $field) {
+                    if (!empty($module[$field])) {
+                        $merged[$field] = $module[$field];
+                    }
+                }
             }
         }
 
-        $additionalNamespace = implode('\\', $mappedParts);
-
-        return $baseNamespace . ($additionalNamespace ? '\\' . $additionalNamespace : '');
-    }
-
-    public function fixViolations(array $violations): array
-    {
-        $fixed = [];
-
-        foreach ($violations as $violation) {
-            $newContent = $this->replaceNamespace(
-                $violation['content'],
-                $violation['current'],
-                $violation['expected']
-            );
-
-            file_put_contents($violation['file'], $newContent);
-            $fixed[$violation['file']] = $violation['current'];
+        // Merge in any extra fields from existing composer.json not managed by the generator
+        foreach ($existing as $key => $value) {
+            if (!array_key_exists($key, $merged)) {
+                $merged[$key] = $value;
+            }
         }
 
-        return $fixed;
+        // Handle modules and submodules (remove if not present)
+        foreach (self::$modules as $name => $module) {
+            $validModule = false;
+            foreach (($module['psr-4'] ?? []) as $ns => $path) {
+                if (self::pathExists($path)) {
+                    $validModule = true;
+                    $merged['autoload']['psr-4'][$ns] = $path;
+                } else {
+                    unset($merged['autoload']['psr-4'][$ns]);
+                }
+            }
+            if (!$validModule) {
+                // Remove providers if module is not valid
+                if (!empty($module['providers'])) {
+                    foreach ($module['providers'] as $provider) {
+                        if (($idx = array_search($provider, $merged['extra']['laravel']['providers'] ?? [])) !== false) {
+                            unset($merged['extra']['laravel']['providers'][$idx]);
+                        }
+                    }
+                }
+                continue;
+            }
+            if (!empty($module['providers'])) {
+                foreach ($module['providers'] as $provider) {
+                    if (!in_array($provider, $merged['extra']['laravel']['providers'] ?? [], true)) {
+                        $merged['extra']['laravel']['providers'][] = $provider;
+                    }
+                }
+            }
+            if (!empty($module['submodules'])) {
+                foreach ($module['submodules'] as $subName => $sub) {
+                    foreach (($sub['psr-4'] ?? []) as $subNs => $subPath) {
+                        if (self::pathExists($subPath)) {
+                            $merged['autoload']['psr-4'][$subNs] = $subPath;
+                        } else {
+                            unset($merged['autoload']['psr-4'][$subNs]);
+                        }
+                    }
+                }
+            }
+        }
+
+        // Suppression des namespaces PSR-4 listés dans $psr4Removals
+        foreach (self::$psr4Removals as $nsToRemove) {
+            if (isset($merged['autoload']['psr-4'][$nsToRemove])) {
+                unset($merged['autoload']['psr-4'][$nsToRemove]);
+            }
+        }
+
+        // Deduplicate providers
+        if (isset($merged['extra']['laravel']['providers'])) {
+            $merged['extra']['laravel']['providers'] = array_values(array_unique($merged['extra']['laravel']['providers']));
+        }
+        // Ensure no empty arrays for PSR-4
+        foreach (['autoload', 'autoload-dev'] as $autoloadKey) {
+            if (isset($merged[$autoloadKey]['psr-4']) && empty($merged[$autoloadKey]['psr-4'])) {
+                unset($merged[$autoloadKey]['psr-4']);
+            }
+        }
+
+        // Correction : forcer require et require-dev à être des objets vides si vides
+        if (empty($merged['require'])) $merged['require'] = (object)[];
+        if (empty($merged['require-dev'])) $merged['require-dev'] = (object)[];
+
+        // Écriture du composer.json
+        file_put_contents($composerPath, json_encode($merged, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES));
+
+        return $merged;
     }
 
-    private function replaceNamespace(string $content, string $oldNamespace, string $newNamespace): string
+    /**
+     * Register an additional file for autoload.files (if it exists).
+     */
+    public static function addFile(string $path): void
     {
-        $pattern = '/^(\s*namespace\s+)' . preg_quote($oldNamespace, '/') . '(\s*;)/m';
-        return preg_replace($pattern, '$1' . $newNamespace . '$2', $content);
+        if (self::pathExists($path) && !in_array($path, self::$webkernelCore['files'], true)) {
+            self::$webkernelCore['files'][] = $path;
+        }
+    }
+
+    /**
+     * Register an additional Composer script.
+     */
+    public static function addScript(string $event, string $command): void
+    {
+        self::$webkernelCore['scripts'][$event][] = $command;
+    }
+
+    /**
+     * Register or override a Composer config value.
+     */
+    public static function addConfig(string $key, mixed $value): void
+    {
+        self::$webkernelCore['config'][$key] = $value;
+    }
+
+    /**
+     * Register an additional Laravel provider.
+     */
+    public static function addProvider(string $providerClass): void
+    {
+        if (!in_array($providerClass, self::$webkernelCore['extra']['laravel']['providers'] ?? [], true)) {
+            self::$webkernelCore['extra']['laravel']['providers'][] = $providerClass;
+        }
+    }
+
+    /**
+     * Utility: Check if a path exists, using base_path() if available, else getcwd().
+     */
+    private static function pathExists(string $relativePath): bool
+    {
+        $base = function_exists('base_path') ? base_path() : getcwd();
+        return is_dir($base . DIRECTORY_SEPARATOR . rtrim($relativePath, '/'));
     }
 }
 
-class ComposerUpdater
-{
-    private array $namespaceMap;
-
-    public function __construct(array $namespaceMap)
-    {
-        $this->namespaceMap = $namespaceMap;
-    }
-
-    public function updatePsr4Autoloading(array $composerData): array
-    {
-        if (!isset($composerData['autoload'])) {
-            $composerData['autoload'] = [];
-        }
-
-        if (!isset($composerData['autoload']['psr-4'])) {
-            $composerData['autoload']['psr-4'] = [];
-        }
-
-        foreach ($this->namespaceMap as $namespace => $path) {
-            $composerData['autoload']['psr-4'][$namespace] = $path;
-        }
-
-        return $composerData;
-    }
-
-    public function updateFilesAutoloading(array $composerData): array
-    {
-        $requiredFiles = [ ];
-
-        echo "Searching for autoload files...\n";
-
-        foreach ($this->namespaceMap as $namespace => $path) {
-        $possibleHelperFiles = [
-            "packages/webkernel/src/Constants/Static/AutoloadStubs.php",
-            "packages/webkernel/src/Constants/Static/GlobalConstants.php",
-            "packages/webkernel/src/Core/Helpers/helpers.php"
-        ];
-
-        foreach ($possibleHelperFiles as $file) {
-            $fullPath = getcwd() . '/' . $file;
-            if (file_exists($fullPath)) {
-                $requiredFiles[] = $file;
-                echo "  - File found: {$file}\n";
-            }
-        }
-    }
-
-
-        $requiredFiles = array_unique($requiredFiles);
-        $requiredFiles = array_values(array_filter($requiredFiles, function($file) {
-            return !empty($file) && file_exists(getcwd() . '/' . $file);
-        }));
-
-        echo "Autoload files to add: " . count($requiredFiles) . "\n";
-        foreach ($requiredFiles as $file) {
-            echo "  - {$file}\n";
-        }
-
-        if (!isset($composerData['autoload'])) {
-            $composerData['autoload'] = [];
-            echo "Initializing autoload section\n";
-        }
-
-        if (!isset($composerData['autoload']['files'])) {
-            $composerData['autoload']['files'] = [];
-            echo "Initializing autoload.files section\n";
-        }
-
-        $originalFiles = $composerData['autoload']['files'];
-
-        $composerData['autoload']['files'] = array_values(
-            array_unique(array_merge($composerData['autoload']['files'], $requiredFiles))
-        );
-
-        $addedFiles = array_diff($composerData['autoload']['files'], $originalFiles);
-        if (!empty($addedFiles)) {
-            echo "Files added to composer.json:\n";
-            foreach ($addedFiles as $file) {
-                echo "  + {$file}\n";
-            }
-        } else {
-            echo "No new files to add\n";
-        }
-
-        echo "Total autoload files: " . count($composerData['autoload']['files']) . "\n";
-        return $composerData;
-    }
-
-    public function mergeWithGeneratedData(array $composerData, array $generatedData): array
-    {
-        if (isset($generatedData['require'])) {
-            $composerData['require'] = array_merge($composerData['require'] ?? [], $generatedData['require']);
-        }
-
-        if (isset($generatedData['require-dev'])) {
-            $composerData['require-dev'] = array_merge($composerData['require-dev'] ?? [], $generatedData['require-dev']);
-        }
-
-        if (isset($generatedData['autoload']['psr-4'])) {
-            $composerData['autoload']['psr-4'] = array_merge($composerData['autoload']['psr-4'] ?? [], $generatedData['autoload']['psr-4']);
-        }
-
-        if (isset($generatedData['autoload']['files'])) {
-            $composerData['autoload']['files'] = array_unique(array_merge($composerData['autoload']['files'] ?? [], $generatedData['autoload']['files']));
-        }
-
-        if (isset($generatedData['repositories'])) {
-            $composerData['repositories'] = array_merge($composerData['repositories'] ?? [], $generatedData['repositories']);
-        }
-
-        if (isset($generatedData['scripts'])) {
-            $composerData['scripts'] = array_merge($composerData['scripts'] ?? [], $generatedData['scripts']);
-        }
-
-        return $composerData;
+// CLI entry point: silent, writes composer.json, only outputs on error
+if (php_sapi_name() === 'cli' && basename(__FILE__) === basename($_SERVER['SCRIPT_FILENAME'])) {
+    try {
+        $generated = \Webkernel\Constants\ComposerGenerator::generate();
+        file_put_contents('composer.json', json_encode($generated, JSON_PRETTY_PRINT | JSON_UNESCAPED_SLASHES) . PHP_EOL);
+        exit(0);
+    } catch (\Throwable $e) {
+        file_put_contents('php://stderr', 'ComposerGenerator error: ' . $e->getMessage() . PHP_EOL);
+        exit(1);
     }
 }
-
-$customNamespaceMap = [];
-$composer = new ComposerGenerator($customNamespaceMap);
-exit($composer->run());

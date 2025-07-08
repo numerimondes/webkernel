@@ -1,24 +1,17 @@
 <?php
 
-namespace Webkernel\Core\Providers\Filament;
+namespace Webkernel\Core\Providers;
 
 //Filament
-use Filament\Pages;
 use Filament\Panel;
-use Filament\Widgets;
 use Filament\PanelProvider;
-use Filament\Resources\Resource;
 use Filament\Support\Colors\Color;
-use Illuminate\Support\HtmlString;
 use Filament\Widgets\AccountWidget;
-use Illuminate\Support\Facades\File;
-use WEBKERNEL__LANGUAGE__MIDDLEWARE as SetLang;
 //Illuminate
 use Webkernel\Core\Filament\Pages\Dashboard;
 use Filament\Widgets\FilamentInfoWidget;
 use Filament\Http\Middleware\Authenticate;
 use Webkernel\Core\Filament\Pages\Auth\EditProfile;
-use Webkernel\Core\Filament\Pages\PlatformSettings;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
@@ -29,6 +22,15 @@ use Filament\Http\Middleware\DisableBladeIconComponents;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
+
+use WEBKERNEL__LANGUAGE__MIDDLEWARE as SetLang;
+
+
+use Illuminate\Support\HtmlString;
+use Illuminate\Support\Facades\File;
+use Filament\Resources\Resource;
+use Filament\Pages;
+use Filament\Widgets;
 
 
 class SystemPanelProvider extends PanelProvider
@@ -64,19 +66,19 @@ class SystemPanelProvider extends PanelProvider
             //->unsavedChangesAlerts()
             ->databaseNotifications()
             ->databaseTransactions(false)
-            ->discoverClusters(in: base_path('packages/webkernel/src/Filament/Clusters'), for: 'Webkernel\\Filament\\Clusters')
+            ->discoverClusters(in: base_path('packages/webkernel/src/Core/Filament/Clusters'), for: 'Webkernel\\Core\\Filament\\Clusters')
             ->colors([
                 'primary' => Color::hex('#3276c3')
             ])
 
-            ->discoverResources( base_path('packages/webkernel/src/Filament/Resources'), for: 'Webkernel\\Filament\\Resources')
-            ->discoverPages( base_path('packages/webkernel/src/Filament/Pages'), for: 'Webkernel\\Filament\\Pages')
+            ->discoverResources( base_path('packages/webkernel/src/Core/Filament/Resources'), for: 'Webkernel\\Core\\Filament\\Resources')
+            ->discoverPages( base_path('packages/webkernel/src/Core/Filament/Pages'), for: 'Webkernel\\Core\\Filament\\Pages')
             ->pages([
                 Dashboard::class,
             ])
 
             ->resources([])
-            ->discoverWidgets(in: base_path('packages/webkernel/src/Filament/Widgets'), for: 'Webkernel\\Filament\\Widgets')
+            ->discoverWidgets(in: base_path('packages/webkernel/src/Core/Filament/Widgets'), for: 'Webkernel\\Core\\Filament\\Widgets')
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,

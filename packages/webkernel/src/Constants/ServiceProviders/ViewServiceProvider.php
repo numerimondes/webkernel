@@ -1,53 +1,39 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 
-class WebkernelMigrationServiceProvider extends ServiceProvider
+class ViewServiceProvider extends ServiceProvider
 {
     /**
      * Initialize the service provider.
      */
     public function boot(): void
     {
-        $this->loadMigrationsFromPackages();
+        $this->loadViewsFromPackage();
     }
 
     /**
-     * Load migrations from all packages and platform.
+     * Load views from the Webkernel package and platform/packages.
      */
-    protected function loadMigrationsFromPackages(): void
+    protected function loadViewsFromPackage(): void
     {
-        $migrationPaths = $this->getMigrationPaths();
-        foreach ($migrationPaths as $path) {
-            if (File::isDirectory($path)) {
-                $this->loadMigrationsFrom($path);
-            }
-        }
-    }
+        // Load Webkernel views
+        $this->loadViewsFrom(base_path('packages/webkernel/src/Core/Resources/Views'), 'webkernel');
+        view()->addNamespace('webkernel', base_path('packages/webkernel/src/Core/Resources/Views'));
 
-    /**
-     * Get migration paths
-     *
-     * @return array
-     */
-    protected function getMigrationPaths(): array
-    {
-        $paths = [
-            base_path('packages/webkernel/src/database/migrations'),
-        ];
-
+        // Load views from platform and other packages
         $autoloadNamespaces = $this->getAutoloadNamespaces();
         foreach ($autoloadNamespaces as $namespace => $path) {
-            $migrationPath = $path . '/database/migrations';
-            if (File::isDirectory($migrationPath)) {
-                $paths[] = $migrationPath;
+            $viewPath = $path . '/Resources/Views';
+            if (File::isDirectory($viewPath)) {
+                $viewNamespace = strtolower(str_replace('\\', '.', $namespace));
+                $this->loadViewsFrom($viewPath, $viewNamespace);
+                view()->addNamespace($viewNamespace, $viewPath);
             }
         }
-
-        return array_unique($paths);
     }
 
     /**

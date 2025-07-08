@@ -1,8 +1,8 @@
 <?php
 /**
  * Auto-generated constants - DO NOT EDIT
- * Generated: 2025-07-08 02:50:00
- * Generation time: 0.96ms
+ * Generated: 2025-07-08 09:57:43
+ * Generation time: 0.81ms
  * Total constants: 144
  * Total classes: 10
  */
@@ -15,7 +15,7 @@ if (!defined('PLATFORM_URL')) define('PLATFORM_URL', 'https://reammar.com');
 
 // Webkernel\Constants\Definitions\Webkernel\Core
 // Source: Definitions/Webkernel/Core.php
-if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.23');
+if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.24');
 if (!defined('WEBKERNEL_VERSION_STABLE')) define('WEBKERNEL_VERSION_STABLE', '0.0.21');
 if (!defined('DEFAULT_TIMEOUT')) define('DEFAULT_TIMEOUT', 30);
 if (!defined('MAX_RETRIES')) define('MAX_RETRIES', 3);

@@ -1,12 +1,13 @@
 <?php
 /**
  * Auto-generated platform constants - DO NOT EDIT
- * Generated: 2025-07-07 22:45:51
- * Generation time: 0.97ms
- * Total constants: 53
+ * Generated: 2025-07-08 09:57:43
+ * Generation time: 0.78ms
+ * Total constants: 54
  */
 
-if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.26');
+if (!defined('WEBKERNEL_VERSION')) define('WEBKERNEL_VERSION', '0.0.24');
+if (!defined('WEBKERNEL_VERSION_STABLE')) define('WEBKERNEL_VERSION_STABLE', '0.0.21');
 if (!defined('DEFAULT_TIMEOUT')) define('DEFAULT_TIMEOUT', 30);
 if (!defined('MAX_RETRIES')) define('MAX_RETRIES', 3);
 if (!defined('CACHE_TTL')) define('CACHE_TTL', 3600);

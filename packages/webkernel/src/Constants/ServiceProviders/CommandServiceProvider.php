@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Console\Command;
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\File;
 
-class WebkernelCommandServiceProvider extends ServiceProvider
+class CommandServiceProvider extends ServiceProvider
 {
     protected array $coreCommands = [
 

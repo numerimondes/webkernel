@@ -1,10 +1,10 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 
-class WebkernelWebhookServiceProvider extends ServiceProvider
+class WebhookServiceProvider extends ServiceProvider
 {
     /**
      * Register services and bindings related to webhooks.

@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Console\Application as Artisan;
 use Illuminate\Support\Facades\File;
 
-class WebkernelConfigServiceProvider extends ServiceProvider
+class ConfigServiceProvider extends ServiceProvider
 {
     /**
      * Register the configuration.
@@ -15,8 +15,7 @@ class WebkernelConfigServiceProvider extends ServiceProvider
     {
         // Merge Webkernel config
         $this->mergeConfigFrom(
-            __DIR__ . '/../config/webkernel.php',
-            'webkernel'
+            base_path(rtrim(WEBKERNEL_CORE_PATH, '/') . '/config/webkernel.php'),            'webkernel'
         );
 
         // Merge configs from platform and packages

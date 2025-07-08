@@ -410,12 +410,7 @@ class PlatformUpdateCommand extends Command
     private function shouldEnableRollingRelease(?string $remoteVersion, ?string $remoteStableVersion): bool
     {
         // Enable rolling release if remote version equals stable version
-        if ($remoteVersion && $remoteStableVersion && $remoteVersion === $remoteStableVersion) {
-            return true;
-        }
-        
-        // Enable rolling release if configured in config
-        return config('webkernel.updates.rolling_release_enabled', false);
+        return $remoteVersion && $remoteStableVersion && $remoteVersion === $remoteStableVersion;
     }
 
     /**

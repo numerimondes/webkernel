@@ -1,12 +1,12 @@
 <?php
 
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
 
-class WebkernelRouteServiceProvider extends ServiceProvider
+class RouteServiceProvider extends ServiceProvider
 {
     public function boot(): void
     {
@@ -15,7 +15,7 @@ class WebkernelRouteServiceProvider extends ServiceProvider
 
     public function loadRoutes(): void
     {
-       // Route::middleware('web')->group(base_path('routes/web.php'));
+        Route::middleware('web')->group(base_path('routes/web.php'));
 
         $this->loadWebkernelRoutes();
 

@@ -1,5 +1,4 @@
 {
-    "$schema": "https://getcomposer.org/schema.json",
     "name": "webkernel/webkernel",
     "type": "project",
     "description": " A ready-to-start foundation with pre-configured services and seamless modularity, enabling the rapid development of interconnected systems built on top of Laravel and FilamentPHP. By Numerimondes.",
@@ -35,7 +34,8 @@
             "Database\\Seeders\\": "database/seeders/",
             "Webkernel\\": "packages/webkernel/src/",
             "Numerimondes\\": "platform/",
-            "App\\": "app/"
+            "App\\": "app/",
+            "TitiNini\\": "toto/"
         },
         "files": [
             "packages/webkernel/src/Constants/Static/AutoloadStubs.php",
@@ -62,7 +62,7 @@
             "@php artisan vendor:publish --tag=laravel-assets --ansi --force"
         ],
         "post-root-package-install": [
-            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+            "@php -r \"file_exists('.env') || copy('.env.example', ' .env');\""
         ],
         "post-create-project-cmd": [
             "@php artisan key:generate --ansi",
@@ -104,5 +104,6 @@
             "type": "path",
             "url": "./packages/webkernel"
         }
-    ]
+    ],
+    "$schema": "https://getcomposer.org/schema.json"
 }

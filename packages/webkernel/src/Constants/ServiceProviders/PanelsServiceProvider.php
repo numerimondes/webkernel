@@ -1,12 +1,12 @@
 <?php
-namespace Webkernel\Core\Providers;
+namespace Webkernel\Constants\ServiceProviders;
 
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
 use Illuminate\Support\ServiceProvider;
 use Filament\Enums\ThemeMode;
 
-class WebkernelAllPanelsServiceProvider extends ServiceProvider
+class PanelsServiceProvider extends ServiceProvider
 {
    public function register()
    {
@@ -33,7 +33,7 @@ class WebkernelAllPanelsServiceProvider extends ServiceProvider
     */
    protected function registerPlatformModulesComponents(): void
    {
-       $allComponents = discover_platform_modules_components('system');
+       $allComponents = \discover_platform_modules_components('system');
        
        $this->app->resolving('filament', function () use ($allComponents) {
            $panels = Filament::getPanels();

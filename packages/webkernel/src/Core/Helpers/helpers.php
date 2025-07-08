@@ -91,10 +91,6 @@ foreach ($criticalFiles as $file) {
 foreach ($helpersDirs as $dir) {
     $files = getAllPhpFiles($dir, $excludeDirs, $excludeFiles);
     foreach ($files as $file) {
-        $content = file_get_contents($file);
-        $cleanContent = cleanPhpContent($content);
-        if ($cleanContent) {
-            safeEval($cleanContent, $file);
-        }
+        require_once $file;
     }
 }
