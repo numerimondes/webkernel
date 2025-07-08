@@ -1,0 +1,187 @@
+{
+    "components": {
+      "website-builder": [],
+      "webkernel": {
+        "assets": {
+          "description": "Contains static resources like CSS, JS, and images used throughout the application.",
+          "subdirectories": {
+            "admin": {
+              "description": "CSS and JS resources specific to administration.",
+              "stub_path": "",
+              "files": ["admin-settings.js", "dashboard.css"]
+            },
+            "css": {
+              "description": "Main CSS files shared between components.",
+              "stub_path": "",
+              "files": ["main.css"]
+            },
+            "external": {
+              "description": "External resources, such as third-party libraries.",
+              "stub_path": "",
+              "files": ["carousel.js", "chart.js", "datatable.js"]
+            },
+            "images": {
+              "description": "Images used in the application.",
+              "stub_path": "",
+              "files": ["logo.png"]
+            },
+            "js": {
+              "description": "JavaScript scripts used in the application.",
+              "stub_path": "",
+              "files": ["main.js"]
+            },
+            "product": {
+              "description": "Resources related to products, like styles and scripts for product management.",
+              "stub_path": "",
+              "files": ["product-card.css", "product-list.js"]
+            },
+            "user": {
+              "description": "Resources related to users, such as settings and profiles.",
+              "stub_path": "",
+              "files": ["profile.css", "user-settings.js"]
+            }
+          }
+        },
+        "external": {
+          "description": "External components, such as integrations or elements from other applications.",
+          "files": ["chart.js", "datatable.blade.php", "third-party-carousel.blade.php"]
+        },
+        "layouts": {
+          "description": "Layout components used for different views.",
+          "subdirectories": {
+            "admin": {
+              "description": "Layouts specific to administration.",
+              "stub_path": "",
+              "files": ["admin-header.blade.php", "admin-sidebar.blade.php"]
+            },
+            "auth": {
+              "description": "Layouts specific to authentication and authorization.",
+              "stub_path": "",
+              "files": ["login.blade.php", "register.blade.php", "forgot-password.blade.php"]
+            },
+            "common": {
+              "description": "Layout components common to all sections of the application.",
+              "stub_path": "",
+              "files": ["footer.blade.php", "header.blade.php", "main-layout.blade.php"]
+            },
+            "errors": {
+              "description": "Layouts specific to error pages.",
+              "stub_path": "",
+              "files": ["404.blade.php", "500.blade.php"]
+            },
+            "profile": {
+              "description": "Layouts specific to user profiles.",
+              "stub_path": "",
+              "files": ["profile-header.blade.php", "profile-sidebar.blade.php"]
+            },
+            "product": {
+              "description": "Layouts specific to product pages.",
+              "stub_path": "",
+              "files": ["product-details.blade.php", "product-list.blade.php"]
+            },
+            "user": {
+              "description": "Layouts specific to user pages.",
+              "stub_path": "",
+              "files": ["user-dashboard.blade.php", "user-settings.blade.php"]
+            }
+          }
+        },
+        "modules": {
+          "description": "Components associated with specific modules, such as product or user management.",
+          "subdirectories": {
+            "admin": {
+              "description": "Components related to administration, such as settings and dashboards.",
+              "stub_path": "",
+              "files": ["admin-settings.blade.php", "admin-sidebar.blade.php", "dashboard.blade.php"]
+            },
+            "product": {
+              "description": "Components related to products, such as cards and product lists.",
+              "stub_path": "",
+              "files": ["product-card.blade.php", "product-list.blade.php"]
+            },
+            "user": {
+              "description": "Components related to user management, such as settings and profiles.",
+              "stub_path": "",
+              "files": ["profile.blade.php", "user-settings.blade.php"]
+            }
+          }
+        },
+        "pages": {
+          "description": "Specific page components used in different views.",
+          "files": ["admin-dashboard.blade.php", "home.blade.php", "product.blade.php", "profile.blade.php"]
+        },
+        "rolebased": {
+          "description": "Layout and display components based on user roles.",
+          "subdirectories": {
+            "admin": {
+              "description": "Administrator role components, such as dashboards and settings.",
+              "stub_path": "",
+              "files": ["dashboard.blade.php", "settings.blade.php", "sidebar.blade.php"]
+            },
+            "common": {
+              "description": "Common role components, used by all users, such as navigation bars and modals.",
+              "stub_path": "",
+              "files": ["footer.blade.php", "modal.blade.php", "navbar.blade.php"]
+            },
+            "user": {
+              "description": "Components related to users, such as notifications and profiles.",
+              "stub_path": "",
+              "files": ["notifications.blade.php", "profile.blade.php"]
+            }
+          }
+        },
+        "ui": {
+          "description": "Basic UI (User Interface) components used throughout the application.",
+          "subdirectories": {
+            "atoms": {
+              "description": "Basic components, such as buttons and input fields.",
+              "stub_path": "",
+              "files": ["button.blade.php", "icon.blade.php", "input.blade.php"]
+            },
+            "external": {
+              "description": "Specific external components such as elements from an external library.",
+              "stub_path": "",
+              "files": ["one-element.blade.php"]
+            },
+            "molecules": {
+              "description": "Components combining several basic elements, such as cards with headers.",
+              "stub_path": "",
+              "files": ["card-with-header.blade.php", "input-group.blade.php"]
+            },
+            "organisms": {
+              "description": "More complex components, such as navigation bars and footers.",
+              "stub_path": "",
+              "files": ["footer.blade.php", "navbar.blade.php"]
+            },
+            "static": {
+              "description": "Static components that do not change dynamically, such as footers and headers.",
+              "stub_path": "",
+              "files": ["footer.blade.php", "header.blade.php", "navbar.blade.php"]
+            }
+          }
+        }
+      }
+    },
+    "filament": {
+      "pages": {
+        "description": "Specific pages created with Filament.",
+        "files": [
+          "home.blade.php",
+          "product-page.blade.php",
+          "admin-dashboard.blade.php",
+          "profile.blade.php",
+          "landing-page.blade.php",
+          "user-dashboard.blade.php"
+        ]
+      },
+      "forms": {
+        "description": "For custom form views created by Filament or based on stubs.",
+        "example": "resources/views/filament/forms/components/range-slider.blade.php file.",
+        "files": [
+          "range-slider.blade.php",
+          "range-dates.blade.php",
+          "custom-input.blade.php"
+        ]
+      }
+    }
+  }

@@ -61,7 +61,7 @@ class WebkernelCommandServiceProvider extends ServiceProvider
 
     protected function getCoreCommandPaths(): array
     {
-        $basePath = base_path('packages/webkernel/src');
+        $basePath = base_path('packages/webkernel/src/Core');
 
         return [
             $basePath . '/Console/Commands' => 'Webkernel\Core\\Console\\Commands\\',
