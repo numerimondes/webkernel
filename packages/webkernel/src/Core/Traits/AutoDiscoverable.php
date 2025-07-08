@@ -1,28 +1,41 @@
 <?php
 // app/Traits/AutoDiscoverable.php
 namespace Webkernel\Core\Traits;
+use Filament\Facades\Filament;
 
 trait AutoDiscoverable
 {
-    public static function bootAutoDiscoverable()
+    /**
+     * @return void
+     */
+    public static function bootAutoDiscoverable(): void
     {
         static::registerForAutoDiscovery();
     }
+    /**
+     * @return void
+     */
 
-    protected static function registerForAutoDiscovery()
+    protected static function registerForAutoDiscovery(): void
     {
-        if (method_exists(static::class, 'put_in_panel')) {
-            $targetPanels = static::put_in_panel();
-            
-            if (!empty($targetPanels)) {
-                app()->booted(function () use ($targetPanels) {
-                    foreach ($targetPanels as $panelId) {
-                        if (\Filament\Facades\Filament::hasPanel($panelId)) {
-                            \Filament\Facades\Filament::getPanel($panelId)->resource(static::class);
-                        }
+        if (!function_exists("put_in_panel")) {
+            return;
+        }
+
+        $targetPanels = put_in_panel(static::class);
+
+        if (!empty($targetPanels)) {
+            app()->booted(function () use ($targetPanels) {
+                foreach ($targetPanels as $panelId) {
+                    $panel = Filament::getPanel($panelId);
+
+                    if (!$panel) {
+                        continue;
                     }
-                });
-            }
+
+                    $panel->resources[] = static::class;
+                }
+            });
         }
     }
 }
