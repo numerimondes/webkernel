@@ -80,6 +80,12 @@ class PlatformUpdateCommand extends Command
      */
     public function handle(): int
     {
+        // Toujours régénérer les constantes avant toute opération
+        $constantsFile = base_path('packages/webkernel/src/Constants/ConstantsGenerator.php');
+        if (file_exists($constantsFile)) {
+            include_once $constantsFile;
+        }
+
         $this->info('Webkernel Platform Updater');
         $this->newLine();
 
