@@ -3,7 +3,7 @@ namespace Webkernel\Constants\Definitions\Webkernel;
 
 class Core
 {
-    public const WEBKERNEL_VERSION                  = '0.0.26';
+    public const WEBKERNEL_VERSION                  = '0.0.27';
     public const DEFAULT_TIMEOUT = 30;
     public const MAX_RETRIES = 3;
     public const CACHE_TTL = 3600;
