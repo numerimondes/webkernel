@@ -82,8 +82,19 @@ class PlatformUpdateCommand extends Command
     {
         // Toujours régénérer les constantes avant toute opération
         $constantsFile = base_path('packages/webkernel/src/Constants/ConstantsGenerator.php');
-        if (file_exists($constantsFile)) {
+        if (!file_exists($constantsFile)) {
+            $this->error("Le générateur de constantes est introuvable : {$constantsFile}");
+            return self::FAILURE;
+        }
+        try {
             include_once $constantsFile;
+        } catch (\Throwable $e) {
+            $this->error("Erreur lors de la génération des constantes : " . $e->getMessage());
+            return self::FAILURE;
+        }
+        if (!defined('WEBKERNEL_VERSION')) {
+            $this->error("La constante WEBKERNEL_VERSION n'a pas été générée. Arrêt de la commande.");
+            return self::FAILURE;
         }
 
         $this->info('Webkernel Platform Updater');
