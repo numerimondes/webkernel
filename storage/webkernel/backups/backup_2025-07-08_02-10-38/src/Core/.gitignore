@@ -1,6 +1,0 @@
-.trash/*
-!.trash/.gitkeep
-.bin/*
-!.bin/.gitkeep
-vendor/
-composer.lock
