@@ -184,14 +184,33 @@ class PlatformUpdateCommand extends Command
         $this->line("Fetching remote version from: {$this->remoteRepo}");
         
         try {
-            $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL;
+            $timestamp = time();
+            $randomId = uniqid('webkernel_', true);
+            $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL . "?t={$timestamp}&id={$randomId}";
+            
+            $userAgents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Webkernel-PlatformUpdater/1.0-' . $randomId,
+                'curl/7.88.1',
+                'Wget/1.21.4'
+            ];
+            $randomUserAgent = $userAgents[array_rand($userAgents)] ?? 'Webkernel-PlatformUpdater/1.0';
             
             $response = Http::timeout(self::HTTP_TIMEOUT)
                 ->withHeaders([
-                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate, max-age=0',
                     'Pragma' => 'no-cache',
-                    'Expires' => '0',
-                    'User-Agent' => 'Webkernel-PlatformUpdater/1.0'
+                    'Expires' => 'Thu, 01 Jan 1970 00:00:00 GMT',
+                    'User-Agent' => $randomUserAgent,
+                    'Accept' => 'text/plain,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language' => 'en-US,en;q=0.5',
+                    'Accept-Encoding' => 'gzip, deflate',
+                    'Connection' => 'keep-alive',
+                    'Upgrade-Insecure-Requests' => '1',
+                    'X-Requested-With' => 'XMLHttpRequest',
+                    'X-Forwarded-For' => rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)
                 ])
                 ->get($remoteUrl);
             
@@ -223,14 +242,33 @@ class PlatformUpdateCommand extends Command
     private function getRemoteStableVersion(): ?string
     {
         try {
-            $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL;
+            $timestamp = time();
+            $randomId = uniqid('webkernel_stable_', true);
+            $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL . "?t={$timestamp}&id={$randomId}&stable=1";
+            
+            $userAgents = [
+                'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (Macintosh; Intel Mac OS X 10_15_7) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
+                'Webkernel-PlatformUpdater/1.0-' . $randomId,
+                'curl/7.88.1',
+                'Wget/1.21.4'
+            ];
+            $randomUserAgent = $userAgents[array_rand($userAgents)] ?? 'Webkernel-PlatformUpdater/1.0';
             
             $response = Http::timeout(self::HTTP_TIMEOUT)
                 ->withHeaders([
-                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate, max-age=0',
                     'Pragma' => 'no-cache',
-                    'Expires' => '0',
-                    'User-Agent' => 'Webkernel-PlatformUpdater/1.0'
+                    'Expires' => 'Thu, 01 Jan 1970 00:00:00 GMT',
+                    'User-Agent' => $randomUserAgent,
+                    'Accept' => 'text/plain,text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
+                    'Accept-Language' => 'en-US,en;q=0.5',
+                    'Accept-Encoding' => 'gzip, deflate',
+                    'Connection' => 'keep-alive',
+                    'Upgrade-Insecure-Requests' => '1',
+                    'X-Requested-With' => 'XMLHttpRequest',
+                    'X-Forwarded-For' => rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255) . '.' . rand(1, 255)
                 ])
                 ->get($remoteUrl);
             
