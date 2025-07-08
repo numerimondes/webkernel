@@ -155,6 +155,26 @@ return [
 
         /*
         |--------------------------------------------------------------------------
+        | Auto-Update Enabled
+        |--------------------------------------------------------------------------
+        |
+        | Enable or disable automatic updates via API.
+        |
+        */
+        'auto_update_enabled' => env('WEBKERNEL_AUTO_UPDATE_ENABLED', false),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Rolling Release Enabled
+        |--------------------------------------------------------------------------
+        |
+        | Enable rolling release mode for continuous updates.
+        |
+        */
+        'rolling_release_enabled' => env('WEBKERNEL_ROLLING_RELEASE_ENABLED', false),
+
+        /*
+        |--------------------------------------------------------------------------
         | GitHub Repository
         |--------------------------------------------------------------------------
         |
@@ -182,6 +202,34 @@ return [
         |
         */
         'packages_path' => env('WEBKERNEL_PACKAGES_PATH', 'packages'),
+
+        /*
+        |--------------------------------------------------------------------------
+        | Update Notifications
+        |--------------------------------------------------------------------------
+        |
+        | Configure how update notifications are handled.
+        |
+        */
+        'notifications' => [
+            'enabled' => env('WEBKERNEL_UPDATE_NOTIFICATIONS_ENABLED', true),
+            'channels' => ['database', 'mail'],
+            'recipients' => env('WEBKERNEL_UPDATE_NOTIFICATION_RECIPIENTS', 'admin@example.com'),
+        ],
+
+        /*
+        |--------------------------------------------------------------------------
+        | Backup Configuration
+        |--------------------------------------------------------------------------
+        |
+        | Configure backup settings for updates.
+        |
+        */
+        'backup' => [
+            'enabled' => env('WEBKERNEL_BACKUP_ENABLED', true),
+            'max_backups' => env('WEBKERNEL_MAX_BACKUPS', 5),
+            'path' => env('WEBKERNEL_BACKUP_PATH', 'storage/webkernel/backups'),
+        ],
     ],
 
     /*
