@@ -181,14 +181,6 @@ class PlatformUpdateCommand extends Command
      */
     private function getRemoteVersion(): ?string
     {
-        $cacheKey = 'webkernel_remote_version_' . md5($this->remoteRepo . $this->branch);
-        
-        // Check cache first
-        if (cache()->has($cacheKey)) {
-            $this->line("Using cached remote version");
-            return cache()->get($cacheKey);
-        }
-        
         $this->line("Fetching remote version from: {$this->remoteRepo}");
         
         try {
@@ -198,7 +190,8 @@ class PlatformUpdateCommand extends Command
                 ->withHeaders([
                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
                     'Pragma' => 'no-cache',
-                    'Expires' => '0'
+                    'Expires' => '0',
+                    'User-Agent' => 'Webkernel-PlatformUpdater/1.0'
                 ])
                 ->get($remoteUrl);
             
@@ -211,10 +204,6 @@ class PlatformUpdateCommand extends Command
             
             if (preg_match("/const\s+WEBKERNEL_VERSION\s*=\s*['\"]([^'\"]+)['\"]/", $content, $matches)) {
                 $remoteVersion = $matches[1];
-                
-                // Cache the result
-                cache()->put($cacheKey, $remoteVersion, self::VERSION_CACHE_TTL);
-                
                 $this->line("Remote version found: {$remoteVersion}");
                 return $remoteVersion;
             }
@@ -233,13 +222,6 @@ class PlatformUpdateCommand extends Command
      */
     private function getRemoteStableVersion(): ?string
     {
-        $cacheKey = 'webkernel_remote_stable_version_' . md5($this->remoteRepo . $this->branch);
-        
-        // Check cache first
-        if (cache()->has($cacheKey)) {
-            return cache()->get($cacheKey);
-        }
-        
         try {
             $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL;
             
@@ -247,7 +229,8 @@ class PlatformUpdateCommand extends Command
                 ->withHeaders([
                     'Cache-Control' => 'no-cache, no-store, must-revalidate',
                     'Pragma' => 'no-cache',
-                    'Expires' => '0'
+                    'Expires' => '0',
+                    'User-Agent' => 'Webkernel-PlatformUpdater/1.0'
                 ])
                 ->get($remoteUrl);
             
@@ -257,9 +240,8 @@ class PlatformUpdateCommand extends Command
             
             $content = $response->body();
             
-            if (preg_match("/const\s+WEBKERNEL_REMOTE_STABLE_VERSION\s*=\s*['\"]([^'\"]+)['\"]/", $content, $matches)) {
+            if (preg_match("/const\s+WEBKERNEL_VERSION_STABLE\s*=\s*['\"]([^'\"]+)['\"]/", $content, $matches)) {
                 $stableVersion = $matches[1];
-                cache()->put($cacheKey, $stableVersion, self::VERSION_CACHE_TTL);
                 return $stableVersion;
             }
             
@@ -361,7 +343,9 @@ class PlatformUpdateCommand extends Command
             [
                 ['Local Version', $localVersion],
                 ['Remote Version', $remoteVersion ?? 'Unknown'],
+                ['Remote Stable Version', $this->updateStatus['remote_stable_version'] ?? 'Unknown'],
                 ['Update Needed', $updateNeeded ? 'Yes' : 'No'],
+                ['Rolling Release', $this->updateStatus['rolling_release'] ?? false ? 'Yes' : 'No'],
                 ['Repository', $this->remoteRepo],
                 ['Branch', $this->branch],
                 ['Force Update', $this->forceUpdate ? 'Yes' : 'No'],
@@ -384,7 +368,7 @@ class PlatformUpdateCommand extends Command
     private function handleJsonOutput(): int
     {
         $status = $this->getUpdateStatus();
-        $this->line(json_encode($status, JSON_PRETTY_PRINT));
+        echo json_encode($status, JSON_PRETTY_PRINT) . "\n";
         return self::SUCCESS;
     }
 
