@@ -33,7 +33,7 @@ class PlatformUpdateController extends Controller
             $result = Artisan::call('webkernel:update', [
                 '--status' => true,
                 '--json' => true,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             $output = Artisan::output();
@@ -70,7 +70,7 @@ class PlatformUpdateController extends Controller
     {
         try {
             $options = [
-                '--no-interaction' => true
+                '--silent' => true
             ];
 
             // Add force option if requested
@@ -142,7 +142,7 @@ class PlatformUpdateController extends Controller
             $checkResult = Artisan::call('webkernel:update', [
                 '--status' => true,
                 '--json' => true,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             $checkOutput = Artisan::output();
@@ -158,7 +158,7 @@ class PlatformUpdateController extends Controller
 
             // Perform the update
             $updateResult = Artisan::call('webkernel:update', [
-                '--no-interaction' => true,
+                '--silent' => true,
                 '--auto-run' => true
             ]);
 
@@ -190,7 +190,7 @@ class PlatformUpdateController extends Controller
             $result = Artisan::call('webkernel:update', [
                 '--status' => true,
                 '--json' => true,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             $output = Artisan::output();
@@ -219,7 +219,7 @@ class PlatformUpdateController extends Controller
         try {
             $result = Artisan::call('webkernel:update', [
                 '--backups' => true,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             $output = Artisan::output();
@@ -259,7 +259,7 @@ class PlatformUpdateController extends Controller
 
             $result = Artisan::call('webkernel:update', [
                 '--restore' => $backupPath,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             $output = Artisan::output();
@@ -289,7 +289,7 @@ class PlatformUpdateController extends Controller
         try {
             $result = Artisan::call('webkernel:update', [
                 '--clear-cache' => true,
-                '--no-interaction' => true
+                '--silent' => true
             ]);
 
             return response()->json([

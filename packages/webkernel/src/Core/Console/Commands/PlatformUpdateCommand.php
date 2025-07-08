@@ -67,8 +67,8 @@ class PlatformUpdateCommand extends Command
                             {--backups : List available backups}
                             {--restore= : Restore from specific backup}
                             {--register-hooks : Register default post-update hooks}
-                            {--no-interaction : Run without user interaction (for frontend/cron)}
-                            {--rolling-release : Enable rolling release mode (auto-update on version change)}';
+                            {--silent : Run without user interaction (for frontend/cron)}
+                            {--rolling : Enable rolling release mode (auto-update on stable versions)}';
 
     /**
      * The console command description.
@@ -229,6 +229,48 @@ class PlatformUpdateCommand extends Command
     }
 
     /**
+     * Get remote stable version
+     */
+    private function getRemoteStableVersion(): ?string
+    {
+        $cacheKey = 'webkernel_remote_stable_version_' . md5($this->remoteRepo . $this->branch);
+        
+        // Check cache first
+        if (cache()->has($cacheKey)) {
+            return cache()->get($cacheKey);
+        }
+        
+        try {
+            $remoteUrl = rtrim($this->remoteRepo, '/') . '/raw/' . $this->branch . '/' . self::REMOTE_CORE_FILE_URL;
+            
+            $response = Http::timeout(self::HTTP_TIMEOUT)
+                ->withHeaders([
+                    'Cache-Control' => 'no-cache, no-store, must-revalidate',
+                    'Pragma' => 'no-cache',
+                    'Expires' => '0'
+                ])
+                ->get($remoteUrl);
+            
+            if (!$response->successful()) {
+                return null;
+            }
+            
+            $content = $response->body();
+            
+            if (preg_match("/const\s+WEBKERNEL_REMOTE_STABLE_VERSION\s*=\s*['\"]([^'\"]+)['\"]/", $content, $matches)) {
+                $stableVersion = $matches[1];
+                cache()->put($cacheKey, $stableVersion, self::VERSION_CACHE_TTL);
+                return $stableVersion;
+            }
+            
+            return null;
+            
+        } catch (Exception $e) {
+            return null;
+        }
+    }
+
+    /**
      * Compare versions and determine if update is needed
      */
     private function isUpdateNeeded(): bool
@@ -240,9 +282,11 @@ class PlatformUpdateCommand extends Command
         
         $localVersion = $this->getLocalVersion();
         $remoteVersion = $this->getRemoteVersion();
+        $remoteStableVersion = $this->getRemoteStableVersion();
         
         $this->updateStatus['local_version'] = $localVersion;
         $this->updateStatus['remote_version'] = $remoteVersion;
+        $this->updateStatus['remote_stable_version'] = $remoteStableVersion;
         
         if (!$remoteVersion) {
             $this->error("Could not determine remote version");
@@ -251,6 +295,25 @@ class PlatformUpdateCommand extends Command
         
         $this->line("Local version: {$localVersion}");
         $this->line("Remote version: {$remoteVersion}");
+        if ($remoteStableVersion) {
+            $this->line("Remote stable version: {$remoteStableVersion}");
+        }
+        
+        // Check if rolling release should be enabled automatically
+        if ($this->option('rolling') || $this->shouldEnableRollingRelease($remoteVersion, $remoteStableVersion)) {
+            $this->line("Rolling release mode: auto-updating to stable version");
+            $this->updateStatus['rolling_release'] = true;
+            
+            // If remote version equals stable version, it's safe to update
+            if ($remoteStableVersion && $remoteVersion === $remoteStableVersion) {
+                $comparison = version_compare($remoteVersion, $localVersion);
+                if ($comparison > 0) {
+                    $this->line("Rolling release: updating to stable version");
+                    $this->updateStatus['update_needed'] = true;
+                    return true;
+                }
+            }
+        }
         
         $comparison = version_compare($remoteVersion, $localVersion);
         
@@ -267,6 +330,20 @@ class PlatformUpdateCommand extends Command
             $this->updateStatus['update_needed'] = false;
             return false;
         }
+    }
+
+    /**
+     * Check if rolling release should be enabled automatically
+     */
+    private function shouldEnableRollingRelease(?string $remoteVersion, ?string $remoteStableVersion): bool
+    {
+        // Enable rolling release if remote version equals stable version
+        if ($remoteVersion && $remoteStableVersion && $remoteVersion === $remoteStableVersion) {
+            return true;
+        }
+        
+        // Enable rolling release if configured in config
+        return config('webkernel.updates.rolling_release_enabled', false);
     }
 
     /**
@@ -396,7 +473,7 @@ class PlatformUpdateCommand extends Command
         $this->warn("This will restore Webkernel from backup: " . basename($backupPath));
         $this->warn("Current installation will be replaced!");
 
-        if (!$this->option('no-interaction') && !$this->confirm('Are you sure you want to proceed?')) {
+                    if (!$this->option('silent') && !$this->confirm('Are you sure you want to proceed?')) {
             $this->info('Restore cancelled');
             return self::SUCCESS;
         }
@@ -457,7 +534,7 @@ class PlatformUpdateCommand extends Command
             $this->line('  • Run post-update actions (composer update, cache clear, etc.)');
             $this->newLine();
 
-            if (!$this->option('no-interaction') && !$this->confirm('Do you want to proceed with the update?')) {
+            if (!$this->option('silent') && !$this->confirm('Do you want to proceed with the update?')) {
                 $this->info('Update cancelled');
                 return self::SUCCESS;
             }
