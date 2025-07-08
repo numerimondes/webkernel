@@ -10,28 +10,6 @@ use Illuminate\Support\Facades\File;
 |--------------------------------------------------------------------------
 */
 
-if (!function_exists('extract_packages_from_content')) {
-    function extract_packages_from_content(string $content): array
-    {
-        $packages = [];
-
-        if (preg_match("/const\s+WEBKERNEL_PACKAGES\s*=\s*\[(.*?)\];/s", $content, $matches)) {
-            $packageDefs = $matches[1];
-            $pattern = "/'([^']+)'\s*=>\s*\[\s*'path'\s*=>\s*'([^']+)',\s*'minimum_stable_version_required'\s*=>\s*'([^']+)'(?:,\s*'dependencies'\s*=>\s*\[[^\]]*\])?\s*\]/";
-
-            if (preg_match_all($pattern, $packageDefs, $packageMatches, PREG_SET_ORDER)) {
-                foreach ($packageMatches as $match) {
-                    $packages[$match[1]] = [
-                        'path' => $match[2],
-                        'version' => $match[3]
-                    ];
-                }
-            }
-        }
-
-        return $packages;
-    }
-}
 
 if (!function_exists('extract_versions_from_content')) {
     function extract_versions_from_content(string $content): array
