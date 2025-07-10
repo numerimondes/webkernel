@@ -4,9 +4,10 @@ namespace Webkernel\Core\Filament\Pages\Auth;
 
 use BackedEnum;
 use DateTimeZone;
-use App\Models\User;
+use Webkernel\Core\Models\User;
 use Filament\Tables\Table;
 use Illuminate\Support\Str;
+use Filament\Schemas\Schema;
 use Filament\Actions\BulkAction;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\HtmlString;
@@ -17,14 +18,15 @@ use Illuminate\Support\Facades\Hash;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Schemas\Components\Grid;
+use Filament\Schemas\Components\View;
 use Illuminate\Support\Facades\Cache;
 use Filament\Actions\Action as Action;
-use Filament\Forms\Components\Actions;
 use Filament\Forms\Contracts\HasForms;
 use Filament\Tables\Columns\TextColumn;
 use Filament\Tables\Contracts\HasTable;
 use Filament\Forms\Components\TextInput;
 use Filament\Notifications\Notification;
+use Filament\Schemas\Components\Actions;
 use Filament\Schemas\Components\Section;
 use Filament\Tables\Columns\BadgeColumn;
 use Filament\Forms\Components\FileUpload;
@@ -33,10 +35,11 @@ use Illuminate\Validation\Rules\Password;
 use Webkernel\Core\Models\HistorySession;
 use Filament\Forms\Components\Placeholder;
 use Illuminate\Contracts\Support\Htmlable;
+use Filament\Infolists\Components\TextEntry;
 use Filament\Infolists\Components\ImageEntry;
 use Filament\Tables\Concerns\InteractsWithTable;
+use Filament\Infolists\Components\RepeatableEntry;
 use Filament\Auth\Pages\EditProfile as BaseEditProfile;
-use Filament\Schemas\Components\View;
 
 class EditProfile extends BaseEditProfile implements HasForms, HasTable
 {
@@ -77,10 +80,12 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
         ];
     }
 
-    public function form(\Filament\Schemas\Schema $schema): \Filament\Schemas\Schema
+    public function form(Schema $schema): Schema
     {
         return $schema
             ->schema([
+                View::make('webkernel::components.webkernel.rolebased.common.edit-profile.banner-profile'),
+
                 Grid::make(6)
                     ->schema([
                         // Sidebar (colonne gauche)
@@ -146,8 +151,7 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                         Grid::make(1)
                             ->columnSpan(4)
                             ->schema([
-                                View::make('webkernel::components.webkernel.rolebased.common.edit-profile.banner-profile')
-                                    ->columnSpanFull(),
+                                    
                                 Section::make('Informations personnelles')
                                     ->schema([
                                         TextInput::make('mobile')
@@ -180,7 +184,8 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                             ->label('Compte actif'),
                                         Toggle::make('forceChangePassword')
                                             ->label('Exiger le changement de mot de passe'),
-                                        Toggle::make('marketing_callable')
+                                        Toggle::make('marketing_c
+allable')
                                             ->label('Appels marketing'),
                                         Toggle::make('marketing_whatsappable')
                                             ->label('WhatsApp marketing'),
@@ -188,9 +193,19 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
                                             ->label('SMS marketing'),
                                     ])
                                     ->columnSpanFull(),
-                                    View::make('webkernel::components.webkernel.rolebased.common.edit-profile.system-news'),
+
+                                // Add infolist here using a private function
+                                Section::make('Actualités')
+                                    ->schema([
+                                        Grid::make(3)
+                                            ->schema($this->getProfileDynamicNewsInfoList())
+                                    ])
+                                    ->contained(false)
+                                    ->inlineLabel(false)
+                                    ->columnSpanFull(),
 
                                 Section::make('Sessions actives')
+                                    ->contained(false)
                                     ->schema([
                                         $this->getSessionsTable(),
                                     ])
@@ -664,4 +679,97 @@ class EditProfile extends BaseEditProfile implements HasForms, HasTable
             ->emptyStateIcon('heroicon-o-device-phone-mobile')
             ->poll('30s');
     }
+    private function getProfileDynamicNewsInfoList(): array
+{
+    $news = [
+        'features' => [
+            'categorie' => 'features',
+            'label' => 'news_l_features',
+            'icon' => 'heroicon-o-star',
+            'short_description' => 'news.features.description',
+            'color' => 'text-blue-600 bg-blue-50 dark:bg-blue-900/20',
+            'items' => [
+                [
+                    'title' => 'Nouvelle fonctionnalité',
+                    'date' => '2024-06-01',
+                    'image' => 'https://images.unsplash.com/photo-1522252234503-e356532cafd5?w=400&h=200&fit=crop',
+                    'link' => '#'
+                ]
+            ]
+        ],
+        'security' => [
+            'categorie' => 'security',
+            'label' => 'news_l_security',
+            'icon' => 'heroicon-o-shield-check',
+            'short_description' => 'news.security.description',
+            'color' => 'text-red-600 bg-red-50 dark:bg-red-900/20',
+            'items' => [
+                [
+                    'title' => 'Mise à jour de sécurité',
+                    'date' => '2024-05-28',
+                    'image' => 'https://images.unsplash.com/photo-1555949963-aa79dcee981c?w=400&h=200&fit=crop',
+                    'link' => '#'
+                ]
+            ]
+        ],
+        'maintenance' => [
+            'categorie' => 'maintenance',
+            'label' => 'news_l_maintenance',
+            'icon' => 'heroicon-o-wrench-screwdriver',
+            'short_description' => 'news.maintenance.description',
+            'color' => 'text-yellow-600 bg-yellow-50 dark:bg-yellow-900/20',
+            'items' => [
+                [
+                    'title' => 'Maintenance programmée',
+                    'date' => '2024-06-03',
+                    'image' => 'https://images.unsplash.com/photo-1581091226825-a6a2a5aee158?w=400&h=200&fit=crop',
+                    'link' => '#'
+                ]
+            ]
+        ],
+        'events' => [
+            'categorie' => 'events',
+            'label' => 'news.events.label',
+            'icon' => 'heroicon-o-calendar-days',
+            'short_description' => 'news.events.description',
+            'color' => 'text-green-600 bg-green-50 dark:bg-green-900/20',
+            'items' => [
+                [
+                    'title' => 'Événement communautaire',
+                    'date' => '2024-06-10',
+                    'image' => 'https://images.unsplash.com/photo-1540575467063-178a50c2df87?w=400&h=200&fit=crop',
+                    'link' => '#'
+                ]
+            ]
+        ]
+    ];
+
+    $sections = [];
+    
+    foreach ($news as $key => $category) {
+        $sections[] = Section::make()
+            ->contained(false)
+            ->inlineLabel(false)
+            ->hiddenLabel()
+            ->compact()
+            ->schema([
+                Action::make('news_category_' . $key)
+                    ->label(__($category['label']))
+                    ->icon($category['icon'])
+                    ->badge(count($category['items']))
+                    ->color('gray')
+                    ->extraAttributes([
+                        'class' => 'w-full p-4 ' . $category['color'] . ' hover:scale-105 transition-all duration-200'
+                    ])
+            ])
+            ->columnSpan([
+                'sm' => 2,
+                'md' => 1,
+                'lg' => 1,
+                'xl' => 1,
+            ]);
+    }
+    
+    return $sections;
+}
 }

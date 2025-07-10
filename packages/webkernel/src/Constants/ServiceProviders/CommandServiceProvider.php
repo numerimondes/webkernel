@@ -126,7 +126,7 @@ class CommandServiceProvider extends ServiceProvider
     protected function isPlatformNamespace(string $path): bool
     {
         return str_starts_with($path, 'platform/')
-            || (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/');
+            || (str_starts_with($path, 'packages/') && $path !== 'packages/webkernel/src/Core/');
     }
 
     protected function isValidCommand(string $class): bool

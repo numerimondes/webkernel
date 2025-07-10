@@ -36,7 +36,7 @@ class MigrationServiceProvider extends ServiceProvider
     protected function getMigrationPaths(): array
     {
         $paths = [
-            base_path('packages/webkernel/src/database/migrations'),
+            base_path('packages/webkernel/src/Core/Database/Migrations'),
         ];
 
         $autoloadNamespaces = $this->getAutoloadNamespaces();
