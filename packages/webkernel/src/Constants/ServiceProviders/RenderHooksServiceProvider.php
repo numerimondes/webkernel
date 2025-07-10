@@ -81,6 +81,12 @@ class RenderHooksServiceProvider extends ServiceProvider
         //     fn() => safe_render_hook_view('webkernel::components.webkernel.assets.dynamic-assets')
         // );
 
+
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::USER_MENU_PROFILE_AFTER,
+            fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.multi-modules-selector')
+        );
+
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_START,
             fn() => safe_render_hook_view('webkernel::components.webkernel.assets.languages-fonts')
@@ -104,6 +110,7 @@ class RenderHooksServiceProvider extends ServiceProvider
                 fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.language-selector')
             );
         }
+        
 
 
         if ($this->isRenderHookEnabled('search_hide')) {
