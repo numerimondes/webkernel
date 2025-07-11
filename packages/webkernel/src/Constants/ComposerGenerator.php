@@ -67,7 +67,8 @@ final class ComposerGenerator
         'scripts' => [
             'pre-autoload-dump' => [
                 '@php packages/webkernel/src/Constants/ConstantsGenerator.php',
-                '@php packages/webkernel/src/Constants/PlatformConstantsGenerator.php'
+                '@php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"',
+                '@php artisan migrate'
             ],
             'post-autoload-dump' => [
                 'Illuminate\\Foundation\\ComposerScripts::postAutoloadDump',

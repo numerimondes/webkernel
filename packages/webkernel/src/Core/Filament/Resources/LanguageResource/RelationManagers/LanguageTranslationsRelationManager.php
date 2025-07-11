@@ -122,24 +122,22 @@ class LanguageTranslationsRelationManager extends RelationManager
                 ->label(lang('Translations'))
                 ->schema(
                     $languages->map(function ($lang) {
-                        // Créer le contenu du label avec un SVG correctement aligné
-                        $flagPath = base_path("packages/webkernel/src/public/assets/flags/language/{$lang->code}.svg");
+                        $flagPath = base_path("packages/webkernel/src/Core/public/assets/flags/language/{$lang->code}.svg");
                         $flagSvg = '';
-
                         if (file_exists($flagPath)) {
                             $svgContent = file_get_contents($flagPath);
-                            // Ajouter des classes CSS pour l'alignement et la taille
-                            $flagSvg = preg_replace(
-                                '/<svg/',
-                                '<svg class="inline-block w-4 h-4 mr-2 align-text-bottom"',
-                                $svgContent
-                            );
+                            $width = 16;
+                            $height = 16;
+                            $svgContent = preg_replace('/\swidth="[^"]*"/i', " width=\"{$width}\"", $svgContent);
+                            $svgContent = preg_replace('/\sheight="[^"]*"/i', " height=\"{$height}\"", $svgContent);
+                            $svgContent = preg_replace('/<svg([^>]*)>/', '<svg$1 style="display: inline-block; margin-right: 8px; vertical-align: middle;">', $svgContent);
+                            $flagSvg = $svgContent;
                         }
 
-                        $labelHtml = '<div class="flex items-center">' .
-                                    $flagSvg .
-                                    '<span>' . lang('repeater_title_translation') . ' ' . $lang->label . " ({$lang->code})" . '</span>' .
-                                    '</div>';
+                        $labelHtml = '<span style="display: flex; align-items: center;">' .
+                            $flagSvg .
+                            '<span>' . lang('repeater_title_translation') . ' ' . $lang->label . " ({$lang->code})" . '</span>' .
+                            '</span>';
 
                         return Textarea::make("translations.{$lang->code}")
                             ->label(new HtmlString($labelHtml))
@@ -148,7 +146,6 @@ class LanguageTranslationsRelationManager extends RelationManager
                             ->columnSpanFull()
                             ->reactive()
                             ->afterStateUpdated(function (Get $get, Set $set) {
-                                // Vérifier qu'au moins une traduction est présente
                                 $hasTranslation = false;
                                 $languages = Language::all();
                                 foreach ($languages as $lang) {
@@ -473,7 +470,7 @@ class LanguageTranslationsRelationManager extends RelationManager
                                     ->distinct()
                                     ->pluck('prefix')
                                     ->filter()
-                                    ->mapWithKeys(fn ($item) => [$item => $item])
+                                    ->mapWithKeys(fn($item) => [$item => $item])
                                     ->toArray();
                                 return $prefixes;
                             })

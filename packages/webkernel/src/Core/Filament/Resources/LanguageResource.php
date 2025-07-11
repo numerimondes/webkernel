@@ -47,10 +47,15 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
         return static::getModel()::count();
     }
 
-    public static function getNavigationGroup(): ?string
-    {
-    return lang('system_menu_core_settings');
-    }
+//    public static function getNavigationGroup(): ?string
+//    {
+//    return lang('system_menu_core_settings');
+//    }
+
+ //  public static function getNavigationParentItem(): ?string
+  //  {
+  //      return 'Settings';
+  //  }
 
     public static function getModelLabel(): string
     {
@@ -61,10 +66,7 @@ public static function getNavigationIcon(): string | BackedEnum | Htmlable | nul
     {
         return lang('languages');
     }
-    public static function getNavigationParentItem(): ?string
-    {
-        return 'Settings';
-    }
+ 
     protected static ?string $recordTitleAttribute = 'label';
 
     protected static ?int $navigationSort = 999;
