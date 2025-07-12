@@ -34,6 +34,10 @@ use Filament\Schemas\Components\Tabs\Tab;
 use Filament\Tables\Filters\SelectFilter;
 use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
+use Filament\Actions\Action;
+use Filament\Forms\Components\KeyValue;
+use Webkernel\Core\Models\UserPanels;
+use Webkernel\Services\Panels\PanelsInfoCollector;
 
 class UserResource extends Resource
 {
@@ -266,9 +270,9 @@ class UserResource extends Resource
                     ]),
             ])
             ->actions([
-                ViewAction::make(),
                 EditAction::make(),
                 DeleteAction::make(),
+                static::getUserModulesAction(),
             ])
             ->bulkActions([
                 BulkActionGroup::make([
@@ -305,14 +309,242 @@ protected static ?string $recordTitleAttribute = 'name';
     {
         return [
             'index' => ListUsers::route('/'),
-                'create' => CreateUser::route('/create'),
-                'edit' => EditUser::route('/{record}/edit'),
-                'view' => ViewUser::route('/{record}/view'),
+            'create' => CreateUser::route('/create'),
+            'edit' => EditUser::route('/{record}/edit'),
         ];
     }
 
     public static function getNavigationBadge(): ?string
     {
         return static::getModel()::count();
+    }
+
+    public static function getAvailableModulesTree(): array
+    {
+        try {
+            $allModules = PanelsInfoCollector::getAllPanelsInfo();
+            $modulesTree = [];
+            
+            foreach ($allModules as $namespace => $namespaceData) {
+                $modulesTree[$namespace] = [
+                    'label' => $namespace,
+                    'children' => []
+                ];
+                
+                foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
+                    $modulesTree[$namespace]['children'][$moduleName] = [
+                        'label' => $moduleName,
+                        'children' => []
+                    ];
+                    
+                    // Panels au niveau module
+                    if (isset($moduleData['panels'])) {
+                        foreach ($moduleData['panels'] as $panel) {
+                            $panelId = $panel['id'];
+                            $panelName = $panel['description'] ?? $panel['id'];
+                            $isRestricted = $panel['restricted'] ?? false;
+                            $status = $isRestricted ? '🔒' : '🌐';
+                            
+                            $modulesTree[$namespace]['children'][$moduleName]['children'][$panelId] = [
+                                'label' => $panelName . ' ' . $status,
+                                'value' => $panelId,
+                                'restricted' => $isRestricted
+                            ];
+                        }
+                    }
+                    
+                    // Panels dans les sous-modules
+                    if (isset($moduleData['submodules'])) {
+                        foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
+                            $modulesTree[$namespace]['children'][$moduleName]['children'][$submoduleName] = [
+                                'label' => $submoduleName,
+                                'children' => []
+                            ];
+                            
+                            if (isset($submoduleData['panels'])) {
+                                foreach ($submoduleData['panels'] as $panel) {
+                                    $panelId = $panel['id'];
+                                    $panelName = $panel['description'] ?? $panel['id'];
+                                    $isRestricted = $panel['restricted'] ?? false;
+                                    $status = $isRestricted ? '🔒' : '🌐';
+                                    
+                                    $modulesTree[$namespace]['children'][$moduleName]['children'][$submoduleName]['children'][$panelId] = [
+                                        'label' => $panelName . ' ' . $status,
+                                        'value' => $panelId,
+                                        'restricted' => $isRestricted
+                                    ];
+                                }
+                            }
+                        }
+                    }
+                }
+            }
+            
+            return $modulesTree;
+        } catch (\Exception $e) {
+            // En cas d'erreur, retourner une structure basique
+            return [
+                'Webkernel' => [
+                    'label' => 'Webkernel',
+                    'children' => [
+                        'Core' => [
+                            'label' => 'Core',
+                            'children' => [
+                                'system' => [
+                                    'label' => 'System Module 🔒',
+                                    'value' => 'system',
+                                    'restricted' => true
+                                ]
+                            ]
+                        ]
+                    ]
+                ]
+            ];
+        }
+    }
+
+    public static function getUserModulesAction(): Action
+    {
+        return Action::make('manage_modules')
+            ->label('Modules')
+            ->icon('heroicon-o-rectangle-stack')
+            ->modalHeading('Gérer les modules de l\'utilisateur')
+            ->modalDescription('Sélectionnez les modules auxquels cet utilisateur a accès.')
+            ->form([
+                Select::make('modules')
+                    ->label('Modules disponibles')
+                    ->options(static::getModulesOptions())
+                    ->multiple()
+                    ->searchable()
+                    ->preload()
+                    ->default(function (User $record) {
+                        return static::getUserModules($record);
+                    })
+                    ->helperText('Sélectionnez les modules auxquels cet utilisateur aura accès. Les modules publics (🌐) sont accessibles par défaut.')
+                    ->columnSpanFull(),
+            ])
+            ->action(function (User $record, array $data): void {
+                try {
+                    // Convertir la liste des modules en format JSON
+                    $modulesArray = [];
+                    if (isset($data['modules']) && is_array($data['modules'])) {
+                        foreach ($data['modules'] as $moduleId) {
+                            $modulesArray[$moduleId] = 'access';
+                        }
+                    }
+                    
+                    // Sauvegarder ou mettre à jour les modules utilisateur
+                    UserPanels::updateOrCreate(
+                        ['user_id' => $record->id],
+                        ['panels' => $modulesArray]
+                    );
+                } catch (\Exception $e) {
+                    // Gérer l'erreur silencieusement
+                }
+            })
+            ->modalSubmitActionLabel('Sauvegarder')
+            ->modalCancelActionLabel('Annuler');
+    }
+
+    public static function getModulesOptions(): array
+    {
+        $modulesTree = static::getAvailableModulesTree();
+        $options = [];
+        
+        foreach ($modulesTree as $namespace => $namespaceData) {
+            foreach ($namespaceData['children'] as $moduleName => $moduleData) {
+                // Parcourir récursivement tous les enfants
+                self::extractPanelOptions($moduleData['children'], $options);
+            }
+        }
+        
+        return $options;
+    }
+
+    private static function extractPanelOptions(array $children, array &$options): void
+    {
+        foreach ($children as $key => $child) {
+            if (isset($child['value'])) {
+                // C'est un panneau
+                $options[$child['value']] = $child['label'];
+            } elseif (isset($child['children'])) {
+                // C'est un sous-module, continuer récursivement
+                self::extractPanelOptions($child['children'], $options);
+            }
+        }
+    }
+
+    public static function getUserModules(User $user): array
+    {
+        $userPanels = UserPanels::where('user_id', $user->id)->first();
+        if (!$userPanels || !$userPanels->panels) {
+            return [];
+        }
+        
+        // Retourner seulement les clés (IDs des modules) pour le multiselect
+        return array_keys($userPanels->panels);
+    }
+
+    public static function getPlatformOwnersAction(): Action
+    {
+        return Action::make('manage_platform_owners')
+            ->label('Super Admins')
+            ->icon('heroicon-o-shield-check')
+            ->modalHeading('Gérer les super-admins')
+            ->modalDescription('Gérer les utilisateurs qui ont accès à tous les modules.')
+            ->form([
+                \Filament\Forms\Components\Repeater::make('platform_owners')
+                    ->label('Super Admins')
+                    ->schema([
+                        \Filament\Forms\Components\Select::make('user_id')
+                            ->label('Utilisateur')
+                            ->options(\App\Models\User::pluck('name', 'id'))
+                            ->searchable()
+                            ->required(),
+                        
+                        \Filament\Forms\Components\Toggle::make('is_eternal_owner')
+                            ->label('Super Admin')
+                            ->helperText('Accès à tous les modules')
+                            ->default(true),
+                        
+                        \Filament\Forms\Components\DateTimePicker::make('when')
+                            ->label('Date de début')
+                            ->hidden(fn ($get) => $get('is_eternal_owner')),
+                        
+                        \Filament\Forms\Components\DateTimePicker::make('until')
+                            ->label('Date de fin')
+                            ->hidden(fn ($get) => $get('is_eternal_owner')),
+                    ])
+                    ->columns(2)
+                    ->defaultItems(0)
+                    ->addActionLabel('Ajouter un super admin')
+                    ->reorderable(false)
+                    ->columnSpanFull(),
+            ])
+            ->action(function (array $data): void {
+                try {
+                    // Supprimer tous les platform owners existants
+                    \Webkernel\Core\Models\PlatformOwner::truncate();
+                    
+                    // Ajouter les nouveaux
+                    if (isset($data['platform_owners'])) {
+                        foreach ($data['platform_owners'] as $owner) {
+                            if (isset($owner['user_id'])) {
+                                \Webkernel\Core\Models\PlatformOwner::create([
+                                    'user_id' => $owner['user_id'],
+                                    'panel_id' => 'all', // Pour super admin
+                                    'is_eternal_owner' => $owner['is_eternal_owner'] ?? true,
+                                    'when' => $owner['when'] ?? null,
+                                    'until' => $owner['until'] ?? null,
+                                ]);
+                            }
+                        }
+                    }
+                } catch (\Exception $e) {
+                    // Gérer l'erreur silencieusement
+                }
+            })
+            ->modalSubmitActionLabel('Sauvegarder')
+            ->modalCancelActionLabel('Annuler');
     }
 }

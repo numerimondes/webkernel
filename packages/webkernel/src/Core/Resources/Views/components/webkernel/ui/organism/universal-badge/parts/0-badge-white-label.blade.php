@@ -14,7 +14,6 @@
     $isRTL = $isRTL ?? false;
 @endphp
 
-
 @if(isset($show_this_badge) && $show_this_badge)
 <div class="credit-badge-ui-main group"
     style="

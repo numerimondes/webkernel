@@ -31,6 +31,7 @@ use Illuminate\Support\Facades\File;
 use Filament\Resources\Resource;
 use Filament\Pages;
 use Filament\Widgets;
+use Filament\Facades\Filament;
 
 
 class SystemPanelProvider extends PanelProvider
@@ -102,16 +103,17 @@ class SystemPanelProvider extends PanelProvider
         }
         public static function webkernelPanelInfo(): array
         {
-            $panel = Filament::getPanel('mar');
+            $panel = Filament::getPanel('system');
             
             return [
                 'id'           => $panel->getId(),
                 'path'         => $panel->getPath(),
                 'icon'         => 'heroicon-o-rectangle-stack',
-                'description'  => 'Module MAR pour la gestion des clients',
+                'description'  => 'Module System pour la gestion administrative',
                 'url'          => $panel->getUrl(),
                 'fontfamily'   => $panel->getFontFamily(),
                 'fontprovider' => $panel->getFontProvider(),
+                'restricted'   => true,
             ];
         }
     }

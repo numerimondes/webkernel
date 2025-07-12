@@ -65,8 +65,9 @@ class MarPanelProvider extends PanelProvider
             'id'           => $panel->getId(),
             'path'         => $panel->getPath(),
             'icon'         => 'heroicon-o-rectangle-stack',
-            'description'  => 'Module MAR pour la gestion des clients',
+            'description'  => lang('Module MAR pour la gestion des clients'),
             'url'          => $panel->getUrl(),
+            'restricted'   => true, 
             'fontfamily'   => $panel->getFontFamily(),
             'fontprovider' => $panel->getFontProvider(),
         ];

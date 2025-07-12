@@ -2,6 +2,8 @@
 namespace Webkernel\Services\Panels;
 
 use Filament\Facades\Filament;
+use App\Models\User;
+use Webkernel\Core\Models\UserPanels;
 
 class PanelsInfoCollector
 {
@@ -397,5 +399,74 @@ class PanelsInfoCollector
         }
         
         return $flat;
+    }
+
+    /**
+     * Retourne les panneaux séparés en restricted et public
+     */
+    public static function getPanelsByAccess(): array
+    {
+        $organized = self::getAllPanelsInfo();
+        $restricted = [];
+        $public = [];
+        
+        foreach ($organized as $namespace => $namespaceData) {
+            foreach ($namespaceData['modules'] as $module => $moduleData) {
+                // Panels au niveau module
+                if (isset($moduleData['panels'])) {
+                    foreach ($moduleData['panels'] as $panel) {
+                        $panelId = $panel['id'] ?? 'unknown';
+                        $isRestricted = $panel['restricted'] ?? false;
+                        
+                        if ($isRestricted) {
+                            $restricted[$panelId] = $panel;
+                        } else {
+                            $public[$panelId] = $panel;
+                        }
+                    }
+                }
+                
+                // Panels dans les sous-modules
+                if (isset($moduleData['submodules'])) {
+                    foreach ($moduleData['submodules'] as $submodule => $submoduleData) {
+                        foreach ($submoduleData['panels'] as $panel) {
+                            $panelId = $panel['id'] ?? 'unknown';
+                            $isRestricted = $panel['restricted'] ?? false;
+                            
+                            if ($isRestricted) {
+                                $restricted[$panelId] = $panel;
+                            } else {
+                                $public[$panelId] = $panel;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        
+        return [
+            'restricted' => $restricted,
+            'public' => $public
+        ];
+    }
+
+    /**
+     * Vérifie si un utilisateur a accès à un panneau
+     */
+    public static function userHasPanelAccess(User $user, string $panelId): bool
+    {
+        // Vérifier d'abord si le panneau est public
+        $panelsByAccess = self::getPanelsByAccess();
+        if (isset($panelsByAccess['public'][$panelId])) {
+            return true;
+        }
+        
+        // Si le panneau est restricted, vérifier les accès utilisateur
+        $userPanels = UserPanels::where('user_id', $user->id)->first();
+        if (!$userPanels || !$userPanels->panels) {
+            return false;
+        }
+        
+        return isset($userPanels->panels[$panelId]);
     }
 }
