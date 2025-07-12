@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Constants\ServiceProviders;
+namespace Webkernel\ServiceProviders;
 
 use Illuminate\Support\Facades\Gate;
 use Illuminate\Support\ServiceProvider;

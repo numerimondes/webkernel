@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Constants\ServiceProviders;
+namespace Webkernel\ServiceProviders;
 
 use DB;
 use view;
@@ -82,10 +82,6 @@ class RenderHooksServiceProvider extends ServiceProvider
         // );
 
 
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::USER_MENU_PROFILE_AFTER,
-            fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.multi-modules-selector')
-        );
 
         FilamentView::registerRenderHook(
             PanelsRenderHook::HEAD_START,
@@ -108,6 +104,14 @@ class RenderHooksServiceProvider extends ServiceProvider
             FilamentView::registerRenderHook(
                 PanelsRenderHook::USER_MENU_BEFORE,
                 fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.language-selector')
+            );
+        }
+
+        // Multi-modules selector hook
+        if ($this->isRenderHookEnabled('multi_modules_selector')) {
+            FilamentView::registerRenderHook(
+                PanelsRenderHook::USER_MENU_PROFILE_AFTER,
+                fn() => safe_render_hook_view('webkernel::components.webkernel.ui.molecules.multi-modules-selector')
             );
         }
         

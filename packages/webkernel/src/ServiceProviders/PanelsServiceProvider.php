@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Constants\ServiceProviders;
+namespace Webkernel\ServiceProviders;
 
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;

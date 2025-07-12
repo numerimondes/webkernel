@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Constants\ServiceProviders;
+namespace Webkernel\ServiceProviders;
 
 use Blade;
 use Illuminate\Support\ServiceProvider;
