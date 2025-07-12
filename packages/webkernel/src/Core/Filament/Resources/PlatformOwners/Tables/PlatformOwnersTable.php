@@ -42,12 +42,14 @@ class PlatformOwnersTable
                 TextColumn::make('when')
                     ->label('De')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 
                 TextColumn::make('until')
                     ->label('À')
                     ->dateTime()
-                    ->sortable(),
+                    ->sortable()
+                    ->toggleable(isToggledHiddenByDefault: true),
                 
                 TextColumn::make('created_at')
                     ->label('Créé le')

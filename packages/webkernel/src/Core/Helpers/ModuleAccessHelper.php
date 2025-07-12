@@ -8,94 +8,102 @@ use Webkernel\Services\Panels\PanelsInfoCollector;
 class ModuleAccessHelper
 {
     /**
-     * Vérifie si un utilisateur a accès à un module
+     * Retourne la liste finale des modules et panels accessibles à l'utilisateur
+     * Combine les panels publics + les panels assignés à l'utilisateur
      */
-    public static function userHasModuleAccess(User $user, string $moduleId): bool
+    public static function getAccessibleModules(User $user): array
     {
-        return PanelsInfoCollector::userHasPanelAccess($user, $moduleId);
-    }
-
-    /**
-     * Retourne tous les modules accessibles pour un utilisateur
-     */
-    public static function getUserAccessibleModules(User $user): array
-    {
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
+        $allPanels = PanelsInfoCollector::getAllPanelsInfo();
         $accessibleModules = [];
-
-        // Ajouter tous les modules publics
-        foreach ($panelsByAccess['public'] as $moduleId => $module) {
-            $accessibleModules[$moduleId] = $module;
-        }
-
-        // Ajouter les modules restricted auxquels l'utilisateur a accès
-        $userPanels = \Webkernel\Core\Models\UserPanels::where('user_id', $user->id)->first();
-        if ($userPanels && $userPanels->panels) {
-            foreach ($userPanels->panels as $moduleId => $access) {
-                if (isset($panelsByAccess['restricted'][$moduleId])) {
-                    $accessibleModules[$moduleId] = $panelsByAccess['restricted'][$moduleId];
+        
+        foreach ($allPanels as $namespace => $namespaceData) {
+            $accessibleModules[$namespace] = [
+                'name' => $namespace,
+                'modules' => []
+            ];
+            
+            foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
+                $accessibleModules[$namespace]['modules'][$moduleName] = [
+                    'name' => $moduleName,
+                    'panels' => [],
+                    'submodules' => []
+                ];
+                
+                // Vérifier les panels au niveau module
+                if (isset($moduleData['panels'])) {
+                    foreach ($moduleData['panels'] as $panel) {
+                        if (self::canAccessPanel($user, $panel)) {
+                            $accessibleModules[$namespace]['modules'][$moduleName]['panels'][] = $panel;
+                        }
+                    }
+                }
+                
+                // Vérifier les panels dans les sous-modules
+                if (isset($moduleData['submodules'])) {
+                    foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
+                        $accessibleModules[$namespace]['modules'][$moduleName]['submodules'][$submoduleName] = [
+                            'name' => $submoduleName,
+                            'panels' => []
+                        ];
+                        
+                        foreach ($submoduleData['panels'] as $panel) {
+                            if (self::canAccessPanel($user, $panel)) {
+                                $accessibleModules[$namespace]['modules'][$moduleName]['submodules'][$submoduleName]['panels'][] = $panel;
+                            }
+                        }
+                    }
                 }
             }
         }
-
+        
         return $accessibleModules;
     }
-
+    
     /**
-     * Retourne les modules restricted pour un utilisateur
+     * Vérifie si l'utilisateur peut accéder à un panel spécifique
      */
-    public static function getUserRestrictedModules(User $user): array
+    private static function canAccessPanel(User $user, array $panel): bool
     {
-        $userPanels = \Webkernel\Core\Models\UserPanels::where('user_id', $user->id)->first();
-        if (!$userPanels || !$userPanels->panels) {
-            return [];
+        $panelId = $panel['id'] ?? 'unknown';
+        $isRestricted = $panel['restricted'] ?? false;
+        
+        // Si le panel est public, accès autorisé
+        if (!$isRestricted) {
+            return true;
         }
-
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
-        $restrictedModules = [];
-
-        foreach ($userPanels->panels as $moduleId => $access) {
-            if (isset($panelsByAccess['restricted'][$moduleId])) {
-                $restrictedModules[$moduleId] = $panelsByAccess['restricted'][$moduleId];
+        
+        // Si le panel est restricted, vérifier les accès utilisateur
+        return $user->canAccessPanel($panelId);
+    }
+    
+    /**
+     * Retourne une liste plate des panels accessibles
+     */
+    public static function getAccessiblePanelsList(User $user): array
+    {
+        $accessibleModules = self::getAccessibleModules($user);
+        $panels = [];
+        
+        foreach ($accessibleModules as $namespace => $namespaceData) {
+            foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
+                // Panels au niveau module
+                if (isset($moduleData['panels'])) {
+                    foreach ($moduleData['panels'] as $panel) {
+                        $panels[] = $panel;
+                    }
+                }
+                
+                // Panels dans les sous-modules
+                if (isset($moduleData['submodules'])) {
+                    foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
+                        foreach ($submoduleData['panels'] as $panel) {
+                            $panels[] = $panel;
+                        }
+                    }
+                }
             }
         }
-
-        return $restrictedModules;
-    }
-
-    /**
-     * Retourne les modules publics
-     */
-    public static function getPublicModules(): array
-    {
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
-        return $panelsByAccess['public'] ?? [];
-    }
-
-    /**
-     * Retourne tous les modules restricted
-     */
-    public static function getRestrictedModules(): array
-    {
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
-        return $panelsByAccess['restricted'] ?? [];
-    }
-
-    /**
-     * Vérifie si un module est public
-     */
-    public static function isModulePublic(string $moduleId): bool
-    {
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
-        return isset($panelsByAccess['public'][$moduleId]);
-    }
-
-    /**
-     * Vérifie si un module est restricted
-     */
-    public static function isModuleRestricted(string $moduleId): bool
-    {
-        $panelsByAccess = PanelsInfoCollector::getPanelsByAccess();
-        return isset($panelsByAccess['restricted'][$moduleId]);
+        
+        return $panels;
     }
 } 

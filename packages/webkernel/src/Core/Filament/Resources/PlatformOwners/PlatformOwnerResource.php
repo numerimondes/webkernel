@@ -24,6 +24,11 @@ class PlatformOwnerResource extends Resource
         return PlatformOwnerForm::configure($schema);
     }
 
+    public static function getNavigationBadge(): ?string
+    {
+        return static::getModel()::count();
+    }
+
     public static function table(Table $table): Table
     {
         return PlatformOwnersTable::configure($table);

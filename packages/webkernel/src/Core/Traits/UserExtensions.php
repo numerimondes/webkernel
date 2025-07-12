@@ -5,6 +5,8 @@ namespace Webkernel\Core\Traits;
 use Exception;
 use Log;
 use Webkernel\Core\Models\Language;
+use Webkernel\Core\Models\PlatformOwner;
+use Webkernel\Core\Models\UserPanels;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
@@ -91,5 +93,34 @@ trait UserExtensions
             Log::error("Erreur lors de la récupération de la langue de l'utilisateur : " . $e->getMessage());
             return 'en';
         }
+    }
+
+    public function canAccessPanel($panel): bool
+    {
+        // Super admin accès à tout
+        $platformOwner = PlatformOwner::where('user_id', $this->id)
+            ->where('is_eternal_owner', true)
+            ->first();
+            
+        if ($platformOwner) {
+            $now = now();
+            $when = $platformOwner->when;
+            $until = $platformOwner->until;
+            
+            // Vérifier les dates si définies
+            if ($when && $now->lt($when)) return false;
+            if ($until && $now->gt($until)) return false;
+            
+            return true;
+        }
+
+        // Vérifier les panels spécifiques
+        $userPanels = UserPanels::where('user_id', $this->id)->first();
+        if (!$userPanels || !$userPanels->panels) {
+            return false;
+        }
+
+        $panelId = is_string($panel) ? $panel : $panel->getId();
+        return isset($userPanels->panels[$panelId]);
     }
 }
