@@ -37,7 +37,7 @@ use Filament\Forms\Components\DateTimePicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
 use Webkernel\Core\Models\UserPanels;
-use Webkernel\Services\Panels\PanelsInfoCollector;
+use Webkernel\Core\Services\PanelsInfoCollector;
 
 class UserResource extends Resource
 {

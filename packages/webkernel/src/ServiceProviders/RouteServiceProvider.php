@@ -1,24 +1,38 @@
 <?php
-
 namespace Webkernel\ServiceProviders;
 
 use Illuminate\Support\ServiceProvider;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\File;
+use Illuminate\Contracts\Http\Kernel;
+use Webkernel\Core\Http\Middleware\CheckUserAccess;
 
 class RouteServiceProvider extends ServiceProvider
 {
+    public function register(): void
+    {
+        $this->registerGlobalMiddleware();
+    }
+
     public function boot(): void
     {
         $this->loadRoutes();
     }
 
+    /**
+     * Enregistre le middleware CheckUserAccess globalement
+     */
+    protected function registerGlobalMiddleware(): void
+    {
+        $kernel = $this->app->make(Kernel::class);
+        $kernel->appendMiddlewareToGroup('web', CheckUserAccess::class);
+    }
+
     public function loadRoutes(): void
     {
         Route::middleware('web')->group(base_path('routes/web.php'));
-
         $this->loadWebkernelRoutes();
-
+        
         $autoloadNamespaces = $this->getAutoloadNamespaces();
         foreach ($autoloadNamespaces as $namespace => $path) {
             $this->loadRoutesFromPath($path . '/routes');
@@ -38,11 +52,10 @@ class RouteServiceProvider extends ServiceProvider
         }
 
         $routeFiles = File::glob($routesPath . '/*.php');
-
         foreach ($routeFiles as $routeFile) {
             $fileName = basename($routeFile, '.php');
             $middleware = $this->getMiddlewareForRouteFile($fileName);
-
+            
             if ($middleware) {
                 Route::middleware($middleware)->group($routeFile);
             } else {
@@ -55,7 +68,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         return match ($fileName) {
             'web' => 'web',
-            'api' => 'api',
+            'api' => 'api', 
             'assets' => 'web',
             'console' => null,
             default => 'web',
@@ -66,8 +79,7 @@ class RouteServiceProvider extends ServiceProvider
     {
         $composerJson = json_decode(File::get(base_path('composer.json')), true);
         $namespaces = [];
-
-
+        
         if (isset($composerJson['autoload']['psr-4'])) {
             foreach ($composerJson['autoload']['psr-4'] as $namespace => $path) {
                 if (
@@ -78,7 +90,7 @@ class RouteServiceProvider extends ServiceProvider
                 }
             }
         }
-
+        
         return $namespaces;
     }
 }

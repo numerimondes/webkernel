@@ -3,48 +3,43 @@ namespace Webkernel\ServiceProviders;
 
 use Illuminate\Foundation\Support\Providers\AuthServiceProvider as ServiceProvider;
 use Illuminate\Support\Facades\Gate;
-use Webkernel\Core\Services\PanelsAccessManager;
+use Webkernel\Core\Services\PanelAccessService;
 
 class AuthServiceProvider extends ServiceProvider
 {
     public function boot()
     {
         $this->registerPolicies();
+        $accessService = new PanelAccessService();
         
         // Super admin global bypass
-        Gate::before(function ($user, $ability) {
-            if ($user->hasRole('super-admin')) {
+        Gate::before(function ($user, $ability) use ($accessService) {
+            if ($accessService->isSuperAdmin($user)) {
                 return true;
             }
         });
         
         // Gate pour l'accès aux panneaux
-        Gate::define('access-panel', function ($user, $panelId, $context = null) {
-            return app(PanelsAccessManager::class)->userCanAccessPanel($user->id, $panelId, $context);
+        Gate::define('access-panel', function ($user, $panelId, $context = null) use ($accessService) {
+            return $accessService->canAccessPanel($user, $panelId);
         });
         
-        // Gate pour l'accès aux ressources
-        Gate::define('access-resource', function ($user, $panelId, $resourceType, $resourceIdentifier, $accessType = 'view', $context = null) {
-            return app(PanelsAccessManager::class)->userCanAccessResource(
-                $user->id, 
-                $panelId, 
-                $resourceType, 
-                $resourceIdentifier, 
-                $accessType,
-                $context
-            );
+        // Gate pour l'accès aux ressources (à adapter selon besoin réel)
+        Gate::define('access-resource', function ($user, $panelId, $resourceType, $resourceIdentifier, $accessType = 'view', $context = null) use ($accessService) {
+            // Ici, tu peux ajouter une logique plus fine si besoin
+            return $accessService->canAccessPanel($user, $panelId);
         });
         
-        // Gate pour vérifier le rôle dans un panneau
+        // Gate pour vérifier le rôle dans un panneau (à adapter si tu veux une gestion de rôle plus fine)
         Gate::define('panel-role', function ($user, $panelId, $role, $context = null) {
-            $userRole = app(PanelsAccessManager::class)->getUserPanelRole($user->id, $panelId, $context);
-            return $userRole === $role;
+            // À implémenter si besoin
+            return false;
         });
         
         // Gate pour vérifier si l'utilisateur a un des rôles dans un panneau
         Gate::define('panel-any-role', function ($user, $panelId, $roles, $context = null) {
-            $userRole = app(PanelsAccessManager::class)->getUserPanelRole($user->id, $panelId, $context);
-            return in_array($userRole, (array) $roles);
+            // À implémenter si besoin
+            return false;
         });
     }
 } 

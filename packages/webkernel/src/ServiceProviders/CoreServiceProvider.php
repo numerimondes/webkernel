@@ -11,7 +11,6 @@ use Filament\Schemas\Components\Fieldset;
 use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Foundation\Application;
 use Webkernel\Core\Services\PanelRoutingService;
-use Webkernel\Core\Services\PanelsAccessManager;
 use Webkernel\Core\Providers\SystemPanelProvider;
 use Webkernel\Core\Services\ModuleDetectionService;
 use Webkernel\ServiceProviders\AuthServiceProvider;
@@ -28,6 +27,7 @@ use Webkernel\ServiceProviders\LivewireServiceProvider;
 use Webkernel\ServiceProviders\PoliciesServiceProvider;
 use Webkernel\ServiceProviders\MigrationServiceProvider;
 use Webkernel\ServiceProviders\WebkernelServiceProvider;
+use Webkernel\ServiceProviders\MiddlewareServiceProvider;
 use Webkernel\ServiceProviders\RenderHooksServiceProvider;
 use Numerimondes\Modules\ReamMar\Core\Providers\Filament\MarPanelProvider;
 
@@ -55,6 +55,7 @@ class CoreServiceProvider extends ServiceProvider
             RenderHooksServiceProvider::class,
             WebkernelServiceProvider::class,
             MarPanelProvider::class,
+            MiddlewareServiceProvider::class,
         ]);
 
         $this->registerPlatformProviders();

@@ -93,6 +93,13 @@ class RenderHooksServiceProvider extends ServiceProvider
             fn() => safe_render_hook_view('webkernel::components.webkernel.ui.organism.universal-badge.universal-badges')
         );
 
+        // DEBUG: Test direct de la vue
+        FilamentView::registerRenderHook(
+            PanelsRenderHook::BODY_END,
+            fn() => view('webkernel::components.webkernel.ui.organism.universal-badge.universal-badges')->render()
+        );
+
+
         if ($this->isRenderHookEnabled('current_user_datetime')) {
             FilamentView::registerRenderHook(
                 PanelsRenderHook::GLOBAL_SEARCH_BEFORE,

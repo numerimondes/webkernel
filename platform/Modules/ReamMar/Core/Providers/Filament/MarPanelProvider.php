@@ -25,22 +25,35 @@ class MarPanelProvider extends PanelProvider
     public function panel(Panel $panel): Panel
     {
         return $panel
+            ->login()
+            ->registration()
             ->id('mar')
             ->path('mar')
+            
+            // Configuration spécifique au panel mar
             ->colors([
                 'primary' => Color::Amber,
             ])
-            ->discoverResources(in: base_path('platform/Modules/ReamMar/Core/Filament/Resources'), for: 'Numerimondes\Filament\Mar\Resources')
-            ->discoverPages(in: base_path('platform/Modules/ReamMar/Core/Filament/Pages'), for: 'Numerimondes\Filament\Mar\Pages')
+            ->databaseNotifications()
+
+            // Pages et ressources spécifiques
             ->pages([
                 Dashboard::class,
             ])
             ->resources([ClientResource::class,])
+            
+            // Découverte automatique
+            ->discoverResources(in: base_path('platform/Modules/ReamMar/Core/Filament/Resources'), for: 'Numerimondes\Filament\Mar\Resources')
+            ->discoverPages(in: base_path('platform/Modules/ReamMar/Core/Filament/Pages'), for: 'Numerimondes\Filament\Mar\Pages')
             ->discoverWidgets(in: base_path('platform/Modules/ReamMar/Core/Filament/Widgets'), for: 'Numerimondes\Filament\Mar\Widgets')
+            
+            // Widgets
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
             ])
+            
+            // Middleware de base (CheckUserAccess sera ajouté automatiquement par PanelsServiceProvider)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -51,6 +64,7 @@ class MarPanelProvider extends PanelProvider
                 SubstituteBindings::class,
                 DisableBladeIconComponents::class,
                 DispatchServingFilamentEvent::class,
+                \Webkernel\Core\Http\Middleware\CheckUserAccess::class,
             ])
             ->authMiddleware([
                 Authenticate::class,

@@ -1,5 +1,5 @@
 <?php
-namespace Webkernel\Services\Panels;
+namespace Webkernel\Core\Services;
 
 use Filament\Facades\Filament;
 use App\Models\User;
@@ -9,8 +9,8 @@ class PanelsInfoCollector
 {
     /**
      * Summary of getAllPanelsInfo
-     * @example {{ dd(\Webkernel\Services\Panels\PanelsInfoCollector::getAllPanelsInfo()) }}
-     * @example {{ dd(\Webkernel\Services\Panels\PanelsInfoCollector::debugStructure()) }}
+     * @example {{ dd(\Webkernel\Core\Services\PanelsInfoCollector::getAllPanelsInfo()) }}
+     * @example {{ dd(\Webkernel\Core\Services\PanelsInfoCollector::debugStructure()) }}
      * @return array
      */
     public static function getAllPanelsInfo(): array
@@ -204,33 +204,26 @@ class PanelsInfoCollector
     
     private static function analyzeGenericStructure(array $segments): array
     {
-        // Structure générique
-        $technicalSegments = ['Providers', 'Filament', 'Provider'];
-        $meaningfulSegments = [];
-        
-        // Ignore le namespace root et les segments techniques
-        for ($i = 1; $i < count($segments); $i++) {
-            $segment = $segments[$i];
-            
-            if (in_array($segment, $technicalSegments) && $i >= count($segments) - 3) {
-                continue;
-            }
-            
-            $meaningfulSegments[] = $segment;
-        }
-        
         $levels = [];
-        if (isset($meaningfulSegments[0])) {
-            $levels['module'] = $meaningfulSegments[0];
-        }
-        if (isset($meaningfulSegments[1])) {
-            $levels['submodule'] = $meaningfulSegments[1];
+        $depth = 0;
+        
+        foreach ($segments as $index => $segment) {
+            if ($index === 0) {
+                $levels['root'] = $segment;
+                $depth++;
+            } elseif ($index === 1) {
+                $levels['sub'] = $segment;
+                $depth++;
+            } elseif ($index === 2) {
+                $levels['subsub'] = $segment;
+                $depth++;
+            }
         }
         
         return [
             'type' => 'generic',
             'levels' => $levels,
-            'depth' => count($meaningfulSegments)
+            'depth' => $depth
         ];
     }
     
@@ -240,40 +233,26 @@ class PanelsInfoCollector
         
         foreach ($panels as $panel) {
             $source = $panel['source'] ?? [];
-            
-            if (!is_array($source)) {
-                continue;
-            }
-            
+            $structure = $source['structure'] ?? [];
+            $type = $structure['type'] ?? 'unknown';
+            $levels = $structure['levels'] ?? [];
             $namespaceRoot = $source['namespace_root'] ?? 'Unknown';
-            $structure = $source['structure'] ?? ['type' => 'simple', 'levels' => []];
             
-            if (!is_array($structure)) {
-                $structure = ['type' => 'simple', 'levels' => []];
-            }
-            
-            // Crée la section du namespace si elle n'existe pas
             if (!isset($organized[$namespaceRoot])) {
                 $organized[$namespaceRoot] = [
-                    'namespace' => $namespaceRoot,
+                    'name' => $namespaceRoot,
                     'modules' => []
                 ];
             }
             
-            $levels = $structure['levels'] ?? [];
-            $structureType = $structure['type'] ?? 'simple';
-            
-            // Organisation selon le type de structure
-            switch ($structureType) {
+            switch ($type) {
                 case 'webkernel':
                     self::organizeWebkernelPanel($organized[$namespaceRoot], $panel, $levels);
                     break;
-                    
                 case 'modules':
                 case 'numerimondes_modules':
                     self::organizeModulesPanel($organized[$namespaceRoot], $panel, $levels);
                     break;
-                    
                 default:
                     self::organizeGenericPanel($organized[$namespaceRoot], $panel, $levels);
                     break;
@@ -285,188 +264,152 @@ class PanelsInfoCollector
     
     private static function organizeWebkernelPanel(array &$namespaceData, array $panel, array $levels): void
     {
-        $module = $levels['module'] ?? 'Core';
+        $moduleName = $levels['module'] ?? 'default';
         
-        if (!isset($namespaceData['modules'][$module])) {
-            $namespaceData['modules'][$module] = [
-                'name' => $module,
+        if (!isset($namespaceData['modules'][$moduleName])) {
+            $namespaceData['modules'][$moduleName] = [
+                'name' => $moduleName,
                 'panels' => []
             ];
         }
         
-        $namespaceData['modules'][$module]['panels'][] = $panel;
+        $namespaceData['modules'][$moduleName]['panels'][] = $panel;
     }
     
     private static function organizeModulesPanel(array &$namespaceData, array $panel, array $levels): void
     {
-        $module = $levels['module'] ?? 'Unknown';
-        $submodule = $levels['submodule'] ?? null;
+        $moduleName = $levels['module'] ?? 'default';
+        $submoduleName = $levels['submodule'] ?? null;
         
-        if (!isset($namespaceData['modules'][$module])) {
-            $namespaceData['modules'][$module] = [
-                'name' => $module,
+        if (!isset($namespaceData['modules'][$moduleName])) {
+            $namespaceData['modules'][$moduleName] = [
+                'name' => $moduleName,
                 'panels' => [],
                 'submodules' => []
             ];
         }
         
-        if ($submodule) {
-            if (!isset($namespaceData['modules'][$module]['submodules'][$submodule])) {
-                $namespaceData['modules'][$module]['submodules'][$submodule] = [
-                    'name' => $submodule,
+        if ($submoduleName) {
+            if (!isset($namespaceData['modules'][$moduleName]['submodules'][$submoduleName])) {
+                $namespaceData['modules'][$moduleName]['submodules'][$submoduleName] = [
+                    'name' => $submoduleName,
                     'panels' => []
                 ];
             }
-            
-            $namespaceData['modules'][$module]['submodules'][$submodule]['panels'][] = $panel;
+            $namespaceData['modules'][$moduleName]['submodules'][$submoduleName]['panels'][] = $panel;
         } else {
-            $namespaceData['modules'][$module]['panels'][] = $panel;
+            $namespaceData['modules'][$moduleName]['panels'][] = $panel;
         }
     }
     
     private static function organizeGenericPanel(array &$namespaceData, array $panel, array $levels): void
     {
-        $module = $levels['module'] ?? 'Misc';
-        $submodule = $levels['submodule'] ?? null;
+        $moduleName = $levels['sub'] ?? 'default';
         
-        if (!isset($namespaceData['modules'][$module])) {
-            $namespaceData['modules'][$module] = [
-                'name' => $module,
-                'panels' => [],
-                'submodules' => []
+        if (!isset($namespaceData['modules'][$moduleName])) {
+            $namespaceData['modules'][$moduleName] = [
+                'name' => $moduleName,
+                'panels' => []
             ];
         }
         
-        if ($submodule) {
-            if (!isset($namespaceData['modules'][$module]['submodules'][$submodule])) {
-                $namespaceData['modules'][$module]['submodules'][$submodule] = [
-                    'name' => $submodule,
-                    'panels' => []
-                ];
-            }
-            
-            $namespaceData['modules'][$module]['submodules'][$submodule]['panels'][] = $panel;
-        } else {
-            $namespaceData['modules'][$module]['panels'][] = $panel;
-        }
+        $namespaceData['modules'][$moduleName]['panels'][] = $panel;
     }
     
     /**
-     * Méthode de debug pour voir la structure détectée
+     * Méthode de debug pour analyser la structure
      */
     public static function debugStructure(): array
     {
+        $panels = self::getAllPanelsInfo();
         $debug = [];
         
-        foreach (get_declared_classes() as $class) {
-            if (is_subclass_of($class, 'Filament\PanelProvider')) {
-                $debug[] = [
-                    'class' => $class,
-                    'analysis' => self::analyzeClassStructure($class)
-                ];
-            }
+        foreach ($panels as $namespace => $namespaceData) {
+            $debug[$namespace] = [
+                'name' => $namespaceData['name'],
+                'modules_count' => count($namespaceData['modules']),
+                'modules' => array_keys($namespaceData['modules'])
+            ];
         }
         
         return $debug;
     }
     
     /**
-     * Méthode utilitaire pour obtenir une liste plate des panels
+     * Retourne une liste plate de tous les panels
      */
     public static function getFlatPanelsList(): array
     {
-        $organized = self::getAllPanelsInfo();
-        $flat = [];
+        $allPanels = self::getAllPanelsInfo();
+        $flatList = [];
         
-        foreach ($organized as $namespace => $namespaceData) {
-            foreach ($namespaceData['modules'] as $module => $moduleData) {
-                // Panels au niveau module
+        foreach ($allPanels as $namespace => $namespaceData) {
+            foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
                 if (isset($moduleData['panels'])) {
                     foreach ($moduleData['panels'] as $panel) {
-                        $flat[] = $panel;
+                        $flatList[] = $panel;
                     }
                 }
                 
-                // Panels dans les sous-modules
                 if (isset($moduleData['submodules'])) {
-                    foreach ($moduleData['submodules'] as $submodule => $submoduleData) {
+                    foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
                         foreach ($submoduleData['panels'] as $panel) {
-                            $flat[] = $panel;
+                            $flatList[] = $panel;
                         }
                     }
                 }
             }
         }
         
-        return $flat;
+        return $flatList;
     }
-
+    
     /**
-     * Retourne les panneaux séparés en restricted et public
+     * Retourne les panels organisés par type d'accès (public/restricted)
      */
     public static function getPanelsByAccess(): array
     {
-        $organized = self::getAllPanelsInfo();
-        $restricted = [];
-        $public = [];
+        $allPanels = self::getFlatPanelsList();
+        $panelsByAccess = [
+            'public' => [],
+            'restricted' => []
+        ];
         
-        foreach ($organized as $namespace => $namespaceData) {
-            foreach ($namespaceData['modules'] as $module => $moduleData) {
-                // Panels au niveau module
-                if (isset($moduleData['panels'])) {
-                    foreach ($moduleData['panels'] as $panel) {
-                        $panelId = $panel['id'] ?? 'unknown';
-                        $isRestricted = $panel['restricted'] ?? false;
-                        
-                        if ($isRestricted) {
-                            $restricted[$panelId] = $panel;
-                        } else {
-                            $public[$panelId] = $panel;
-                        }
-                    }
-                }
-                
-                // Panels dans les sous-modules
-                if (isset($moduleData['submodules'])) {
-                    foreach ($moduleData['submodules'] as $submodule => $submoduleData) {
-                        foreach ($submoduleData['panels'] as $panel) {
-                            $panelId = $panel['id'] ?? 'unknown';
-                            $isRestricted = $panel['restricted'] ?? false;
-                            
-                            if ($isRestricted) {
-                                $restricted[$panelId] = $panel;
-                            } else {
-                                $public[$panelId] = $panel;
-                            }
-                        }
-                    }
-                }
+        foreach ($allPanels as $panel) {
+            $panelId = $panel['id'] ?? 'unknown';
+            $isRestricted = $panel['restricted'] ?? false;
+            
+            if ($isRestricted) {
+                $panelsByAccess['restricted'][$panelId] = $panel;
+            } else {
+                $panelsByAccess['public'][$panelId] = $panel;
             }
         }
         
-        return [
-            'restricted' => $restricted,
-            'public' => $public
-        ];
+        return $panelsByAccess;
     }
-
+    
     /**
-     * Vérifie si un utilisateur a accès à un panneau
+     * Vérifie si un utilisateur a accès à un panel spécifique
      */
     public static function userHasPanelAccess(User $user, string $panelId): bool
     {
-        // Vérifier d'abord si le panneau est public
         $panelsByAccess = self::getPanelsByAccess();
+        
+        // Si le panel est public, accès autorisé
         if (isset($panelsByAccess['public'][$panelId])) {
             return true;
         }
         
-        // Si le panneau est restricted, vérifier les accès utilisateur
-        $userPanels = UserPanels::where('user_id', $user->id)->first();
-        if (!$userPanels || !$userPanels->panels) {
-            return false;
+        // Si le panel est restreint, vérifier la whitelist
+        if (isset($panelsByAccess['restricted'][$panelId])) {
+            $userPanels = UserPanels::where('user_id', $user->id)->first();
+            if (!$userPanels || !$userPanels->panels) {
+                return false;
+            }
+            return isset($userPanels->panels[$panelId]);
         }
         
-        return isset($userPanels->panels[$panelId]);
+        return false;
     }
-}
+} 

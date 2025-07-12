@@ -1,58 +1,29 @@
 @php
-    $show_this_badge = true; // Mettez true pour afficher, false pour masquer
-
-    // Récupérer les modules accessibles à l'utilisateur
-    $accessibleModules = \Webkernel\Core\Helpers\ModuleAccessHelper::getAccessibleModules(auth()->user());
+    $show_this_badge = true;
     
-    // Construire la liste des liens pour le dropdown
+    // Utiliser le service pour récupérer les panels accessibles
     $dropdownLinks = [];
-    
-    foreach ($accessibleModules as $namespace => $namespaceData) {
-        foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
-            // Panels au niveau module
-            if (isset($moduleData['panels']) && count($moduleData['panels']) > 0) {
-                foreach ($moduleData['panels'] as $panel) {
-                    $panelId = $panel['id'] ?? 'unknown';
-                    $panelName = 'Module ' . ucfirst($panelId);
-                    
-                    $dropdownLinks[] = [
-                        'href' => route('filament.' . $panelId . '.pages.dashboard'),
-                        'icon' => 'heroicon-m-rectangle-stack',
-                        'label' => $panelName,
-                        'panel_id' => $panelId
-                    ];
-                }
-            }
-            
-            // Panels dans les sous-modules
-            if (isset($moduleData['submodules'])) {
-                foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
-                    if (isset($submoduleData['panels']) && count($submoduleData['panels']) > 0) {
-                        foreach ($submoduleData['panels'] as $panel) {
-                            $panelId = $panel['id'] ?? 'unknown';
-                            $panelName = 'Module ' . ucfirst($panelId);
-                            
-                            $dropdownLinks[] = [
-                                'href' => route('filament.' . $panelId . '.pages.dashboard'),
-                                'icon' => 'heroicon-m-rectangle-stack',
-                                'label' => $panelName,
-                                'panel_id' => $panelId
-                            ];
-                        }
-                    }
-                }
-            }
+    if (auth()->check()) {
+        $accessService = new \Webkernel\Core\Services\PanelAccessService();
+        $accessiblePanels = $accessService->getUserAccessiblePanels(auth()->user());
+        
+        foreach ($accessiblePanels as $panelId => $panel) {
+            $dropdownLinks[] = [
+                'href' => '/' . $panelId,
+                'icon' => $panel['icon'] ?? 'heroicon-m-rectangle-stack',
+                'label' => $panel['name'] ?? 'Module ' . ucfirst($panelId),
+                'panel_id' => $panelId
+            ];
         }
     }
     
-    // Variables nécessaires depuis le parent
     $dropdownPlacement = $dropdownPlacement ?? 'top-end';
 @endphp
 
 @if(isset($show_this_badge) && $show_this_badge && count($dropdownLinks) > 0)
-<x-filament::dropdown :placement="$dropdownPlacement">
+<x-filament::dropdown :placement="$dropdownPlacement" class="module-selector-ui-dropdown">
     <x-slot name="trigger">
-        <button type="button" class="universal-help-ui-button"
+        <button type="button" class="module-selector-ui-button"
             style="
                 padding: 6px;
                 font-size: 14px;
@@ -70,12 +41,12 @@
                 height: 32px;
                 transition: all 0.2s ease;
             ">
-            <x-filament::icon icon="heroicon-o-chevron-up-down" class="help-icon w-4 h-4" />
+            <x-filament::icon icon="heroicon-o-squares-2x2" class="help-icon w-4 h-4" />
         </button>
     </x-slot>
 
     <x-filament::dropdown.header class="font-semibold text-gray-900 dark:text-gray-100" icon="heroicon-m-rectangle-stack">
-        {{ lang('available_modules') }}
+        {{ __('Modules disponibles') }}
     </x-filament::dropdown.header>
 
     <x-filament::dropdown.list class="w-auto min-w-48 fi-dropdown-list">
@@ -87,4 +58,4 @@
         @endforeach
     </x-filament::dropdown.list>
 </x-filament::dropdown>
-@endif 
+@endif

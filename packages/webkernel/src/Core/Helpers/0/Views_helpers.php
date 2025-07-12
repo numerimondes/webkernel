@@ -47,23 +47,31 @@ if (!function_exists('safe_render_hook_view')) {
     function safe_render_hook_view(string $viewName, array $data = []): string
     {
         try {
-            // webkernel::components.webkernel.ui.atoms.search-hide === components.webkernel.ui.atoms.search-hide
-            $customView = str_replace('webkernel::', '', $viewName);
-
-            if (view()->exists($customView)) {
-                return view($customView, $data)->render();
-            }
-
+            // Essayer d'abord la vue exacte
             if (view()->exists($viewName)) {
                 return view($viewName, $data)->render();
             }
 
-            Log::warning("RenderHook view not found: {$viewName} (tried custom: {$customView})");
-            return '';
+            // Si c'est une vue webkernel, essayer sans le préfixe
+            if (str_starts_with($viewName, 'webkernel::')) {
+            $customView = str_replace('webkernel::', '', $viewName);
+            if (view()->exists($customView)) {
+                return view($customView, $data)->render();
+                }
+            }
+
+            // Essayer avec le chemin complet
+            $fullPath = base_path('packages/webkernel/src/Core/Resources/Views/' . str_replace('webkernel::', '', $viewName) . '.blade.php');
+            if (file_exists($fullPath)) {
+                return view($viewName, $data)->render();
+            }
+
+            Log::warning("RenderHook view not found: {$viewName}");
+            return '<!-- RenderHook view not found: ' . $viewName . ' -->';
 
         } catch (Throwable $e) {
             Log::error("Error rendering renderHook view '{$viewName}': " . $e->getMessage());
-            return '';
+            return '<!-- Error rendering view: ' . $e->getMessage() . ' -->';
         }
     }
 }

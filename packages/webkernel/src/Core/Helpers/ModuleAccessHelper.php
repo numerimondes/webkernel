@@ -3,7 +3,8 @@
 namespace Webkernel\Core\Helpers;
 
 use App\Models\User;
-use Webkernel\Services\Panels\PanelsInfoCollector;
+use Webkernel\Core\Services\PanelsInfoCollector;
+use Webkernel\Core\Services\PanelAccessService;
 
 class ModuleAccessHelper
 {
@@ -15,6 +16,7 @@ class ModuleAccessHelper
     {
         $allPanels = PanelsInfoCollector::getAllPanelsInfo();
         $accessibleModules = [];
+        $accessService = new PanelAccessService();
         
         foreach ($allPanels as $namespace => $namespaceData) {
             $accessibleModules[$namespace] = [
@@ -32,7 +34,7 @@ class ModuleAccessHelper
                 // Vérifier les panels au niveau module
                 if (isset($moduleData['panels'])) {
                     foreach ($moduleData['panels'] as $panel) {
-                        if (self::canAccessPanel($user, $panel)) {
+                        if ($accessService->canAccessPanel($user, $panel)) {
                             $accessibleModules[$namespace]['modules'][$moduleName]['panels'][] = $panel;
                         }
                     }
@@ -47,7 +49,7 @@ class ModuleAccessHelper
                         ];
                         
                         foreach ($submoduleData['panels'] as $panel) {
-                            if (self::canAccessPanel($user, $panel)) {
+                            if ($accessService->canAccessPanel($user, $panel)) {
                                 $accessibleModules[$namespace]['modules'][$moduleName]['submodules'][$submoduleName]['panels'][] = $panel;
                             }
                         }
@@ -66,14 +68,15 @@ class ModuleAccessHelper
     {
         $panelId = $panel['id'] ?? 'unknown';
         $isRestricted = $panel['restricted'] ?? false;
+        $accessService = new PanelAccessService();
         
         // Si le panel est public, accès autorisé
         if (!$isRestricted) {
             return true;
         }
         
-        // Si le panel est restricted, vérifier les accès utilisateur
-        return $user->canAccessPanel($panelId);
+        // Si le panel est restricted, VÉRIFIER OBLIGATOIREMENT la whitelist user_panels
+        return $accessService->canAccessPanel($user, $panelId);
     }
     
     /**

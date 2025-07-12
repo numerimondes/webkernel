@@ -1,5 +1,7 @@
 <?php
 
+// packages/webkernel/src/Core/Helpers/helpers.php
+
 $basePath = dirname(__DIR__, 4);
 
 $criticalFiles = [
