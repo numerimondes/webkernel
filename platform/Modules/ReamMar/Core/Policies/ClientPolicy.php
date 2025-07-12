@@ -1,5 +1,4 @@
 <?php
-
 namespace Numerimondes\Modules\ReamMar\Core\Policies;
 
 use App\Models\User;
@@ -44,6 +43,14 @@ class ClientPolicy
      * Determine whether the user can delete the model.
      */
     public function delete(User $user, Client $client): bool
+    {
+        return true;
+    }
+
+    /**
+     * Determine whether the user can delete any models.
+     */
+    public function deleteAny(User $user): bool
     {
         return true;
     }

@@ -1,14 +1,16 @@
 @php
+    $show_this_badge = true; // Mettez true pour afficher, false pour masquer
+
     $dropdownLinks = [
         [
             'href' => '#',
             'icon' => 'heroicon-m-book-open',
-            'label' => lang( 'documentation'),
+            'label' => lang('documentation'),
         ],
         [
             'href' => '#',
             'icon' => 'heroicon-m-chat-bubble-left-right',
-            'label' => lang( 'contact_support'),
+            'label' => lang('contact_support'),
         ],
         [
             'href' => '#',
@@ -21,8 +23,12 @@
             'label' => lang('report_bug'),
         ],
     ];
+    
+    // Variables nécessaires depuis le parent
+    $dropdownPlacement = $dropdownPlacement ?? 'top-end';
 @endphp
 
+@if(isset($show_this_badge) && $show_this_badge)
 <x-filament::dropdown :placement="$dropdownPlacement">
     <x-slot name="trigger">
         <button type="button" class="universal-help-ui-button"
@@ -43,7 +49,7 @@
                 height: 32px;
                 transition: all 0.2s ease;
             ">
-            <x-filament::icon icon="heroicon-m-question-mark-circle" class="help-icon w-4 h-4" />
+            <x-filament::icon icon="heroicon-o-chevron-up-down" class="help-icon w-4 h-4" />
         </button>
     </x-slot>
 
@@ -56,3 +62,4 @@
         @endforeach
     </x-filament::dropdown.list>
 </x-filament::dropdown>
+@endif 

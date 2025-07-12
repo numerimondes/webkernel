@@ -1,5 +1,6 @@
 <?php
 namespace Numerimondes\Modules\ReamMar\Core\Providers\Filament;
+
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
@@ -21,10 +22,9 @@ use Filament\Facades\Filament;
 
 class MarPanelProvider extends PanelProvider
 {
-
     public function panel(Panel $panel): Panel
     {
-        self::$panelInstance = $panel
+        return $panel
             ->id('mar')
             ->path('mar')
             ->colors([
@@ -37,7 +37,6 @@ class MarPanelProvider extends PanelProvider
             ])
             ->resources([ClientResource::class,])
             ->discoverWidgets(in: base_path('platform/Modules/ReamMar/Core/Filament/Widgets'), for: 'Numerimondes\Filament\Mar\Widgets')
-            ->login()
             ->widgets([
                 AccountWidget::class,
                 FilamentInfoWidget::class,
@@ -56,20 +55,20 @@ class MarPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
-
-        return self::$panelInstance;
     }
-    private static $panelInstance;
+
     public static function webkernelPanelInfo(): array
     {
+        $panel = Filament::getPanel('mar');
+        
         return [
-            'id'           => (string) (self::$panelInstance?->getId() ?? 'mar'),
-            'path'         => (string) (self::$panelInstance?->getPath() ?? 'mar'),
-            'icon'         => (string) 'heroicon-o-rectangle-stack',
-            'description'  => (string) 'Module MAR pour la gestion des clients',
-            'url'          => (string) self::$panelInstance?->getUrl(),
-            'fontfamily'   => (string) self::$panelInstance?->getFontFamily(),
-            'fontprovider' => (string) self::$panelInstance?->getFontProvider(),
+            'id'           => $panel->getId(),
+            'path'         => $panel->getPath(),
+            'icon'         => 'heroicon-o-rectangle-stack',
+            'description'  => 'Module MAR pour la gestion des clients',
+            'url'          => $panel->getUrl(),
+            'fontfamily'   => $panel->getFontFamily(),
+            'fontprovider' => $panel->getFontProvider(),
         ];
     }
 }

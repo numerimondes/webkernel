@@ -37,6 +37,7 @@ class MigrationServiceProvider extends ServiceProvider
     {
         $paths = [
             base_path('packages/webkernel/src/Core/Database/Migrations'),
+            base_path('platform/Modules/ReamMar/Core/Database/migrations'),
         ];
 
         $autoloadNamespaces = $this->getAutoloadNamespaces();

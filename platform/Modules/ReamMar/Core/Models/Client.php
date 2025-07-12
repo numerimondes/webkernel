@@ -8,6 +8,8 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
+
+    protected $table = 'ream_mar_clients';
     use HasFactory;
     protected $fillable = [
         'civility',

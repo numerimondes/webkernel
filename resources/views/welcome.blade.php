@@ -56,6 +56,7 @@
 <p>{{ getActivePlatform() }}</p>
 {{ dd(\Webkernel\Services\Panels\PanelsInfoCollector::getAllPanelsInfo()) }}
                     <p class="mb-2 text-[#706f6c] dark:text-[#A1A09A]">Laravel has an incredibly rich ecosystem. <br>We suggest starting with the following.</p>
+                    {{ dd(\Webkernel\Services\Panels\PanelsInfoCollector::debugStructure()) }}
                     <ul class="flex flex-col mb-4 lg:mb-6">
                         <li class="flex items-center gap-4 py-2 relative before:border-l before:border-[#e3e3e0] dark:before:border-[#3E3E3A] before:top-1/2 before:bottom-0 before:left-[0.4rem] before:absolute">
                             <span class="relative py-1 bg-white dark:bg-[#161615]">

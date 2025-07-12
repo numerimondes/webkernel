@@ -98,5 +98,20 @@ class SystemPanelProvider extends PanelProvider
             ->authMiddleware([
                 Authenticate::class,
             ]);
+   
+        }
+        public static function webkernelPanelInfo(): array
+        {
+            $panel = Filament::getPanel('mar');
+            
+            return [
+                'id'           => $panel->getId(),
+                'path'         => $panel->getPath(),
+                'icon'         => 'heroicon-o-rectangle-stack',
+                'description'  => 'Module MAR pour la gestion des clients',
+                'url'          => $panel->getUrl(),
+                'fontfamily'   => $panel->getFontFamily(),
+                'fontprovider' => $panel->getFontProvider(),
+            ];
+        }
     }
-}

@@ -2,7 +2,6 @@
     $brand = corePlatformInfos('brandName');
     $logo = platformAbsoluteUrlAnyPrivatetoPublic(corePlatformInfos('logoLink'));
 
-
     $rtlLanguages = config('webkernel.translation.rtl_languages', []);
     $userLanguage = null;
     if (auth()->check()) {
@@ -33,8 +32,36 @@
     $poweredLinkBrand = "https://numerimondes.com";
     $brandLink = "Numerimondes";
 
+    // Configuration badge-help
+    $dropdownLinks = [
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-book-open',
+            'label' => lang('documentation'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-chat-bubble-left-right',
+            'label' => lang('contact_support'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-information-circle',
+            'label' => lang('faq'),
+        ],
+        [
+            'href' => '#',
+            'icon' => 'heroicon-m-bug-ant',
+            'label' => lang('report_bug'),
+        ],
+    ];
 
-        // exclude : fi-sidebar-close-overlay fixed inset-0 z-30 bg-gray-950/50 transition duration-500 dark:bg-gray-950/75 lg:hidden
+    // Configuration badge-white-label
+    $text_font_weight = '900';
+    $spacing_between_elements = '8px';
+
+    // Vrai autoload des parts par ordre numérique
+    $parts = autoload_badge_parts();
 @endphp
 
 <style>
@@ -123,11 +150,38 @@
         background: rgba(255, 255, 255, 0.25) !important;
         transform: scale(1.05);
     }
+
+    .module-selector-ui-button {
+        color: rgb(31, 41, 55) !important;
+        border: 1px solid rgba(31, 41, 55, 0.2) !important;
+    }
+    .dark .module-selector-ui-button {
+        color: rgb(255, 255, 255) !important;
+        border: 1px solid rgba(255, 255, 255, 0.2) !important;
+    }
+
+    .module-selector-ui-dropdown .fi-dropdown-panel {
+        z-index: 10000 !important;
+    }
+    
+    .module-selector-ui-button:hover {
+        background: rgba(255, 255, 255, 0.25) !important;
+        transform: scale(1.05);
+    }
+    
+    .dark .module-selector-ui-button:hover {
+        background: rgba(255, 255, 255, 0.1) !important;
+    }
 </style>
 
 <div id="{{ $id }}" class="credit-badge-ui-container" style="{{ $positionSide }} position: fixed; bottom: 10px; display: flex; align-items: center; gap: 8px; z-index: 9999;">
-    @include('webkernel::components.webkernel.ui.organism.universal-badge.parts.badge-white-label')
+    
+    @foreach($parts as $partName)
+        @include('webkernel::components.webkernel.ui.organism.universal-badge.parts.' . $partName)
+    @endforeach
+
 </div>
+<!-- DEBUG: Badges container end -->
 
 <script>
 (function() {

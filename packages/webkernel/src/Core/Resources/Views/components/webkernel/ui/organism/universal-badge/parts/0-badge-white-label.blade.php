@@ -1,8 +1,21 @@
-<?php
-$text_font_weight = '900'; // ou 'normal', '600', '700', '800', '900'
-$spacing_between_elements = '8px'; // espacement entre image et texte
-?>
+@php
+    $show_this_badge = false;
+    
+    $text_font_weight = '900';
+    $spacing_between_elements = '8px';
+    
+    // Variables nécessaires depuis le parent
+    $brand = $brand ?? corePlatformInfos('brandName');
+    $logo = $logo ?? platformAbsoluteUrlAnyPrivatetoPublic(corePlatformInfos('logoLink'));
+    $poweredByText = $poweredByText ?? lang('powered_by');
+    $poweredLinkBrand = $poweredLinkBrand ?? "https://numerimondes.com";
+    $brandLink = $brandLink ?? "Numerimondes";
+    $BADGE_SENSITIVITY = $BADGE_SENSITIVITY ?? 'nothing';
+    $isRTL = $isRTL ?? false;
+@endphp
 
+
+@if(isset($show_this_badge) && $show_this_badge)
 <div class="credit-badge-ui-main group"
     style="
         padding: 6px 12px; font-size: 14px;
@@ -69,4 +82,5 @@ $spacing_between_elements = '8px'; // espacement entre image et texte
         @endif
     @endif
 </div>
-@include('webkernel::components.webkernel.ui.organism.universal-badge.parts.badge-help')
+@else
+@endif

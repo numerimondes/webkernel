@@ -1,11 +1,9 @@
 <?php
-
 namespace Webkernel\ServiceProviders;
 
 use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\File;
 use Filament\Schemas\Components\Grid;
-
 // Sub-providers
 use Illuminate\Support\ServiceProvider;
 use Filament\Schemas\Components\Section;
@@ -17,14 +15,12 @@ use Webkernel\Core\Services\PanelsAccessManager;
 use Webkernel\Core\Providers\SystemPanelProvider;
 use Webkernel\Core\Services\ModuleDetectionService;
 use Webkernel\ServiceProviders\AuthServiceProvider;
-
 // Filament customizations
 use Webkernel\ServiceProviders\ViewServiceProvider;
 use Webkernel\ServiceProviders\BladeServiceProvider;
 use Webkernel\ServiceProviders\RouteServiceProvider;
 use Webkernel\ServiceProviders\ConfigServiceProvider;
 use Webkernel\ServiceProviders\PanelsServiceProvider;
-
 // Webkernel
 use Webkernel\ServiceProviders\WidgetServiceProvider;
 use Webkernel\ServiceProviders\CommandServiceProvider;
@@ -42,7 +38,7 @@ class CoreServiceProvider extends ServiceProvider
         parent::__construct($app);
     }
 
-        public function register(): void
+    public function register(): void
     {
         $this->registerIfExists([
             BladeServiceProvider::class,
@@ -67,8 +63,16 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerIfExists(array $providers): void
     {
         foreach ($providers as $provider) {
-            if (class_exists($provider)) {
-                $this->app->register($provider);
+            try {
+                if (class_exists($provider)) {
+                    $this->app->register($provider);
+                }
+            } catch (\Error $e) {
+                // Ignorer les erreurs de classe non trouvée (include/require failed)
+                continue;
+            } catch (\Exception $e) {
+                // Ignorer les autres exceptions potentielles
+                continue;
             }
         }
     }
@@ -86,11 +90,7 @@ class CoreServiceProvider extends ServiceProvider
         // Charger les migrations du module
         $this->loadMigrationsFrom(__DIR__ . '/../database/migrations');
 
-        // Enregistrer le hook pour le sélecteur de modules
-        FilamentView::registerRenderHook(
-            PanelsRenderHook::USER_MENU_PROFILE_AFTER,
-            fn() => $this->renderModuleSelector()
-        );
+       
     }
 
     /**
@@ -99,13 +99,17 @@ class CoreServiceProvider extends ServiceProvider
     protected function registerPlatformProviders(): void
     {
         $autoloadNamespaces = $this->getAutoloadNamespaces();
+        
         foreach ($autoloadNamespaces as $namespace => $path) {
             $providerPath = $path . '/Providers';
+            
             if (File::isDirectory($providerPath)) {
                 $files = File::files($providerPath);
+                
                 foreach ($files as $file) {
                     $className = pathinfo($file->getFilename(), PATHINFO_FILENAME);
                     $providerClass = $namespace . 'Providers\\' . $className;
+                    
                     if (class_exists($providerClass) && is_subclass_of($providerClass, ServiceProvider::class)) {
                         $this->app->register($providerClass);
                     }
@@ -135,22 +139,4 @@ class CoreServiceProvider extends ServiceProvider
         return $namespaces;
     }
 
-    private function renderModuleSelector(): string
-    {
-        if (!auth()->check()) {
-            return '';
-        }
-        
-        $moduleService = app(ModuleDetectionService::class);
-        $panelsManager = app(PanelsAccessManager::class);
-        
-        $availableModules = $moduleService->getAvailableModules();
-        $userPanels = $panelsManager->getUserPanels(auth()->id());
-        
-        return view('webkernel::components.webkernel.ui.molecules.multi-modules-selector', [
-            'modules' => $availableModules,
-            'userPanels' => $userPanels,
-            'currentPanel' => request()->route('panel') ?? 'system'
-        ])->render();
-    }
 }
