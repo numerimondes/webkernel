@@ -412,4 +412,113 @@ class PanelsInfoCollector
         
         return false;
     }
+
+    /**
+     * Utilise ModuleAccessHelper::getAllModules pour lister tous les modules réels,
+     * puis scanne Filament/Resources pour chaque module/sous-module et retourne les infos resources/policies/actions.
+     * @return array
+     */
+    public static function getAllPanelsResourcesPolicies(): array
+    {
+        $result = [];
+        $modules = \Webkernel\Core\Helpers\Modules\ModuleAccessHelper::getAllModules();
+        foreach ($modules as $namespace => $namespaceData) {
+            foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
+                // Scan panels au niveau module
+                $modulePath = self::guessModulePath($namespace, $moduleName);
+                if ($modulePath) {
+                    $resources = self::scanResourcesInPath($modulePath);
+                    if ($resources) {
+                        $result[$namespace . '/' . $moduleName] = $resources;
+                    }
+                }
+                // Scan panels dans les sous-modules
+                if (isset($moduleData['submodules'])) {
+                    foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
+                        $submodulePath = self::guessModulePath($namespace, $moduleName, $submoduleName);
+                        if ($submodulePath) {
+                            $resources = self::scanResourcesInPath($submodulePath);
+                            if ($resources) {
+                                $result[$namespace . '/' . $moduleName . '/' . $submoduleName] = $resources;
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        return $result;
+    }
+
+    /**
+     * Devine le chemin du module ou sous-module à partir du namespace et des noms
+     */
+    private static function guessModulePath($namespace, $moduleName, $submoduleName = null)
+    {
+        // Heuristique simple pour platform/Modules et packages/webkernel/src
+        $base1 = base_path('platform/Modules/' . $moduleName . ($submoduleName ? '/' . $submoduleName : ''));
+        $base2 = base_path('packages/webkernel/src/' . $moduleName . ($submoduleName ? '/' . $submoduleName : ''));
+        if (is_dir($base1)) return $base1;
+        if (is_dir($base2)) return $base2;
+        return null;
+    }
+
+    /**
+     * Scanne le dossier Filament/Resources d'un module et retourne les infos sur les resources
+     */
+    private static function scanResourcesInPath($modulePath)
+    {
+        $resourcesDir = $modulePath . '/Filament/Resources';
+        if (!is_dir($resourcesDir)) return [];
+        $rii = new \RecursiveIteratorIterator(new \RecursiveDirectoryIterator($resourcesDir));
+        $found = [];
+        foreach ($rii as $file) {
+            if ($file->isDir() || $file->getExtension() !== 'php') continue;
+            $relative = ltrim(str_replace($modulePath . '/', '', $file->getPathname()), DIRECTORY_SEPARATOR);
+            $classNamespace = str_replace([DIRECTORY_SEPARATOR, '.php'], ['\\', ''], $relative);
+            // Namespace heuristique : Numerimondes\Modules\ReamMar\Core\Filament\Resources\...
+            $parts = explode('/', str_replace(base_path() . '/', '', $modulePath));
+            $namespacePrefix = str_replace('/', '\\', $parts[0] ?? '') . (isset($parts[1]) ? '\\' . $parts[1] : '') . (isset($parts[2]) ? '\\' . $parts[2] : '') . (isset($parts[3]) ? '\\' . $parts[3] : '');
+            $fullClassName = $namespacePrefix . '\\Filament\\Resources\\' . str_replace('/', '\\', substr($relative, 0, -4));
+            $fullClassName = str_replace('\\\\', '\\', $fullClassName);
+            if (!class_exists($fullClassName)) continue;
+            if (!is_subclass_of($fullClassName, \Filament\Resources\Resource::class)) continue;
+            $model = null;
+            $policy = null;
+            $actions = [];
+            if (property_exists($fullClassName, 'model') || method_exists($fullClassName, 'getModel')) {
+                $model = method_exists($fullClassName, 'getModel')
+                    ? $fullClassName::getModel()
+                    : (property_exists($fullClassName, 'model') ? $fullClassName::$model : null);
+            }
+            if ($model && class_exists($model)) {
+                $modelParts = explode('\\', $model);
+                $modelName = array_pop($modelParts);
+                $policyGuess = implode('\\', array_merge($modelParts, ['Policies', $modelName . 'Policy']));
+                if (class_exists($policyGuess)) {
+                    $policy = $policyGuess;
+                } else {
+                    $policyGuess = 'App\\Policies\\' . $modelName . 'Policy';
+                    if (class_exists($policyGuess)) {
+                        $policy = $policyGuess;
+                    }
+                }
+            }
+            if ($policy && class_exists($policy)) {
+                $reflection = new \ReflectionClass($policy);
+                foreach ($reflection->getMethods(\ReflectionMethod::IS_PUBLIC) as $method) {
+                    if ($method->class === $policy && !$method->isStatic() && !$method->isConstructor()) {
+                        $actions[] = $method->getName();
+                    }
+                }
+            }
+            $found[] = [
+                'resource' => $fullClassName,
+                'model' => $model,
+                'policy' => $policy,
+                'actions' => $actions,
+            ];
+        }
+        return $found;
+    }
+
 } 
