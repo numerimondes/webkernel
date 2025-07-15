@@ -2,19 +2,21 @@
 
 namespace Webkernel\Core\Traits;
 
-use Exception;
 use Log;
+use Closure;
+use Exception;
+use Illuminate\Http\Request;
 use Webkernel\Core\Models\Language;
-use Webkernel\Core\Models\PlatformOwner;
-use Webkernel\Core\Models\UserPanels;
+use Illuminate\Support\Facades\Auth;
+use Webkernel\Core\Models\RBAC\UserPanels;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
+use Webkernel\Core\Traits\HasWebkernelPermissions;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Illuminate\Database\Eloquent\Relations\BelongsTo;
-use Closure;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 
 trait UserExtensions
 {
+    use HasWebkernelPermissions;
     protected $extraFillable = [
         'username', 'mobile', 'whatsapp', 'user_lang', 'timezone',
         'forceChangePassword', 'is_active', 'is_banned', 'created_by',

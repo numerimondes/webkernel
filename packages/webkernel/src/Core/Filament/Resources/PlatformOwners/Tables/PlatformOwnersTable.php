@@ -11,7 +11,7 @@ use Filament\Actions\BulkActionGroup;
 use Filament\Actions\DeleteBulkAction;
 use Filament\Tables\Columns\IconColumn;
 use Filament\Tables\Columns\TextColumn;
-use Webkernel\Core\Models\PlatformOwner;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
 use Filament\Tables\Columns\TextColumn\TextColumnSize;
 use Webkernel\Core\Filament\Resources\PlatformOwners\Schemas\PlatformOwnerForm;
 

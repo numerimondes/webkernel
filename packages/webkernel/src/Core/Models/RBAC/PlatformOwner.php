@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Models;
+namespace Webkernel\Core\Models\RBAC;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
@@ -10,6 +10,7 @@ class PlatformOwner extends Model
 {
     use HasFactory;
 
+    protected $table = 'rbac_platform_owners';
     protected $fillable = [
         'user_id',
         'panel_id',

@@ -1,8 +1,8 @@
 <?php
 namespace Webkernel\Core\Services;
 
-use Webkernel\Core\Models\PlatformOwner;
-use Webkernel\Core\Models\UserPanels;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
+use Webkernel\Core\Models\RBAC\UserPanels;
 use Webkernel\Core\Services\PanelsInfoCollector;
 use Illuminate\Contracts\Auth\Authenticatable;
 

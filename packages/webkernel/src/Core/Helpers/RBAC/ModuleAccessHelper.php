@@ -1,4 +1,5 @@
 <?php
+
 namespace Webkernel\Core\Helpers\Modules;
 use App\Models\User;
 use Webkernel\Core\Services\PanelsInfoCollector;
@@ -10,10 +11,6 @@ use Exception;
 
 class ModuleAccessHelper
 {
-    /**
-     * Retourne la liste finale des modules et panels accessibles à l'utilisateur
-     * Combine les panels publics + les panels assignés à l'utilisateur
-     */
     public static function getAccessibleModules(User $user): array
     {
         $allPanels = PanelsInfoCollector::getAllPanelsInfo();
@@ -33,7 +30,6 @@ class ModuleAccessHelper
                     'submodules' => []
                 ];
                 
-                // Vérifier les panels au niveau module
                 if (isset($moduleData['panels'])) {
                     foreach ($moduleData['panels'] as $panel) {
                         if ($accessService->canAccessPanel($user, $panel)) {
@@ -42,7 +38,6 @@ class ModuleAccessHelper
                     }
                 }
                 
-                // Vérifier les panels dans les sous-modules
                 if (isset($moduleData['submodules'])) {
                     foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
                         $accessibleModules[$namespace]['modules'][$moduleName]['submodules'][$submoduleName] = [
@@ -63,10 +58,6 @@ class ModuleAccessHelper
         return $accessibleModules;
     }
     
-    /**
-     * Summary of getAllModules
-     * @return array<array|array{modules: array, name: mixed>}
-     */
     public static function getAllModules(): array
     {
         $allPanels = PanelsInfoCollector::getAllPanelsInfo();
@@ -85,14 +76,12 @@ class ModuleAccessHelper
                     'submodules' => []
                 ];
                 
-                // Ajouter tous les panels au niveau module
                 if (isset($moduleData['panels'])) {
                     foreach ($moduleData['panels'] as $panel) {
                         $allModules[$namespace]['modules'][$moduleName]['panels'][] = $panel;
                     }
                 }
                 
-                // Ajouter tous les panels dans les sous-modules
                 if (isset($moduleData['submodules'])) {
                     foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
                         $allModules[$namespace]['modules'][$moduleName]['submodules'][$submoduleName] = [
@@ -111,27 +100,19 @@ class ModuleAccessHelper
         return $allModules;
     }
     
-    /**
-     * Vérifie si l'utilisateur peut accéder à un panel spécifique
-     */
     private static function canAccessPanel(User $user, array $panel): bool
     {
         $panelId = $panel['id'] ?? 'unknown';
         $isRestricted = $panel['restricted'] ?? false;
         $accessService = new PanelAccessService();
         
-        // Si le panel est public, accès autorisé
         if (!$isRestricted) {
             return true;
         }
         
-        // Si le panel est restricted, VÉRIFIER OBLIGATOIREMENT la whitelist user_panels
         return $accessService->canAccessPanel($user, $panelId);
     }
     
-    /**
-     * Retourne une liste plate des panels accessibles
-     */
     public static function getAccessiblePanelsList(User $user): array
     {
         $accessibleModules = self::getAccessibleModules($user);
@@ -139,14 +120,12 @@ class ModuleAccessHelper
         
         foreach ($accessibleModules as $namespace => $namespaceData) {
             foreach ($namespaceData['modules'] as $moduleName => $moduleData) {
-                // Panels au niveau module
                 if (isset($moduleData['panels'])) {
                     foreach ($moduleData['panels'] as $panel) {
                         $panels[] = $panel;
                     }
                 }
                 
-                // Panels dans les sous-modules
                 if (isset($moduleData['submodules'])) {
                     foreach ($moduleData['submodules'] as $submoduleName => $submoduleData) {
                         foreach ($submoduleData['panels'] as $panel) {
@@ -177,7 +156,6 @@ class ModuleAccessHelper
                     'resources' => []
                 ];
                 
-                // Utiliser Filament pour récupérer les resources enregistrées
                 $resources = self::getRegisteredFilamentResources($namespace, $moduleName);
                 
                 foreach ($resources as $resourceClass) {
@@ -197,14 +175,12 @@ class ModuleAccessHelper
         $resources = [];
         
         try {
-            // Récupérer tous les panels Filament
             $panels = \Filament\Facades\Filament::getPanels();
             
             foreach ($panels as $panel) {
                 $panelResources = $panel->getResources();
                 
                 foreach ($panelResources as $resourceClass) {
-                    // Vérifier si la resource appartient au module
                     if (str_contains($resourceClass, $namespace) && str_contains($resourceClass, $moduleName)) {
                         $resources[] = $resourceClass;
                     }
@@ -225,14 +201,12 @@ class ModuleAccessHelper
                 return null;
             }
             
-            // Récupérer le modèle via getModel() - méthode standard Filament
             $model = $resourceClass::getModel();
             
             if (!$model || !class_exists($model)) {
                 return null;
             }
             
-            // Analyser la policy
             $policyInfo = self::analyzePolicyForModel($model);
             
             return [
@@ -249,11 +223,7 @@ class ModuleAccessHelper
     private static function analyzePolicyForModel(string $modelClass): ?array
     {
         try {
-            // Récupérer la policy depuis le Gate
-            $gate = Gate::getFacadeRoot();
-            $policies = $gate->policies();
-            
-            $policyClass = $policies[$modelClass] ?? null;
+            $policyClass = self::findPolicyClass($modelClass);
             
             if (!$policyClass || !class_exists($policyClass)) {
                 return null;
@@ -267,8 +237,8 @@ class ModuleAccessHelper
             foreach ($methods as $method) {
                 $methodName = $method->getName();
                 
-                // Ignorer les méthodes système
-                if (str_starts_with($methodName, '__') || $method->getDeclaringClass()->getName() !== $policyClass) {
+                if (str_starts_with($methodName, '__') || 
+                    $method->getDeclaringClass()->getName() !== $policyClass) {
                     continue;
                 }
                 
@@ -292,6 +262,53 @@ class ModuleAccessHelper
         } catch (Exception $e) {
             return null;
         }
+    }
+    
+    private static function findPolicyClass(string $modelClass): ?string
+    {
+        $gate = Gate::getFacadeRoot();
+        $policies = $gate->policies();
+        
+        $registeredPolicy = $policies[$modelClass] ?? null;
+        if ($registeredPolicy && class_exists($registeredPolicy)) {
+            return $registeredPolicy;
+        }
+        
+        $modelBaseName = class_basename($modelClass);
+        $policyName = $modelBaseName . 'Policy';
+        
+        $possiblePaths = self::generatePolicyPaths($modelClass, $policyName);
+        
+        foreach ($possiblePaths as $path) {
+            if (class_exists($path)) {
+                return $path;
+            }
+        }
+        
+        return null;
+    }
+    
+    private static function generatePolicyPaths(string $modelClass, string $policyName): array
+    {
+        $paths = [];
+        $parts = explode('\\', $modelClass);
+        
+        $paths[] = str_replace('Models', 'Policies', dirname($modelClass)) . '\\' . $policyName;
+        $paths[] = str_replace('Core\\Models', 'Core\\Policies', dirname($modelClass)) . '\\' . $policyName;
+        
+        $namespaceIndex = 0;
+        $moduleIndex = array_search('Modules', $parts);
+        
+        if ($moduleIndex !== false) {
+            $namespace = $parts[$namespaceIndex];
+            $module = $parts[$moduleIndex + 1];
+            
+            $paths[] = "Platform\\Modules\\{$module}\\Core\\Policies\\{$policyName}";
+            $paths[] = "{$namespace}\\Modules\\{$module}\\Core\\Policies\\{$policyName}";
+            $paths[] = "{$namespace}\\Modules\\{$module}\\Policies\\{$policyName}";
+        }
+        
+        return array_unique($paths);
     }
     
     public static function getModuleResourcesWithPolicies(string $namespace, string $moduleName): array

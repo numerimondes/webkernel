@@ -36,7 +36,7 @@ use Filament\Forms\Components\CheckboxList;
 use Filament\Forms\Components\DateTimePicker;
 use Filament\Actions\Action;
 use Filament\Forms\Components\KeyValue;
-use Webkernel\Core\Models\UserPanels;
+use Webkernel\Core\Models\RBAC\UserPanels;
 use Webkernel\Core\Services\PanelsInfoCollector;
 
 class UserResource extends Resource
@@ -531,13 +531,13 @@ protected static ?string $recordTitleAttribute = 'name';
             ->action(function (array $data): void {
                 try {
                     // Supprimer tous les platform owners existants
-                    \Webkernel\Core\Models\PlatformOwner::truncate();
+                    \Webkernel\Core\Models\RBAC\PlatformOwner::truncate();
                     
                     // Ajouter les nouveaux
                     if (isset($data['platform_owners'])) {
                         foreach ($data['platform_owners'] as $owner) {
                             if (isset($owner['user_id'])) {
-                                \Webkernel\Core\Models\PlatformOwner::create([
+                                \Webkernel\Core\Models\RBAC\PlatformOwner::create([
                                     'user_id' => $owner['user_id'],
                                     'panel_id' => 'all', // Pour super admin
                                     'is_eternal_owner' => $owner['is_eternal_owner'] ?? true,

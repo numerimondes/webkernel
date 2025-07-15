@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Models;
+namespace Webkernel\Core\Models\RBAC;
 
 use App\Models\User;
 use Illuminate\Database\Eloquent\Model;
@@ -11,6 +11,7 @@ class UserPanels extends Model
 {
     use HasFactory;
 
+    protected $table = 'rbac_user_panels';
     protected $fillable = [
         'user_id',
         'panels'

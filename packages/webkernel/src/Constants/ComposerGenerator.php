@@ -31,8 +31,7 @@ final class ComposerGenerator
             'php' => '^8.2',
             'filament/filament' => '^4.0@beta',
             'laravel/framework' => '^12.0',
-            'laravel/tinker' => '^2.10.1',
-            'spatie/laravel-permission' => '^6.0'
+            'laravel/tinker' => '^2.10.1'
         ],
         'require-dev' => [
             'barryvdh/laravel-debugbar' => '*',
@@ -67,7 +66,6 @@ final class ComposerGenerator
         'scripts' => [
             'pre-autoload-dump' => [
                 '@php packages/webkernel/src/Constants/ConstantsGenerator.php',
-                '@php artisan vendor:publish --provider="Spatie\Permission\PermissionServiceProvider"',
                 '@php artisan migrate'
             ],
             'post-autoload-dump' => [

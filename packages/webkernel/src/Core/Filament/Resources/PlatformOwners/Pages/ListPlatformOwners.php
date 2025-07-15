@@ -5,7 +5,7 @@ namespace Webkernel\Core\Filament\Resources\PlatformOwners\Pages;
 use App\Models\User;
 use Filament\Actions\Action;
 use Filament\Actions\CreateAction;
-use Webkernel\Core\Models\PlatformOwner;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
 use Filament\Resources\Pages\ListRecords;
 use Webkernel\Core\Filament\Resources\PlatformOwners\PlatformOwnerResource;
 use Webkernel\Core\Filament\Resources\PlatformOwners\Schemas\PlatformOwnerForm;

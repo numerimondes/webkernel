@@ -10,7 +10,7 @@ use Filament\Actions\Action;
 use Filament\Forms\Components\Select;
 use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\DateTimePicker;
-use Webkernel\Core\Models\PlatformOwner;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
 use Webkernel\Core\Filament\Resources\PlatformOwners\Pages;
 use Webkernel\Core\Filament\Resources\PlatformOwners\Schemas\PlatformOwnerForm;
 use Webkernel\Core\Filament\Resources\PlatformOwners\Tables\PlatformOwnersTable;

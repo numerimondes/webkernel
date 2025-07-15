@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('platform_owners', function (Blueprint $table) {
+        Schema::create('rbac_platform_owners', function (Blueprint $table) {
             $table->id();
             $table->foreignId('user_id')->constrained()->onDelete('cascade');
             $table->string('panel_id');
@@ -29,6 +29,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('platform_owners');
+        Schema::dropIfExists('rbac_platform_owners');
     }
 }; 
