@@ -316,7 +316,14 @@ protected static ?string $recordTitleAttribute = 'name';
 
     public static function getNavigationBadge(): ?string
     {
-        return static::getModel()::count();
+        return cache()->remember('user_count', 30, function () {
+            return static::getModel()::count();
+        });
+    }
+
+    public static function getNavigationBadgePollingInterval(): ?string
+    {
+        return '30s';
     }
 
     public static function getAvailableModulesTree(): array

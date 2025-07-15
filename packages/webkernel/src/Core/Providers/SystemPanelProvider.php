@@ -32,6 +32,8 @@ class SystemPanelProvider extends PanelProvider
             ->path('system')
             ->login()
             ->registration()
+            ->brandLogo(platformAbsoluteUrlAnyPrivatetoPublic(getCurrentApplication('logo')))
+            ->brandLogoHeight('2.5rem')
             ->databaseNotifications()
 
             ->profile(EditProfile::class, false)

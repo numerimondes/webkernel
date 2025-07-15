@@ -2,8 +2,8 @@
 
 namespace Numerimondes\Modules\ReamMar\Core\Filament\Resources\Clients\Pages;
 
-use Numerimondes\Modules\ReamMar\Core\Filament\Resources\Clients\ClientResource;
 use Filament\Resources\Pages\CreateRecord;
+use Numerimondes\Modules\ReamMar\Core\Filament\Resources\Clients\ClientResource;
 
 class CreateClient extends CreateRecord
 {

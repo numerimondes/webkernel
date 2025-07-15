@@ -6,7 +6,7 @@ $showBanner = true;
      style="display: none; background-color: var(--primary-900); color: white; text-align: center; padding: 6px 16px; position: relative;">
     <p class="fi-text-color-950"
        style="font-size: 0.875rem; font-weight: 600; margin: 0; padding: 3px 15px;">
-        Bienvenue dans le panneau system de {{ corePlatformInfos('brandName')}} v.{{ corePlatformInfos('version')}}.
+        Bienvenue dans le panneau system de  {{ getCurrentApplication('name') }}{{ getCurrentApplication('version') }}.
         Ce panneau est dédié aux propriétaires de l'application et ses gestionnaires.
     </p>
     <button

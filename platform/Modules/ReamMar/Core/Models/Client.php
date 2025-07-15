@@ -4,66 +4,81 @@ namespace Numerimondes\Modules\ReamMar\Core\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Client extends Model
 {
+    use HasFactory;
 
     protected $table = 'ream_mar_clients';
-    use HasFactory;
+
     protected $fillable = [
         'civility',
         'first_name',
         'last_name',
-        'folder_name',
-        'fiscal_address',
-        'fiscal_postal_code',
-        'fiscal_city',
-        'fiscal_country',
-        'phones',
         'email',
-        'email_verified_at',
-        'password',
-        'can_login',
-        'household_status',
-        'usage_type',
+        'phone',
+        'mobile',
+        'address',
+        'postal_code',
+        'city',
+        'country',
+        'notes',
+        'is_active',
+        'source',
+        'created_by',
+        'updated_by',
     ];
 
     protected $casts = [
-        'phones' => 'array',
-        'email_verified_at' => 'datetime',
-        'can_login' => 'boolean',
+        'is_active' => 'boolean',
+        'created_at' => 'datetime',
+        'updated_at' => 'datetime',
     ];
 
+
+
+    // Accesseurs
+    public function getFullNameAttribute()
+    {
+        return trim($this->first_name . ' ' . $this->last_name);
+    }
+
+    public function getFullAddressAttribute()
+    {
+        return trim($this->address . ', ' . $this->postal_code . ' ' . $this->city);
+    }
+
     // Relations
-
-    public function projectAddresses(): HasMany
+    public function missions()
     {
-        return $this->hasMany(ProjectAddress::class);
+        return $this->hasMany(Mission::class);
     }
 
-    public function contracts(): HasMany
+    public function createdBy()
     {
-        return $this->hasMany(Contract::class);
+        return $this->belongsTo(\App\Models\User::class, 'created_by');
     }
 
-    public function mandates(): HasMany
+    public function updatedBy()
     {
-        return $this->hasMany(Mandate::class);
+        return $this->belongsTo(\App\Models\User::class, 'updated_by');
     }
 
-    public function externalAgents(): HasMany
+    // Scopes
+    public function scopeActive($query)
     {
-        return $this->hasMany(ExternalAgent::class);
+        return $query->where('is_active', true);
     }
 
-    public function clientActions(): HasMany
+    public function scopeBySource($query, $source)
     {
-        return $this->hasMany(ClientAction::class);
-    }
-
-    public function clientDocuments(): HasMany
-    {
-        return $this->hasMany(ClientDocument::class);
-    }
+        return $query->where('source', $source);
 }
+
+    public function scopeByCity($query, $city)
+    {
+        return $query->where('city', $city);
+    }
+
+
+} 

@@ -2,7 +2,7 @@
 
 // packages/webkernel/src/Helpers/helpers_platformsettings.php
 
-use Webkernel\Core\Models\PlatformSetting;
+// use Webkernel\Core\Models\PlatformSetting; // Temporarily disabled
 use Illuminate\Support\Facades\URL;
 use Illuminate\Support\Str;
 use Illuminate\Support\Facades\Route;

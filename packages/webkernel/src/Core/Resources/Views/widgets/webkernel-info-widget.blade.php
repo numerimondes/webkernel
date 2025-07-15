@@ -111,12 +111,14 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
 <x-filament-widgets::widget class="fi-filament-info-widget">
     <x-filament::section>
         <div class="fi-filament-info-widget-main">
-            <a href="https://numerimondes.com" rel="noopener noreferrer" target="_blank">
+            <a href=" {{ getCurrentApplication('url') }}" rel="noopener noreferrer" target="_blank">
                 <!-- Logo Numerimondes avec tailles adaptatives -->
                 <div class="fi-filament-info-widget-logo-container flex items-center justify-center overflow-hidden px-2" style="max-height: 59px; max-width: 100%; width: 100%;">
                     <span class="{{ $current_size['class'] }} numerimondes-logo"
                           style="font-family: 'Poppins', sans-serif; font-weight: 500; {{ $current_size['style'] }} white-space: nowrap; display: flex; align-items: baseline; color: currentColor;">
-                          Numerimondes
+                          
+                          {{ getCurrentApplication('name') }}
+
                     </span>
                 </div>
             </a>
@@ -127,14 +129,12 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
                 </span>
 
                 <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="version-hover-container" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap;">
-                    <span x-show="!hovered" class="font-bold" style="display: inline-block; min-width: 1rem; text-align: center;">F</span>
-                    <span x-show="hovered" style="display: inline-block;">&nbsp;Filament&nbsp;</span>
+                   
                     <span>{{ \Composer\InstalledVersions::getPrettyVersion('filament/filament') }}&nbsp;</span>
                 </span>
 
                 <span x-data="{ hovered: false }" @mouseenter="hovered = true" @mouseleave="hovered = false" class="version-hover-container" style="display: inline-flex; align-items: center; cursor: pointer; white-space: nowrap;">
-                    <span x-show="!hovered" class="font-bold" style="display: inline-block; min-width: 1rem; text-align: center;">L</span>
-                    <span x-show="hovered" style="display: inline-block;">&nbsp;Laravel&nbsp;</span>
+                    
                     <span>v{{ Illuminate\Foundation\Application::VERSION }}</span>
                 </span>
             </div>
@@ -144,7 +144,7 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
             
             <x-filament::link
                 color="gray"
-                href="https://numerimondes.com/docs"
+                href=" {{ getCurrentApplication('url') }}"
                 :icon="\Filament\Support\Icons\Heroicon::BookOpen"
                 icon-alias="panels::widgets.filament-info.open-documentation-button"
                 rel="noopener noreferrer"
@@ -157,7 +157,7 @@ $current_size = $logo_sizes[$adaptation_sys_logo];
 
             <x-filament::link
                 color="gray"
-                href="https://github.com/numerimondes"
+                href=" {{ getCurrentApplication('url') }}"
                 icon-alias="panels::widgets.filament-info.open-github-button"
                 rel="noopener noreferrer"
                 target="_blank"

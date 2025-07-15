@@ -20,68 +20,8 @@ namespace Webkernel\ServiceProviders;
 
 use Filament\Facades\Filament;
 use Filament\Resources\Resource;
-use Illuminate\Support\Colors\Color;
-use Filament\Http\Middleware\Authenticate;
-use Filament\Http\Middleware\DisableBladeIconComponents;
-use Filament\Http\Middleware\DispatchServingFilamentEvent;
-use Filament\Pages;
-use Filament\Widgets;
-use Filament\PanelProvider;
-use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Illuminate\Cookie\Middleware\EncryptCookies;
-use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
-use Illuminate\Routing\Middleware\SubstituteBindings;
-use Illuminate\Session\Middleware\AuthenticateSession;
-use Illuminate\Session\Middleware\StartSession;
-use Illuminate\View\Middleware\ShareErrorsFromSession;
+use Illuminate\Support\ServiceProvider;
 use Webkernel\Core\Http\Middleware\CheckUserAccess;
-
-abstract class BasePanelProvider extends PanelProvider
-{
-    abstract public function panel(\Filament\Panel $panel): \Filament\Panel;
-
-    public function register(): void
-    {
-        Filament::registerPanel(
-            $this->panel(Panel::make())
-                ->brandLogoHeight('3rem')
-                ->favicon(asset('favicon-32x32.png'))
-                ->colors([
-                    'primary' => Color::Blue,
-                    'gray' => Color::Slate,
-                ])
-                ->spa()
-                ->databaseNotifications()
-                ->databaseTransactions(false)
-                ->middleware([
-                    // Liste des middlewares HTTP
-                    EncryptCookies::class,
-                    AddQueuedCookiesToResponse::class,
-                    StartSession::class,
-                    AuthenticateSession::class,
-                    ShareErrorsFromSession::class,
-                    VerifyCsrfToken::class,
-                    SubstituteBindings::class,
-                    DisableBladeIconComponents::class,
-                    DispatchServingFilamentEvent::class,
-                    CheckUserAccess::class,
-                ])
-                ->authMiddleware([
-                    Authenticate::class,
-                ])
-                ->pages([
-                    Pages\Dashboard::class,
-                ])
-                ->widgets([
-                    Widgets\AccountWidget::class,
-                    Widgets\FilamentInfoWidget::class,
-                ])
-                ->globalSearchKeyBindings([
-                    'ctrl+k'
-                ])
-        );
-    }
-}
 
 class PanelsServiceProvider extends ServiceProvider
 {

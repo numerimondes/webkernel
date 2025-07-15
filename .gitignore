@@ -24,3 +24,4 @@ Homestead.yaml
 Thumbs.db
 storage/webkernel/backups/*
 storage/translation_backups/*
+platform/Modules/*

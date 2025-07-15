@@ -4,6 +4,7 @@ namespace Numerimondes\Modules\ReamMar\Core\Providers\Filament;
 use Filament\Panel;
 use Filament\PanelProvider;
 use Filament\Pages\Dashboard;
+use Filament\Facades\Filament;
 use Filament\Support\Colors\Color;
 use Filament\Widgets\AccountWidget;
 use Filament\Widgets\FilamentInfoWidget;
@@ -14,11 +15,10 @@ use Filament\Http\Middleware\AuthenticateSession;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
+use Webkernel\Core\Filament\Widgets\WebkernelInfoWidget;
 use Filament\Http\Middleware\DispatchServingFilamentEvent;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken;
 use Illuminate\Cookie\Middleware\AddQueuedCookiesToResponse;
-use Numerimondes\Modules\ReamMar\Core\Filament\Resources\Clients\ClientResource;
-use Filament\Facades\Filament;
 
 class MarPanelProvider extends PanelProvider
 {
@@ -27,6 +27,10 @@ class MarPanelProvider extends PanelProvider
         return $panel
             ->login()
             ->registration()
+
+            ->brandLogo(platformAbsoluteUrlAnyPrivatetoPublic(getCurrentApplication('logo')))
+            ->brandLogoHeight('2.5rem')
+            ->spa()
             ->id('mar')
             ->path('mar')
             
@@ -40,17 +44,19 @@ class MarPanelProvider extends PanelProvider
             ->pages([
                 Dashboard::class,
             ])
-            ->resources([ClientResource::class,])
+            ->resources([
+                
+            ])
             
             // Découverte automatique
-            ->discoverResources(in: base_path('platform/Modules/ReamMar/Core/Filament/Resources'), for: 'Numerimondes\Filament\Mar\Resources')
-            ->discoverPages(in: base_path('platform/Modules/ReamMar/Core/Filament/Pages'), for: 'Numerimondes\Filament\Mar\Pages')
-            ->discoverWidgets(in: base_path('platform/Modules/ReamMar/Core/Filament/Widgets'), for: 'Numerimondes\Filament\Mar\Widgets')
-            
+            ->discoverResources(in: base_path('platform/Modules/ReamMar/Core/Filament/Resources'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Resources')
+            ->discoverPages(in: base_path('platform/Modules/ReamMar/Core/Filament/Pages'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Pages')
+            ->discoverWidgets(in: base_path('platform/Modules/ReamMar/Core/Filament/Widgets'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Widgets')
+
             // Widgets
             ->widgets([
-                AccountWidget::class,
-                FilamentInfoWidget::class,
+                    AccountWidget::class,
+                    WebkernelInfoWidget::class,
             ])
             
             // Middleware de base (CheckUserAccess sera ajouté automatiquement par PanelsServiceProvider)
@@ -80,7 +86,7 @@ class MarPanelProvider extends PanelProvider
             'path'         => $panel->getPath(),
             'icon'         => 'heroicon-o-rectangle-stack',
             'description'  => lang('Module MAR pour la gestion des clients'),
-            'url'          => $panel->getUrl(),
+            'url'          => $panel->getUrl(), 
             'restricted'   => true, 
             'fontfamily'   => $panel->getFontFamily(),
             'fontprovider' => $panel->getFontProvider(),
