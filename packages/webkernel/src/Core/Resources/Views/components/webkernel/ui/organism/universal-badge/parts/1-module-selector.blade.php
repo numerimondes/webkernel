@@ -45,7 +45,7 @@
         </button>
     </x-slot>
 
-    <x-filament::dropdown.header class="font-semibold text-gray-900 dark:text-gray-100" icon="heroicon-m-rectangle-stack">
+    <x-filament::dropdown.header class="font-semibold text-gray-900 dark:text-gray-100" icon="heroicon-o-ellipsis-horizontal-circle">
         {{ __('Modules disponibles') }}
     </x-filament::dropdown.header>
 

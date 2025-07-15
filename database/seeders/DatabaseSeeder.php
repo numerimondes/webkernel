@@ -5,7 +5,7 @@ namespace Database\Seeders;
 use App\Models\User;
 // use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
-use Webkernel\CRM\Database\Seeders\CRMSeeder;
+use Numerimondes\Modules\ReamMar\CRM\Database\Seeders\CRMSeeder;
 
 class DatabaseSeeder extends Seeder
 {

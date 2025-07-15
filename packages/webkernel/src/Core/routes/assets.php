@@ -17,6 +17,8 @@ Route::get('/assets/{token}', function (string $token) {
 
     if (now()->gt(Carbon::parse($fileInfo['expires_at']))) {
         Cache::forget("file_token:{$token}");
+        $cacheKey = "file_token_by_path:" . md5($fileInfo['path']);
+        Cache::forget($cacheKey);
         abort(404, 'File expired');
     }
 

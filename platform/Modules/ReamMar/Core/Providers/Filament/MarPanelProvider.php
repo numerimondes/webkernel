@@ -12,6 +12,7 @@ use Filament\Http\Middleware\Authenticate;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
+use Webkernel\Core\Filament\Pages\Auth\EditProfile;
 use Illuminate\Routing\Middleware\SubstituteBindings;
 use Illuminate\View\Middleware\ShareErrorsFromSession;
 use Filament\Http\Middleware\DisableBladeIconComponents;
@@ -27,39 +28,35 @@ class MarPanelProvider extends PanelProvider
         return $panel
             ->login()
             ->registration()
-
+            ->profile(EditProfile::class, false)
             ->brandLogo(platformAbsoluteUrlAnyPrivatetoPublic(getCurrentApplication('logo')))
             ->brandLogoHeight('2.5rem')
             ->spa()
             ->id('mar')
             ->path('mar')
             
-            // Configuration spécifique au panel mar
             ->colors([
                 'primary' => Color::Amber,
             ])
             ->databaseNotifications()
 
-            // Pages et ressources spécifiques
             ->pages([
                 Dashboard::class,
             ])
+
             ->resources([
                 
             ])
             
-            // Découverte automatique
             ->discoverResources(in: base_path('platform/Modules/ReamMar/Core/Filament/Resources'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Resources')
             ->discoverPages(in: base_path('platform/Modules/ReamMar/Core/Filament/Pages'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Pages')
             ->discoverWidgets(in: base_path('platform/Modules/ReamMar/Core/Filament/Widgets'), for: 'Numerimondes\Modules\ReamMar\Core\Filament\Widgets')
 
-            // Widgets
             ->widgets([
                     AccountWidget::class,
                     WebkernelInfoWidget::class,
             ])
             
-            // Middleware de base (CheckUserAccess sera ajouté automatiquement par PanelsServiceProvider)
             ->middleware([
                 EncryptCookies::class,
                 AddQueuedCookiesToResponse::class,
@@ -84,7 +81,7 @@ class MarPanelProvider extends PanelProvider
         return [
             'id'           => $panel->getId(),
             'path'         => $panel->getPath(),
-            'icon'         => 'heroicon-o-rectangle-stack',
+            'icon'         => platformAbsoluteUrlAnyPrivatetoPublic(getCurrentApplication('logo')),
             'description'  => lang('Module MAR pour la gestion des clients'),
             'url'          => $panel->getUrl(), 
             'restricted'   => true, 

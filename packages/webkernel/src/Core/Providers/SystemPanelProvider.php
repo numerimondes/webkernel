@@ -87,7 +87,7 @@ class SystemPanelProvider extends PanelProvider
         return [
             'id'           => $panel->getId(),
             'path'         => $panel->getPath(),
-            'icon'         => 'heroicon-o-rectangle-stack',
+            'icon'         => 'heroicon-o-cog',
             'description'  => 'Module System pour la gestion administrative',
             'url'          => $panel->getUrl(),
             'fontfamily'   => $panel->getFontFamily(),

@@ -18,6 +18,7 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
     {
         $cleanPath = ltrim(str_replace('\\', '/', $path), '/');
         $cacheKey = "file_token_by_path:" . md5($cleanPath);
+        $indexKey = "file_token_index:" . md5($cleanPath);
 
         $cacheIsReady = true;
         try {
@@ -29,14 +30,23 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
         if ($cacheIsReady && !$forceRefresh) {
             $cachedTokenData = Cache::get($cacheKey);
             if ($cachedTokenData && Carbon::now()->lt(Carbon::parse($cachedTokenData['expires_at']))) {
+                // Token existant et encore valide : on le réutilise
                 return url("/assets/{$cachedTokenData['token']}");
             }
         }
 
-        $token = Str::random(32);
-        $expiresAt = Carbon::now()->addMinutes($expirationMinutes);
-
+        // Purge tous les anciens tokens pour ce fichier via l'index
         if ($cacheIsReady) {
+            $oldTokens = Cache::get($indexKey, []);
+            if (is_array($oldTokens)) {
+                foreach ($oldTokens as $oldToken) {
+                    Cache::forget("file_token:{$oldToken}");
+                }
+            }
+            // On remplace l'index par le nouveau token
+            $token = Str::random(32);
+            $expiresAt = Carbon::now()->addMinutes($expirationMinutes);
+
             Cache::put("file_token:{$token}", [
                 'path' => $cleanPath,
                 'expires_at' => $expiresAt->toDateTimeString(),
@@ -46,8 +56,14 @@ if (!function_exists('platformAbsoluteUrlAnyPrivatetoPublic')) {
                 'token' => $token,
                 'expires_at' => $expiresAt->toDateTimeString(),
             ], $expirationMinutes * 60);
+
+            Cache::put($indexKey, [$token], $expirationMinutes * 60);
+
+            return url("/assets/{$token}");
         }
 
+        // Fallback si cache non prêt
+        $token = Str::random(32);
         return url("/assets/{$token}");
     }
 }

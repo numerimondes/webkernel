@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Helpers;
+namespace Webkernel\Core\Helpers\Modules;
 
 use App\Models\User;
 use Webkernel\Core\Services\PanelsInfoCollector;
@@ -109,4 +109,6 @@ class ModuleAccessHelper
         
         return $panels;
     }
+
+    
 } 
