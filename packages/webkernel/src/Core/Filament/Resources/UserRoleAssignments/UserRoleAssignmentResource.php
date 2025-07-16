@@ -12,12 +12,15 @@ use Webkernel\Core\Filament\Resources\UserRoleAssignments\Pages\EditUserRoleAssi
 use Webkernel\Core\Filament\Resources\UserRoleAssignments\Pages\ListUserRoleAssignments;
 use Webkernel\Core\Filament\Resources\UserRoleAssignments\Schemas\UserRoleAssignmentForm;
 use Webkernel\Core\Filament\Resources\UserRoleAssignments\Tables\UserRoleAssignmentsTable;
+use App\Models\User;
 
 class UserRoleAssignmentResource extends Resource
 {
-    protected static ?string $model = UserRoleAssignment::class;
+    protected static ?string $model = User::class;
+    protected static  string|BackedEnum|null $navigationIcon = 'heroicon-o-user-plus';
 
-    protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
+    protected static ?string $navigationLabel = 'Assignation Utilisateurs';
+    protected static ?int $navigationSort = 2;
 
     public static function form(Schema $schema): Schema
     {

@@ -1,12 +1,14 @@
 <?php
-
 use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    public function up()
+    /**
+     * Run the migrations.
+     */
+    public function up(): void
     {
         Schema::create('rbac_roles', function (Blueprint $table) {
             $table->id();
@@ -61,10 +63,23 @@ return new class extends Migration
             
             $table->unique(['user_id', 'permission_id']);
         });
+        
+        Schema::create('rbac_user_panels', function (Blueprint $table) {
+            $table->id();
+            $table->foreignId('user_id')->constrained('users')->onDelete('cascade');
+            $table->json('panels')->nullable();
+            $table->timestamps();
+            
+            $table->unique('user_id');
+        });
     }
-    
-    public function down()
+
+    /**
+     * Reverse the migrations.
+     */
+    public function down(): void
     {
+        Schema::dropIfExists('rbac_user_panels');
         Schema::dropIfExists('rbac_user_permissions');
         Schema::dropIfExists('rbac_user_roles');
         Schema::dropIfExists('rbac_role_permissions');

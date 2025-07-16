@@ -1,10 +1,10 @@
 <?php
 namespace Webkernel\Core\Traits;
 
-use Webkernel\Core\Models\Role;
-use Webkernel\Core\Models\Permission;
-use Webkernel\Core\Models\UserPanels;
-use Webkernel\Core\Models\PlatformOwner;
+use Webkernel\Core\Models\RBAC\Role;
+use Webkernel\Core\Models\RBAC\Permission;
+use Webkernel\Core\Models\RBAC\UserPanels;
+use Webkernel\Core\Models\RBAC\PlatformOwner;
 use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Support\Collection;

@@ -13,10 +13,11 @@ use Webkernel\Core\Filament\Resources\UserPermissions\Pages\EditUserPermission;
 use Webkernel\Core\Filament\Resources\UserPermissions\Pages\ListUserPermissions;
 use Webkernel\Core\Filament\Resources\UserPermissions\Schemas\UserPermissionForm;
 use Webkernel\Core\Filament\Resources\UserPermissions\Tables\UserPermissionsTable;
+use Webkernel\Core\Models\RBAC\Permission;
 
 class UserPermissionResource extends Resource
 {
-    protected static ?string $model = UserPermission::class;
+    protected static ?string $model = Permission::class;
 
     protected static string|BackedEnum|null $navigationIcon = Heroicon::OutlinedRectangleStack;
 
