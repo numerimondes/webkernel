@@ -1,35 +1,30 @@
 <?php
 namespace Webkernel\ServiceProviders;
 
-use Filament\View\PanelsRenderHook;
 use Illuminate\Support\Facades\File;
 use Filament\Schemas\Components\Grid;
 // Sub-providers
 use Illuminate\Support\ServiceProvider;
 use Filament\Schemas\Components\Section;
 use Filament\Schemas\Components\Fieldset;
-use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Foundation\Application;
-use Webkernel\Core\Services\PanelRoutingService;
-use Webkernel\Core\Providers\SystemPanelProvider;
-use Webkernel\Core\Services\ModuleDetectionService;
-use Webkernel\ServiceProviders\AuthServiceProvider;
-// Filament customizations
 use Webkernel\ServiceProviders\ViewServiceProvider;
 use Webkernel\ServiceProviders\BladeServiceProvider;
 use Webkernel\ServiceProviders\RouteServiceProvider;
 use Webkernel\ServiceProviders\ConfigServiceProvider;
 use Webkernel\ServiceProviders\PanelsServiceProvider;
-// Webkernel
 use Webkernel\ServiceProviders\WidgetServiceProvider;
+// Webkernel
 use Webkernel\ServiceProviders\CommandServiceProvider;
 use Webkernel\ServiceProviders\LivewireServiceProvider;
 use Webkernel\ServiceProviders\PoliciesServiceProvider;
+use Webkernel\ServiceProviders\ExceptionServiceProvider;
 use Webkernel\ServiceProviders\MigrationServiceProvider;
 use Webkernel\ServiceProviders\WebkernelServiceProvider;
 use Webkernel\ServiceProviders\MiddlewareServiceProvider;
 use Webkernel\ServiceProviders\RenderHooksServiceProvider;
 use Numerimondes\Modules\ReamMar\Core\Providers\Filament\MarPanelProvider;
+use Webkernel\Core\Providers\SystemPanelProvider;// Filament customizations
 
 class CoreServiceProvider extends ServiceProvider
 {
@@ -56,6 +51,7 @@ class CoreServiceProvider extends ServiceProvider
             WebkernelServiceProvider::class,
             MarPanelProvider::class,
             MiddlewareServiceProvider::class,
+            ExceptionServiceProvider::class,
         ]);
 
         $this->registerPlatformProviders();

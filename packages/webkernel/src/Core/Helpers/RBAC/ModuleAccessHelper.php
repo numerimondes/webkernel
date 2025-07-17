@@ -1,6 +1,6 @@
 <?php
 
-namespace Webkernel\Core\Helpers\Modules;
+namespace Webkernel\Core\Helpers\RBAC;
 use App\Models\User;
 use Webkernel\Core\Services\PanelsInfoCollector;
 use Webkernel\Core\Services\PanelAccessService;

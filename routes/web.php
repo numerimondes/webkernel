@@ -7,6 +7,10 @@ Route::get('/', function () {
     return view('welcome');
 });
 
+Route::get('/test', function () {
+    return view('test');
+});
+
 // Exemple d'utilisation des routes avec vérification d'accès aux modules
 // RouteHelper::moduleGroup('system', function () {
 //     Route::get('/admin', function () {
@@ -19,3 +23,4 @@ Route::get('/', function () {
 //         return 'Accès autorisé au module MAR';
 //     });
 // });
+

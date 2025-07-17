@@ -70,6 +70,7 @@ class RouteServiceProvider extends ServiceProvider
             'web' => 'web',
             'api' => 'api', 
             'assets' => 'web',
+            'errors' => 'web',
             'console' => null,
             default => 'web',
         };

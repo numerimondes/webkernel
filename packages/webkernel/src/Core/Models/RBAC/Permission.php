@@ -72,4 +72,12 @@ class Permission extends Model
         
         return implode(' ', $parts);
     }
+
+    public static function canAccess(...$args)
+    {
+        \Log::warning('STATIC canAccess() called on Permission', [
+            'trace' => debug_backtrace(DEBUG_BACKTRACE_IGNORE_ARGS, 10)
+        ]);
+        return true;
+    }
 }

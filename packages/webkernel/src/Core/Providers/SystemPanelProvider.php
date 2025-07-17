@@ -10,6 +10,7 @@ use Filament\Widgets\FilamentInfoWidget;
 use Filament\Http\Middleware\Authenticate;
 use Webkernel\Core\Filament\Pages\Dashboard;
 use Webkernel\Core\Filament\Pages\Auth\EditProfile;
+use Webkernel\Core\Filament\Pages\ErrorPage;
 use Illuminate\Session\Middleware\StartSession;
 use Illuminate\Cookie\Middleware\EncryptCookies;
 use Filament\Http\Middleware\AuthenticateSession;
