@@ -1,0 +1,3035 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <meta http-equiv="Cache-Control" content="public, max-age=86400">
+
+    <!-- Primary Meta Tags -->
+    <title>Manifeste WebKernel - Écosystème Logiciel Modulaire</title>
+    <meta name="title" content="Manifeste WebKernel - Écosystème Logiciel Modulaire">
+    <meta name="description"
+        content="Manifeste WebKernel - Méthodologie pour créer un écosystème logiciel modulaire haute performance. Standard, Lean, Rapide, Efficace, Scalable, Sécurisé, Maintenable.">
+    <meta name="keywords"
+        content="WebKernel, écosystème logiciel, modules, développement, PHP, Laravel, Filament, FilamentPHP, architecture modulaire, software engineering">
+    <meta name="author" content="El Moumen Yassine">
+    <meta name="robots" content="index, follow">
+    <meta name="language" content="French">
+    <meta name="revisit-after" content="7 days">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="webkernel.numerimondes.com">
+    <meta property="og:title" content="Manifeste WebKernel - Écosystème Logiciel Modulaire">
+    <meta property="og:description"
+        content="Manifeste WebKernel - Méthodologie pour créer un écosystème logiciel modulaire haute performance. Standard, Lean, Rapide, Efficace, Scalable, Sécurisé, Maintenable.">
+    <meta property="og:image"
+        content="https://repository-images.githubusercontent.com/971271758/947238dc-e749-46ca-b8b2-884794d612fb">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta property="og:image:alt" content="Manifeste WebKernel - Écosystème Logiciel Modulaire">
+    <meta property="og:site_name" content="Numerimondes">
+    <meta property="og:locale" content="fr_FR">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://webkernel.numerimondes.com">
+    <meta property="twitter:title" content="Manifeste WebKernel - Écosystème Logiciel Modulaire">
+    <meta property="twitter:description"
+        content="Manifeste WebKernel - Méthodologie pour créer un écosystème logiciel modulaire haute performance. Standard, Lean, Rapide, Efficace, Scalable, Sécurisé, Maintenable.">
+    <meta property="twitter:image"
+        content="https://repository-images.githubusercontent.com/971271758/947238dc-e749-46ca-b8b2-884794d612fb">
+    <meta property="twitter:image:alt" content="Manifeste WebKernel - Écosystème Logiciel Modulaire">
+
+    <!-- Additional Meta Tags -->
+    <meta name="theme-color" content="#1a1a1a">
+    <meta name="msapplication-TileColor" content="#1a1a1a">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+    <meta name="apple-mobile-web-app-title" content="WebKernel Manifesto">
+
+    <!-- Canonical URL -->
+    <link rel="canonical" href="https://webkernel.numerimondes.com">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/png" sizes="32x32"
+        href="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=32">
+    <link rel="icon" type="image/png" sizes="16x16"
+        href="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=16">
+    <link rel="apple-touch-icon" sizes="180x180"
+        href="https://t2.gstatic.com/faviconV2?client=SOCIAL&type=FAVICON&fallback_opts=TYPE,SIZE,URL&url=https://numerimondes.com/&size=180">
+    <style>
+        /* Reset CSS pour mobile */
+        * {
+            box-sizing: border-box;
+        }
+
+        html,
+        body {
+            margin: 0;
+            padding: 0;
+            width: 100%;
+            min-height: 100vh;
+            overflow-x: hidden;
+        }
+
+        body {
+            font-family: 'Manrope', sans-serif;
+            line-height: 1.6;
+            color: #333;
+            transition: all 0.3s ease;
+            text-align: justify;
+        }
+
+        /* Link styles */
+        a {
+            color: oklch(0.4 0.15 240);
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid transparent;
+        }
+
+        a:hover {
+            color: oklch(0.3 0.2 240);
+            border-bottom-color: currentColor;
+        }
+
+        /* Dark mode links */
+        body.dark-body a {
+            color: oklch(0.7 0.1 240);
+        }
+
+        body.dark-body a:hover {
+            color: oklch(0.8 0.15 240);
+        }
+
+        /* Custom Scrollbar - Light Mode */
+        ::-webkit-scrollbar {
+            width: 8px;
+            height: 8px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: oklch(0.95 0.02 240);
+            border-radius: 4px;
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: oklch(0.7 0.1 240);
+            border-radius: 4px;
+            transition: background 0.3s ease;
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: oklch(0.6 0.12 240);
+        }
+
+        ::-webkit-scrollbar-corner {
+            background: oklch(0.95 0.02 240);
+        }
+
+        /* Custom Scrollbar - Dark Mode */
+        body.dark-body ::-webkit-scrollbar-track {
+            background: oklch(0.15 0.05 240);
+        }
+
+        body.dark-body ::-webkit-scrollbar-thumb {
+            background: oklch(0.4 0.08 240);
+        }
+
+        body.dark-body ::-webkit-scrollbar-thumb:hover {
+            background: oklch(0.5 0.1 240);
+        }
+
+        body.dark-body ::-webkit-scrollbar-corner {
+            background: oklch(0.15 0.05 240);
+        }
+
+        /* Firefox Scrollbar */
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: oklch(0.7 0.1 240) oklch(0.95 0.02 240);
+        }
+
+        body.dark-body * {
+            scrollbar-color: oklch(0.4 0.08 240) oklch(0.15 0.05 240);
+        }
+
+        /* WhatsApp button hover effect */
+        #about-author a[href*="wa.me"]:hover {
+            transform: translateY(-2px) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            opacity: 1 !important;
+        }
+
+        body.dark-body #about-author a[href*="wa.me"]:hover {
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.1);
+        }
+
+        /* Profile image hover effect */
+        #about-author img[alt="El Moumen Yassine"]:hover {
+            transform: translateY(-3px) scale(1.05);
+            box-shadow: 0 8px 25px rgba(0, 0, 0, 0.2);
+            opacity: 1 !important;
+            border-color: currentColor;
+        }
+
+        body.dark-body #about-author img[alt="El Moumen Yassine"]:hover {
+            box-shadow: 0 8px 25px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Scroll to Top button hover effect */
+        #scrollToTop:hover {
+            opacity: 1 !important;
+            transform: scale(1.1) !important;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+        }
+
+        body.dark-body #scrollToTop:hover {
+            box-shadow: 0 4px 12px rgba(255, 255, 255, 0.15);
+        }
+
+        /* Magnifier Effect for glass-image-effect */
+        .glass-image-effect {
+            position: relative;
+            overflow: hidden;
+            cursor: zoom-in;
+        }
+
+        .glass-image-effect img {
+            transition: transform 0.3s ease;
+            width: 100%;
+            height: auto;
+        }
+
+        .glass-image-effect::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: rgba(255, 255, 255, 0.05);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+            z-index: 1;
+            pointer-events: none;
+        }
+
+        .glass-image-effect:hover::before {
+            opacity: 1;
+        }
+
+        /* Dark mode glass effect */
+        body.dark-body .glass-image-effect::before {
+            background: rgba(0, 0, 0, 0.05);
+        }
+
+
+
+        /* Header Styles */
+        .main-header {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            background: oklch(0.985 0 0 / 0.95);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid oklch(0.9 0 0);
+            z-index: 1000;
+            transition: all 0.3s ease;
+            margin: 0;
+            padding: 0;
+        }
+
+        body.dark-body .main-header {
+            background: oklch(0.145 0 0 / 0.95);
+            border-bottom-color: oklch(0.3 0 0);
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 1rem 2rem;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 1rem;
+            flex: 1;
+        }
+
+        .header-logo h1 {
+            color: oklch(0.2 0.02 240);
+            font-family: 'Manrope', sans-serif;
+        }
+
+        body.dark-body .header-logo h1 {
+            color: oklch(0.9 0.02 240);
+        }
+
+        .header-nav {
+            display: flex;
+            align-items: center;
+        }
+
+        .nav-menu {
+            display: flex;
+            list-style: none;
+            margin: 0;
+            padding: 0;
+            gap: 2rem;
+        }
+
+        .nav-link {
+            color: oklch(0.4 0.15 240);
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 0.9rem;
+            transition: all 0.3s ease;
+            padding: 0.5rem 0;
+            border-bottom: 2px solid transparent;
+            white-space: nowrap;
+        }
+
+        .nav-link:hover {
+            color: oklch(0.3 0.2 240);
+            border-bottom-color: currentColor;
+        }
+
+        body.dark-body .nav-link {
+            color: oklch(0.7 0.1 240);
+        }
+
+        body.dark-body .nav-link:hover {
+            color: oklch(0.8 0.15 240);
+        }
+
+        .header-mobile-toggle {
+            display: none;
+            flex-direction: column;
+            gap: 4px;
+            cursor: pointer;
+            padding: 0.5rem;
+        }
+
+        .header-mobile-toggle span {
+            width: 25px;
+            height: 3px;
+            background: oklch(0.4 0.15 240);
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        body.dark-body .header-mobile-toggle span {
+            background: oklch(0.7 0.1 240);
+        }
+
+        /* Responsive design */
+        @media (max-width: 1200px) {
+            .container {
+                padding-left: 20% !important;
+                padding-right: 20% !important;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding-left: 10% !important;
+                padding-right: 10% !important;
+            }
+
+            .social-links {
+                padding-right: 10% !important;
+            }
+
+            .fixed-controls {
+                bottom: 1rem !important;
+                right: 1rem !important;
+                gap: 0.5rem;
+                z-index: 1000 !important;
+                position: fixed !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+            }
+
+            .author-avatar {
+                width: 40px;
+                height: 40px;
+            }
+
+            .toggle-btn {
+                padding: 0.5rem 0.75rem;
+                font-size: 0.75rem;
+            }
+
+            .refresh-btn {
+                width: 40px;
+                height: 40px;
+                padding: 0.5rem;
+                font-size: 0.875rem;
+            }
+
+            h1 {
+                font-size: 20px !important;
+            }
+
+            h2 {
+                font-size: 18px;
+            }
+
+            h3 {
+                font-size: 16px;
+            }
+
+            /* Mobile Header */
+            .header-container {
+                padding: 0.5rem;
+                position: relative;
+            }
+
+            .header-left {
+                display: flex;
+                align-items: center;
+                gap: 1rem;
+            }
+
+            .header-nav {
+                display: none;
+            }
+
+            .header-mobile-toggle {
+                display: flex;
+            }
+
+            .toc-toggle-nav {
+                display: flex !important;
+                position: static;
+                margin-left: 1rem;
+                z-index: 1002;
+            }
+
+            .nav-menu {
+                position: fixed;
+                top: 60px;
+                left: 0;
+                right: 0;
+                background: oklch(0.985 0 0 / 0.98);
+                backdrop-filter: blur(10px);
+                flex-direction: column;
+                padding: 1rem;
+                gap: 0.5rem;
+                border-top: 1px solid oklch(0.9 0 0);
+                transform: translateY(-100%);
+                opacity: 0;
+                visibility: hidden;
+                transition: all 0.3s ease;
+                z-index: 999;
+                max-height: calc(100vh - 60px);
+                overflow-y: auto;
+            }
+
+            body.dark-body .nav-menu {
+                background: oklch(0.145 0 0 / 0.98);
+                border-top-color: oklch(0.3 0 0);
+            }
+
+            .nav-menu.active {
+                transform: translateY(0);
+                opacity: 1;
+                visibility: visible;
+            }
+
+
+        }
+
+        @media (max-width: 480px) {
+
+            html,
+            body {
+                width: 100vw;
+                max-width: 100vw;
+            }
+
+            .container {
+                padding-left: 5% !important;
+                padding-right: 5% !important;
+                width: 100% !important;
+                max-width: 100% !important;
+                margin: 0 !important;
+            }
+
+            .social-links {
+                padding-right: 5% !important;
+                width: 100% !important;
+            }
+
+            .fixed-controls {
+                bottom: 0.5rem !important;
+                right: 0.5rem !important;
+                gap: 0.25rem;
+                z-index: 1000 !important;
+                position: fixed !important;
+                display: flex !important;
+                flex-direction: row !important;
+                align-items: center !important;
+            }
+
+            .author-avatar {
+                width: 36px;
+                height: 36px;
+            }
+
+            .toggle-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+            .refresh-btn {
+                width: 36px;
+                height: 36px;
+                padding: 0.4rem;
+                font-size: 0.75rem;
+            }
+
+            .social-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.7rem;
+            }
+
+            /* Force full width for all elements */
+            div,
+            section,
+            article {
+                max-width: 100% !important;
+                width: 100% !important;
+            }
+        }
+
+        /* Mode sombre */
+        body.dark-body {
+            background-color: oklch(0.145 0 0);
+            color: oklch(0.985 0 0);
+        }
+
+        body.dark-body h1,
+        body.dark-body h2,
+        body.dark-body h3 {
+            color: oklch(0.922 0 0);
+        }
+
+        body.dark-body blockquote {
+            background: oklch(0.269 0 0);
+            border-left: 3px solid oklch(0.371 0 0);
+            color: oklch(0.985 0 0);
+        }
+
+        /* Mode clair */
+        body.light-body {
+            background-color: oklch(0.985 0 0);
+            color: oklch(0.205 0 0);
+        }
+
+        body.light-body h1,
+        body.light-body h2,
+        body.light-body h3 {
+            color: oklch(0.205 0 0);
+        }
+
+        body.light-body blockquote {
+            background: oklch(0.922 0 0);
+            border-left: 3px solid oklch(0.269 0 0);
+            color: oklch(0.205 0 0);
+        }
+
+        /* Table styles - GitHub style */
+        table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 1rem 0;
+            font-size: 0.875rem;
+            border: 1px solid oklch(0.269 0 0);
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        thead {
+            background-color: oklch(0.922 0 0);
+        }
+
+        th {
+            padding: 0.75rem;
+            text-align: left;
+            font-weight: 600;
+            border-bottom: 1px solid oklch(0.269 0 0);
+            color: oklch(0.205 0 0);
+        }
+
+        td {
+            padding: 0.75rem;
+            border-bottom: 1px solid oklch(0.269 0 0);
+            vertical-align: top;
+        }
+
+        tbody tr:last-child td {
+            border-bottom: none;
+        }
+
+        tbody tr:hover {
+            background-color: oklch(0.922 0 0 / 0.5);
+        }
+
+        /* Dark mode table styles */
+        body.dark-body table {
+            border-color: oklch(0.371 0 0);
+        }
+
+        body.dark-body thead {
+            background-color: oklch(0.269 0 0);
+        }
+
+        body.dark-body th {
+            border-bottom-color: oklch(0.371 0 0);
+            color: oklch(0.985 0 0);
+        }
+
+        body.dark-body td {
+            border-bottom-color: oklch(0.371 0 0);
+        }
+
+        body.dark-body tbody tr:hover {
+            background-color: oklch(0.269 0 0 / 0.5);
+        }
+
+        /* Social Links */
+        .social-links {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 0.5rem;
+            margin: 1rem 0;
+            padding-bottom: 0.5rem;
+        }
+
+        .social-btn {
+            display: inline-flex;
+            align-items: center;
+            padding: 0.5rem 0.75rem;
+            background: oklch(0.985 0 0 / 0.9);
+            border: 1px solid oklch(0.269 0 0);
+            border-radius: 20px;
+            text-decoration: none;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.75rem;
+            color: oklch(0.205 0 0);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+            flex-shrink: 0;
+        }
+
+        .social-btn:hover {
+            background: oklch(0.985 0 0 / 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px oklch(0.205 0 0 / 0.1);
+            text-decoration: none;
+        }
+
+        /* Dark mode social buttons */
+        body.dark-body .social-btn {
+            background: oklch(0.145 0 0 / 0.9);
+            border-color: oklch(0.371 0 0);
+            color: oklch(0.985 0 0);
+        }
+
+        body.dark-body .social-btn:hover {
+            background: oklch(0.145 0 0 / 1);
+            box-shadow: 0 4px 12px oklch(0.145 0 0 / 0.3);
+        }
+
+        /* Disabled social buttons */
+        .social-btn.disabled {
+            opacity: 0.5;
+            cursor: not-allowed;
+            pointer-events: none;
+        }
+
+        .social-btn.disabled:hover {
+            transform: none;
+            box-shadow: none;
+            background: oklch(0.985 0 0 / 0.9);
+        }
+
+        body.dark-body .social-btn.disabled {
+            background: oklch(0.145 0 0 / 0.9);
+        }
+
+        body.dark-body .social-btn.disabled:hover {
+            background: oklch(0.145 0 0 / 0.9);
+        }
+
+        /* Social network specific colors - Pastel */
+        .social-btn.linkedin {
+            background: oklch(0.85 0.05 240 / 0.9);
+            border-color: oklch(0.7 0.1 240);
+            color: oklch(0.2 0.05 240);
+        }
+
+        .social-btn.linkedin:hover {
+            background: oklch(0.85 0.05 240 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.1 240 / 0.3);
+        }
+
+        .social-btn.github {
+            background: oklch(0.9 0.03 0 / 0.9);
+            border-color: oklch(0.7 0.05 0);
+            color: oklch(0.2 0.03 0);
+        }
+
+        .social-btn.github:hover {
+            background: oklch(0.9 0.03 0 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.05 0 / 0.3);
+        }
+
+        .social-btn.twitter {
+            background: oklch(0.88 0.08 200 / 0.9);
+            border-color: oklch(0.7 0.1 200);
+            color: oklch(0.2 0.08 200);
+        }
+
+        .social-btn.twitter:hover {
+            background: oklch(0.88 0.08 200 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.1 200 / 0.3);
+        }
+
+        /* Dark mode social network colors */
+        body.dark-body .social-btn.linkedin {
+            background: oklch(0.25 0.05 240 / 0.9);
+            border-color: oklch(0.4 0.1 240);
+            color: oklch(0.9 0.05 240);
+        }
+
+        body.dark-body .social-btn.linkedin:hover {
+            background: oklch(0.25 0.05 240 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.1 240 / 0.3);
+        }
+
+        body.dark-body .social-btn.github {
+            background: oklch(0.2 0.03 0 / 0.9);
+            border-color: oklch(0.35 0.05 0);
+            color: oklch(0.9 0.03 0);
+        }
+
+        body.dark-body .social-btn.github:hover {
+            background: oklch(0.2 0.03 0 / 1);
+            box-shadow: 0 4px 12px oklch(0.35 0.05 0 / 0.3);
+        }
+
+        body.dark-body .social-btn.twitter {
+            background: oklch(0.22 0.08 200 / 0.9);
+            border-color: oklch(0.4 0.1 200);
+            color: oklch(0.9 0.08 200);
+        }
+
+        body.dark-body .social-btn.twitter:hover {
+            background: oklch(0.22 0.08 200 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.1 200 / 0.3);
+        }
+
+        /* Bibliography pastel colors - Light mode */
+        .social-btn.bib-lavender {
+            background: oklch(0.88 0.06 280 / 0.9);
+            border-color: oklch(0.7 0.08 280);
+            color: oklch(0.2 0.06 280);
+        }
+
+        .social-btn.bib-lavender:hover {
+            background: oklch(0.88 0.06 280 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.08 280 / 0.3);
+        }
+
+        .social-btn.bib-mint {
+            background: oklch(0.9 0.05 160 / 0.9);
+            border-color: oklch(0.7 0.07 160);
+            color: oklch(0.2 0.05 160);
+        }
+
+        .social-btn.bib-mint:hover {
+            background: oklch(0.9 0.05 160 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.07 160 / 0.3);
+        }
+
+        .social-btn.bib-peach {
+            background: oklch(0.92 0.08 30 / 0.9);
+            border-color: oklch(0.7 0.1 30);
+            color: oklch(0.2 0.08 30);
+        }
+
+        .social-btn.bib-peach:hover {
+            background: oklch(0.92 0.08 30 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.1 30 / 0.3);
+        }
+
+        .social-btn.bib-sage {
+            background: oklch(0.85 0.04 120 / 0.9);
+            border-color: oklch(0.7 0.06 120);
+            color: oklch(0.2 0.04 120);
+        }
+
+        .social-btn.bib-sage:hover {
+            background: oklch(0.85 0.04 120 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.06 120 / 0.3);
+        }
+
+        .social-btn.bib-coral {
+            background: oklch(0.87 0.12 15 / 0.9);
+            border-color: oklch(0.7 0.14 15);
+            color: oklch(0.2 0.12 15);
+        }
+
+        .social-btn.bib-coral:hover {
+            background: oklch(0.87 0.12 15 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.14 15 / 0.3);
+        }
+
+        .social-btn.bib-sky {
+            background: oklch(0.89 0.07 220 / 0.9);
+            border-color: oklch(0.7 0.09 220);
+            color: oklch(0.2 0.07 220);
+        }
+
+        .social-btn.bib-sky:hover {
+            background: oklch(0.89 0.07 220 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.09 220 / 0.3);
+        }
+
+        .social-btn.bib-rose {
+            background: oklch(0.91 0.09 340 / 0.9);
+            border-color: oklch(0.7 0.11 340);
+            color: oklch(0.2 0.09 340);
+        }
+
+        .social-btn.bib-rose:hover {
+            background: oklch(0.91 0.09 340 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.11 340 / 0.3);
+        }
+
+        .social-btn.bib-amber {
+            background: oklch(0.93 0.1 60 / 0.9);
+            border-color: oklch(0.7 0.12 60);
+            color: oklch(0.2 0.1 60);
+        }
+
+        .social-btn.bib-amber:hover {
+            background: oklch(0.93 0.1 60 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.12 60 / 0.3);
+        }
+
+        .social-btn.bib-teal {
+            background: oklch(0.86 0.06 180 / 0.9);
+            border-color: oklch(0.7 0.08 180);
+            color: oklch(0.2 0.06 180);
+        }
+
+        .social-btn.bib-teal:hover {
+            background: oklch(0.86 0.06 180 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.08 180 / 0.3);
+        }
+
+        .social-btn.bib-lilac {
+            background: oklch(0.88 0.05 300 / 0.9);
+            border-color: oklch(0.7 0.07 300);
+            color: oklch(0.2 0.05 300);
+        }
+
+        .social-btn.bib-lilac:hover {
+            background: oklch(0.88 0.05 300 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.07 300 / 0.3);
+        }
+
+        .social-btn.bib-cream {
+            background: oklch(0.94 0.03 80 / 0.9);
+            border-color: oklch(0.7 0.05 80);
+            color: oklch(0.2 0.03 80);
+        }
+
+        .social-btn.bib-cream:hover {
+            background: oklch(0.94 0.03 80 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.05 80 / 0.3);
+        }
+
+        .social-btn.bib-azure {
+            background: oklch(0.87 0.08 210 / 0.9);
+            border-color: oklch(0.7 0.1 210);
+            color: oklch(0.2 0.08 210);
+        }
+
+        .social-btn.bib-azure:hover {
+            background: oklch(0.87 0.08 210 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.1 210 / 0.3);
+        }
+
+        .social-btn.bib-apricot {
+            background: oklch(0.9 0.09 45 / 0.9);
+            border-color: oklch(0.7 0.11 45);
+            color: oklch(0.2 0.09 45);
+        }
+
+        .social-btn.bib-apricot:hover {
+            background: oklch(0.9 0.09 45 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.11 45 / 0.3);
+        }
+
+        .social-btn.bib-forest {
+            background: oklch(0.83 0.05 140 / 0.9);
+            border-color: oklch(0.7 0.07 140);
+            color: oklch(0.2 0.05 140);
+        }
+
+        .social-btn.bib-forest:hover {
+            background: oklch(0.83 0.05 140 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.07 140 / 0.3);
+        }
+
+        .social-btn.bib-dusty {
+            background: oklch(0.84 0.04 100 / 0.9);
+            border-color: oklch(0.7 0.06 100);
+            color: oklch(0.2 0.04 100);
+        }
+
+        .social-btn.bib-dusty:hover {
+            background: oklch(0.84 0.04 100 / 1);
+            box-shadow: 0 4px 12px oklch(0.7 0.06 100 / 0.3);
+        }
+
+        /* Bibliography pastel colors - Dark mode */
+        body.dark-body .social-btn.bib-lavender {
+            background: oklch(0.25 0.06 280 / 0.9);
+            border-color: oklch(0.4 0.08 280);
+            color: oklch(0.9 0.06 280);
+        }
+
+        body.dark-body .social-btn.bib-lavender:hover {
+            background: oklch(0.25 0.06 280 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.08 280 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-mint {
+            background: oklch(0.22 0.05 160 / 0.9);
+            border-color: oklch(0.4 0.07 160);
+            color: oklch(0.9 0.05 160);
+        }
+
+        body.dark-body .social-btn.bib-mint:hover {
+            background: oklch(0.22 0.05 160 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.07 160 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-peach {
+            background: oklch(0.24 0.08 30 / 0.9);
+            border-color: oklch(0.4 0.1 30);
+            color: oklch(0.9 0.08 30);
+        }
+
+        body.dark-body .social-btn.bib-peach:hover {
+            background: oklch(0.24 0.08 30 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.1 30 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-sage {
+            background: oklch(0.23 0.04 120 / 0.9);
+            border-color: oklch(0.4 0.06 120);
+            color: oklch(0.9 0.04 120);
+        }
+
+        body.dark-body .social-btn.bib-sage:hover {
+            background: oklch(0.23 0.04 120 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.06 120 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-coral {
+            background: oklch(0.25 0.12 15 / 0.9);
+            border-color: oklch(0.4 0.14 15);
+            color: oklch(0.9 0.12 15);
+        }
+
+        body.dark-body .social-btn.bib-coral:hover {
+            background: oklch(0.25 0.12 15 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.14 15 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-sky {
+            background: oklch(0.21 0.07 220 / 0.9);
+            border-color: oklch(0.4 0.09 220);
+            color: oklch(0.9 0.07 220);
+        }
+
+        body.dark-body .social-btn.bib-sky:hover {
+            background: oklch(0.21 0.07 220 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.09 220 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-rose {
+            background: oklch(0.23 0.09 340 / 0.9);
+            border-color: oklch(0.4 0.11 340);
+            color: oklch(0.9 0.09 340);
+        }
+
+        body.dark-body .social-btn.bib-rose:hover {
+            background: oklch(0.23 0.09 340 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.11 340 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-amber {
+            background: oklch(0.26 0.1 60 / 0.9);
+            border-color: oklch(0.4 0.12 60);
+            color: oklch(0.9 0.1 60);
+        }
+
+        body.dark-body .social-btn.bib-amber:hover {
+            background: oklch(0.26 0.1 60 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.12 60 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-teal {
+            background: oklch(0.22 0.06 180 / 0.9);
+            border-color: oklch(0.4 0.08 180);
+            color: oklch(0.9 0.06 180);
+        }
+
+        body.dark-body .social-btn.bib-teal:hover {
+            background: oklch(0.22 0.06 180 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.08 180 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-lilac {
+            background: oklch(0.24 0.05 300 / 0.9);
+            border-color: oklch(0.4 0.07 300);
+            color: oklch(0.9 0.05 300);
+        }
+
+        body.dark-body .social-btn.bib-lilac:hover {
+            background: oklch(0.24 0.05 300 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.07 300 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-cream {
+            background: oklch(0.27 0.03 80 / 0.9);
+            border-color: oklch(0.4 0.05 80);
+            color: oklch(0.9 0.03 80);
+        }
+
+        body.dark-body .social-btn.bib-cream:hover {
+            background: oklch(0.27 0.03 80 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.05 80 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-azure {
+            background: oklch(0.21 0.08 210 / 0.9);
+            border-color: oklch(0.4 0.1 210);
+            color: oklch(0.9 0.08 210);
+        }
+
+        body.dark-body .social-btn.bib-azure:hover {
+            background: oklch(0.21 0.08 210 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.1 210 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-apricot {
+            background: oklch(0.24 0.09 45 / 0.9);
+            border-color: oklch(0.4 0.11 45);
+            color: oklch(0.9 0.09 45);
+        }
+
+        body.dark-body .social-btn.bib-apricot:hover {
+            background: oklch(0.24 0.09 45 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.11 45 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-forest {
+            background: oklch(0.23 0.05 140 / 0.9);
+            border-color: oklch(0.4 0.07 140);
+            color: oklch(0.9 0.05 140);
+        }
+
+        body.dark-body .social-btn.bib-forest:hover {
+            background: oklch(0.23 0.05 140 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.07 140 / 0.3);
+        }
+
+        body.dark-body .social-btn.bib-dusty {
+            background: oklch(0.24 0.04 100 / 0.9);
+            border-color: oklch(0.4 0.06 100);
+            color: oklch(0.9 0.04 100);
+        }
+
+        body.dark-body .social-btn.bib-dusty:hover {
+            background: oklch(0.24 0.04 100 / 1);
+            box-shadow: 0 4px 12px oklch(0.4 0.06 100 / 0.3);
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Fixed Controls */
+        .fixed-controls {
+            position: fixed !important;
+            bottom: 0 !important;
+            right: 0 !important;
+            left: auto !important;
+            z-index: 1000;
+            display: flex !important;
+            flex-direction: row !important;
+            align-items: center !important;
+            justify-content: flex-end !important;
+            gap: 0.75rem;
+            padding: 1rem;
+            width: auto !important;
+            margin: 0 !important;
+        }
+
+        .author-avatar {
+            display: block;
+            width: 48px;
+            height: 48px;
+            border-radius: 50%;
+            overflow: hidden;
+            border: 2px solid oklch(0.269 0 0);
+            transition: all 0.3s ease;
+            background: oklch(0.985 0 0);
+            flex-shrink: 0;
+            flex-basis: 48px;
+            min-width: 48px;
+            min-height: 48px;
+        }
+
+        .author-avatar:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px oklch(0.205 0 0 / 0.2);
+            border-color: oklch(0.371 0 0);
+        }
+
+        .author-avatar img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        /* Dark mode avatar */
+        body.dark-body .author-avatar {
+            border-color: oklch(0.371 0 0);
+            background: oklch(0.145 0 0);
+        }
+
+        body.dark-body .author-avatar:hover {
+            box-shadow: 0 4px 12px oklch(0.145 0 0 / 0.3);
+            border-color: oklch(0.4 0 0);
+        }
+
+        /* Toggle Theme */
+        .theme-toggle {
+            /* Remove position fixed since it's now in fixed-controls */
+        }
+
+        .toggle-btn {
+            display: flex;
+            align-items: center;
+            gap: 0.3rem;
+            padding: 0.5rem 0.8rem;
+            background: oklch(0.985 0 0 / 0.9);
+            border: 1px solid oklch(0.269 0 0);
+            border-radius: 20px;
+            cursor: pointer;
+            font-family: 'Manrope', sans-serif;
+            font-size: 0.8rem;
+            color: oklch(0.205 0 0);
+            transition: all 0.3s ease;
+            backdrop-filter: blur(10px);
+            white-space: nowrap;
+        }
+
+        /* Ensure toggle text is visible on mobile */
+        @media (max-width: 768px) {
+            .toggle-text {
+                display: inline !important;
+            }
+
+            .fixed-controls {
+                gap: 0.5rem;
+            }
+
+            .toggle-btn {
+                padding: 0.4rem 0.6rem;
+                font-size: 0.75rem;
+            }
+        }
+
+        .toggle-btn:hover {
+            background: oklch(0.985 0 0 / 1);
+            transform: translateY(-2px);
+            box-shadow: 0 4px 12px oklch(0.205 0 0 / 0.1);
+        }
+
+        .toggle-icon {
+            font-size: 0.9rem;
+        }
+
+        /* Dark mode toggle styles */
+        body.dark-body .toggle-btn {
+            background: oklch(0.145 0 0 / 0.9);
+            border-color: oklch(0.371 0 0);
+            color: oklch(0.985 0 0);
+        }
+
+        body.dark-body .toggle-btn:hover {
+            background: oklch(0.145 0 0 / 1);
+            box-shadow: 0 4px 12px oklch(0.145 0 0 / 0.3);
+        }
+
+        .refresh-btn {
+            background: linear-gradient(135deg, oklch(0.6 0.12 120), oklch(0.5 0.1 120));
+            color: white;
+            border: none;
+            padding: 0.75rem;
+            border-radius: 50%;
+            cursor: pointer;
+            font-size: 1rem;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
+            width: 48px;
+            height: 48px;
+        }
+
+        .refresh-btn:hover {
+            transform: translateY(-2px) rotate(180deg);
+            box-shadow: 0 6px 20px rgba(0, 0, 0, 0.15);
+        }
+
+        .refresh-btn:active {
+            transform: scale(0.95);
+        }
+
+        body.dark-body .refresh-btn {
+            background: linear-gradient(135deg, oklch(0.3 0.12 120), oklch(0.2 0.1 120));
+            color: oklch(0.985 0 0);
+        }
+
+        /* Table of Contents - shadCN Style */
+        .toc-container {
+            position: fixed;
+            top: var(--header-height, 60px);
+            right: 0;
+            width: 28%;
+            min-width: 500px;
+            max-height: calc(100vh - var(--header-height, 60px));
+            overflow-y: auto;
+            background: oklch(0.985 0 0 / 0.95);
+            backdrop-filter: blur(10px);
+            border: 1px solid oklch(0.9 0 0);
+            border-radius: 0;
+            padding: 1.5rem 2rem 1.5rem 1rem;
+            z-index: 1000;
+            transition: all 0.3s ease;
+        }
+
+        .toc-container.dark {
+            background: oklch(0.145 0 0 / 0.95);
+            border-color: oklch(0.3 0 0);
+            color: inherit;
+        }
+
+        .toc-title {
+            font-size: 0.875rem;
+            font-weight: 600;
+            color: inherit;
+            margin-bottom: 1rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            opacity: 0.8;
+        }
+
+        .toc-container.dark .toc-title {
+            color: inherit;
+        }
+
+        .toc-list {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+
+        .toc-item {
+            margin-bottom: 0.5rem;
+        }
+
+        .toc-link {
+            display: block;
+            padding: 0.5rem 0.75rem;
+            color: inherit;
+            text-decoration: none;
+            border-radius: 6px;
+            font-size: 0.875rem;
+            line-height: 1.4;
+            transition: all 0.2s ease;
+            border-left: 2px solid transparent;
+            opacity: 0.7;
+        }
+
+        .toc-link:hover {
+            background: rgba(0, 0, 0, 0.05);
+            color: inherit;
+            border-left-color: currentColor;
+            opacity: 1;
+        }
+
+        .toc-container.dark .toc-link {
+            color: inherit;
+        }
+
+        .toc-container.dark .toc-link:hover {
+            background: rgba(255, 255, 255, 0.05);
+            color: inherit;
+            border-left-color: currentColor;
+        }
+
+        .toc-link.active {
+            background: rgba(0, 0, 0, 0.1);
+            color: inherit;
+            border-left-color: currentColor;
+            font-weight: 500;
+            opacity: 1;
+        }
+
+        .toc-container.dark .toc-link.active {
+            background: rgba(255, 255, 255, 0.1);
+            color: inherit;
+            border-left-color: currentColor;
+        }
+
+        .toc-link.h2 {
+            padding-left: 0.75rem;
+            font-weight: 500;
+        }
+
+        .toc-link.h3 {
+            padding-left: 1.5rem;
+            font-size: 0.8rem;
+            color: inherit;
+            opacity: 0.6;
+        }
+
+        .toc-container.dark .toc-link.h3 {
+            color: inherit;
+        }
+
+        .toc-link.h4 {
+            padding-left: 2.25rem;
+            font-size: 0.75rem;
+            color: inherit;
+            opacity: 0.5;
+        }
+
+        .toc-container.dark .toc-link.h4 {
+            color: inherit;
+        }
+
+        /* TOC Custom Scrollbar */
+        .toc-container::-webkit-scrollbar {
+            width: 6px;
+        }
+
+        .toc-container::-webkit-scrollbar-track {
+            background: transparent;
+        }
+
+        .toc-container::-webkit-scrollbar-thumb {
+            background: rgba(0, 0, 0, 0.2);
+            border-radius: 3px;
+            transition: background 0.3s ease;
+        }
+
+        .toc-container::-webkit-scrollbar-thumb:hover {
+            background: rgba(0, 0, 0, 0.3);
+        }
+
+        .toc-container.dark::-webkit-scrollbar-thumb {
+            background: rgba(255, 255, 255, 0.2);
+        }
+
+        .toc-container.dark::-webkit-scrollbar-thumb:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+
+        .toc-toggle-nav {
+            width: 40px;
+            height: 40px;
+            background: transparent;
+            border: 1px solid currentColor;
+            border-radius: 50%;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: inherit;
+            opacity: 0.8;
+            margin-left: 1rem;
+            font-size: 1rem;
+            flex-shrink: 0;
+        }
+
+        /* Ensure TOC button is visible on mobile */
+        @media (max-width: 768px) {
+            .toc-toggle-nav {
+                display: flex !important;
+                position: static;
+                margin-left: 1rem;
+                z-index: 1002;
+                right: auto;
+                top: auto;
+                transform: none;
+            }
+        }
+
+        /* Show TOC button on desktop */
+        @media (min-width: 769px) {
+            .toc-toggle-nav {
+                display: flex !important;
+            }
+        }
+
+        .toc-toggle-nav:hover {
+            opacity: 1;
+            transform: scale(1.05);
+        }
+
+
+
+        @media (max-width: 1200px) {
+            .toc-container {
+                right: 0;
+                width: 25%;
+                min-width: 500px;
+                padding: 1rem 1.5rem 1rem 0.5rem;
+            }
+
+        }
+
+        @media (max-width: 768px) {
+            .toc-container {
+                position: fixed;
+                top: var(--header-height, 60px);
+                right: 0;
+                left: 0;
+                bottom: 0;
+                width: 100%;
+                min-width: auto;
+                max-height: calc(100vh - var(--header-height, 60px));
+                border-radius: 0;
+                z-index: 1000;
+                padding: 2rem;
+                background: oklch(0.985 0 0 / 0.98);
+                backdrop-filter: blur(10px);
+                margin-top: 0;
+            }
+
+            body.dark-body .toc-container {
+                background: oklch(0.145 0 0 / 0.98);
+            }
+
+
+        }
+
+        header {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        header img {
+            width: 100%;
+        }
+
+        .badges {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px 0;
+        }
+
+        .badges img {
+            height: 24px;
+        }
+
+        section {
+            margin: 20px auto;
+            max-width: 800px;
+            padding: 0 20px;
+        }
+
+        h1,
+        h2,
+        h3 {
+            color: #222;
+        }
+
+        blockquote {
+            background: #f4f4f4;
+            border-left: 3px solid #ccc;
+            margin: 10px 0;
+            padding: 10px 20px;
+            font-style: italic;
+        }
+
+        footer {
+            text-align: center;
+            margin: 20px 0;
+        }
+
+        footer img {
+            width: 100%;
+            border-radius: 13px;
+        }
+    </style>
+</head>
+
+<body class="dark-body">
+
+    <!-- Header with Menu -->
+    <div style="margin-bottom: 6rem;">
+        <header class="main-header">
+            <div class="header-container"
+                style="display: flex; align-items: center; justify-content: space-between; width: 100%;">
+                <div class="header-left">
+                    <div class="header-mobile-toggle"  style="display: none;">
+                        <span></span>
+                        <span></span>
+                        <span></span>
+                    </div>
+                    <div class="header-logo">
+                        <h1 style="margin: 0; font-size: 1.2rem; font-weight: 600; white-space: nowrap;">WebKernel Docs
+                        </h1>
+                    </div>
+                </div>
+                <nav class="header-nav" style="flex: 1; display: flex; justify-content: flex-end;">
+                    <ul class="nav-menu">
+                        <li><a href="javascript:void(0)" class="nav-link"></a></li>
+                    </ul>
+                </nav>
+                <button id="tocToggle" class="toc-toggle-nav" title="Table des matières">
+                    📋
+                </button>
+            </div>
+        </header>
+    </div>
+
+    <div class="container" style="padding-left:30%; padding-right:30%; margin-bottom: 16rem;">
+
+        <p>
+        <div class="glass-image-effect" align="center">
+            <img width="100%" src="https://4kwallpapers.com/images/walls/thumbs_3t/22083.png">
+        </div>
+        </p>
+        <div align="center" style="margin-top: 30px; margin-bottom: 40px;">
+            <a href="" target="_blank" style="text-decoration: none;">
+                <img src="https://custom-icon-badges.demolab.com/badge/-Numerimondes-white.svg?logo=numerimondes"
+                    alt="Numerimondes Badge" style="height: 24px; margin-right: 6px;">
+            </a>
+            <a href="" target="_blank" style="text-decoration: none;">
+                <img src="https://custom-icon-badges.demolab.com/badge/-WebKernel-white.svg?logo=numerimondes"
+                    alt="WebKernel Badge" style="height: 24px;">
+            </a>
+            <h1 style="margin-top: 20px; margin-bottom: 20px; font-size: 24px;font-family: 'Manrope', sans-serif;">
+                Manifeste WebKernel
+            </h1>
+            <p>Méthodologie pour créer un écosystème logiciel modulaire haute performance: Standard, Lean, Rapide,
+                Efficace, Scalable, Sécurisé, Maintenable</p>
+        </div>
+
+        <blockquote>
+            <p><em>La simplicité est la sophistication ultime. – Léonard de Vinci</em></p>
+            <p>Dans Webkernel, chaque module doit être une œuvre d&#39;art minimaliste, fonctionnant seul mais
+                s&#39;intégrant
+                parfaitement à l&#39;ensemble.</p>
+        </blockquote>
+        <h2 id="resume-executif">I. Résumé Exécutif</h2>
+        <p>Ce manifeste définit ma méthodologie de création de la platform Numerimondes basée sur : un écosystème
+            logiciel modulaire qui remplace tous les outils d&#39;entreprise fragmentés par une solution unifiée. En
+            tant qu'architecte et ingénieur solo, mon but est de construire des modules autonomes mais parfaitement
+            intégrés,
+            suivant des principes stricts de simplicité, de cohérence et de qualité. Cette approche permet de créer des
+            suites
+            complètes où chaque module peut fonctionner indépendamment tout en participant à un écosystème plus vaste
+            qui libère les fondateurs des dépendances technologiques multiples.</p>
+        <p>Chaque module est une sorte d'application monolithe capable de communiquer avec d'autres modules
+            ou d'être exploités par le noyau Webkernel.</p>
+        <h3 id="mission-webkernel">1.1. Ma Mission avec WebKernel</h3>
+        <p>WebKernel est ma réponse aux outils d&#39;entreprise fragmentés. Ma philosophie forme un code d&#39;honneur
+            et elle a pour but de créer une plateforme unifiée, accessible, et durable, où chaque module est une pièce
+            d&#39;un puzzle plus grand. Ce manifeste guide mes choix pour rester fidèle à cette vision, même seul.</p>
+        <h3 id="ce-qui-me-pousse">1.2. Ce Qui Me Pousse</h3>
+        <p>Chaque ligne de code est un pas vers la liberté des fondateurs. Mes algorithmes résolvent des problèmes
+            réels,
+            et prouvent en quelque sorte qu&#39;un seul développeur peut changer le monde, un module à la fois.</p>
+        <h2 id="credits-inspirations">II. Crédits et Inspirations</h2>
+        <p>Tous les crédits reviennent aux développeurs de logiciels expérimentés sur divers forums Internet, qui ont
+            partagé leur expérience inestimable sur la manière de mieux écrire du code. Inspiré également de Naval
+            Ravikant et de
+            son approche entrepreneuriale, ainsi que de l&#39;expérience pratique de développement de WebKernel et de
+            suites logicielles complètes comme ThebestRecruit sous ma marque Numerimondes.
+            Toutes ces informations ont été collectées à partir de différents endroits sur Internet et ont été écrites
+            dans ce début de guide formaté pour créer des écosystèmes logiciels durables.</p>
+        <h2 id="guide-communautaire">III. Un Guide pour Moi-Même</h2>
+        <p>Ce guide a pour objectif de m&#39;aider au développement des modules officiels basés sur <a
+                href="https://github.com/webkernel/webkernel">WebKernel</a> avec le moins de ressources possibles. À
+            savoir son créateur seul, en lieu et place d&#39;une équipe entière, mais avec une vision d&#39;écosystème
+            logiciel complet plutôt que d&#39;applications isolées.<br><br>
+            L&#39;objectif est de créer des suites logicielles modulaires où chaque module peut fonctionner de manière
+            autonome tout en s&#39;intégrant parfaitement dans un ensemble plus large.<br><br>
+            Parfois il sera mentionné une &quot;équipe&quot;, car même en étant seul créateur il y a toujours les
+            utilisateurs finaux, les mandataires, intermédiaires, tierces parties, etc.<br><br> Qu&#39;il s&#39;agisse
+            d&#39;une
+            équipe de développement ou d&#39;un seul développeur, le calcul est effectué en jours hommes et
+            l&#39;ensemble des développeurs sont désignés par &quot;Concepteur&quot;.<br><br>
+            Ce manifeste est ma voie, mais il est aussi conçu pour inspirer d&#39;autres développeurs solo et vise à
+            préparer la documentation de WebKernel et à intégrer d&#39;autres développeurs dans notre écosystème. En
+            partageant WebKernel et ce guide, je souhaite encourager une communauté de créateurs à construire des
+            écosystèmes simples, cohérents, et durables.</p>
+        <p>Puisse chacun publier ses propres manifestes, apprendre de ses erreurs, et construire avec:</p>
+        <ol style="column-count: 2; ">
+            <li>Initiative</li>
+            <li>Passion</li>
+            <li>Courage</li>
+            <li>Humilité</li>
+            <li>Renoncement</li>
+            <li>Constance</li>
+            <li>Simplicité</li>
+            <li>Et rigueur</li>
+        </ol>
+        <h2 id="objectif-webkernel">IV. Objectif de WebKernel/Numerimondes</h2>
+        <p>J&#39;ai créé Numerimondes pour équiper les fondateurs avec WebKernel : une suite logicielle complète qui
+            remplace tous les outils enterprise dont ils ont besoin.
+            Au lieu d&#39;acheter séparément des solutions CRM, serveur de fichiers, téléphonie et autres, WebKernel
+            fournit tout dans une seule installation. Les fondateurs obtiennent leur infrastructure complète en quelques
+            clics, sans dépendances externes.<br><br>
+            <strong>La particularité unique de WebKernel</strong> : chaque module contient plusieurs sous-modules et
+            peut représenter une entreprise complète. Un client qui achète une solution basée sur WebKernel peut gérer
+            son centre de formation, mais aussi son cabinet d&#39;audit ou son hôpital - tout dans la même installation.
+            <br><br>
+            C&#39;est simple : une seul licence, et tous les outils professionnels sont prêts. Email, stockage,
+            téléphonie,
+            CRM, comptabilité - tout fonctionne ensemble, sans frais mensuels récurrents.
+        </p>
+        <h2 id="architecture-communication">V. Architecture et Communication Inter-Modules</h2>
+        <h3 id="modele-communication">5.1. Modèle de Communication Inter-Modules</h3>
+        <ul>
+            <li><strong>Type</strong> : Helper-Driven (piloté par des fonctions helpers)</li>
+            <li><strong>Principe</strong> : Chaque module est une application autonome avec ses sous-modules. Les
+                interactions sont gérées par des fonctions helpers (ex. : <code>getModuleConfig</code>) qui accèdent
+                dynamiquement aux ressources (fichiers de configuration, classes, DB) sans dépendances directes</li>
+            <li><strong>Avantages</strong> : Simplicité, faible couplage, flexibilité pour ajouter de nouveaux modules
+            </li>
+            <li><strong>Limites Actuelles</strong> : Manque de standardisation pour les intégrations tierces, dépendance
+                aux helpers pour toutes les interactions</li>
+        </ul>
+        <h3 id="standards-techniques">5.2. Standards Techniques</h3>
+        <ul>
+            <li><strong>Base</strong> : WebKernel basé sur FilamentPHP</li>
+            <li><strong>Interface</strong> : TailwindCSS et Livewire</li>
+            <li><strong>Architecture</strong> : Modules autonomes avec communication via helpers</li>
+            <li><strong>Conventions</strong> : PSR-4 pour PHP, structure cohérente des répertoires, code unifié</li>
+        </ul>
+        <h2 id="equilibre-vie">VI. Équilibre de Vie : Fondement de la Créativité</h2>
+        <p>Il est important d&#39;accorder une importance égale à chaque routine. Il m&#39;est arrivé pendant des années
+            et même dernièrement de travailler toute la journée sans accorder de temps à moi-même ou à autre chose que
+            le travail.
+            Pour une personne qui crée des suites logicielles, l&#39;équilibre est crucial (et souvent difficile à
+            trouver) car le processus de création d&#39;écosystèmes demande une vision à long terme et une endurance
+            intellectuelle soutenue.</p>
+        <h3 id="temps-de-travail-professionnel">Temps de Travail Professionnel</h3>
+        <p>C&#39;est le temps consacré au travail de développement technique et de conception architecturale,
+            d&#39;orchestration et de conception/tests. Dans le contexte de création de suites logicielles, ce temps
+            doit être réparti entre le développement pur, la conception d&#39;architecture modulaire, et la
+            planification des interconnexions entre modules.</p>
+        <h4 id="principes-de-productivit-">Principes de Productivité</h4>
+        <ul>
+            <li><strong>Limite hebdomadaire</strong> : Un jour de repos chaque semaine (maximum 48 heures de travail par
+                semaine). Ce repos est particulièrement important car l&#39;esprit doit traiter la complexité
+                architecturale et les connexions entre modules</li>
+            <li><strong>Sieste stratégique</strong> : Faire une sieste de 15-30 minutes 6-7 heures après le réveil
+                (augmente la productivité). Cette sieste est cruciale pour maintenir la clarté mentale nécessaire aux
+                décisions architecturales complexes</li>
+            <li><strong>Ergonomie</strong> : Avoir une chaise et un bureau ergonomiques (garder le dos droit).
+                L&#39;ergonomie est essentielle pour les longues sessions de développement</li>
+        </ul>
+        <h4 id="pas-de-limite-de-temps-pas-de-productivit-">Pas de limite de temps = pas de productivité</h4>
+        <ul>
+            <li><strong>Limite quotidienne</strong> : Ne pas travailler plus de 9 heures par jour (pauses incluses).
+                Cette limite permet de maintenir la qualité du code et la cohérence architecturale sur tous les modules
+            </li>
+            <li><strong>Planification</strong> : Noter l&#39;heure de début du travail et estimer l&#39;heure de fin
+            </li>
+        </ul>
+        <h4 id="commencer-par-le-travail">Commencer par le travail</h4>
+        <ul>
+            <li><strong>Priorité matinale</strong> : Préférer travailler après le réveil (plutôt que par vérifier les
+                emails, messages, SMS, appels, actualités, sites, etc. pour éviter les distractions). Commencer par les
+                tâches architecturales les plus critiques quand l&#39;esprit est le plus clair</li>
+        </ul>
+        <h3 id="temps-de-travail-personnel">Temps de Travail Personnel</h3>
+        <p>C&#39;est le temps accordé à soi-même. Commencer à travailler sur les tâches directement après le temps de
+            travail professionnel. Ce temps permet aussi de réfléchir inconsciemment aux problèmes architecturaux
+            complexes.</p>
+        <h4 id="sant-physique-et-mentale">Santé Physique et Mentale</h4>
+        <ul>
+            <li><strong>Clarté mentale</strong> : Ne pas fumer, ne pas boire, ne pas prendre de drogues, garder la tête
+                froide et l&#39;esprit clair</li>
+            <li><strong>Gestion personnelle</strong> : S&#39;occuper de sa santé, de ses vêtements, de son hygiène, du
+                renouvellement de sa pièce d&#39;identité, etc. La santé physique et mentale est fondamentale pour
+                maintenir la vision globale nécessaire à la création d&#39;écosystèmes logiciels</li>
+            <li><strong>Exercice régulier</strong> : Faire de l&#39;exercice au moins deux fois par semaine (par exemple
+                : saut à la corde pendant 10 minutes pour un cœur en bonne santé) (Samedi, Mardi, dates fixes).
+                L&#39;exercice physique aide à la clarté mentale nécessaire pour les décisions architecturales complexes
+            </li>
+            <li><strong>Activité physique</strong> : Être physiquement actif en effectuant des tâches ménagères.
+                L&#39;activité physique permet souvent de résoudre inconsciemment des problèmes de conception</li>
+            <li><strong>Alimentation</strong> : Manger modérément (pour éviter la paresse). Une alimentation équilibrée
+                (riche en fruits, noix et légumes) et une hydratation régulière maintient l&#39;énergie nécessaire aux
+                longues sessions de développement</li>
+        </ul>
+        <h3 id="temps-familial-social">Temps Familial/Social</h3>
+        <p>C&#39;est le temps accordé à la famille et aux personnes importantes, comme faire les courses pour la
+            famille, passer du temps avec sa femme (In Shaa Allah), ses parents, etc., emmener un membre de la famille
+            chez le médecin lorsqu&#39;il est malade, aider aux tâches ménagères, etc. Ce temps est crucial pour
+            maintenir l&#39;équilibre et la perspective nécessaires à la création de produits centrés sur
+            l&#39;utilisateur.</p>
+        <h3 id="pourquoi-d-velopper-seul-sous-webkernel-">Pourquoi Développer Seul sous WebKernel ?</h3>
+        <p>Avec WebKernel, le développement d&#39;un écosystème logiciel présente des avantages uniques qui sont
+            particulièrement importants pour la création de suites cohérentes :</p>
+        <ul>
+            <li><strong>Vision unifiée</strong> : Avec WebKernel, il n&#39;y a pas de différence d&#39;opinion sur
+                l&#39;architecture globale. Avec le temps, la vision architecturale sera de plus en plus unifiée,
+                normalisée et partagée pour créer des modules qui s&#39;intègrent parfaitement</li>
+            <li><strong>Communication directe</strong> : Pas de retravail dû à un manque de communication. Les décisions
+                architecturales peuvent être prises rapidement sans consensus d&#39;équipe</li>
+            <li><strong>Liberté créative</strong> : Pas besoin de montrer son travail à quelqu&#39;un. La liberté de
+                concevoir et d&#39;itérer rapidement sur l&#39;architecture sans validation externe</li>
+            <li><strong>Flexibilité horaire</strong> : Pas d&#39;horaires de bureau inutiles. Flexibilité totale pour
+                travailler selon les rythmes naturels de créativité</li>
+            <li><strong>Focus qualité</strong> : Focus total sur la qualité du produit plutôt que sur la politique
+                interne</li>
+            <li><strong>Efficacité</strong> : Pas de temps perdu en déplacements. Tout le temps peut être consacré au
+                développement et à la réflexion architecturale</li>
+            <li><strong>Équilibre</strong> : Grand équilibre travail/vie en solo. Possibilité d&#39;adapter le rythme de
+                travail aux besoins personnels tout en maintenant la productivité</li>
+        </ul>
+        
+
+        <div align="center" class="glass-image-effect" style="margin-top: 8rem; margin-bottom: 20px;">
+            <img src="https://blogs.jccc.edu/astronomy/files/2013/11/Phasesmoon-1024x439.jpg"
+                style="border-radius: 13px; width: 100%;">
+        </div>
+        <h2 id="phases-developpement">VII. Phases de Développement</h2>
+        <p>Chaque phase doit être limitée dans le temps. Pour le développement de suites logicielles, les phases doivent
+            prendre en compte à la fois le développement individuel de chaque module et son intégration globale à
+            l&#39;écosystème.</p>
+        <h3 id="phase-1-planification">Phase 1 : Planification</h3>
+        <h4 id="vue-d-ensemble">Vue d&#39;Ensemble</h4>
+        <p>La planification d&#39;une suite logicielle présente une complexité significativement supérieure à celle
+            d&#39;une application isolée car elle nécessite une gestion minutieuse des interactions entre modules, une
+            attention particulière à la cohérence de l&#39;expérience utilisateur à travers l&#39;ensemble de
+            l&#39;écosystème, ainsi qu&#39;une conception architecturale qui anticipe l&#39;évolutivité et
+            l&#39;extensibilité futures de la plateforme.</p>
+        <h4 id="d-finition-des-objectifs">Définition des Objectifs</h4>
+        <p>L&#39;approche de définition des objectifs doit impérativement adopter une perspective centrée sur
+            l&#39;utilisateur plutôt que sur les préoccupations techniques du développeur, ce qui signifie qu&#39;il
+            faut se concentrer sur la résolution concrète des problèmes que rencontre l&#39;utilisateur final et
+            comprendre précisément quels sont ses besoins réels, ses attentes et ses contraintes, plutôt que de se
+            laisser guider par l&#39;attractivité de nouvelles fonctionnalités ou par des considérations purement
+            esthétiques ou techniques. Cette approche implique également de penser en termes d&#39;écosystème complet et
+            intégré plutôt qu&#39;en fonctionnalités isolées et déconnectées les unes des autres, ce qui permet
+            d&#39;assurer une cohérence globale et une valeur ajoutée réelle pour l&#39;utilisateur.</p>
+        <blockquote>
+            <p><strong>Exemple pratique</strong> :
+                Pour une suite de gestion des ressources humaines comme <a href="https://thebestrecruit.com"
+                    target="_blank">The Best Recruit</a>, l&#39;utilisateur ne recherche pas simplement un module de
+                recrutement performant, mais plutôt une solution
+                complète et intégrée de gestion RH qui lui permette de gérer l&#39;ensemble du cycle de vie des
+                employés,
+                depuis le recrutement jusqu&#39;à la gestion des performances, en passant par la formation et
+                l&#39;administration du personnel.</p>
+        </blockquote>
+        <p><strong>Tests d&#39;acceptation utilisateur</strong> : Le test d&#39;acceptation utilisateur de base pour un
+            tel écosystème doit vérifier que l&#39;utilisateur peut naviguer de manière fluide et intuitive entre les
+            différents modules, que les données sont partagées correctement et automatiquement entre les composants, et
+            que l&#39;expérience utilisateur demeure cohérente et homogène à travers l&#39;ensemble des modules de la
+            suite.</p>
+        <p><strong>Code réutilisable</strong> : L&#39;identification du code réutilisable constitue un élément crucial
+            qui doit être effectué dès la phase de conception, en distinguant clairement le code qui peut être partagé
+            entre modules et sous-modules, le code spécifique à chaque composant, ainsi que les possibilités de
+            surcharge des données et des fonctions qui permettront d&#39;optimiser les performances et la maintenabilité
+            de l&#39;ensemble du système.</p>
+        <h4 id="validation-du-march-">Validation du Marché</h4>
+        <blockquote>
+            <p>Tout d&#39;abord pour un concepteur seul, éviter les distractions pouvant sembler utiles mais qui ne le
+                sont pas. Comme avoir une activité de design et développer une suite logicielle. Le développement
+                d&#39;une suite logicielle pour un secteur d&#39;activité ou un groupe d&#39;utilisateurs est une
+                activité qui demande une concentration et une attention particulière.</p>
+            <p>Avant de commencer à développer il faut valider le besoin du marché. Avoir des utilisateurs prêts à payer
+                pour le produit ou qui, mieux, payent à tarif réduit en contrepartie d&#39;une livraison progressive.
+                Cela peut permettre d&#39;onboarder une catégorie d&#39;utilisateur avec un budget limité initialement.
+            </p>
+        </blockquote>
+        <h4 id="planification-temporelle">Planification Temporelle</h4>
+        <p>Il est essentiel de commencer la phase de planification le plus tôt possible dans le processus de
+            développement, car la planification d&#39;écosystèmes complexes nécessite un investissement temporel
+            considérablement plus important que celui requis pour des applications isolées, en raison de la nécessité
+            d&#39;anticiper et de modéliser les interactions entre composants, les flux de données, et les dépendances
+            architecturales.</p>
+        <p>La phase de recherche et de design doit être menée avec un soin particulier et inclure une étude approfondie
+            des architectures modulaires éprouvées dans des contextes similaires, une analyse des patterns
+            d&#39;intégration les plus efficaces et adaptés au domaine d&#39;application, ainsi qu&#39;une recherche des
+            standards et des meilleures pratiques qui ont fait leurs preuves dans des projets comparables, le tout dans
+            le but de créer un design initial solide et bien fondé qui permettra d&#39;éviter les blocages
+            architecturaux futurs et les refontes coûteuses.</p>
+        <h4 id="structure-de-planification">Structure de Planification</h4>
+        <h5 id="subdivision-hi-rarchique">Subdivision Hiérarchique</h5>
+        <pre><code>Platform = Écosystème WebKernel + modules
+├── Modules                        <span class="hljs-meta"># CRM, Comptabilité, RH</span>
+      ├── Sous-Modules               <span class="hljs-meta"># Core obligatoire + Extensions</span>
+          ├── Fonctionnalités        <span class="hljs-meta"># Gestion contacts, Facturation</span>
+              ├── Tâches             <span class="hljs-meta"># Créer contact, Envoyer facture</span>
+                  └── Sous-tâches    <span class="hljs-meta"># Valider email, Calculer taxes</span>
+      </code></pre>
+        <p>La méthode recommandée suit une approche story-driven qui décompose le projet selon la séquence:</p>
+        <blockquote>
+            <p>Histoire → Fonctionnalités → Tâche → Sous-tâche</p>
+        </blockquote>
+        <p>avec une attention particulière portée aux dépendances inter-modules qui peuvent créer des goulots
+            d&#39;étranglement ou des points de blocage si elles ne sont pas correctement identifiées et gérées dès le
+            début du processus de planification.</p>
+        <h4 id="phases-de-planification-d-taill-es">Phases de Planification Détaillées</h4>
+        <p><strong>Recherche architecturale</strong> : La phase de recherche architecturale consiste à étudier de
+            manière systématique les standards de l&#39;industrie, les meilleures pratiques reconnues, et les modèles
+            architecturaux existants qui ont prouvé leur efficacité dans des contextes similaires, afin d&#39;établir
+            une base solide pour les décisions de conception qui suivront.</p>
+        <p><strong>Conception modulaire</strong> : La conception modulaire implique un découpage méthodique du projet en
+            modules clairement définis, autonomes et réutilisables, avec des interfaces bien spécifiées qui permettent
+            une intégration harmonieuse tout en maintenant un faible couplage entre les composants, ce qui facilite la
+            maintenance, les tests, et l&#39;évolutivité future du système.</p>
+        <p><strong>Planification d&#39;intégration</strong> : La planification d&#39;intégration doit anticiper et
+            définir précisément comment les différents modules vont s&#39;intégrer ensemble, quels seront les protocoles
+            de communication, les formats de données échangées, et les mécanismes de synchronisation qui assureront le
+            bon fonctionnement de l&#39;ensemble du système de manière cohérente et performante.</p>
+        <p><strong>Phase d&#39;estimation</strong> : La phase d&#39;estimation requiert une évaluation minutieuse et
+            réaliste du temps et du coût nécessaires pour chaque module et fonctionnalité, en tenant compte non
+            seulement du développement initial mais aussi des phases de test, d&#39;intégration, de débogage, et de mise
+            en production, ainsi que des ressources nécessaires pour la maintenance et les évolutions futures.</p>
+        <h4 id="gestion-du-backlog">Gestion du Backlog</h4>
+        <h5 id="priorisation-moscow-perspective-utilisateur-">Priorisation MoSCoW (perspective utilisateur)</h5>
+        <table>
+            <thead>
+                <tr>
+                    <th>Priorité</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td><strong>Must have</strong></td>
+                    <td>Fonctionnalités essentielles sans lesquelles le système ne peut pas fonctionner ou répondre aux
+                        besoins fondamentaux de l&#39;utilisateur</td>
+                </tr>
+                <tr>
+                    <td><strong>Should have</strong></td>
+                    <td>Fonctionnalités importantes qui ajoutent une valeur significative mais dont l&#39;absence
+                        n&#39;empêche pas le fonctionnement de base</td>
+                </tr>
+                <tr>
+                    <td><strong>Could have</strong></td>
+                    <td>Fonctionnalités souhaitables qui améliorent l&#39;expérience utilisateur mais peuvent être
+                        reportées sans impact critique</td>
+                </tr>
+                <tr>
+                    <td><strong>Won&#39;t have</strong></td>
+                    <td>Fonctionnalités explicitement exclues de la version actuelle mais potentiellement considérées
+                        pour les versions futures</td>
+                </tr>
+            </tbody>
+        </table>
+        <p><strong>Stratégie pour suites logicielles</strong> : Pour les suites logicielles, la stratégie de
+            priorisation doit privilégier en premier lieu les modules fondamentaux qui constituent le cœur fonctionnel
+            du système et sur lesquels reposent les autres composants, avant de s&#39;intéresser aux modules
+            d&#39;extension qui apportent des fonctionnalités supplémentaires mais non critiques pour le fonctionnement
+            de base de la suite.</p>
+        <p><strong>Gestion quotidienne</strong> : La gestion quotidienne du travail doit s&#39;organiser autour de
+            tâches réalisables dans une journée de travail standard de 8 à 9 heures, en incluant systématiquement du
+            temps dédié aux tests d&#39;intégration entre sous-modules, car ces tests sont souvent plus complexes et
+            chronophages que les tests unitaires mais sont essentiels pour assurer la cohérence et la fiabilité de
+            l&#39;ensemble du système.</p>
+        <p><strong>Processus de réajustement</strong> : Le processus de réajustement doit prévoir des mécanismes
+            réguliers de repriorisation des tâches, de réestimation des charges de travail, et de redéfinition des
+            délais lorsque de nouvelles fonctionnalités sont ajoutées au backlog ou lorsque des complications
+            imprévisibles surviennent, afin de maintenir la capacité du projet à s&#39;adapter aux changements tout en
+            respectant les contraintes de qualité et de délais.</p>
+        <h4 id="conception">Conception</h4>
+        <p>La conception d&#39;une suite logicielle nécessite une approche différente de celle d&#39;une application
+            isolée. Elle doit prendre en compte la cohérence visuelle, l&#39;architecture technique partagée, et
+            l&#39;expérience utilisateur unifiée.</p>
+        <p>WebKernel étant basé sur FilamentPHP, les interfaces sont en TailwindCSS et Livewire.</p>
+        <p><strong>Principes de Conception</strong> :</p>
+        <ul>
+            <li><strong>Interactions utilisateur</strong> : Mappez les flux utilisateur entre modules pour s&#39;assurer
+                d&#39;une expérience cohérente. Interactions utilisateur compliquées/interactions simples avec des cas
+                d&#39;utilisation simples (draw.io)</li>
+            <li><strong>Interface utilisateur</strong> : Conception d&#39;interface utilisateur simple (MS Paint),
+                utiliser des modèles de conception d&#39;interface utilisateur testés. Créer un système de design unifié
+                pour tous les modules</li>
+            <li><strong>Tests d&#39;intégration</strong> : Tester les patterns d&#39;intégration entre sous-modules
+                avant l&#39;implémentation complète</li>
+            <li><strong>Simplicité</strong> : Conception la plus simple (pas de fonctionnalités fantaisistes, etc., ne
+                pas se soucier des exigences futures). Privilégier la simplicité et la cohérence sur tous les modules
+            </li>
+        </ul>
+        <p><strong>Philosophie de Conception</strong> :</p>
+        <table>
+            <thead>
+                <tr>
+                    <th>Principe</th>
+                    <th>Description</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td>Le mieux est l'ennemi du bien</td>
+                    <td>Un logiciel limité mais simple à utiliser est meilleur qu'un logiciel bogué ou complexe avec des fonctionnalités superflues (moins de fonctionnalités, plus de qualité). Cela s'applique particulièrement aux suites où la complexité peut exploser rapidement.</td>
+                </tr>
+                <tr>
+                    <td><strong>YAGNI</strong></td>
+                    <td>Ne pas programmer de fonctionnalités tant qu'elles ne sont pas réellement nécessaires ("You Ain't Gonna Need It") et éviter la sur-ingénierie dans l'architecture modulaire.</td>
+                </tr>
+                <tr>
+                    <td><strong>Unix Philosophy</strong></td>
+                    <td>Écrire des programmes qui font une chose et la font bien, et qui fonctionnent avec d'autres programmes. Chaque module doit être autonome tout en s'intégrant parfaitement.</td>
+                </tr>
+                <tr>
+                    <td><strong>Conception complète</strong></td>
+                    <td>La conception doit couvrir autant de situations importantes que possible. Tous les cas raisonnablement attendus doivent être couverts. La simplicité n'est pas autorisée à réduire excessivement la complétude. Pour les suites, cela inclut les cas d'intégration entre sous-modules.</td>
+                </tr>
+                <tr>
+                    <td><strong>Standards</strong></td>
+                    <td>Utiliser des normes logicielles pour tout (par exemple, version sémantique, commits conventionnels, etc.). Maintenir des standards cohérents sur tous les modules de la suite.</td>
+                </tr>
+            </tbody>
+        </table>
+        <h4 id="estimation">Estimation</h4>
+        <p>L&#39;estimation pour les suites logicielles présente une complexité particulière car elle doit intégrer non
+            seulement le temps de développement individuel de chaque sous-module, mais également les durées nécessaires
+            pour l&#39;intégration entre composants, les tests de compatibilité inter-modules, et la maintenance de la
+            cohérence architecturale globale de l&#39;écosystème.</p>
+        <h5 id="gestion-des-tampons-temporels">Gestion des Tampons Temporels</h5>
+        <p>Il est essentiel de prévoir un temps tampon de 10 à 30% lors de l&#39;estimation des délais de livraison, ce
+            qui permet d&#39;absorber les imprévus sans compromettre la qualité du livrable. Par exemple, si
+            l&#39;estimation initiale est de 10 jours, ajouter 1 à 3 jours supplémentaires pour fixer la date de
+            livraison finale entre le 11ème et le 13ème jour. Pour les suites logicielles, ce tampon doit être majoré
+            pour tenir compte des tests d&#39;intégration entre modules qui sont souvent plus longs et imprévisibles que
+            les tests unitaires.</p>
+        <h5 id="-quilibre-estimation-productivit-">Équilibre Estimation-Productivité</h5>
+        <p>La précision de l&#39;estimation joue un rôle crucial dans l&#39;optimisation de la productivité de
+            l&#39;équipe. Une sous-estimation systématique conduit à des situations de stress, des heures
+            supplémentaires récurrentes, et potentiellement à l&#39;abandon de fonctionnalités importantes.</p>
+        <p>À l&#39;inverse, une surestimation excessive déclenche la Loi de Parkinson (le travail s&#39;étend pour
+            occuper tout le temps disponible), réduisant l&#39;efficacité et la motivation du Concepteur. L&#39;objectif
+            est de trouver l&#39;équilibre optimal qui maintient une pression productive saine sans sacrifier la qualité
+            technique ou l&#39;exhaustivité des livrables.</p>
+        <h5 id="impact-sur-la-productivit-">Impact sur la Productivité</h5>
+        <p>Une estimation correcte et réaliste constitue le fondement d&#39;une productivité optimale dans le
+            développement de suites logicielles. Sans contraintes temporelles définies ou avec des délais trop lâches,
+            la productivité tend à chuter significativement car l&#39;urgence nécessaire à la concentration et à
+            l&#39;efficacité fait défaut. Les estimations doivent systématiquement inclure le temps requis pour
+            maintenir la cohérence architecturale entre sous-modules, documenter les interfaces d&#39;intégration, et
+            effectuer les validations croisées qui garantissent l&#39;intégrité de l&#39;ensemble du système.</p>
+        <h3 id="phase-2-mise-en-uvre">Phase 2 : Mise en Œuvre</h3>
+        <p>La mise en œuvre d&#39;une suite logicielle nécessite une discipline particulière pour maintenir la cohérence
+            architecturale tout en développant efficacement chaque module.</p>
+        <h4 id="routine-quotidienne-de-d-veloppement">Routine Quotidienne de Développement</h4>
+        <p><strong>Démarrage quotidien</strong> :</p>
+        <ul>
+            <li>S&#39;assurer de suivre correctement le manifeste. Cela inclut le respect des standards architecturaux
+                définis pour l&#39;ensemble de la suite</li>
+            <li>Commencer la journée en observant/suivant la tâche de la veille et la date limite, les choses à faire
+                aujourd&#39;hui et tout problème de blocage à résoudre. Identifier les dépendances inter-sous-modules
+                qui pourraient créer des blocages</li>
+            <li>Suivre le travail quotidiennement pour respecter la date limite (GitHub Projects - Tableaux Kanban) et
+                corriger la productivité/le problème de blocage le cas échéant et prioriser en conséquence. Utiliser des
+                tableaux séparés pour chaque sous-module tout en maintenant une vue d&#39;ensemble</li>
+        </ul>
+        <h4 id="technique-pomodoro-adapt-e">Technique Pomodoro Adaptée</h4>
+        <p>Utiliser la technique de gestion du temps Pomodoro → travailler sur n tâches pendant x minutes (52-90
+            minutes, selon le temps estimé), prendre de petites pauses (1 minute) après chaque pomodoro (pause plus
+            longue de 10-15 minutes en fin d&#39;après-midi), le pomodoro est indivisible et ne peut pas être
+            interrompu, les autres choses doivent être faites après le pomodoro ou abandonner le pomodoro. Après
+            l&#39;achèvement de la tâche, tout temps restant est utilisé pour revoir le travail et également du point de
+            vue de l&#39;apprentissage (Qu&#39;ai-je appris ? Qu&#39;aurait pu être fait mieux ? Comment cela
+            affecte-t-il l&#39;architecture globale ? Notamment via vidéo capture comme nous en avons l&#39;habitude
+            pour les mises à jour produit).</p>
+        <h4 id="d-veloppement-pilot-par-les-tests-tdd-">Développement Piloté par les Tests (TDD)</h4>
+        <p>Utiliser le développement piloté par les tests (TDD) pendant la rédaction du code, avec une attention
+            particulière aux tests d&#39;intégration entre sous-modules :</p>
+        <ol>
+            <li><strong>Convertir</strong> la fonctionnalité/requête logicielle en cas de test, incluant les cas
+                d&#39;intégration avec d&#39;autres sous-modules</li>
+            <li><strong>Exécuter</strong> le test et voir qu&#39;il échoue</li>
+            <li><strong>Écrire</strong> du code pour passer uniquement le test (pas de refactorisation)</li>
+            <li><strong>Exécuter</strong> le test et voir qu&#39;il réussit (le code ne doit pas casser de
+                fonctionnalité existante dans le module ou dans d&#39;autres modules) (si c&#39;est devenu difficile de
+                passer le code ci-dessus, alors revenir au code ci-dessus pour éviter un débogage excessif) et valider
+            </li>
+            <li><strong>Refactoriser</strong> le nouveau code (y compris le code de test/les étapes de test) et
+                l&#39;ensemble du code et valider, en maintenant la cohérence architecturale</li>
+        </ol>
+        <h4 id="tests-complets">Tests Complets</h4>
+        <p>Les tests pour une suite logicielle doivent couvrir non seulement chaque module individuellement, mais aussi
+            l&#39;intégration entre modules et la cohérence de l&#39;expérience utilisateur globale.</p>
+        <p><strong>Types de tests requis</strong> :</p>
+        <ul>
+            <li><strong>Tests unitaires</strong> : Test unitaire pour chaque module individuellement, test de
+                fonctionnalité totale de chaque module, test d&#39;acceptation (point de vue de l&#39;utilisateur) pour
+                chaque module et pour l&#39;ensemble de la suite, test de stabilité (stress) sur l&#39;ensemble de
+                l&#39;écosystème</li>
+            <li><strong>Tests d&#39;intégration</strong> : Tests d&#39;intégration entre modules pour s&#39;assurer que
+                les données sont partagées correctement et que l&#39;expérience utilisateur reste cohérente</li>
+            <li><strong>Tests de régression</strong> : Tests de régression pour s&#39;assurer que les modifications
+                d&#39;un module n&#39;affectent pas les autres modules</li>
+            <li><strong>Tests de performance</strong> : Tests de performance pour s&#39;assurer que l&#39;ensemble de la
+                suite reste performant même avec tous les modules activés</li>
+        </ul>
+        <h2 id="documentation-communication">VIII. Documentation et Communication</h2>
+        <h3 id="8-1-documentation-multi-dimensionnelle">8.1 Documentation Multi-Dimensionnelle</h3>
+        <p>La documentation d&#39;une suite logicielle doit couvrir à la fois l&#39;utilisation de chaque module et
+            l&#39;intégration entre modules. Le marketing doit présenter la valeur de l&#39;écosystème complet.</p>
+        <h4 id="types-de-documentation-requis">Types de documentation requis</h4>
+        <p><strong>Documentation technique complète</strong> : Documentation minimale pour les utilisateurs et également
+            sur le fonctionnement du code (pour soi-même et les futurs développeurs) incluant les commentaires de code
+            détaillés, les messages de validation explicites, et les décisions de conception justifiées. Il est
+            particulièrement crucial de documenter les interfaces entre sous-modules, les protocoles de communication
+            inter-modules, et toutes les décisions architecturales qui ont un impact sur l&#39;extensibilité et la
+            maintenabilité de l&#39;ensemble de la suite logicielle.</p>
+        <p><strong>Documentation d&#39;architecture globale</strong> : Une documentation architecturale complète qui
+            explique de manière détaillée comment les différents modules s&#39;articulent ensemble, quels sont les flux
+            de données entre composants, comment les dépendances sont gérées, et comment procéder pour étendre la suite
+            avec de nouveaux modules sans compromettre la cohérence globale de l&#39;écosystème. Cette documentation
+            doit inclure des diagrammes d&#39;architecture, des schémas de base de données, et des guides de
+            développement pour maintenir la cohérence architecturale.</p>
+        <p><strong>Système de gestion du feedback utilisateur</strong> : Mise en place d&#39;un processus structuré pour
+            collecter systématiquement les retours utilisateurs, analyser leurs besoins réels et leurs points de
+            friction, puis intégrer ces insights dans les cycles de développement continu. Ce système doit permettre de
+            prioriser les améliorations en fonction de l&#39;impact utilisateur réel et de valider que les
+            développements correspondent aux besoins du marché avant d&#39;investir des ressources significatives.</p>
+        <h3 id="8-2-marketing-et-positionnement">8.2 Marketing et Positionnement</h3>
+        <p><strong>Stratégie de communication globale</strong> : PR/Marketing incluant la rédaction d&#39;articles
+            techniques sur Medium/dev.to/LinkedIn pour établir l&#39;expertise, participation active sur Reddit et
+            réponses constructives aux questions sur Stack Overflow et Quora, optimisation SEO <a
+                href="https://github.com/trekhleb/promote-your-next-startup">etc...</a> avec des mots-clés pertinents
+            pour le marché cible, et application des 4P du marketing (Prix, Produit, Place, Promotion) avec un ciblage
+            précis et des messages de segmentation du marché incluant différenciation claire et positionnement
+            distinctif. </p>
+        <p>Se référer à des logiciels similaires pour construire un message marketing différenciant, utiliser des
+            graphiques de qualité professionnelle (pixabay, unsplash), et tester régulièrement le marché pour obtenir
+            des retours constructifs et ajuster la stratégie en conséquence.</p>
+        <p>Mettre en avant la valeur de l&#39;écosystème complet plutôt que des fonctionnalités isolées.</p>
+        <p><strong>Démonstrations et preuves de concept</strong> : Créer des démonstrations vidéo réelles et
+            authentiques qui montrent concrètement l&#39;intégration fluide entre sous-modules, mettent en évidence la
+            valeur ajoutée tangible de l&#39;écosystème complet par rapport à des solutions isolées, et démontrent
+            comment WebKernel résout des problèmes réels rencontrés par les fondateurs et les entreprises dans leur
+            quotidien opérationnel.</p>
+        <p><strong>Positionnement de la valeur écosystémique</strong> : Mettre systématiquement en avant la valeur de
+            l&#39;écosystème complet plutôt que des fonctionnalités isolées et déconnectées, en expliquant comment
+            l&#39;intégration native entre modules génère des synergies et des efficacités que les solutions fragmentées
+            ne peuvent pas offrir, tout en soulignant l&#39;économie de coûts et la simplification opérationnelle que
+            représente une installation unique versus l&#39;achat et la maintenance de multiples outils séparés.</p>
+        <h2 id="mesure-metriques">IX. Mesure et Métriques</h2>
+        <h3 id="9-1-m-triques-de-d-veloppement">9.1 Métriques de Développement</h3>
+        <p>La mesure pour une suite logicielle doit prendre en compte à la fois les métriques de développement
+            individuel de chaque module et les métriques d&#39;intégration et de cohérence globale de l&#39;ensemble de
+            l&#39;écosystème.</p>
+        <p><strong>Métriques temporelles détaillées</strong> : Mesurer et documenter systématiquement le temps estimé
+            par rapport au temps réel effectivement pris pour chaque sous-tâche, afin de construire une base de données
+            historique qui permettra d&#39;améliorer significativement la précision des estimations futures en utilisant
+            les valeurs historiques comme référence (en analysant le temps pris précédemment pour des sous-tâches
+            similaires). Cette mesure doit également inclure une rétrospective détaillée pour identifier les patterns
+            récurrents et améliorer continuellement les processus de développement. Il est essentiel d&#39;inclure
+            séparément le temps passé sur l&#39;intégration entre modules, car ce temps est souvent sous-estimé mais
+            crucial pour la réussite de l&#39;ensemble.</p>
+        <p><strong>Métriques de qualité et performance</strong> : Mesurer de manière continue la performance de
+            l&#39;ensemble de la suite logicielle ainsi que de chaque module individuellement, en surveillant les temps
+            de réponse, l&#39;utilisation des ressources, et la stabilité globale du système. Établir des benchmarks de
+            performance qui permettent de détecter rapidement toute dégradation lors de l&#39;ajout de nouveaux modules
+            ou de nouvelles fonctionnalités.</p>
+        <h3 id="9-2-m-triques-utilisateur">9.2 Métriques Utilisateur</h3>
+        <p><strong>Satisfaction et adoption</strong> : Mesurer systematiquement la satisfaction utilisateur pour chaque
+            module individuellement ainsi que pour l&#39;expérience globale de navigation et d&#39;utilisation de la
+            suite complète, en identifiant les points de friction et les opportunités d&#39;amélioration de
+            l&#39;expérience utilisateur. Analyser les patterns d&#39;adoption pour comprendre comment les utilisateurs
+            découvrent et utilisent les différents modules de l&#39;écosystème.</p>
+        <p><strong>Métriques d&#39;extensibilité</strong> : Mesurer le temps nécessaire pour ajouter de nouveaux modules
+            à l&#39;écosystème existant, évaluer la complexité d&#39;intégration de nouvelles fonctionnalités, et
+            surveiller la facilité de maintenance de l&#39;architecture globale à mesure que la suite s&#39;enrichit de
+            nouveaux composants.</p>
+        <h2 id="retrospective-amelioration">X. Rétrospective et Amélioration Continue</h2>
+        <h3 id="10-1-analyse-r-trospective">10.1 Analyse Rétrospective</h3>
+        <p>La rétrospective pour une suite logicielle doit analyser à la fois le développement individuel de chaque
+            module et l&#39;efficacité de l&#39;architecture globale, en prenant en compte les interactions complexes
+            entre composants et l&#39;impact des décisions architecturales sur l&#39;ensemble de l&#39;écosystème.</p>
+        <p><strong>Processus de rétrospective structuré</strong> : Cette analyse se déroule systématiquement à la fin de
+            chaque sprint et implique un examen approfondi de la façon dont s&#39;est déroulé le sprint, tant au niveau
+            individuel du développement de chaque module qu&#39;au niveau de l&#39;intégration globale et de la
+            cohérence architecturale. L&#39;objectif est d&#39;identifier les succès à reproduire et les difficultés à
+            résoudre pour optimiser continuellement le processus de développement.</p>
+        <p><strong>Questions d&#39;amélioration continue</strong> : Quelles approches, outils, et méthodologies puis-je
+            réutiliser avec succès dans les prochains sprints ? Où puis-je identifier des opportunités
+            d&#39;amélioration concrètes tant dans les processus de développement que dans les choix architecturaux ?
+            Comment l&#39;architecture globale choisie a-t-elle facilité ou au contraire compliqué le développement de
+            nouveaux modules et leur intégration dans l&#39;écosystème existant ?</p>
+        <h3 id="10-2-analyse-des-performances">10.2 Analyse des Performances</h3>
+        <p><strong>Diagnostic des écarts temporels</strong> : Analyser systématiquement pourquoi certaines tâches
+            prennent significativement plus de temps que le temps initialement estimé, en distinguant si les retards
+            proviennent du développement individuel des modules, des complexités d&#39;intégration inter-modules, ou de
+            problèmes architecturaux non anticipés qui impactent l&#39;ensemble du système.</p>
+        <p><strong>Apprentissage des erreurs récurrentes</strong> : Identifier et documenter les patterns d&#39;erreurs
+            récurrentes telles que les solutions inutilement complexes qui augmentent la dette technique, les tendances
+            perfectionnistes qui retardent les livraisons, ou l&#39;utilisation de bibliothèques instables qui affectent
+            négativement la qualité et la stabilité de l&#39;ensemble de la suite. Analyser spécifiquement les choix
+            architecturaux qui ont facilité le développement versus ceux qui l&#39;ont compliqué, afin d&#39;affiner
+            continuellement la stratégie architecturale.</p>
+        <h3 id="10-3-feedback-utilisateur-et-march-">10.3 Feedback Utilisateur et Marché</h3>
+        <p><strong>Analyse du feedback client</strong> : Apprendre systématiquement des questions, commentaires, et
+            retours des clients en se demandant pourquoi le client ou l&#39;utilisateur pose certaines questions ou
+            exprime certains besoins. Cela peut révéler des lacunes dans la documentation, des fonctionnalités
+            manquantes, ou des aspects de l&#39;expérience utilisateur qui nécessitent des améliorations. Il est
+            particulièrement important de comprendre si les utilisateurs saisissent et apprécient la valeur de
+            l&#39;écosystème complet ou s&#39;ils ne perçoivent que des modules isolés.</p>
+        <p><strong>Évaluation de la cohérence utilisateur</strong> : Évaluer régulièrement la cohérence de
+            l&#39;expérience utilisateur entre les différents modules de la suite, identifier les incohérences
+            d&#39;interface ou de flux utilisateur qui peuvent créer de la confusion, et planifier les améliorations
+            nécessaires pour maintenir une expérience unifiée et intuitive à travers l&#39;ensemble de l&#39;écosystème.
+        </p>
+        <h2 id="xi-standards-et-conventions">XI. Standards et Conventions</h2>
+        <h3 id="11-1-conventions-techniques">11.1 Conventions Techniques</h3>
+        <p><strong>Standards de développement uniformes</strong> : Établir et maintenir des conventions de nommage
+            cohérentes sur tous les modules, une structure des répertoires standardisée qui facilite la navigation et la
+            maintenance, et des standards de codage stricts (par exemple PSR-4 pour PHP dans le contexte de WebKernel)
+            qui assurent la lisibilité et la maintenabilité du code à travers l&#39;ensemble de la suite logicielle.</p>
+        <p><strong>Architecture modulaire standardisée</strong> : Chaque module doit respecter une architecture
+            cohérente qui facilite l&#39;intégration, la maintenance, et l&#39;extension future. Cela inclut des
+            interfaces standardisées, des patterns de communication inter-modules cohérents, et des standards de qualité
+            uniformes qui garantissent que tous les modules fonctionnent harmonieusement ensemble.</p>
+        <h3 id="11-2-mod-le-de-communication-inter-modules">11.2 Modèle de Communication Inter-Modules</h3>
+        <p><strong>Type de communication</strong> : Helper-Driven (piloté par des fonctions helpers) - Cette approche
+            technique repose sur le principe que chaque module constitue une application autonome avec ses propres
+            sous-modules, et que les interactions entre modules sont gérées par des fonctions helpers spécialisées (par
+            exemple <code>getModuleConfig()</code>) qui accèdent dynamiquement aux ressources nécessaires (fichiers de
+            configuration, classes, bases de données) sans créer de dépendances directes et rigides entre les modules.
+        </p>
+        <p><strong>Avantages de cette approche</strong> : Cette architecture offre une simplicité d&#39;implémentation
+            remarquable, maintient un faible couplage entre les modules ce qui facilite la maintenance et
+            l&#39;évolution, et procure une flexibilité exceptionnelle pour ajouter de nouveaux modules à
+            l&#39;écosystème sans nécessiter de modifications majeures de l&#39;architecture existante.</p>
+        <p><strong>Limites actuelles et axes d&#39;amélioration</strong> : Le système présente actuellement un manque de
+            standardisation pour les intégrations avec des services tiers, et une dépendance structurelle aux fonctions
+            helpers pour toutes les interactions inter-modules. Ces aspects nécessitent une attention particulière pour
+            l&#39;évolution future de la plateforme afin de maintenir la cohérence architecturale à mesure que
+            l&#39;écosystème s&#39;enrichit.</p>
+        <h2 id="xii-validation-march-et-feedback">XII. Validation Marché et Feedback</h2>
+        <h3 id="12-1-validation-des-besoins-du-march-">12.1 Validation des Besoins du Marché</h3>
+        <p>La validation du marché constitue une étape fondamentale qui doit être effectuée avant de commencer le
+            développement intensif de modules. Cette validation implique d&#39;identifier et de confirmer
+            l&#39;existence d&#39;utilisateurs potentiels qui sont non seulement intéressés par la solution proposée,
+            mais également prêts à investir financièrement dans le produit ou, dans l&#39;idéal, qui acceptent de payer
+            un tarif réduit en contrepartie d&#39;une livraison progressive et d&#39;un accès anticipé aux
+            fonctionnalités.</p>
+        <p><strong>Stratégie d&#39;engagement précoce</strong> : Cette approche permet d&#39;onboarder une catégorie
+            d&#39;utilisateurs avec un budget initialement limité mais qui apportent une valeur inestimable sous forme
+            de feedback constructif et de validation des concepts. Ces early adopters deviennent des partenaires dans le
+            processus de développement, permettant d&#39;ajuster la direction du produit en fonction des besoins réels
+            plutôt que des suppositions théoriques.</p>
+        <h3 id="12-2-syst-me-de-collecte-et-d-analyse">12.2 Système de Collecte et d&#39;Analyse</h3>
+        <p><strong>Processus structuré de feedback</strong> : Mettre en place un système robuste pour collecter
+            systematiquement les retours utilisateurs à travers différents canaux (support direct, enquêtes, analytics
+            d&#39;usage, sessions de feedback), analyser ces données pour identifier les patterns et les priorités, puis
+            intégrer ces insights de manière méthodique dans les cycles de développement pour s&#39;assurer que chaque
+            nouvelle fonctionnalité ou amélioration répond à un besoin utilisateur validé.</p>
+        <p><strong>Métriques de validation</strong> : Suivre des indicateurs clés comme le taux d&#39;adoption des
+            nouvelles fonctionnalités, le temps passé par les utilisateurs dans chaque module, les points d&#39;abandon
+            dans les flux utilisateur, et la satisfaction globale mesurée régulièrement pour maintenir un alignement
+            constant entre le développement et les besoins réels du marché.</p>
+        <h2 id="xiii-r-silience-et-philosophie-personnelle">XIII. Résilience et Philosophie Personnelle</h2>
+        <h3 id="13-1-le-chemin-de-la-r-silience">13.1 Le Chemin de la Résilience</h3>
+        <p>Le développement solitaire d&#39;écosystèmes logiciels complexes présente des défis psychologiques et
+            techniques uniques qui nécessitent une approche mentale particulière pour maintenir la motivation, la
+            qualité, et la vision à long terme même face aux obstacles et aux moments de doute inévitables.</p>
+        <p><strong>Accepter l&#39;échec comme apprentissage</strong> : Chaque bug découvert, chaque module rejeté par
+            les utilisateurs, et chaque décision architecturale qui s&#39;avère sous-optimale doit être perçu comme une
+            leçon précieuse plutôt que comme une défaite personnelle. Il est essentiel de documenter systématiquement
+            chaque échec, d&#39;analyser les causes racines, et d&#39;extraire les enseignements qui permettront
+            d&#39;améliorer l&#39;architecture future et d&#39;éviter la répétition des mêmes erreurs.</p>
+        <p><strong>Techniques de gestion du stress et des blocages</strong> : Face à un blocage technique majeur ou à un
+            problème architectural complexe, il est crucial de prendre du recul physique et mental en faisant une
+            promenade dans la nature ou en prenant une sieste réparatrice. Les solutions aux problèmes complexes
+            émergent souvent dans ces moments de calme et de détente, quand l&#39;esprit conscient cesse de forcer et
+            permet aux processus inconscients de traiter l&#39;information et de faire émerger des connexions créatives.
+        </p>
+        <p><strong>Célébration des étapes franchies</strong> : Reconnaître et célébrer chaque module fonctionnel comme
+            un pas concret vers la réalisation de l&#39;écosystème complet, chaque intégration réussie comme une
+            validation de l&#39;architecture choisie, et chaque retour utilisateur positif comme une confirmation que le
+            travail accompli génère de la valeur réelle dans le monde.</p>
+        <h3 id="13-2-maintenir-la-vision-long-terme">13.2 Maintenir la Vision Long Terme</h3>
+        <p><strong>Fidélité à la mission</strong> : Dans les moments de doute ou de fatigue, relire ce manifeste pour se
+            recentrer sur la mission fondamentale qui guide le développement de WebKernel : créer une plateforme unifiée
+            qui libère les fondateurs des complexités techniques et leur permet de se concentrer sur la croissance de
+            leur entreprise. Cette mission transcende les difficultés temporaires et donne du sens au travail quotidien.
+        </p>
+        <p><strong>Équilibre et perspective</strong> : Maintenir un équilibre sain entre le travail technique intensif
+            et les autres aspects de la vie (famille, santé, développement personnel) non seulement pour préserver le
+            bien-être personnel, mais aussi parce que cette diversité d&#39;expériences nourrit la créativité et la
+            capacité à comprendre les besoins réels des utilisateurs finaux qui sont eux-mêmes des êtres humains
+            complets avec des vies complexes.</p>
+        <h2 id="xiv-h-ritage-et-impact">XIV. Héritage et Impact</h2>
+        <h3 id="14-1-ma-contribution-au-monde">14.1 Ma Contribution au Monde</h3>
+        <p>WebKernel représente ma contribution personnelle à l&#39;écosystème technologique mondial : une plateforme
+            qui aspire à simplifier fondamentalement la vie des entrepreneurs et des fondateurs en leur fournissant tous
+            les outils professionnels dont ils ont besoin dans une installation unique, cohérente, et accessible. Ce
+            manifeste constitue ma trace documentaire, un guide méthodologique pour les développeurs solitaires qui me
+            suivront, démontrant par l&#39;exemple qu&#39;un esprit déterminé et discipliné peut concevoir et réaliser
+            un écosystème technologique complet qui génère de la valeur réelle.</p>
+        <h3 id="14-2-vision-d-cosyst-me-et-de-communaut-">14.2 Vision d&#39;Écosystème et de Communauté</h3>
+        <p><strong>Inspiration pour d&#39;autres créateurs</strong> : Ce manifeste et WebKernel sont conçus pour
+            inspirer d&#39;autres développeurs solitaires et créer les conditions d&#39;émergence d&#39;une communauté
+            de créateurs engagés dans la construction d&#39;écosystèmes simples, cohérents, et durables. En partageant
+            ouvertement cette méthodologie et cette vision, l&#39;objectif est d&#39;encourager d&#39;autres personnes à
+            publier leurs propres manifestes, à apprendre de leurs erreurs, et à construire avec la discipline et la
+            cohérence nécessaires pour créer des solutions durables.</p>
+        <p><strong>Préparation de la documentation et de l&#39;intégration</strong> : Ce travail vise également à
+            préparer la documentation complète de WebKernel et à faciliter l&#39;intégration future d&#39;autres
+            développeurs dans notre écosystème, en créant les bases méthodologiques et philosophiques qui permettront de
+            maintenir la cohérence architecturale et la qualité même avec une équipe élargie.</p>
+        <h3 id="14-3-ce-qui-me-pousse-continuer">14.3 Ce Qui Me Pousse à Continuer</h3>
+        <p><strong>Motivation profonde</strong> : Chaque ligne de code écrite représente un pas concret vers la liberté
+            technologique des fondateurs et des entrepreneurs. Je développe pour résoudre des problèmes réels et
+            tangibles, pour prouver qu&#39;un développeur solitaire mais déterminé peut changer positivement le monde,
+            un module à la fois, en créant des solutions qui libèrent du temps et de l&#39;énergie pour se concentrer
+            sur ce qui compte vraiment.</p>
+        <p><strong>Engagement personnel</strong> : Je m&#39;engage à créer WebKernel avec simplicité, discipline, et
+            cohérence architecturale, en maintenant un équilibre sain entre ma vie personnelle et ma vision
+            professionnelle, dans le but de bâtir un écosystème technologique qui libère concrètement les fondateurs des
+            complexités techniques et leur permet de se concentrer sur la croissance et l&#39;impact de leurs
+            entreprises.</p>
+        <h2 id="xv-r-gles-de-vie-et-discipline-quotidienne">XV. Règles de Vie et Discipline Quotidienne</h2>
+        <h3 id="15-1-principes-fondamentaux">15.1 Principes Fondamentaux</h3>
+        <p>Les règles pour le développement de suites logicielles doivent maintenir un équilibre délicat entre la
+            productivité individuelle soutenue et la cohérence globale de l&#39;écosystème technologique en
+            construction, tout en préservant la santé physique et mentale nécessaire à la créativité et à la prise de
+            décisions architecturales complexes.</p>
+        <p><strong>Non-négociables de qualité</strong> : Respecter impérativement les délais fixés sans jamais
+            compromettre la qualité technique ou l&#39;expérience utilisateur. Cette qualité doit être maintenue tant au
+            niveau du développement individuel de chaque module qu&#39;au niveau de l&#39;intégration globale et de la
+            cohérence architecturale de l&#39;ensemble de la suite.</p>
+        <p><strong>Gestion de la portée et des coûts</strong> : Prioriser systématiquement les fonctionnalités à fort
+            impact utilisateur en commençant par le développement du module de base (nommé Core) qui constitue le
+            fondement de l&#39;architecture avant d&#39;ajouter les modules d&#39;extension. Contrôler strictement les
+            coûts en temps et en énergie, en évitant les heures supplémentaires récurrentes qui nuisent à la qualité des
+            décisions et à la durabilité du processus de développement.</p>
+        <h3 id="15-2-rythme-et-cycles-de-travail">15.2 Rythme et Cycles de Travail</h3>
+        <p><strong>Sprints courts et focalisés</strong> : Organiser le travail en sprints courts de 1 à 2 semaines
+            maximum pour maintenir une sortie régulière de produits fonctionnels. Cette approche permet de maintenir la
+            cohérence architecturale, de détecter rapidement les problèmes d&#39;intégration entre modules, et de
+            s&#39;adapter agilement aux retours utilisateurs sans perdre de vue la vision globale.</p>
+        <p><strong>Discipline architecturale</strong> : Maintenir rigoureusement la cohérence architecturale sur tous
+            les modules de la suite, même si cette discipline demande plus de temps et d&#39;efforts initialement, car
+            elle génère des gains exponentiels en termes de maintenabilité, d&#39;extensibilité, et de qualité globale à
+            long terme.</p>
+        <p><strong>Tests d&#39;intégration continus</strong> : Tester systématiquement l&#39;intégration entre modules à
+            chaque sprint pour éviter l&#39;accumulation de problèmes d&#39;incompatibilité qui deviendraient coûteux à
+            résoudre plus tard et qui compromettraient la cohérence de l&#39;expérience utilisateur finale.</p>
+        <h2 id="xvi-sagesse-pratique-et-r-gles-d-or">XVI. Sagesse Pratique et Règles d&#39;Or</h2>
+        <h3 id="16-1-principes-de-livraison-et-d-efficacit-">16.1 Principes de Livraison et d&#39;Efficacité</h3>
+        <p><strong>Livraison progressive et continue</strong> : Livrer des modules fonctionnels individuellement dès
+            qu&#39;ils atteignent un niveau de qualité acceptable, tout en préparant continuellement leur intégration
+            dans l&#39;architecture globale de la suite. Cette approche permet de générer de la valeur utilisateur
+            rapidement tout en construisant méthodiquement l&#39;écosystème complet.</p>
+        <p><strong>Élimination impitoyable du gaspillage</strong> : Identifier et éliminer systématiquement toutes les
+            formes de gaspillage incluant le travail partiel abandonné, le multitâche contre-productif, les changements
+            de contexte coûteux, les bugs évitables, les fonctionnalités superflues, le réapprentissage de concepts déjà
+            maîtrisés, les solutions inutilement complexes, le stress généré par une mauvaise organisation, la
+            construction de fonctionnalités non demandées par les utilisateurs, le retravail dû à une planification
+            insuffisante, et l&#39;attente passive de conditions externes. Pour les suites logicielles, cela inclut
+            également l&#39;élimination de la duplication de code entre modules grâce à une architecture bien conçue.
+        </p>
+        <h3 id="16-2-focus-et-apprentissage-continu">16.2 Focus et Apprentissage Continu</h3>
+        <p><strong>Concentration monothématique</strong> : Se concentrer entièrement et travailler sur une seule tâche à
+            la fois, en donnant toute son attention et ses capacités intellectuelles à cette tâche jusqu&#39;à son
+            achèvement satisfaisant. Pour le développement de suites logicielles, cela implique de se concentrer sur un
+            module à la fois tout en gardant constamment en arrière-plan la vision de l&#39;architecture globale et des
+            interconnexions nécessaires.</p>
+        <p><strong>Intégration des nouveaux apprentissages</strong> : Implémenter systématiquement les nouveaux
+            apprentissages techniques, méthodologiques, ou architecturaux en les testant d&#39;abord sur un module
+            pilote avant de les généraliser à l&#39;ensemble de la suite. Cette approche prudente permet d&#39;évaluer
+            l&#39;impact et la pertinence des innovations sans risquer de déstabiliser l&#39;ensemble de
+            l&#39;écosystème.</p>
+        <p><strong>Décisions différées et informées</strong> : Reporter les décisions architecturales majeures le plus
+            tard possible afin de disposer du maximum d&#39;informations contextuelles et de mieux comprendre les
+            implications réelles de chaque choix. Cela évite de perdre du temps et des ressources sur des décisions
+            prématurées qui s&#39;avèreraient inadéquates. Cette approche est particulièrement cruciale pour les
+            décisions architecturales qui affectent plusieurs modules et qui sont coûteuses à modifier une fois
+            implémentées.</p>
+        <h3 id="16-3-gestion-de-crise-et-r-solution-de-probl-mes">16.3 Gestion de Crise et Résolution de Problèmes</h3>
+        <p><strong>Protocole d&#39;arrêt d&#39;urgence</strong> : En cas de problème de blocage majeur pendant les
+            opérations de développement, appliquer immédiatement la technique d&#39;arrêt de la ligne : stopper toutes
+            les autres activités pour accorder l&#39;importance et les ressources maximales à la résolution du problème
+            critique, évaluer méthodiquement la situation pour comprendre les causes racines, résoudre le problème de
+            manière durable, et surtout apprendre de cette expérience pour mettre en place des mesures préventives qui
+            éviteront la récurrence de ce type de problème. Pour les suites logicielles, cette analyse doit inclure une
+            évaluation de l&#39;impact du problème sur l&#39;ensemble de l&#39;écosystème et sur les interconnexions
+            entre modules.</p>
+        <h3 id="16-4-autonomie-et-recherche-de-solutions">16.4 Autonomie et Recherche de Solutions</h3>
+        <p><strong>Auto-suffisance technique</strong> : Développer et maintenir une approche d&#39;auto-suffisance en ne
+            comptant pas sur l&#39;aide externe pour résoudre les problèmes techniques, mais plutôt en investissant le
+            temps nécessaire pour apprendre et maîtriser les concepts et technologies nécessaires. Cette autonomie
+            permet de développer une expertise approfondie de l&#39;architecture choisie et de prendre des décisions
+            éclairées qui respectent la cohérence globale du système.</p>
+        <p><strong>Méthodologie de résolution de problèmes</strong> : Lorsqu&#39;un blocage technique survient, suivre
+            une méthodologie structurée : commencer par effectuer des recherches approfondies sur Google, Stack Overflow
+            et ses sites spécialisés, ainsi que dans les issues GitHub des projets pertinents. Se concentrer
+            particulièrement sur la recherche de solutions d&#39;architecture modulaire et de patterns d&#39;intégration
+            qui s&#39;alignent avec la philosophie globale de la suite en développement.</p>
+        <p><strong>Technique de l&#39;explication à voix haute</strong> : Si le blocage persiste, utiliser la technique
+            de l&#39;explication du problème à voix haute à une personne (réelle ou imaginaire), en incluant
+            systématiquement le contexte architectural global dans l&#39;explication. Cette verbalisation force souvent
+            l&#39;esprit à structurer le problème différemment et peut révéler des solutions qui n&#39;étaient pas
+            évidentes lors de la réflexion silencieuse.</p>
+        <p><strong>Recours communautaire exceptionnel</strong> : En dernier recours seulement, envisager de poser une
+            question détaillée sur Stack Overflow, en prenant soin de bien documenter le contexte architectural global
+            et les contraintes spécifiques de la suite logicielle dans la formulation de la question. Cette approche
+            communautaire doit rester exceptionnelle pour maintenir l&#39;autonomie de développement.</p>
+        <h3 id="16-5-gestion-du-code-et-des-versions">16.5 Gestion du Code et des Versions</h3>
+        <p><strong>Stratégie de branche unique</strong> : Maintenir une discipline stricte en validant tous les
+            changements sur une seule branche principale pour éviter l&#39;enfer des fusions de code qui peuvent devenir
+            particulièrement complexes dans le contexte de suites multi-modules. Cette approche est particulièrement
+            cruciale pour maintenir la cohérence architecturale entre modules et éviter les conflits d&#39;intégration
+            coûteux à résoudre.</p>
+        <h3 id="16-6-optimisation-quotidienne-et-gestion-de-l-attention">16.6 Optimisation Quotidienne et Gestion de
+            l&#39;Attention</h3>
+        <p><strong>Priorisation matinale</strong> : Commencer systématiquement chaque journée de travail par la tâche la
+            plus difficile ou la plus chronophage, quand les capacités intellectuelles et la concentration sont à leur
+            maximum. Dans le contexte du développement de suites logicielles, il s&#39;agit souvent des tâches
+            d&#39;intégration complexe ou des décisions architecturales majeures qui nécessitent une réflexion
+            approfondie et une vision claire.</p>
+        <p><strong>Approche préventive des bugs</strong> : Lorsqu&#39;un bug est découvert dans le système, adopter
+            systématiquement l&#39;approche suivante : créer d&#39;abord les tests appropriés qui reproduisent le bug
+            avant de procéder à sa correction. Cette discipline repose sur le principe qu&#39;un bug n&#39;est pas
+            simplement une erreur de logique dans le code, mais représente un test qui n&#39;avait pas été écrit et qui
+            aurait dû anticiper ce cas de figure. Pour les suites logicielles, s&#39;assurer d&#39;inclure des tests
+            d&#39;intégration si le bug affecte les interactions entre plusieurs modules.</p>
+        <p><strong>Adaptabilité et flexibilité</strong> : Embrasser le changement sous toutes ses formes, qu&#39;il
+            s&#39;agisse de nouvelles fonctionnalités demandées par les utilisateurs, d&#39;évolutions techniques
+            nécessaires, ou d&#39;ajustements architecturaux requis pour maintenir la performance et la cohérence.
+            Maintenir une architecture suffisamment flexible et modulaire pour accueillir facilement de nouveaux modules
+            sans nécessiter de refonte majeure de l&#39;existant.</p>
+        <h3 id="16-7-gestion-des-id-es-et-de-la-concentration">16.7 Gestion des Idées et de la Concentration</h3>
+        <p><strong>Capture d&#39;idées sans interruption</strong> : Pendant les sessions de développement focalisées, il
+            est naturel d&#39;avoir des idées personnelles spontanées (envie de rechercher quelque chose sur Google) ou
+            des idées liées au projet (nouvelles fonctionnalités, améliorations architecturales). Plutôt que
+            d&#39;interrompre le flux de travail, noter simplement ces idées dans un système de prise de notes personnel
+            (notes, liste de tâches, ou autre système de capture) pour s&#39;y référer ultérieurement pendant le temps
+            personnel ou les moments dédiés à la planification. Cette méthode, inspirée de la méthodologie Getting
+            Things Done (GTD), réduit le stress mental et aide à maintenir une concentration optimale sur la tâche en
+            cours. Inclure systématiquement les idées d&#39;amélioration architecturale et les concepts de nouveaux
+            modules dans ce système de capture.</p>
+        <p><strong>Référence au manifeste</strong> : Relire régulièrement ce manifeste, particulièrement lorsque la
+            productivité baisse ou que la motivation s&#39;affaiblit, pour se reconnecter aux principes fondamentaux et
+            maintenir la discipline architecturale nécessaire au développement cohérent de suites logicielles complexes.
+        </p>
+        <h3 id="16-8-investissement-dans-la-qualit-long-terme">16.8 Investissement dans la Qualité à Long Terme</h3>
+        <p><strong>Tests automatisés et CI/CD</strong> : Les tests automatisés (unitaires, d&#39;intégration, de
+            performance), ainsi que les pipelines de déploiement continu (CI/CD), représentent un investissement
+            essentiel pour les logiciels qui ont vocation à être maintenus sur le long terme et en permanence,
+            contrairement aux petits projets expérimentaux sur GitHub qui constituent des solutions ponctuelles. Pour
+            les suites logicielles destinées à évoluer et à s&#39;enrichir continuellement de nouveaux modules, ces
+            pratiques automatisées deviennent absolument indispensables pour maintenir la qualité et la cohérence entre
+            modules à mesure que la complexité augmente.</p>
+        <h3 id="16-9-principes-de-conception-modulaire">16.9 Principes de Conception Modulaire</h3>
+        <p><strong>Cohésion forte et couplage faible</strong> : Maintenir systématiquement une forte cohésion dans
+            chaque fonction et module (chaque composant ne fait qu&#39;une seule tâche clairement définie et la fait
+            bien) tout en minimisant le couplage entre les différents modules (faible dépendance entre les différents
+            composants du système). Dans le contexte de WebKernel, cela signifie que chaque module doit être autonome et
+            capable de fonctionner indépendamment tout en s&#39;intégrant parfaitement et naturellement avec
+            l&#39;ensemble de l&#39;écosystème.</p>
+        <h3 id="16-10-gestion-des-distractions-et-des-pauses">16.10 Gestion des Distractions et des Pauses</h3>
+        <p><strong>Protection de l&#39;attention</strong> : Éviter rigoureusement de consulter les réseaux sociaux, les
+            emails personnels, ou de naviguer sur Internet de manière récréative pendant les pauses de travail. Utiliser
+            plutôt ces moments de pause pour permettre à l&#39;esprit de traiter inconsciemment les problèmes
+            architecturaux complexes en cours, ce qui favorise l&#39;émergence de solutions créatives et innovantes.</p>
+        <p><strong>Gestion de la fatigue mentale</strong> : Prendre systématiquement une pause prolongée (environ 30
+            minutes) pour permettre à l&#39;esprit de traiter inconsciemment les problèmes architecturaux complexes en
+            cours, ce qui favorise l&#39;émergence de solutions créatives et innovantes.</p>
+        <h2 id="outils-productivite">XVII. Outils de Productivité</h2>
+        <p>Les outils pour le développement de suites logicielles doivent supporter à la fois le développement
+            individuel et la gestion de l&#39;architecture globale.</p>
+        <ul>
+            <li>Google Docs, VS Code (complétion de code), Cursor, avec des extensions pour l&#39;architecture
+                modulaire, GitHub Copilot (why not) pour accélérer le développement tout en maintenant la cohérence.
+            </li>
+            <li>Code Time / Waka Time (métriques de suivi du temps) pour mesurer le temps passé sur chaque module et sur
+                l&#39;intégration.</li>
+            <li>DeepWiki (simplification des messages de documentation/marketing) pour créer une documentation claire de
+                l&#39;architecture et des modules.</li>
+            <li>GitHub Projects (gestion de projet agile, tableaux Kanban) avec des tableaux dédiés pour chaque module
+                et un tableau global pour l&#39;architecture.</li>
+            <li>GitHub Actions (CI/CD) configuré pour tester l&#39;intégration entre modules et déployer l&#39;ensemble
+                de la suite.</li>
+            <li>DeepCode/SynkCode (révision de code), StandardJS (style de code cohérent) pour maintenir la qualité et
+                la cohérence sur tous les modules.</li>
+            <li>Outils de documentation d&#39;architecture (draw.io) pour maintenir une vue d&#39;ensemble de
+                l&#39;écosystème.</li>
+            <li>Outils de monitoring et de performance pour surveiller l&#39;ensemble de la suite en production.</li>
+        </ul>
+        <hr style="margin-top: 10rem; margin-bottom: 10rem;">
+        <p style="margin-top: 10rem;">Ce manifeste évolue avec l&#39;expérience pratique du développement de suites
+            logicielles. Chaque nouveau
+            module développé et chaque nouvelle intégration enrichit la méthodologie. L&#39;objectif reste constant :
+            créer des écosystèmes logiciels durables qui génèrent de la valeur à long terme tout en maintenant la
+            simplicité et la cohérence.</p>
+
+        <div id="about-author" style="margin-top: 10rem;">
+            <div class="container" style="padding-left:0 !important;padding-right:0 !important;">
+                <div style="display: flex; align-items: center; gap: 2rem; margin-bottom: 2rem;">
+                    <div class="glass-image-effect"
+                        style="width: 120px !important; height: 120px !important; border-radius: 50% !important; border: 1px solid currentColor; overflow: hidden; flex-shrink: 0 !important; min-width: 120px !important; min-height: 120px !important; max-width: 120px !important; max-height: 120px !important;">
+                        <img src="https://raw.githubusercontent.com/numerimondes/webkernel/main/packages/webkernel/src/Core/Resources/repo-assets/credits/yassine.png"
+                            alt="El Moumen Yassine"
+                            style="width: 100% !important; height: 100% !important; object-fit: cover !important; opacity: 0.8; transition: all 0.3s ease; border-radius: 50% !important;">
+                    </div>
+                    <div>
+                        <h3 style="margin: 0 0 0 0;">El Moumen Yassine</h3>
+                        <p style="margin: 0 0 0.5rem 0; font-weight: 500; color: inherit; opacity: 0.8;">Full-stack
+                            Software Architect</p>
+                        <div
+                            style="display: flex; align-items: center; gap: 1rem; flex-wrap: wrap; margin-bottom: 0.5rem;">
+                            <a href="https://wa.me/212620990692" target="_blank"
+                                style="display: flex; align-items: center; gap: 0.3rem; text-decoration: none; color: inherit; padding: 0rem 0rem; border: 0px solid currentColor; border-radius: 4px; transition: all 0.3s ease; opacity: 0.8;  transform: translateY(0);">
+                                <img src="https://github.githubassets.com/assets/electron-fef70acde3b4.png"
+                                    style="width: 16px; height: 16px;"> 📱
+                                <style>
+                                    @media (max-width: 765px) {
+                                        .mobile-hidden {
+                                            display: none !important;
+                                        }
+                                    }
+                                </style>
+
+                                <span>
+                                    Building the private Web <em class="mobile-hidden">one module at a time.</em>
+                                </span>
+
+                            </a>
+                        </div>
+                    </div>
+                </div>
+                <p style="margin-bottom:12px;">I design and build complete software ecosystems from scratch. Creator of
+                    WebKernel - a modular platform that replaces fragmented enterprise tools with unified solutions. I
+                    use Tech as a Leverage to create world-changing software through disciplined architecture and
+                    systematic thinking.</p>
+            </div>
+        </div>
+
+        <div class="social-links" style="padding-right:20%;margin-bottom: 10rem;">
+            <a href="https://webkernel.numerimondes.com" target="_blank"
+                class="social-btn bib-mint">webkernel.numerimondes.com</a>
+            <a href="https://www.linkedin.com/in/elmoumenyassine/" class="social-btn linkedin">LinkedIn</a>
+            <a href="https://thebestrecruit.com" target="_blank" class="social-btn bib-sky">thebestrecruit.com</a>
+            <a href="https://github.com/emyassine" class="social-btn github">GitHub</a>
+            <a href="https://x.com/elmoumenyassine" class="social-btn twitter">Twitter</a>
+            <span class="social-btn disabled">Medium</span>
+            <span class="social-btn disabled">Dev.to</span>
+            <span class="social-btn disabled">Stack Overflow</span>
+            <span class="social-btn disabled">Quora</span>
+            <span class="social-btn disabled">Reddit</span>
+            <span class="social-btn disabled">Product Hunt</span>
+        </div>
+
+        <h3>Bibliography</h3>
+
+        <div class="social-links">
+            <a href="https://github.com/fawazahmed0/the-solo-developers-manifesto/blob/main/README.md"
+                class="social-btn bib-lavender">The Solo Developers Manifesto</a>
+            <a href="https://en.wikipedia.org/wiki/You_aren%27t_gonna_need_it" target="_blank"
+                class="social-btn bib-mint">You Ain't
+                Gonna Need It</a>
+            <a href="https://github.com/trekhleb/promote-your-next-startup" target="_blank"
+                class="social-btn bib-peach">Promote Your
+                Next Startup</a>
+            <a href="https://agorism.dev/book/software-architecture/%28Robert%20C.%20Martin%20Series%29%20Robert%20C.%20Martin%20-%20Clean%20Architecture_%20A%20Craftsman%E2%80%99s%20Guide%20to%20Software%20Structure%20and%20Design-Prentice%20Hall%20%282017%29.pdf"
+                class="social-btn bib-sage">Clean Architecture</a>
+            <a href="https://pragprog.com/titles/tpp20/the-pragmatic-programmer-20th-anniversary-edition/"
+                class="social-btn bib-coral">The Pragmatic Programmer</a>
+            <a href="https://fr.wikipedia.org/wiki/SOLID_(informatique" target="_blank"
+                class="social-btn bib-sky">SOLID</a>
+            <a href="https://www.redhat.com/fr/topics/devops/what-is-ci-cd" target="_blank"
+                class="social-btn bib-rose">What is
+                CI/CD?</a>
+            <a href="https://www.redhat.com/fr/topics/devops/what-is-devops" target="_blank"
+                class="social-btn bib-amber">What is
+                DevOps?</a>
+            <a href="https://www.atlassian.com/git/tutorials/what-is-git" target="_blank"
+                class="social-btn bib-teal">What is Git?</a>
+            <a href="https://medium.com/@ankit.ad.dhawan/server-driven-ui-explained-0ef0b57070df"
+                class="social-btn bib-lilac">Server Driven UI</a>
+            <a href="https://en.wikipedia.org/wiki/Orchestration_(computing"
+                class="social-btn bib-cream">Orchestration</a>
+            <a href="https://en.wikipedia.org/wiki/Microservices" target="_blank"
+                class="social-btn bib-azure">Microservices</a>
+            <a href="https://en.wikipedia.org/wiki/Monolithic_application" target="_blank"
+                class="social-btn bib-apricot">Monolith</a>
+            <a href="https://en.wikipedia.org/wiki/Micro_frontends" target="_blank" class="social-btn bib-forest">Micro
+                Frontends</a>
+            <a href="https://en.wikipedia.org/wiki/Microservices" target="_blank"
+                class="social-btn bib-dusty">Microservices</a>
+        </div>
+
+
+    </div>
+
+
+
+    <!-- Table of Contents -->
+    <div id="tocContainer" class="toc-container" style="display: none;">
+        <div class="toc-title">Table des matières</div>
+        <ul id="tocList" class="toc-list">
+            <!-- Generated by JavaScript -->
+        </ul>
+    </div>
+
+    <div class="fixed-controls">
+        <a href="javascript:void(0)" class="author-avatar">
+            <img src="https://raw.githubusercontent.com/numerimondes/webkernel/main/packages/webkernel/src/Core/Resources/repo-assets/credits/yassine.png"
+                alt="El Moumen Yassine">
+        </a>
+        <button id="scrollToTop" class="toggle-btn"
+            style="display: flex; align-items: center; justify-content: center; width: 40px; height: 40px; border-radius: 50%; background: transparent; color: inherit; cursor: pointer; opacity: 0.7; transition: all 0.3s ease; font-size: 1.2rem; flex-shrink: 0; min-width: 40px; min-height: 40px;"
+            title="Monter en haut de la page">
+            ↑
+        </button>
+        <div class="theme-toggle">
+            <button id="themeToggle" class="toggle-btn">
+                <span class="toggle-icon">🌙</span>
+                <span class="toggle-text">Dark Mode</span>
+            </button>
+        </div>
+        <!-------<button id="refreshCache" class="refresh-btn" title="Rafraîchir le cache">
+            <span class="refresh-icon">🔄</span>
+        </button>----->
+    </div>
+
+    <script>
+        // Cache management - Set to false to disable caching completely
+        const ENABLE_CACHING = false;
+        const CACHE_VERSION = '1.0.4';
+        const CACHE_NAME = 'webkernel-manifesto-v' + CACHE_VERSION;
+        const CACHE_DURATION = 1 * 60 * 60 * 1000; // 1 hours
+
+        // Check if content is cached and not expired
+        function isContentCached() {
+            if (!ENABLE_CACHING) return false;
+
+            const cached = localStorage.getItem('manifesto-cached');
+            if (!cached) return false;
+
+            const cacheData = JSON.parse(cached);
+            const now = Date.now();
+
+            // Check if cache version matches current version
+            if (cacheData.version !== CACHE_VERSION) {
+                console.log('Cache version mismatch, invalidating...');
+                clearCache();
+                return false;
+            }
+
+            // Check if cache is not expired
+            return (now - cacheData.timestamp) < CACHE_DURATION;
+        }
+
+        // Cache the current content
+        function cacheContent() {
+            if (!ENABLE_CACHING) return;
+
+            const content = document.body.innerHTML;
+            const cacheData = {
+                content: content,
+                timestamp: Date.now(),
+                theme: document.body.className,
+                version: CACHE_VERSION
+            };
+            localStorage.setItem('manifesto-cached', JSON.stringify(cacheData));
+            console.log('Content cached with version:', CACHE_VERSION);
+        }
+
+        // Clear cache
+        function clearCache() {
+            if (!ENABLE_CACHING) return;
+
+            localStorage.removeItem('manifesto-cached');
+            console.log('Cache cleared');
+        }
+
+        // Restore cached content
+        function restoreCachedContent() {
+            const cached = localStorage.getItem('manifesto-cached');
+            if (cached) {
+                const cacheData = JSON.parse(cached);
+                document.body.innerHTML = cacheData.content;
+                return true;
+            }
+            return false;
+        }
+
+        // Fonctions pour gérer les cookies
+        function setCookie(name, value, days) {
+            const expires = new Date();
+            expires.setTime(expires.getTime() + (days * 24 * 60 * 60 * 1000));
+            document.cookie = name + "=" + value + ";expires=" + expires.toUTCString() + ";path=/";
+        }
+
+        function getCookie(name) {
+            const nameEQ = name + "=";
+            const ca = document.cookie.split(';');
+            for (let i = 0; i < ca.length; i++) {
+                let c = ca[i];
+                while (c.charAt(0) === ' ') c = c.substring(1, c.length);
+                if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length, c.length);
+            }
+            return null;
+        }
+
+        // Fonction pour changer le thème
+        function toggleTheme() {
+            const body = document.body;
+            const toggleBtn = document.getElementById('themeToggle');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+
+            if (body.classList.contains('dark-body')) {
+                // Passer en mode clair
+                body.className = 'light-body';
+                toggleIcon.textContent = '🌙';
+                toggleText.textContent = 'Light Mode';
+                setCookie('theme', 'light', 365);
+            } else {
+                // Passer en mode sombre
+                body.className = 'dark-body';
+                toggleIcon.textContent = '☀️';
+                toggleText.textContent = 'Dark Mode';
+                setCookie('theme', 'dark', 365);
+            }
+        }
+
+        // Initialisation au chargement de la page
+        document.addEventListener('DOMContentLoaded', function () {
+            if (ENABLE_CACHING) {
+                // Check for cache invalidation parameters
+                const urlParams = new URLSearchParams(window.location.search);
+                const forceRefresh = urlParams.get('refresh') === 'true' ||
+                    urlParams.get('nocache') === 'true' ||
+                    urlParams.get('clear') === 'true';
+
+                if (forceRefresh) {
+                    console.log('Force refresh requested, clearing cache...');
+                    clearCache();
+                }
+
+                // Check if we should restore from cache
+                if (isContentCached() && !forceRefresh) {
+                    if (restoreCachedContent()) {
+                        console.log('Content restored from cache');
+                        // Re-initialize event listeners after restoring content
+                        initializeEventListeners();
+                        return;
+                    }
+                }
+
+                // Cache the content after a short delay
+                setTimeout(() => {
+                    cacheContent();
+                }, 1000);
+            }
+
+            // Normal initialization
+            initializeEventListeners();
+        });
+
+        // Table of Contents Management
+        function generateTableOfContents() {
+            const headings = document.querySelectorAll('h1, h2, h3, h4');
+            const tocList = document.getElementById('tocList');
+            const tocContainer = document.getElementById('tocContainer');
+            const tocToggle = document.getElementById('tocToggle');
+
+            // Clear existing content
+            tocList.innerHTML = '';
+
+            // Generate TOC items
+            headings.forEach((heading, index) => {
+                const level = parseInt(heading.tagName.charAt(1));
+                const text = heading.textContent;
+                const id = heading.id || `heading-${index}`;
+
+                // Ensure heading has an ID
+                if (!heading.id) {
+                    heading.id = id;
+                }
+
+                const li = document.createElement('li');
+                li.className = 'toc-item';
+
+                const link = document.createElement('a');
+                link.href = `#${id}`;
+                link.textContent = text;
+                link.className = `toc-link h${level}`;
+                link.setAttribute('data-level', level);
+
+                link.addEventListener('click', function (e) {
+                    e.preventDefault();
+                    const targetElement = document.getElementById(id);
+                    if (targetElement) {
+                        const windowHeight = window.innerHeight;
+                        const elementHeight = targetElement.offsetHeight;
+                        const scrollTop = targetElement.offsetTop - (windowHeight / 2) + (elementHeight / 2);
+
+                        window.scrollTo({
+                            top: scrollTop,
+                            behavior: 'smooth'
+                        });
+
+                        // Update active state
+                        updateActiveTocLink(id);
+                    }
+                });
+
+                li.appendChild(link);
+                tocList.appendChild(li);
+            });
+
+            // Toggle TOC visibility
+            tocToggle.addEventListener('click', function (e) {
+                e.stopPropagation(); // Prevent event bubbling
+                const isVisible = tocContainer.style.display !== 'none';
+                tocContainer.style.display = isVisible ? 'none' : 'block';
+                tocToggle.textContent = isVisible ? '📋' : '✕';
+            });
+
+            // Close TOC when clicking outside (desktop only)
+            document.addEventListener('click', function (e) {
+                const isDesktop = window.innerWidth > 768;
+                const isTocVisible = tocContainer.style.display !== 'none';
+                const isClickingToc = tocContainer.contains(e.target);
+                const isClickingToggle = tocToggle.contains(e.target);
+
+                if (isDesktop && isTocVisible && !isClickingToc && !isClickingToggle) {
+                    tocContainer.style.display = 'none';
+                    tocToggle.textContent = '📋';
+                }
+            });
+
+            // Update theme for TOC
+            updateTocTheme();
+        }
+
+        function updateActiveTocLink(activeId) {
+            const tocLinks = document.querySelectorAll('.toc-link');
+            tocLinks.forEach(link => {
+                link.classList.remove('active');
+                if (link.getAttribute('href') === `#${activeId}`) {
+                    link.classList.add('active');
+                }
+            });
+        }
+
+        function updateTocTheme() {
+            const tocContainer = document.getElementById('tocContainer');
+            const tocToggle = document.getElementById('tocToggle');
+            const isDarkMode = document.body.classList.contains('dark-body');
+
+            if (isDarkMode) {
+                tocContainer.classList.add('dark');
+                tocToggle.classList.add('dark');
+            } else {
+                tocContainer.classList.remove('dark');
+                tocToggle.classList.remove('dark');
+            }
+        }
+
+        // Intersection Observer for active section detection
+        function setupIntersectionObserver() {
+            const headings = document.querySelectorAll('h1, h2, h3, h4');
+            const observerOptions = {
+                rootMargin: '-20% 0px -70% 0px',
+                threshold: 0
+            };
+
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        updateActiveTocLink(entry.target.id);
+                    }
+                });
+            }, observerOptions);
+
+            headings.forEach(heading => {
+                observer.observe(heading);
+            });
+        }
+
+        // Magnifier Effect Setup
+        function setupMagnifierEffect() {
+            const magnifierImages = document.querySelectorAll('.glass-image-effect img');
+
+            magnifierImages.forEach(img => {
+                const container = img.closest('.glass-image-effect');
+                let isHovering = false;
+
+                container.addEventListener('mouseenter', function () {
+                    isHovering = true;
+                });
+
+                container.addEventListener('mousemove', function (e) {
+                    if (!isHovering) return;
+
+                    const rect = container.getBoundingClientRect();
+                    const x = e.clientX - rect.left;
+                    const y = e.clientY - rect.top;
+
+                    const xPercent = (x / rect.width) * 100;
+                    const yPercent = (y / rect.height) * 100;
+
+                    img.style.transformOrigin = `${xPercent}% ${yPercent}%`;
+                    img.style.transform = 'scale(1.5)';
+                });
+
+                container.addEventListener('mouseleave', function () {
+                    isHovering = false;
+                    img.style.transform = 'scale(1)';
+                    img.style.transformOrigin = 'center center';
+                });
+
+                // Prevent touch events from triggering zoom
+                container.addEventListener('touchstart', function (e) {
+                    e.preventDefault();
+                }, { passive: false });
+
+                container.addEventListener('touchmove', function (e) {
+                    e.preventDefault();
+                }, { passive: false });
+            });
+        }
+
+        // Scroll to Top functionality
+        function setupScrollToTop() {
+            const scrollToTopBtn = document.getElementById('scrollToTop');
+
+            scrollToTopBtn.addEventListener('click', function () {
+                window.scrollTo({
+                    top: 0,
+                    behavior: 'smooth'
+                });
+            });
+
+            // Show/hide button based on scroll position
+            window.addEventListener('scroll', function () {
+                if (window.pageYOffset > 300) {
+                    scrollToTopBtn.style.opacity = '1';
+                    scrollToTopBtn.style.transform = 'scale(1)';
+                } else {
+                    scrollToTopBtn.style.opacity = '0.7';
+                    scrollToTopBtn.style.transform = 'scale(0.9)';
+                }
+            });
+        }
+
+        // Mobile Menu Setup
+        function setupMobileMenu() {
+            const mobileToggle = document.querySelector('.header-mobile-toggle');
+            const navMenu = document.querySelector('.nav-menu');
+
+            if (mobileToggle && navMenu) {
+                mobileToggle.addEventListener('click', function () {
+                    navMenu.classList.toggle('active');
+
+                    // Animate hamburger
+                    const spans = mobileToggle.querySelectorAll('span');
+                    spans.forEach((span, index) => {
+                        if (navMenu.classList.contains('active')) {
+                            if (index === 0) span.style.transform = 'rotate(45deg) translate(5px, 5px)';
+                            if (index === 1) span.style.opacity = '0';
+                            if (index === 2) span.style.transform = 'rotate(-45deg) translate(7px, -6px)';
+                        } else {
+                            span.style.transform = 'none';
+                            span.style.opacity = '1';
+                        }
+                    });
+                });
+
+                // Close menu when clicking on links
+                const navLinks = navMenu.querySelectorAll('.nav-link');
+                navLinks.forEach(link => {
+                    link.addEventListener('click', function () {
+                        navMenu.classList.remove('active');
+                        const spans = mobileToggle.querySelectorAll('span');
+                        spans.forEach(span => {
+                            span.style.transform = 'none';
+                            span.style.opacity = '1';
+                        });
+                    });
+                });
+            }
+        }
+
+        // Initialize all event listeners
+        function initializeEventListeners() {
+            const toggleBtn = document.getElementById('themeToggle');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+
+            // Restaurer l'état depuis le cookie
+            const savedTheme = getCookie('theme');
+            if (savedTheme === 'dark') {
+                document.body.className = 'dark-body';
+            } else if (savedTheme === 'light') {
+                document.body.className = 'light-body';
+            }
+            // Si pas de cookie, garder l'état du DOM d'origine
+
+            // Mettre à jour le toggle selon l'état final
+            const isDarkMode = document.body.classList.contains('dark-body');
+            if (isDarkMode) {
+                toggleIcon.textContent = '☀️';
+                toggleText.textContent = 'Dark Mode';
+            } else {
+                toggleIcon.textContent = '🌙';
+                toggleText.textContent = 'Light Mode';
+            }
+
+            // Ajouter l'événement click
+            toggleBtn.addEventListener('click', toggleTheme);
+
+            // Add refresh cache button event (only if caching is enabled)
+            if (ENABLE_CACHING) {
+                const refreshBtn = document.getElementById('refreshCache');
+                if (refreshBtn) {
+                    refreshBtn.addEventListener('click', function () {
+                        clearCache();
+                        window.location.reload();
+                    });
+                }
+            }
+
+            const avatar = document.querySelector('.author-avatar');
+            if (avatar) {
+                avatar.addEventListener('click', function (e) {
+                    e.preventDefault(); // ← Empêche le comportement par défaut
+                    const aboutAuthor = document.getElementById('about-author');
+                    const windowHeight = window.innerHeight;
+                    const elementHeight = aboutAuthor.offsetHeight;
+                    const scrollTop = aboutAuthor.offsetTop - (windowHeight / 2) + (elementHeight / 2);
+
+                    window.scrollTo({
+                        top: scrollTop,
+                        behavior: 'smooth'
+                    });
+                });
+            }
+
+            // Generate and setup Table of Contents
+            generateTableOfContents();
+            setupIntersectionObserver();
+
+            // Setup Magnifier Effect
+            setupMagnifierEffect();
+
+            // Setup Scroll to Top button
+            setupScrollToTop();
+
+            // Setup Mobile Menu
+            setupMobileMenu();
+
+            // Setup dynamic header height for TOC
+            setupDynamicHeaderHeight();
+        }
+
+        // Calculate and apply dynamic header height for TOC positioning
+        function setupDynamicHeaderHeight() {
+            const header = document.querySelector('.main-header');
+            const updateHeaderHeight = () => {
+                if (header) {
+                    const headerHeight = header.offsetHeight;
+                    document.documentElement.style.setProperty('--header-height', headerHeight + 'px');
+                }
+            };
+
+            // Initial calculation
+            updateHeaderHeight();
+
+            // Update on window resize
+            window.addEventListener('resize', updateHeaderHeight);
+
+            // Update when mobile menu toggles
+            const mobileToggle = document.querySelector('.header-mobile-toggle');
+            if (mobileToggle) {
+                mobileToggle.addEventListener('click', () => {
+                    setTimeout(updateHeaderHeight, 100); // Small delay to let menu animation complete
+                });
+            }
+        }
+
+
+        function toggleTheme() {
+            const body = document.body;
+            const toggleBtn = document.getElementById('themeToggle');
+            const toggleIcon = toggleBtn.querySelector('.toggle-icon');
+            const toggleText = toggleBtn.querySelector('.toggle-text');
+
+            if (body.classList.contains('dark-body')) {
+                // Passer en mode clair
+                body.className = 'light-body';
+                toggleIcon.textContent = '🌙';
+                toggleText.textContent = 'Light Mode';
+                setCookie('theme', 'light', 365);
+            } else {
+                // Passer en mode sombre
+                body.className = 'dark-body';
+                toggleIcon.textContent = '☀️';
+                toggleText.textContent = 'Dark Mode';
+                setCookie('theme', 'dark', 365);
+            }
+
+            // Update TOC theme
+            updateTocTheme();
+
+            // Update cache with new theme (only if caching is enabled)
+            if (ENABLE_CACHING) {
+                setTimeout(() => {
+                    cacheContent();
+                }, 100);
+            }
+        }
+    </script>
+</body>
+
+</html>
