@@ -7,7 +7,7 @@
 <a href="https://packagist.org/packages/webkernel/webkernel"><img src="https://img.shields.io/packagist/dt/webkernel/webkernel" alt="Total Downloads"></a>
 <a href="https://packagist.org/packages/webkernel/webkernel"><img src="https://img.shields.io/packagist/v/webkernel/webkernel" alt="Latest Stable Version"></a>
 <a href="https://numerimondes.com"><img src="https://img.shields.io/badge/License-MPL%202.0-brightgreen.svg" alt="License: MPL 2.0"></a>
-
+<a href="https://deepwiki.com/numerimondes/webkernel"><img src="https://deepwiki.com/badge.svg" alt="Ask DeepWiki"></a>
 </p>
 
 ## The modular foundation for advanced PHP applications.
