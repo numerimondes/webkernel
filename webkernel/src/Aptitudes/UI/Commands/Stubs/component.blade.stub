@@ -1,0 +1,32 @@
+@php
+use {{ namespace }}\{{ className }};
+${{ snakeName }} = new {{ className }}($attributes->getAttributes());
+@endphp
+
+<{{ ${{ snakeName }}->tag }} {!! ${{ snakeName }}->getAttributes() !!} style="position: relative;">
+    @if(${{ snakeName }}->showIconBefore)
+        <x-dynamic-component :component="'lucide-' . ${{ snakeName }}->icon" class="w-4 h-4" />
+    @endif
+
+    {{ $slot }}
+
+    @if(${{ snakeName }}->showIconAfter)
+        <x-dynamic-component :component="'lucide-' . ${{ snakeName }}->icon" class="w-4 h-4" />
+    @endif
+
+    @if(${{ snakeName }}->badge)
+        <span class="ml-0.3 min-w-[18px] h-[18px] px-1 bg-white/20 text-white text-xs rounded flex items-center justify-center">
+            {{ ${{ snakeName }}->badge }}
+        </span>
+    @endif
+
+    @if(!empty(${{ snakeName }}->notification))
+        @if(${{ snakeName }}->notification === true || ${{ snakeName }}->notification === 1)
+            <span style="position: absolute; top: -5px; right: -5px; width: 10px; height: 10px; background-color: #ef4444; border-radius: 50%; box-shadow: 0 1px 3px rgba(0,0,0,0.1); border: 1px solid white;"></span>
+        @else
+            <span style="position: absolute; top: -8px; right: -8px; min-width: 16px; min-height: 16px; padding: 2px 4px; background: linear-gradient(135deg, #f87171, #dc2626); color: white; font-size: 10px; line-height: 1; border-radius: 8px; display: flex; align-items: center; justify-content: center; box-shadow: 0 1px 3px rgba(0,0,0,0.1);">
+                {{ ${{ snakeName }}->notification }}
+            </span>
+        @endif
+    @endif
+</{{ ${{ snakeName }}->tag }}>

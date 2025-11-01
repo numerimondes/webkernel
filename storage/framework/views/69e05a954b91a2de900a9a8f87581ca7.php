@@ -1,0 +1,1 @@
+<?php /**PATH /home/yassine/Documents/project/numerimondes-com/webkernel/src/Aptitudes/Base/Resources/Views/blank.blade.php ENDPATH**/ ?>

@@ -1,0 +1,19 @@
+@import 'tailwindcss';
+
+/* Custom fonts */
+@font-face {
+  font-family: "Havana";
+  src: url("/fonts/others/havana-font-dc9f467134c6ab5e-s.p.woff") format("woff");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+
+@font-face {
+  font-family: "SF Pro Display";
+  src: url("https://cdn.fontcdn.ir/Fonts/SFProDisplay/5bc1142d5fc993d2ec21a8fa93a17718818e8172dffc649b7d8a3ab459cfbf9c.woff2") format("woff2");
+  font-weight: 400;
+  font-style: normal;
+  font-display: swap;
+}
+

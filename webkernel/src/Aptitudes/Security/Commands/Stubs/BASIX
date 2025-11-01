@@ -1,0 +1,75 @@
+#!/usr/bin/env php
+<?php
+declare(strict_types=1);
+
+/**
+ * BASIX — A Basic Command Restrictions eXperience.
+ *
+ * Defines environment-specific rules to secure Artisan commands.
+ * Place at the root of the Webkernel project. Excluded from version control
+ * for safe, per-environment customization.
+ *
+ * IMPORTANT: If both password and confirm are true, password is checked first,
+ * then confirmation is requested. This prevents accidental command execution.
+ */
+return [
+  'restricted_environments' => ['*'],
+
+  'block_list' => [
+    'tinker' => 'Interactive shell access forbidden in production',
+    'migrate:refresh' => 'Full migration refresh forbidden',
+  ],
+
+  'allow_list' => [
+    'db:wipe' => [
+      'reason' => 'DESTRUCTIVE: Clears all database tables. Data loss is permanent.',
+      'confirm' => true,
+      'password' => false,
+      'backup' => true,
+    ],
+    'migrate:fresh' => [
+      'reason' => 'Drops all tables and reruns all migrations. Data loss is permanent.',
+      'confirm' => true,
+      'password' => true,
+      'backup' => true,
+    ],
+    'migrate:rollback' => [
+      'reason' => 'Rolls back the last migration batch. Verify this is intended.',
+      'confirm' => true,
+      'password' => false,
+      'backup' => true,
+    ],
+    'migrate:reset' => [
+      'reason' => 'Resets all migrations to initial state. Data loss is permanent.',
+      'confirm' => true,
+      'password' => true,
+      'backup' => true,
+    ],
+    'cache:clear' => true,
+    'config:clear' => true,
+  ],
+
+  'password' => 'your-secure-password-here',
+];
+
+/**
+ * USAGE GUIDE >>> BASIX — A Basic Command Restrictions eXperience.
+ *
+ * Structure:
+ *  - restricted_environments: List of environments where restrictions apply
+ *  - block_list: Commands absolutely forbidden (no override possible)
+ *  - allow_list: Commands allowed with optional protections
+ *      - If value is boolean true: command is simply allowed
+ *      - If value is array: configure with keys: reason, confirm, password
+ *
+ * Example allow_list entry:
+ *   'db:wipe' => [
+ *       'reason' => 'Destructive: drops all database tables',
+ *       'confirm' => true,      // Requires YES confirmation
+ *       'password' => true,     // Requires password before confirm
+ *   ]
+ *
+ * IMPORTANT: If both password and confirm are true, password is checked first,
+ * then confirmation is requested. This prevents accidental command execution.
+ */
+

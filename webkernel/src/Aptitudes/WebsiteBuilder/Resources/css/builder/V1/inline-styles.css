@@ -1,0 +1,276 @@
+/* WebkernelBuilder Inline Styles - Extracted from app.blade.php */
+
+/* WebkernelBuilder Drag and Drop Styles */
+.wkb-zone {
+    width: 100%;
+    min-height: 200px;
+    border: 2px dashed var(--wkb-border-secondary);
+    margin: var(--wkb-spacing-lg);
+    padding: var(--wkb-spacing-md);
+    border-radius: var(--wkb-radius-md);
+    transition: all var(--wkb-transition-normal);
+}
+
+.wkb-item {
+    width: 100%;
+    min-height: 30px;
+    background: var(--wkb-primary);
+    color: var(--wkb-text-inverse);
+    text-align: center;
+    line-height: 30px;
+    margin: var(--wkb-spacing-sm);
+    cursor: move;
+    border-radius: var(--wkb-radius-lg);
+    padding: var(--wkb-spacing-sm);
+    transition: all var(--wkb-transition-normal);
+}
+
+.wkb-item:hover {
+    background: var(--wkb-primary-hover);
+}
+
+.wkb-item.wkb-dragging {
+    opacity: 0.5;
+}
+
+.wkb-zone.wkb-drag-over {
+    border-color: var(--wkb-primary);
+    background-color: var(--wkb-primary-light);
+}
+
+/* WebkernelBuilder Layout Styles */
+.wkb-container {
+    height: 100vh;
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+}
+
+.wkb-sidebar {
+    width: 280px;
+    min-width: 280px;
+    max-width: 280px;
+}
+
+.wkb-canvas-container {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.wkb-canvas {
+    flex: 1;
+    background: var(--wkb-bg-canvas);
+    border: 1px solid var(--wkb-border-canvas);
+    margin: var(--wkb-spacing-md);
+    border-radius: var(--wkb-radius-md);
+    overflow: hidden;
+    position: relative;
+}
+
+/* WebkernelBuilder Tab Styles */
+.wkb-tab-button.wkb-active {
+    background: rgba(59, 130, 246, 0.1);
+    border-bottom: 2px solid var(--wkb-primary);
+}
+
+/* WebkernelBuilder Layer and Page Item Styles */
+.wkb-layer-item {
+    transition: all var(--wkb-transition-normal);
+}
+
+.wkb-layer-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+.wkb-page-item {
+    transition: all var(--wkb-transition-normal);
+}
+
+.wkb-page-item:hover {
+    background: rgba(59, 130, 246, 0.05);
+}
+
+/* WebkernelBuilder Dark Mode Overrides */
+.dark .wkb-bg-white {
+    background-color: var(--wkb-bg-primary) !important;
+}
+
+.dark .wkb-text-gray-900 {
+    color: var(--wkb-text-primary) !important;
+}
+
+.dark .wkb-border-gray-200 {
+    border-color: var(--wkb-border-primary) !important;
+}
+
+.dark .wkb-bg-gray-50 {
+    background-color: var(--wkb-bg-secondary) !important;
+}
+
+.dark .wkb-text-gray-600 {
+    color: var(--wkb-text-secondary) !important;
+}
+
+.dark .wkb-text-gray-500 {
+    color: var(--wkb-text-tertiary) !important;
+}
+
+.dark .wkb-bg-gray-100 {
+    background-color: var(--wkb-bg-tertiary) !important;
+}
+
+.dark .wkb-hover\:bg-gray-100:hover {
+    background-color: var(--wkb-bg-tertiary) !important;
+}
+
+.dark .wkb-border-gray-300 {
+    border-color: var(--wkb-border-secondary) !important;
+}
+
+.dark .wkb-text-gray-700 {
+    color: var(--wkb-text-secondary) !important;
+}
+
+.dark .wkb-bg-gray-200 {
+    background-color: var(--wkb-bg-tertiary) !important;
+}
+
+.dark .wkb-text-gray-800 {
+    color: var(--wkb-text-primary) !important;
+}
+
+.dark .wkb-bg-gray-300 {
+    background-color: var(--wkb-border-secondary) !important;
+}
+
+.dark .wkb-text-gray-400 {
+    color: var(--wkb-text-muted) !important;
+}
+
+.dark .wkb-bg-gray-400 {
+    background-color: var(--wkb-border-secondary) !important;
+}
+
+.dark .wkb-text-gray-300 {
+    color: var(--wkb-text-tertiary) !important;
+}
+
+.dark .wkb-bg-gray-500 {
+    background-color: var(--wkb-secondary) !important;
+}
+
+.dark .wkb-text-gray-200 {
+    color: var(--wkb-text-secondary) !important;
+}
+
+.dark .wkb-bg-gray-600 {
+    background-color: var(--wkb-secondary-hover) !important;
+}
+
+.dark .wkb-text-gray-100 {
+    color: var(--wkb-text-secondary) !important;
+}
+
+.dark .wkb-bg-gray-700 {
+    background-color: var(--wkb-secondary-hover) !important;
+}
+
+.dark .wkb-text-gray-50 {
+    color: var(--wkb-text-secondary) !important;
+}
+
+.dark .wkb-bg-gray-800 {
+    background-color: var(--wkb-secondary-hover) !important;
+}
+
+.dark .wkb-bg-gray-900 {
+    background-color: var(--wkb-secondary-hover) !important;
+}
+
+.dark .wkb-bg-gray-950 {
+    background-color: var(--wkb-secondary-hover) !important;
+}
+
+/* WebkernelBuilder Dynamic Island */
+.wkb-dynamic-island {
+    position: fixed;
+    bottom: 0.1%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    z-index: var(--wkb-z-dynamic-island);
+    pointer-events: none;
+}
+
+.wkb-dynamic-island > div {
+    pointer-events: auto;
+}
+
+/* WebkernelBuilder V1 Builder Grid Layout */
+.wkb-builder-layout {
+    display: grid;
+    grid-template-areas:
+        "toolbar toolbar toolbar"
+        "sidebar canvas  properties";
+    grid-template-rows: 60px 1fr;
+    grid-template-columns: 300px 1fr 300px;
+    height: 100vh;
+    overflow: hidden;
+}
+
+.wkb-builder-toolbar {
+    grid-area: toolbar;
+    background: var(--wkb-bg-toolbar);
+    border-bottom: 1px solid var(--wkb-border-canvas);
+}
+
+.wkb-builder-main-grid {
+    grid-area: sidebar / sidebar / properties / properties;
+    display: grid;
+    grid-template-columns: 300px 1fr 300px;
+    overflow: hidden;
+}
+
+.wkb-builder-sidebar-blocks {
+    background: var(--wkb-bg-sidebar);
+    border-right: 1px solid var(--wkb-border-canvas);
+    overflow-y: auto;
+}
+
+.wkb-builder-canvas {
+    background: var(--wkb-bg-canvas);
+    overflow: hidden;
+    position: relative;
+}
+
+.wkb-builder-properties {
+    background: var(--wkb-bg-properties);
+    border-left: 1px solid var(--wkb-border-canvas);
+    overflow-y: auto;
+}
+
+/* WebkernelBuilder Responsive adjustments */
+@media (max-width: 1200px) {
+    .wkb-builder-layout {
+        grid-template-columns: 250px 1fr 250px;
+    }
+
+    .wkb-builder-main-grid {
+        grid-template-columns: 250px 1fr 250px;
+    }
+}
+
+@media (max-width: 768px) {
+    .wkb-builder-layout {
+        grid-template-areas:
+            "toolbar"
+            "canvas";
+        grid-template-columns: 1fr;
+        grid-template-rows: 60px 1fr;
+    }
+
+    .wkb-builder-main-grid {
+        display: none;
+    }
+}

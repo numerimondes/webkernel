@@ -1,0 +1,1396 @@
+===== DIRECTORY TREE =====
+webkernel/src/Arcanes/Runtime
+├── CacheManager.php
+├── Loaders
+│   ├── CommandLoader.php
+│   ├── ComponentLoader.php
+│   ├── HelperLoader.php
+│   ├── ModuleProviderRegistrar.php
+│   ├── PolicyLoader.php
+│   ├── ProviderLoader.php
+│   └── RouteLoader.php
+├── merged.txt
+├── ModuleBootstrapper.php
+├── ModuleBuilder.php
+├── ModuleConfig.php
+├── ModuleScanner.php
+├── PathResolver.php
+└── WebkernelManager.php
+
+2 directories, 15 files
+
+===== FILES CONTENT =====
+
+
+===== webkernel/src/Arcanes/Runtime/CacheManager.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+/**
+ * Manages ultra-fast caching with config-aware invalidation
+ */
+class CacheManager
+{
+  public function __construct(private string $cachePath) {}
+
+  /**
+   * Load module registry from cache
+   *
+   * @param array $moduleRegistry Reference to populate
+   * @return bool True if cache was loaded successfully
+   */
+  public function loadFromCache(array &$moduleRegistry): bool
+  {
+    if (!file_exists($this->cachePath)) {
+      return false;
+    }
+
+    $cache = include $this->cachePath;
+
+    if (!is_array($cache)) {
+      return false;
+    }
+
+    if (!$this->isCacheValid($cache)) {
+      return false;
+    }
+
+    $moduleRegistry = $cache['modules'];
+    return true;
+  }
+
+  /**
+   * Save module registry to cache
+   *
+   * @param array $moduleRegistry Module data to cache
+   * @return void
+   */
+  public function saveToCache(array $moduleRegistry): void
+  {
+    $cacheDir = dirname($this->cachePath);
+    if (!is_dir($cacheDir)) {
+      mkdir($cacheDir, 0755, true);
+    }
+
+    $configHash = $this->getConfigHash();
+    $directoryHashes = $this->getDirectoryHashes();
+
+    $cache = [
+      'timestamp' => time(),
+      'config_hash' => $configHash,
+      'hashes' => $directoryHashes,
+      'modules' => $moduleRegistry,
+    ];
+
+    $cacheContent = "<?php\nreturn " . var_export($cache, true) . ';';
+    file_put_contents($this->cachePath, $cacheContent, LOCK_EX);
+
+    if (function_exists('opcache_compile_file')) {
+      opcache_compile_file($this->cachePath);
+    }
+  }
+
+  /**
+   * Clear all caches
+   *
+   * @return void
+   */
+  public function clearCache(): void
+  {
+    if (file_exists($this->cachePath)) {
+      unlink($this->cachePath);
+
+      if (function_exists('opcache_invalidate')) {
+        opcache_invalidate($this->cachePath, true);
+      }
+    }
+  }
+
+  /**
+   * Check if cache is valid
+   *
+   * @param array $cache Cache data
+   * @return bool
+   */
+  private function isCacheValid(array $cache): bool
+  {
+    $configHash = $this->getConfigHash();
+
+    if (($cache['config_hash'] ?? '') !== $configHash) {
+      return false;
+    }
+
+    $config = config('webkernel-arcanes.discovery', []);
+    $paths = $config['paths'] ?? [base_path('app')];
+
+    foreach ($paths as $path) {
+      if (!is_dir($path)) {
+        continue;
+      }
+
+      $currentHash = $this->getDirectoryHash($path);
+      $cachedHash = $cache['hashes'][$path] ?? null;
+
+      if ($currentHash !== $cachedHash) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
+   * Get configuration file hash
+   *
+   * @return string
+   */
+  private function getConfigHash(): string
+  {
+    $configFile = base_path('config/webkernel-arcanes.php');
+    if (!file_exists($configFile)) {
+      return '';
+    }
+
+    return md5(filemtime($configFile) . filesize($configFile));
+  }
+
+  /**
+   * Get directory hashes for all configured paths
+   *
+   * @return array<string, string>
+   */
+  private function getDirectoryHashes(): array
+  {
+    $config = config('webkernel-arcanes.discovery', []);
+    $paths = $config['paths'] ?? [base_path('app')];
+
+    $hashes = [];
+    foreach ($paths as $path) {
+      if (is_dir($path)) {
+        $hashes[$path] = $this->getDirectoryHash($path);
+      }
+    }
+
+    return $hashes;
+  }
+
+  /**
+   * Calculate hash for a directory
+   *
+   * @param string $path Directory path
+   * @return string
+   */
+  private function getDirectoryHash(string $path): string
+  {
+    $hash = '';
+    $iterator = new \RecursiveIteratorIterator(
+      new \RecursiveDirectoryIterator($path, \RecursiveDirectoryIterator::SKIP_DOTS),
+      \RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    foreach ($iterator as $file) {
+      if ($file->isFile() && $file->getExtension() === 'php') {
+        $hash .= $file->getPathname() . ':' . $file->getMTime() . '|';
+      }
+    }
+
+    return md5($hash);
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/CommandLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Illuminate\Support\ServiceProvider;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
+/**
+ * Service provider that discovers and registers console commands from all modules
+ */
+class CommandLoader extends ServiceProvider
+{
+  private array $registeredCommands = [];
+
+  /**
+   * Register services
+   *
+   * @return void
+   */
+  public function register(): void
+  {
+    // Nothing to register
+  }
+
+  /**
+   * Bootstrap services
+   *
+   * @return void
+   */
+  public function boot(): void
+  {
+    if (!$this->app->runningInConsole()) {
+      return;
+    }
+
+    $manager = $this->app->make(WebkernelManager::class);
+    $commands = $this->discoverAllCommands($manager);
+
+    if (!empty($commands)) {
+      $this->commands($commands);
+    }
+  }
+
+  /**
+   * Discover all commands from all modules
+   *
+   * @param WebkernelManager $manager
+   * @return array<int, string>
+   */
+  private function discoverAllCommands(WebkernelManager $manager): array
+  {
+    $commands = [];
+
+    foreach ($manager->getModules() as $module) {
+      $moduleCmds = $this->discoverCommandsInModule($module);
+      $commands = array_merge($commands, $moduleCmds);
+    }
+
+    return array_unique($commands);
+  }
+
+  /**
+   * Discover commands in a specific module
+   *
+   * @param array $module Module data
+   * @return array<int, string>
+   */
+  private function discoverCommandsInModule(array $module): array
+  {
+    $commands = [];
+
+    $commandPaths = [
+      $module['consolePath'] ?? null,
+      isset($module['consolePath']) ? $module['consolePath'] . '/Commands' : null,
+      $module['commandsPath'] ?? null,
+    ];
+
+    foreach ($commandPaths as $path) {
+      if ($path && is_dir($path)) {
+        $commands = array_merge($commands, $this->scanCommandPath($path));
+      }
+    }
+
+    return $commands;
+  }
+
+  /**
+   * Scan a directory for command classes
+   *
+   * @param string $path Directory path
+   * @return array<int, string>
+   */
+  private function scanCommandPath(string $path): array
+  {
+    $commands = [];
+
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    foreach ($iterator as $file) {
+      if (!$file->isFile() || $file->getExtension() !== 'php') {
+        continue;
+      }
+
+      $commandClass = $this->extractCommandClass($file->getPathname());
+
+      if ($commandClass && !in_array($commandClass, $this->registeredCommands, true)) {
+        $commands[] = $commandClass;
+        $this->registeredCommands[] = $commandClass;
+      }
+    }
+
+    return $commands;
+  }
+
+  /**
+   * Extract command class from a file
+   *
+   * @param string $filePath File path
+   * @return string|null Full class name or null if not a command
+   */
+  private function extractCommandClass(string $filePath): ?string
+  {
+    $content = file_get_contents($filePath);
+
+    if (!preg_match('/class\s+(\w+)\s+extends\s+.*Command/m', $content)) {
+      return null;
+    }
+
+    $namespace = null;
+    $className = null;
+
+    if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $nsMatch)) {
+      $namespace = trim($nsMatch[1]);
+    }
+    if (preg_match('/class\s+(\w+)\s+extends\s+.*Command/m', $content, $classMatch)) {
+      $className = trim($classMatch[1]);
+    }
+
+    if (!($namespace && $className)) {
+      return null;
+    }
+
+    $fullClassName = $namespace . '\\' . $className;
+
+    return class_exists($fullClassName) ? $fullClassName : null;
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/ComponentLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+
+/**
+ * Loads views, translations, migrations, and Blade components
+ */
+class ComponentLoader implements ArcanesLoader
+{
+  public function __construct(private WebkernelManager $manager) {}
+
+  /**
+   * Load all module components
+   *
+   * @return void
+   */
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $moduleId => $module) {
+      $moduleInstance = $this->manager->getModule($moduleId);
+
+      if (!$moduleInstance) {
+        continue;
+      }
+
+      $this->loadModuleComponents($moduleInstance, $module);
+    }
+  }
+
+  /**
+   * Load components for a specific module
+   *
+   * @param \Webkernel\Arcanes\WebkernelApp $module Module instance
+   * @param array $moduleData Module data
+   * @return void
+   */
+  private function loadModuleComponents($module, array $moduleData): void
+  {
+    $config = $module->getModuleConfig();
+
+    if (is_dir($module->getViewsPath())) {
+      $viewNamespace = $config->viewNamespace ?: strtolower($config->id);
+      app('view')->addNamespace($viewNamespace, $module->getViewsPath());
+      $this->registerIndexComponents($viewNamespace, $module->getViewsPath());
+    }
+
+    if (is_dir($module->getLangPath())) {
+      app('translator')->addNamespace(strtolower($config->id), $module->getLangPath());
+    }
+
+    if (is_dir($module->getMigrationsPath())) {
+      app('migrator')->path($module->getMigrationsPath());
+    }
+  }
+
+  /**
+   * Register Blade components with index file support
+   *
+   * @param string $namespace View namespace
+   * @param string $viewsPath Views directory path
+   * @return void
+   */
+  private function registerIndexComponents(string $namespace, string $viewsPath): void
+  {
+    $blade = app('blade.compiler');
+    $directories = glob($viewsPath . '/*', GLOB_ONLYDIR);
+
+    if (!is_array($directories)) {
+      return;
+    }
+
+    foreach ($directories as $directory) {
+      $componentName = basename($directory);
+      $indexFile = $directory . '/index.blade.php';
+
+      if (file_exists($indexFile)) {
+        $blade->component($namespace . '::' . $componentName . '.index', $namespace . '::' . $componentName);
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/HelperLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
+/**
+ * Loads helper files from all registered modules
+ */
+class HelperLoader implements ArcanesLoader
+{
+  private array $processedPaths = [];
+
+  public function __construct(private WebkernelManager $manager) {}
+
+  /**
+   * Load all helper files from registered modules
+   *
+   * @return void
+   */
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $module) {
+      $path = $module['helpersPath'] ?? null;
+
+      if (!$path || !is_dir($path)) {
+        continue;
+      }
+
+      if (in_array($path, $this->processedPaths, true)) {
+        continue;
+      }
+
+      $this->processedPaths[] = $path;
+      $this->loadHelpersFromPath($path);
+    }
+  }
+
+  /**
+   * Load all PHP files from a directory recursively
+   *
+   * @param string $path Directory path
+   * @return void
+   */
+  private function loadHelpersFromPath(string $path): void
+  {
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    foreach ($iterator as $file) {
+      if ($file->isFile() && $file->getExtension() === 'php') {
+        require_once $file->getPathname();
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/ModuleProviderRegistrar.php =====
+<?php declare(strict_types=1);
+namespace Webkernel\Arcanes\Runtime\Loaders;
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+use Illuminate\Contracts\Foundation\Application;
+
+class ModuleProviderRegistrar implements ArcanesLoader
+{
+  public function __construct(private Application $app, private WebkernelManager $manager) {}
+
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $module) {
+      if (!isset($module['class']) || !class_exists($module['class'])) {
+        continue;
+      }
+
+      try {
+        $instance = new ($module['class'])($this->app);
+        foreach ($instance->providers() as $provider) {
+          if (is_string($provider) && class_exists($provider)) {
+            $this->app->register($provider);
+          }
+        }
+      } catch (\Throwable) {
+        // skip silently
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/PolicyLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\Gate;
+use Webkernel\Arcanes\QueryModules;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+
+/**
+ * Discovers and registers policy classes from all modules
+ */
+class PolicyLoader implements ArcanesLoader
+{
+  public function __construct(private Application $app, private WebkernelManager $manager) {}
+
+  /**
+   * Load and register all policy classes
+   *
+   * @return void
+   */
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $module) {
+      $path = $module['basePath'] . '/Policies';
+
+      if (!is_dir($path)) {
+        continue;
+      }
+
+      $this->registerPoliciesFromPath($path);
+    }
+  }
+
+  /**
+   * Register policies from a directory
+   *
+   * @param string $path Directory path
+   * @return void
+   */
+  private function registerPoliciesFromPath(string $path): void
+  {
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    foreach ($iterator as $file) {
+      if (!$file->isFile() || $file->getExtension() !== 'php') {
+        continue;
+      }
+
+      $policyData = $this->extractPolicyData($file->getPathname());
+
+      if ($policyData) {
+        $this->registerPolicy($policyData);
+      }
+    }
+  }
+
+  /**
+   * Extract policy information from a file
+   *
+   * @param string $filePath File path
+   * @return array|null Policy data or null if invalid
+   */
+  private function extractPolicyData(string $filePath): ?array
+  {
+    $content = file_get_contents($filePath);
+
+    if (!preg_match('/class\s+(\w+Policy)\s*\{/m', $content)) {
+      return null;
+    }
+
+    $namespace = null;
+    $className = null;
+
+    if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $nsMatch)) {
+      $namespace = trim($nsMatch[1]);
+    }
+    if (preg_match('/class\s+(\w+Policy)\s*\{/m', $content, $classMatch)) {
+      $className = trim($classMatch[1]);
+    }
+
+    if (!($namespace && $className)) {
+      return null;
+    }
+
+    return [
+      'namespace' => $namespace,
+      'className' => $className,
+      'fullClassName' => $namespace . '\\' . $className,
+      'modelName' => str_replace('Policy', '', $className),
+    ];
+  }
+
+  /**
+   * Register a policy with the gate
+   *
+   * @param array $policyData Policy information
+   * @return void
+   */
+  private function registerPolicy(array $policyData): void
+  {
+    $modelClass = $policyData['namespace'] . '\\Models\\' . $policyData['modelName'];
+
+    if (class_exists($modelClass)) {
+      Gate::policy($modelClass, $policyData['fullClassName']);
+      return;
+    }
+
+    $this->findAndRegisterModelFromModules($policyData);
+  }
+
+  /**
+   * Find model in other modules and register policy
+   *
+   * @param array $policyData Policy information
+   * @return void
+   */
+  private function findAndRegisterModelFromModules(array $policyData): void
+  {
+    $modules = QueryModules::make()
+      ->select(['namespace'])
+      ->get();
+
+    foreach ($modules as $module) {
+      if (!isset($module['namespace'])) {
+        continue;
+      }
+
+      $altModelClass = $module['namespace'] . '\\Models\\' . $policyData['modelName'];
+
+      if (class_exists($altModelClass)) {
+        Gate::policy($altModelClass, $policyData['fullClassName']);
+        break;
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/ProviderLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+use Illuminate\Contracts\Foundation\Application;
+use Throwable;
+
+/**
+ * Registers service providers from all modules
+ */
+class ProviderLoader implements ArcanesLoader
+{
+  public function __construct(private Application $app, private WebkernelManager $manager) {}
+
+  /**
+   * Register all module service providers
+   *
+   * @return void
+   */
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $moduleId => $module) {
+      if (!isset($module['class']) || !class_exists($module['class'])) {
+        continue;
+      }
+
+      $this->registerModuleProviders($module['class']);
+    }
+  }
+
+  /**
+   * Register providers for a specific module
+   *
+   * @param string $moduleClass Module class name
+   * @return void
+   */
+  private function registerModuleProviders(string $moduleClass): void
+  {
+    try {
+      $instance = new $moduleClass($this->app);
+      $providers = $instance->providers();
+
+      foreach ($providers as $provider) {
+        if (is_string($provider) && class_exists($provider)) {
+          $this->app->register($provider);
+        }
+      }
+    } catch (Throwable $e) {
+      if (config('webkernel-arcanes.development.debug', false)) {
+        error_log("Failed to register providers for {$moduleClass}: " . $e->getMessage());
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/Loaders/RouteLoader.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime\Loaders;
+
+use Webkernel\Arcanes\Runtime\WebkernelManager;
+use Webkernel\Arcanes\Support\Base\ArcanesLoader;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use Exception;
+
+/**
+ * Loads route files from all registered modules
+ */
+class RouteLoader implements ArcanesLoader
+{
+  public function __construct(private WebkernelManager $manager) {}
+
+  /**
+   * Load all route files from registered modules
+   *
+   * @return void
+   */
+  public function load(): void
+  {
+    foreach ($this->manager->getModules() as $moduleId => $module) {
+      if (!isset($module['routesPath']) || !is_dir($module['routesPath'])) {
+        continue;
+      }
+
+      $this->loadRoutesFromPath($module['routesPath'], $moduleId);
+    }
+  }
+
+  /**
+   * Load all route files from a directory recursively
+   *
+   * @param string $path Directory path
+   * @param string $moduleId Module identifier for error logging
+   * @return void
+   */
+  private function loadRoutesFromPath(string $path, string $moduleId): void
+  {
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    foreach ($iterator as $file) {
+      if (!$file->isFile() || $file->getExtension() !== 'php') {
+        continue;
+      }
+
+      try {
+        require $file->getPathname();
+      } catch (Exception $e) {
+        if (config('webkernel-arcanes.development.debug', false)) {
+          error_log("Failed to load route from {$file->getPathname()} in module {$moduleId}: " . $e->getMessage());
+        }
+      }
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/ModuleBootstrapper.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+use Illuminate\Foundation\Application;
+use Webkernel\Arcanes\Runtime\Loaders\{HelperLoader, RouteLoader, PolicyLoader, CommandLoader, ComponentLoader};
+
+/**
+ * Handles the bootstrapping of all modules and their components
+ */
+class ModuleBootstrapper
+{
+  public function __construct(private Application $app, private WebkernelManager $manager) {}
+
+  /**
+   * Bootstrap all modules and load their components
+   *
+   * @return void
+   */
+  public function bootstrap(): void
+  {
+    $this->manager->initialize();
+    $this->loadEarlyComponents();
+    $this->bootAllModules();
+    $this->loadLateComponents();
+  }
+
+  /**
+   * Load components that must be available early
+   *
+   * @return void
+   */
+  private function loadEarlyComponents(): void
+  {
+    $this->app->make(HelperLoader::class)->load();
+    $this->app->make(PolicyLoader::class)->load();
+  }
+
+  /**
+   * Load components that can be loaded after modules are booted
+   *
+   * @return void
+   */
+  private function loadLateComponents(): void
+  {
+    $this->app->make(RouteLoader::class)->load();
+    $this->app->make(ComponentLoader::class)->load();
+  }
+
+  /**
+   * Boot all registered modules
+   *
+   * @return void
+   */
+  private function bootAllModules(): void
+  {
+    foreach ($this->manager->getModules() as $id => $data) {
+      $this->manager->bootModule($id);
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/ModuleBuilder.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+/**
+ * Fluent builder for module configuration
+ */
+class ModuleBuilder
+{
+  private string $id = '';
+  private string $name = '';
+  private string $version = '1.0.0';
+  private string $description = '';
+  private string $viewNamespace = '';
+  private array $dependencies = [];
+  private array $aliases = [];
+  private array $providers = [];
+  private array $providedComponents = [];
+
+  /**
+   * Set module ID
+   *
+   * @param string $id Module identifier
+   * @return self
+   */
+  public function id(string $id): self
+  {
+    $this->id = $id;
+    return $this;
+  }
+
+  /**
+   * Set module name
+   *
+   * @param string $name Module name
+   * @return self
+   */
+  public function name(string $name): self
+  {
+    $this->name = $name;
+    return $this;
+  }
+
+  /**
+   * Set module version
+   *
+   * @param string $version Module version
+   * @return self
+   */
+  public function version(string $version): self
+  {
+    $this->version = $version;
+    return $this;
+  }
+
+  /**
+   * Set module description
+   *
+   * @param string $description Module description
+   * @return self
+   */
+  public function description(string $description): self
+  {
+    $this->description = $description;
+    return $this;
+  }
+
+  /**
+   * Set view namespace
+   *
+   * @param string $namespace View namespace
+   * @return self
+   */
+  public function viewNamespace(string $namespace): self
+  {
+    $this->viewNamespace = $namespace;
+    return $this;
+  }
+
+  /**
+   * Set module dependencies
+   *
+   * @param array<string> $dependencies List of dependency IDs
+   * @return self
+   */
+  public function dependencies(array $dependencies): self
+  {
+    $this->dependencies = $dependencies;
+    return $this;
+  }
+
+  /**
+   * Set module aliases
+   *
+   * @param array<string, string> $aliases Alias mappings
+   * @return self
+   */
+  public function aliases(array $aliases): self
+  {
+    $this->aliases = $aliases;
+    return $this;
+  }
+
+  /**
+   * Set service providers
+   *
+   * @param array<string> $providers Provider class names
+   * @return self
+   */
+  public function providers(array $providers): self
+  {
+    $this->providers = $providers;
+    return $this;
+  }
+
+  /**
+   * Set provided components
+   *
+   * @param array<string, mixed> $components Component configuration
+   * @return self
+   */
+  public function moduleProvides(array $components): self
+  {
+    $this->providedComponents = $components;
+    return $this;
+  }
+
+  /**
+   * Build module configuration
+   *
+   * @return ModuleConfig
+   */
+  public function build(): ModuleConfig
+  {
+    return new ModuleConfig(
+      $this->id,
+      $this->name,
+      $this->version,
+      $this->description,
+      $this->viewNamespace,
+      $this->dependencies,
+      $this->aliases,
+      $this->providers,
+      $this->providedComponents,
+    );
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/ModuleConfig.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+/**
+ * Immutable module configuration
+ */
+class ModuleConfig
+{
+  public function __construct(
+    public readonly string $id,
+    public readonly string $name = '',
+    public readonly string $version = '1.0.0',
+    public readonly string $description = '',
+    public readonly string $viewNamespace = '',
+    public readonly array $dependencies = [],
+    public readonly array $aliases = [],
+    public readonly array $providers = [],
+    public readonly array $providedComponents = [],
+  ) {}
+}
+
+===== webkernel/src/Arcanes/Runtime/ModuleScanner.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+use Exception;
+use RecursiveDirectoryIterator;
+use RecursiveIteratorIterator;
+use RegexIterator;
+
+/**
+ * Scans filesystem for WebkernelApp modules
+ */
+class ModuleScanner
+{
+  public function __construct(private CacheManager $cache, private PathResolver $pathResolver) {}
+
+  /**
+   * Scan configured paths for modules
+   *
+   * @return array<string, array>
+   */
+  public function scan(): array
+  {
+    $config = config('webkernel-arcanes.discovery', []);
+    $paths = $config['paths'] ?? [base_path('app')];
+    $excludePatterns = $config['exclude_patterns'] ?? [];
+
+    $modules = [];
+
+    foreach ($paths as $path) {
+      if (is_dir($path)) {
+        $modules = array_merge($modules, $this->scanDirectory($path, $excludePatterns));
+      }
+    }
+
+    return $modules;
+  }
+
+  /**
+   * Scan a directory for module classes
+   *
+   * @param string $path Directory path
+   * @param array<string> $excludePatterns Patterns to exclude
+   * @return array<string, array>
+   */
+  private function scanDirectory(string $path, array $excludePatterns): array
+  {
+    $modules = [];
+
+    $iterator = new RecursiveIteratorIterator(
+      new RecursiveDirectoryIterator($path, RecursiveDirectoryIterator::SKIP_DOTS),
+      RecursiveIteratorIterator::LEAVES_ONLY,
+    );
+
+    $phpFiles = new RegexIterator($iterator, '/\.php$/');
+
+    foreach ($phpFiles as $file) {
+      $filePath = $file->getPathname();
+
+      if ($this->isExcluded($filePath, $excludePatterns)) {
+        continue;
+      }
+
+      $moduleData = $this->extractModuleData($filePath);
+      if ($moduleData) {
+        $modules[$moduleData['id']] = $moduleData;
+      }
+    }
+
+    return $modules;
+  }
+
+  /**
+   * Check if a file path should be excluded
+   *
+   * @param string $filePath File path to check
+   * @param array<string> $excludePatterns Exclusion patterns
+   * @return bool
+   */
+  private function isExcluded(string $filePath, array $excludePatterns): bool
+  {
+    foreach ($excludePatterns as $pattern) {
+      if (strpos($filePath, $pattern) !== false) {
+        return true;
+      }
+    }
+    return false;
+  }
+
+  /**
+   * Extract module data from a PHP file
+   *
+   * @param string $filePath Path to PHP file
+   * @return array|null Module data or null if not a valid module
+   */
+  private function extractModuleData(string $filePath): ?array
+  {
+    $content = file_get_contents($filePath);
+
+    if (!preg_match('/class\s+(\w+)\s+extends\s+.*WebkernelApp/m', $content)) {
+      return null;
+    }
+
+    $namespace = null;
+    $className = null;
+
+    if (preg_match('/^\s*namespace\s+([^;]+);/m', $content, $nsMatch)) {
+      $namespace = trim($nsMatch[1]);
+    }
+    if (preg_match('/class\s+(\w+)\s+extends\s+.*WebkernelApp/m', $content, $classMatch)) {
+      $className = trim($classMatch[1]);
+    }
+
+    if (!($namespace && $className)) {
+      return null;
+    }
+
+    $fullClassName = $namespace . '\\' . $className;
+    $moduleId = strtolower($className);
+    $basePath = dirname($filePath);
+
+    try {
+      $module = new $fullClassName(app());
+      $config = $module->getModuleConfig();
+
+      $this->precompileFile($filePath);
+
+      return [
+        'id' => $config->id,
+        'name' => $config->name,
+        'description' => $config->description,
+        'version' => $config->version,
+        'class' => $fullClassName,
+        'namespace' => $namespace,
+        'viewNamespace' => $config->viewNamespace ?: strtolower($config->id),
+        'instantiated' => false,
+        'path' => $filePath,
+        'basePath' => $basePath,
+        'viewsPath' => is_dir($module->getViewsPath()) ? $module->getViewsPath() : null,
+        'langPath' => is_dir($module->getLangPath()) ? $module->getLangPath() : null,
+        'helpersPath' => is_dir($module->getHelpersPath()) ? $module->getHelpersPath() : null,
+        'consolePath' => is_dir($module->getConsolePath()) ? $module->getConsolePath() : null,
+        'commandsPath' => is_dir($module->getCommandsPath()) ? $module->getCommandsPath() : null,
+        'routesPath' => is_dir($module->getRoutesPath()) ? $module->getRoutesPath() : null,
+        'migrationsPath' => is_dir($module->getMigrationsPath()) ? $module->getMigrationsPath() : null,
+        'configPath' => is_dir($module->getConfigPath()) ? $module->getConfigPath() : null,
+      ];
+    } catch (Exception $e) {
+      return null;
+    }
+  }
+
+  /**
+   * Precompile file into OPcache
+   *
+   * @param string $filePath File to precompile
+   * @return void
+   */
+  private function precompileFile(string $filePath): void
+  {
+    if (function_exists('opcache_compile_file')) {
+      opcache_compile_file($filePath);
+    }
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/PathResolver.php =====
+<?php
+declare(strict_types=1);
+
+namespace Webkernel\Arcanes\Runtime;
+
+/**
+ * Resolves and caches module paths
+ */
+class PathResolver
+{
+  private array $pathCache = [];
+
+  /**
+   * Resolve path relative to base path
+   *
+   * @param string $basePath Base module path
+   * @param string $relativePath Relative path to resolve
+   * @param string $subPath Optional sub-path
+   * @return string
+   */
+  public function resolve(string $basePath, string $relativePath, string $subPath = ''): string
+  {
+    $key = $basePath . '|' . $relativePath . '|' . $subPath;
+
+    if (isset($this->pathCache[$key])) {
+      return $this->pathCache[$key];
+    }
+
+    $fullPath = $basePath . '/' . $relativePath;
+    if ($subPath) {
+      $fullPath .= '/' . $subPath;
+    }
+
+    return $this->pathCache[$key] = $fullPath;
+  }
+
+  /**
+   * Clear path cache
+   *
+   * @return void
+   */
+  public function clearCache(): void
+  {
+    $this->pathCache = [];
+  }
+}
+
+===== webkernel/src/Arcanes/Runtime/WebkernelManager.php =====
+<?php declare(strict_types=1);
+namespace Webkernel\Arcanes\Runtime;
+use Illuminate\Foundation\Application;
+use Exception;
+
+/**
+ * Central manager for module registry and lifecycle
+ */
+class WebkernelManager
+{
+  private array $moduleRegistry = [];
+  private array $instantiatedModules = [];
+  private bool $isBootstrapped = false;
+
+  public function __construct(private Application $app, private ModuleScanner $scanner, private CacheManager $cache) {}
+
+  /**
+   * Initialize module discovery and registration
+   *
+   * @return void
+   */
+  public function initialize(): void
+  {
+    if ($this->isBootstrapped) {
+      return;
+    }
+
+    $startTime = hrtime(true);
+
+    if ($this->cache->loadFromCache($this->moduleRegistry)) {
+      $this->logPerformance('Cache Load', $startTime, count($this->moduleRegistry));
+      $this->isBootstrapped = true;
+      return;
+    }
+
+    $this->moduleRegistry = $this->scanner->scan();
+    $this->cache->saveToCache($this->moduleRegistry);
+
+    $this->logPerformance('Fresh Scan', $startTime, count($this->moduleRegistry));
+    $this->isBootstrapped = true;
+  }
+
+  /**
+   * Boot a specific module by ID
+   *
+   * @param string $id Module identifier
+   * @return \Webkernel\Arcanes\WebkernelApp|null
+   */
+  public function bootModule(string $id): ?\Webkernel\Arcanes\WebkernelApp
+  {
+    if (isset($this->instantiatedModules[$id])) {
+      return $this->instantiatedModules[$id];
+    }
+
+    $data = $this->moduleRegistry[$id] ?? null;
+    if (!$data) {
+      return null;
+    }
+
+    try {
+      if (!class_exists($data['class'])) {
+        return null;
+      }
+
+      $module = new ($data['class'])($this->app);
+      $module->register();
+      $module->bootIfNeeded();
+
+      $this->instantiatedModules[$id] = $module;
+      $this->moduleRegistry[$id]['instantiated'] = true;
+
+      return $module;
+    } catch (Exception $e) {
+      if (config('webkernel-arcanes.development.debug', false)) {
+        error_log("Failed to boot module {$id}: " . $e->getMessage());
+      }
+      return null;
+    }
+  }
+
+  /**
+   * Get module data by ID
+   *
+   * @param string $id Module identifier
+   * @return \Webkernel\Arcanes\WebkernelApp|null
+   */
+  public function getModule(string $id): ?\Webkernel\Arcanes\WebkernelApp
+  {
+    return $this->bootModule($id);
+  }
+
+  /**
+   * Get all registered modules
+   *
+   * @return array<string, array>
+   */
+  public function getModules(): array
+  {
+    return $this->moduleRegistry;
+  }
+
+  /**
+   * Refresh module discovery and clear all caches
+   *
+   * @return void
+   */
+  public function refreshDiscovery(): void
+  {
+    $this->cache->clearCache();
+
+    $this->moduleRegistry = [];
+    $this->instantiatedModules = [];
+    $this->isBootstrapped = false;
+
+    $this->initialize();
+  }
+
+  /**
+   * Log performance metrics
+   *
+   * @param string $operation Operation name
+   * @param int $startTime Start time in nanoseconds
+   * @param int $count Number of items processed
+   * @return void
+   */
+  private function logPerformance(string $operation, int $startTime, int $count): void
+  {
+    $duration = (hrtime(true) - $startTime) / 1_000_000;
+    error_log("Webkernel {$operation}: {$duration}ms for {$count} modules");
+  }
+}

@@ -1,0 +1,168 @@
+/* WebkernelBuilder CSS Variables */
+:root {
+  /* WebkernelBuilder Color Palette */
+  --wkb-primary: #3b82f6;
+  --wkb-primary-hover: #2563eb;
+  --wkb-primary-light: #dbeafe;
+  --wkb-primary-dark: #1e40af;
+
+  --wkb-secondary: #6b7280;
+  --wkb-secondary-hover: #4b5563;
+  --wkb-secondary-light: #f3f4f6;
+  --wkb-secondary-dark: #374151;
+
+  --wkb-success: #10b981;
+  --wkb-success-hover: #059669;
+  --wkb-success-light: #d1fae5;
+  --wkb-success-dark: #047857;
+
+  --wkb-warning: #f59e0b;
+  --wkb-warning-hover: #d97706;
+  --wkb-warning-light: #fef3c7;
+  --wkb-warning-dark: #b45309;
+
+  --wkb-danger: #ef4444;
+  --wkb-danger-hover: #dc2626;
+  --wkb-danger-light: #fee2e2;
+  --wkb-danger-dark: #b91c1c;
+
+  /* WebkernelBuilder Background Colors */
+  --wkb-bg-primary: #ffffff;
+  --wkb-bg-secondary: #f8fafc;
+  --wkb-bg-tertiary: #f1f5f9;
+  --wkb-bg-canvas: #000000;
+  --wkb-bg-sidebar: #1a1a1a;
+  --wkb-bg-toolbar: #000000;
+  --wkb-bg-properties: #1a1a1a;
+
+  /* WebkernelBuilder Text Colors */
+  --wkb-text-primary: #111827;
+  --wkb-text-secondary: #6b7280;
+  --wkb-text-tertiary: #9ca3af;
+  --wkb-text-inverse: #ffffff;
+  --wkb-text-muted: #6b7280;
+
+  /* WebkernelBuilder Border Colors */
+  --wkb-border-primary: #e5e7eb;
+  --wkb-border-secondary: #d1d5db;
+  --wkb-border-canvas: #333333;
+  --wkb-border-accent: #3b82f6;
+
+  /* WebkernelBuilder Spacing */
+  --wkb-spacing-xs: 0.25rem;
+  --wkb-spacing-sm: 0.5rem;
+  --wkb-spacing-md: 1rem;
+  --wkb-spacing-lg: 1.5rem;
+  --wkb-spacing-xl: 2rem;
+  --wkb-spacing-2xl: 3rem;
+
+  /* WebkernelBuilder Border Radius */
+  --wkb-radius-sm: 0.25rem;
+  --wkb-radius-md: 0.5rem;
+  --wkb-radius-lg: 0.75rem;
+  --wkb-radius-xl: 1rem;
+
+  /* WebkernelBuilder Shadows */
+  --wkb-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.05);
+  --wkb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.1);
+  --wkb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.1);
+  --wkb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.1);
+
+  /* WebkernelBuilder Transitions */
+  --wkb-transition-fast: 0.15s ease;
+  --wkb-transition-normal: 0.2s ease;
+  --wkb-transition-slow: 0.3s ease;
+
+  /* WebkernelBuilder Z-Index */
+  --wkb-z-dropdown: 1000;
+  --wkb-z-sticky: 1020;
+  --wkb-z-fixed: 1030;
+  --wkb-z-modal-backdrop: 1040;
+  --wkb-z-modal: 1050;
+  --wkb-z-popover: 1060;
+  --wkb-z-tooltip: 1070;
+  --wkb-z-dynamic-island: 1080;
+}
+
+/* WebkernelBuilder Dark Mode Variables */
+.dark {
+  /* WebkernelBuilder Background Colors - Dark */
+  --wkb-bg-primary: #000000;
+  --wkb-bg-secondary: #111111;
+  --wkb-bg-tertiary: #1a1a1a;
+  --wkb-bg-canvas: #000000;
+  --wkb-bg-sidebar: #1a1a1a;
+  --wkb-bg-toolbar: #000000;
+  --wkb-bg-properties: #1a1a1a;
+
+  /* WebkernelBuilder Text Colors - Dark */
+  --wkb-text-primary: #ffffff;
+  --wkb-text-secondary: #cccccc;
+  --wkb-text-tertiary: #aaaaaa;
+  --wkb-text-inverse: #000000;
+  --wkb-text-muted: #888888;
+
+  /* WebkernelBuilder Border Colors - Dark */
+  --wkb-border-primary: #333333;
+  --wkb-border-secondary: #444444;
+  --wkb-border-canvas: #333333;
+  --wkb-border-accent: #3b82f6;
+
+  /* WebkernelBuilder Shadows - Dark */
+  --wkb-shadow-sm: 0 1px 2px 0 rgba(0, 0, 0, 0.3);
+  --wkb-shadow-md: 0 4px 6px -1px rgba(0, 0, 0, 0.4);
+  --wkb-shadow-lg: 0 10px 15px -3px rgba(0, 0, 0, 0.4);
+  --wkb-shadow-xl: 0 20px 25px -5px rgba(0, 0, 0, 0.4);
+}
+
+/* WebkernelBuilder Base Styles */
+.wkb-root {
+  /* Apply variables to root element */
+  color: var(--wkb-text-primary);
+  background-color: var(--wkb-bg-primary);
+  font-family: ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, "Noto Sans", sans-serif;
+  line-height: 1.5;
+  -webkit-text-size-adjust: 100%;
+  -moz-tab-size: 4;
+  tab-size: 4;
+}
+
+/* WebkernelBuilder Scrollbar Styles */
+.wkb-root ::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+
+.wkb-root ::-webkit-scrollbar-track {
+  background: var(--wkb-bg-secondary);
+  border-radius: var(--wkb-radius-sm);
+}
+
+.wkb-root ::-webkit-scrollbar-thumb {
+  background: var(--wkb-border-secondary);
+  border-radius: var(--wkb-radius-sm);
+  border: 1px solid var(--wkb-bg-secondary);
+}
+
+.wkb-root ::-webkit-scrollbar-thumb:hover {
+  background: var(--wkb-secondary);
+}
+
+.wkb-root ::-webkit-scrollbar-thumb:active {
+  background: var(--wkb-secondary-hover);
+}
+
+.wkb-root ::-webkit-scrollbar-corner {
+  background: var(--wkb-bg-secondary);
+}
+
+/* Firefox Scrollbar */
+.wkb-root * {
+  scrollbar-width: thin;
+  scrollbar-color: var(--wkb-border-secondary) var(--wkb-bg-secondary);
+}
+
+/* WebkernelBuilder Smooth Scrolling */
+.wkb-root {
+  scroll-behavior: smooth;
+}

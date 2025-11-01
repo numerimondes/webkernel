@@ -1,0 +1,374 @@
+/* WebkernelBuilder Canvas Component Styles */
+
+.wkb-builder-canvas {
+    position: relative;
+    background: var(--wkb-bg-canvas);
+    overflow: hidden;
+}
+
+.wkb-canvas-container {
+    position: relative;
+    height: 100%;
+    overflow: auto;
+}
+
+.wkb-canvas-wrapper {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: var(--wkb-spacing-xl);
+    transform-origin: center center;
+}
+
+.wkb-canvas-frame {
+    background: var(--wkb-bg-primary);
+    border-radius: var(--wkb-radius-md);
+    box-shadow: var(--wkb-shadow-lg);
+    border: 1px solid var(--wkb-border-primary);
+    overflow: hidden;
+    transition: width var(--wkb-transition-slow);
+    max-height: 100%;
+    min-height: 600px;
+    max-height: 80vh;
+}
+
+.dark .wkb-canvas-frame {
+    background: var(--wkb-bg-secondary);
+    border-color: var(--wkb-border-primary);
+}
+
+/* WebkernelBuilder Canvas Toolbar */
+.wkb-canvas-toolbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: var(--wkb-spacing-sm) var(--wkb-spacing-md);
+    background: var(--wkb-bg-primary);
+    border-bottom: 1px solid var(--wkb-border-primary);
+}
+
+.dark .wkb-canvas-toolbar {
+    background: var(--wkb-bg-secondary);
+    border-color: var(--wkb-border-primary);
+}
+
+.viewport-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.dark .viewport-controls {
+    background: #374151;
+}
+
+.viewport-button {
+    padding: 0.5rem;
+    border-radius: 0.25rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+}
+
+.viewport-button:hover {
+    background: rgba(59, 130, 246, 0.1);
+    color: #3b82f6;
+}
+
+.viewport-button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.dark .viewport-button {
+    color: #9ca3af;
+}
+
+.dark .viewport-button:hover {
+    background: rgba(59, 130, 246, 0.2);
+    color: #60a5fa;
+}
+
+.dark .viewport-button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Canvas Controls */
+.canvas-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.5rem;
+}
+
+.tool-button {
+    padding: 0.5rem;
+    border-radius: 0.5rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none;
+    background: #f3f4f6;
+    color: #374151;
+}
+
+.tool-button:hover {
+    background: #e5e7eb;
+}
+
+.tool-button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+.dark .tool-button {
+    background: #374151;
+    color: #d1d5db;
+}
+
+.dark .tool-button:hover {
+    background: #4b5563;
+}
+
+.dark .tool-button.active {
+    background: #3b82f6;
+    color: white;
+}
+
+/* Zoom Controls */
+.zoom-controls {
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    background: #f3f4f6;
+    border-radius: 0.5rem;
+    padding: 0.25rem;
+}
+
+.dark .zoom-controls {
+    background: #374151;
+}
+
+.zoom-button {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    transition: all 0.15s ease;
+    cursor: pointer;
+    border: none;
+    background: transparent;
+    color: #6b7280;
+}
+
+.zoom-button:hover {
+    background: #e5e7eb;
+    color: #374151;
+}
+
+.dark .zoom-button {
+    color: #9ca3af;
+}
+
+.dark .zoom-button:hover {
+    background: #4b5563;
+    color: #d1d5db;
+}
+
+.zoom-level {
+    padding: 0.25rem 0.5rem;
+    font-size: 0.875rem;
+    font-weight: 500;
+    color: #374151;
+    min-width: 3rem;
+    text-align: center;
+}
+
+.dark .zoom-level {
+    color: #d1d5db;
+}
+
+/* Drop Zone */
+.drop-zone {
+    min-height: 100%;
+    padding: 1.5rem;
+    transition: all 0.2s ease;
+    overflow: hidden;
+}
+
+.drop-zone.drag-over {
+    background: rgba(59, 130, 246, 0.05);
+    border: 2px dashed #3b82f6;
+}
+
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 400px;
+    text-align: center;
+    max-height: 100%;
+    overflow: hidden;
+}
+
+.empty-state-icon {
+    width: 4rem;
+    height: 4rem;
+    margin: 0 auto 1.5rem;
+    color: #9ca3af;
+}
+
+.dark .empty-state-icon {
+    color: #6b7280;
+}
+
+.empty-state-title {
+    font-size: 1.125rem;
+    font-weight: 500;
+    color: #111827;
+    margin-bottom: 0.5rem;
+}
+
+.dark .empty-state-title {
+    color: #f9fafb;
+}
+
+.empty-state-description {
+    color: #6b7280;
+    margin-bottom: 1.5rem;
+    max-width: 28rem;
+}
+
+.dark .empty-state-description {
+    color: #9ca3af;
+}
+
+.empty-state-badges {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+    justify-content: center;
+}
+
+.empty-state-badge {
+    display: inline-flex;
+    align-items: center;
+    padding: 0.25rem 0.75rem;
+    border-radius: 9999px;
+    font-size: 0.75rem;
+    font-weight: 500;
+}
+
+.empty-state-badge.blue {
+    background: #dbeafe;
+    color: #1e40af;
+}
+
+.dark .empty-state-badge.blue {
+    background: #1e3a8a;
+    color: #93c5fd;
+}
+
+.empty-state-badge.green {
+    background: #dcfce7;
+    color: #166534;
+}
+
+.dark .empty-state-badge.green {
+    background: #14532d;
+    color: #86efac;
+}
+
+.empty-state-badge.purple {
+    background: #f3e8ff;
+    color: #7c3aed;
+}
+
+.dark .empty-state-badge.purple {
+    background: #581c87;
+    color: #c4b5fd;
+}
+
+/* Dynamic Elements */
+.dynamic-elements {
+    position: relative;
+}
+
+.builder-block {
+    position: relative;
+    margin: 0.5rem;
+    border: 2px solid #e5e7eb;
+    border-radius: 0.5rem;
+    background: white;
+    transition: all 0.2s ease;
+}
+
+.builder-block:hover {
+    border-color: #3b82f6;
+}
+
+.builder-block.selected {
+    border-color: #3b82f6;
+    box-shadow: 0 0 0 1px #3b82f6;
+}
+
+.dark .builder-block {
+    background: #1f2937;
+    border-color: #374151;
+}
+
+.dark .builder-block:hover {
+    border-color: #3b82f6;
+}
+
+.block-header {
+    position: absolute;
+    top: 0.5rem;
+    left: 0.5rem;
+    background: #3b82f6;
+    color: white;
+    padding: 0.25rem 0.5rem;
+    border-radius: 0.25rem;
+    font-size: 0.75rem;
+    font-weight: 500;
+    z-index: 10;
+}
+
+.block-actions {
+    position: absolute;
+    top: 0.5rem;
+    right: 0.5rem;
+    display: flex;
+    gap: 0.25rem;
+    opacity: 0;
+    transition: opacity 0.2s ease;
+    z-index: 10;
+}
+
+.builder-block:hover .block-actions {
+    opacity: 1;
+}
+
+.block-action {
+    padding: 0.25rem;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border: none;
+    background: #ef4444;
+    color: white;
+}
+
+.block-action:hover {
+    background: #dc2626;
+}
+
+.block-content {
+    margin-top: 2rem;
+    padding: 1rem;
+}

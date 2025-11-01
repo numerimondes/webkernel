@@ -1,0 +1,3 @@
+<svg x-bind:class="activeMobileMenu === 2 ? 'rotate-180' : ''" class="lucide-multi-css w-5 h-5 text-muted-foreground transition-transform duration-200" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="m6 9 6 6 6-6"/>
+</svg><?php /**PATH /home/yassine/Documents/project/numerimondes-com/storage/framework/views/bf6a7856354f1600e73a0d9a9aa34896.blade.php ENDPATH**/ ?>

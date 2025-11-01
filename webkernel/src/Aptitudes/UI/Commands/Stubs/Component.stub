@@ -1,0 +1,68 @@
+<?php
+declare(strict_types=1);
+
+namespace {{ namespace }};
+
+use Webkernel\Aptitudes\UI\ComponentBase;
+use Webkernel\Aptitudes\UI\ComponentSchema;
+
+class {{ className }} extends ComponentBase
+{
+    protected function define(ComponentSchema $schema): void
+    {
+        $schema
+            // Basic props
+            ->string('color')->default('primary')
+            ->string('size')->default('md')
+            ->boolean('disabled')->default(false)
+            ->string('href')->nullable()
+            ->string('type')->default('button')
+            ->string('tooltip')->nullable()
+
+            // Icon props
+            ->string('icon')->nullable()
+            ->enum('iconPosition')->options(['before', 'after'])->default('before')
+
+            // Badge props
+            ->string('badge')->nullable()
+            ->number('notification')->nullable()
+
+            // Computed properties
+            ->compute('tag', fn($config) => $config['href'] ? 'a' : 'button')
+            ->compute('showIconBefore', fn($config) => $config['icon'] && $config['iconPosition'] === 'before')
+            ->compute('showIconAfter', fn($config) => $config['icon'] && $config['iconPosition'] === 'after')
+
+            // Simple styling (Filament style)
+            ->baseClasses([
+                'inline-flex', 'items-center', 'justify-center', 'gap-1.5', 'rounded-lg',
+                'text-sm', 'font-medium', 'transition-colors', 'duration-75', 'outline-none',
+                'focus:ring-2', 'disabled:opacity-70', 'disabled:cursor-not-allowed'
+            ])
+
+            // Size variants (Filament exact sizes)
+            ->variantClasses('size', [
+                'xs' => 'px-2 py-1.5 text-xs',
+                'sm' => 'px-2.5 py-1.5 text-sm',
+                'md' => 'px-3 py-2 text-sm',
+                'lg' => 'px-3.5 py-2.5 text-sm',
+                'xl' => 'px-4 py-3 text-sm',
+            ])
+
+            // Color variants
+            ->variantClasses('color', [
+                'primary' => 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+                'success' => 'bg-green-600 text-white hover:bg-green-700 focus:ring-green-500',
+                'warning' => 'bg-amber-600 text-white hover:bg-amber-700 focus:ring-amber-500',
+                'danger' => 'bg-red-600 text-white hover:bg-red-700 focus:ring-red-500',
+                'info' => 'bg-blue-600 text-white hover:bg-blue-700 focus:ring-blue-500',
+                'gray' => 'bg-white text-gray-950 hover:bg-gray-50 focus:ring-gray-400/40 dark:bg-white/5 dark:text-white dark:hover:bg-white/10',
+                'outline' => 'border border-gray-300 text-gray-700 hover:bg-gray-50 focus:ring-gray-500',
+            ])
+
+            // HTML attributes
+            ->dynamicAttribute('type', fn($config) => $config['tag'] === 'button' ? $config['type'] : null)
+            ->dynamicAttribute('href', fn($config) => $config['tag'] === 'a' ? $config['href'] : null)
+            ->conditionalAttribute('disabled', 'disabled', 'disabled')
+            ->attribute('title', 'tooltip');
+    }
+}

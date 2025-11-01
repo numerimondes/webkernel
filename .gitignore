@@ -1,0 +1,59 @@
+# Operating System and Editor Files
+.DS_Store
+Thumbs.db
+/.fleet
+/.idea
+/.nova
+/.vscode
+/.zed
+.zed
+
+# Logs
+*.log
+
+# Runtime Data
+/auth.json
+Homestead.json
+Homestead.yaml
+
+# Dependency Directories
+/node_modules
+/vendor
+
+# Dependency Locks
+package-lock.json
+composer.lock
+
+# Environment Files
+.env
+.env.backup
+.env.production
+
+# Cache Files
+.phpunit.result.cache
+/.phpunit.cache
+.phpactor.json
+
+# Storage and Build Artifacts
+/public/build
+/public/hot
+/public/storage
+/storage/*.key
+/storage/pail
+/storage/basix/*
+
+# Application-Specific Ignores
+**/caddy
+frankenphp
+frankenphp-worker.php
+merge.txt
+merged-data-*.txt
+merged-data-*.zip
+app-errors.log
+.licence
+.licence*
+.licence-backup*
+software-specs-*
+
+# Distribution Builds
+*.AppImage

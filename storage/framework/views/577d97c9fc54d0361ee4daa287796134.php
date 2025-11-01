@@ -1,0 +1,4 @@
+<svg class="lucide-multi-css w-5 h-5 mr-3 text-muted-foreground" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+  <path d="m16.24 7.76-1.804 5.411a2 2 0 0 1-1.265 1.265L7.76 16.24l1.804-5.411a2 2 0 0 1 1.265-1.265z"/>
+  <circle cx="12" cy="12" r="10"/>
+</svg><?php /**PATH /home/yassine/Documents/project/numerimondes-com/storage/framework/views/e42da64902892b6bbbf6b1e7ba7412eb.blade.php ENDPATH**/ ?>

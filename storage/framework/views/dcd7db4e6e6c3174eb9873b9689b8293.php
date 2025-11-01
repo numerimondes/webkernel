@@ -1,0 +1,1 @@
+<?php /**PATH /home/yassine/Documents/project/numerimondes-com/platform/EnjoyTheWorld/Resources/Views/pages/01-home/02-welcome-paradise.blade.php ENDPATH**/ ?>

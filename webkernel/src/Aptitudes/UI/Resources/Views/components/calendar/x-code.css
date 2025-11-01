@@ -1,0 +1,276 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap');
+
+/* Reset and base styles */
+.wb-calendar-component * {
+    box-sizing: border-box;
+}
+
+.wb-calendar-component {
+    /* Primary Colors */
+    --wb-primary: 37 99 235; /* blue-600 */
+    --wb-primary-foreground: 255 255 255;
+    --wb-primary-hover: 29 78 216; /* blue-700 */
+
+    /* Secondary Colors */
+    --wb-secondary: 243 244 246; /* gray-100 */
+    --wb-secondary-foreground: 31 41 55; /* gray-800 */
+    --wb-secondary-hover: 229 231 235; /* gray-200 */
+
+    /* Muted Colors */
+    --wb-muted: 248 250 252; /* slate-50 */
+    --wb-muted-foreground: 100 116 139; /* slate-500 */
+    --wb-muted-hover: 241 245 249; /* slate-100 */
+
+    /* Accent Colors */
+    --wb-accent: 219 234 254; /* blue-100 */
+    --wb-accent-foreground: 30 64 175; /* blue-800 */
+    --wb-accent-hover: 191 219 254; /* blue-200 */
+
+    /* Border & Effects */
+    --wb-border: 226 232 240; /* slate-200 */
+    --wb-ring: 37 99 235; /* blue-600 */
+    --wb-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+
+    /* Today highlight */
+    --wb-today: 254 202 202; /* red-200 */
+    --wb-today-foreground: 127 29 29; /* red-900 */
+
+    /* Disabled */
+    --wb-disabled: 229 231 235; /* gray-200 */
+    --wb-disabled-foreground: 148 163 184; /* slate-400 */
+
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+}
+
+.dark .wb-calendar-component {
+    --wb-primary: 96 165 250; /* blue-400 */
+    --wb-primary-foreground: 17 24 39; /* gray-900 */
+    --wb-primary-hover: 59 130 246; /* blue-500 */
+
+    --wb-secondary: 30 41 59; /* slate-800 */
+    --wb-secondary-foreground: 226 232 240; /* slate-200 */
+    --wb-secondary-hover: 51 65 85; /* slate-700 */
+
+    --wb-muted: 15 23 42; /* slate-900 */
+    --wb-muted-foreground: 148 163 184; /* slate-400 */
+    --wb-muted-hover: 30 41 59; /* slate-800 */
+
+    --wb-accent: 30 64 175; /* blue-800 */
+    --wb-accent-foreground: 191 219 254; /* blue-200 */
+    --wb-accent-hover: 96 165 250; /* blue-400 */
+
+    --wb-border: 51 65 85; /* slate-700 */
+    --wb-ring: 96 165 250; /* blue-400 */
+    --wb-shadow: 0 1px 2px rgb(0 0 0 / 0.1);
+
+    --wb-today: 248 113 113; /* red-400 */
+    --wb-today-foreground: 254 226 226; /* red-100 */
+
+    --wb-disabled: 51 65 85; /* slate-700 */
+    --wb-disabled-foreground: 107 114 128; /* gray-500 */
+}
+
+.wb-calendar-day-button {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+    position: relative;
+    font-weight: 500;
+    border: 1px solid transparent;
+    background-color: transparent;
+    color: #1f2937; /* gray-800 */
+}
+
+.wb-calendar-day-selected {
+    background-color: #2563eb !important; /* blue-600 */
+    color: #ffffff !important;
+    font-weight: 600;
+    box-shadow: 0 1px 2px rgb(0 0 0 / 0.05);
+    border: 2px solid #1d4ed8 !important; /* blue-700 */
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.wb-calendar-day-range-start {
+    background-color: #2563eb !important; /* blue-600 */
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 8px 0 0 8px !important;
+    border: 2px solid #1d4ed8 !important; /* blue-700 */
+    z-index: 1;
+}
+
+.wb-calendar-day-range-end {
+    background-color: #2563eb !important; /* blue-600 */
+    color: #ffffff !important;
+    font-weight: 600;
+    border-radius: 0 8px 8px 0 !important;
+    border: 2px solid #1d4ed8 !important; /* blue-700 */
+    z-index: 1;
+}
+
+.wb-calendar-day-range-middle {
+    background-color: #dbeafe !important; /* blue-100 */
+    color: #1e40af !important; /* blue-800 */
+    font-weight: 500;
+    border-radius: 0 !important;
+    border-top: 2px solid #2563eb !important; /* blue-600 */
+    border-bottom: 2px solid #2563eb !important; /* blue-600 */
+    border-left: 1px solid #2563eb !important; /* blue-600 */
+    border-right: 1px solid #2563eb !important; /* blue-600 */
+}
+
+.wb-calendar-day-today {
+    background-color: #fecaca; /* red-200 */
+    color: #7f1d1d; /* red-900 */
+    font-weight: 600;
+}
+
+.wb-calendar-day-hover:hover:not(:disabled) {
+    background-color: #bfdbfe; /* blue-200 */
+    color: #1e40af; /* blue-800 */
+    transform: scale(1.05);
+    z-index: 1;
+}
+
+.wb-calendar-day-disabled {
+    background-color: #e5e7eb !important; /* gray-200 */
+    color: #9ca3af !important; /* gray-400 */
+    opacity: 0.5;
+    cursor: not-allowed !important;
+}
+
+.wb-calendar-nav-button {
+    transition: all 0.15s cubic-bezier(0.4, 0, 0.2, 1);
+}
+
+.wb-calendar-nav-button:hover {
+    background-color: #dbeafe; /* blue-100 */
+    color: #1e40af; /* blue-800 */
+    transform: scale(1.1);
+}
+
+.wb-time-picker {
+    max-height: 200px;
+    overflow-y: auto;
+}
+
+.wb-time-option {
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: all 0.15s ease;
+    border-radius: 4px;
+    margin: 2px 0;
+}
+
+.wb-time-option:hover {
+    background-color: #bfdbfe; /* blue-200 */
+}
+
+.wb-time-option.selected {
+    background-color: #2563eb; /* blue-600 */
+    color: #ffffff;
+    font-weight: 600;
+}
+
+.wb-action-button {
+    background-color: #2563eb; /* blue-600 */
+    color: #ffffff;
+    padding: 12px 24px;
+    border-radius: 8px;
+    text-decoration: none;
+    font-weight: 600;
+    transition: all 0.15s ease;
+    display: inline-block;
+    text-align: center;
+    border: none;
+    cursor: pointer;
+    width: 100%;
+}
+
+.wb-action-button:hover {
+    background-color: #1d4ed8; /* blue-700 */
+    transform: translateY(-1px);
+}
+
+.wb-debug {
+    position: absolute;
+    top: 8px;
+    right: 8px;
+    background: #ef4444; /* red-500 */
+    color: white;
+    font-size: 10px;
+    padding: 2px 6px;
+    border-radius: 4px;
+    font-weight: 600;
+    z-index: 10;
+}
+
+/* Responsive adjustments */
+@media (max-width: 640px) {
+    .wb-calendar-component {
+        min-width: 280px;
+        max-width: 320px;
+    }
+
+    .wb-calendar-day-button {
+        height: 2.5rem;
+        font-size: 0.875rem;
+    }
+
+    .wb-action-button {
+        padding: 10px 20px;
+        font-size: 0.875rem;
+    }
+}
+
+/* Focus styles for accessibility */
+.wb-calendar-day-button:focus-visible {
+    outline: 2px solid #2563eb; /* blue-600 */
+    outline-offset: 2px;
+}
+
+.wb-calendar-nav-button:focus-visible {
+    outline: 2px solid #2563eb; /* blue-600 */
+    outline-offset: 2px;
+}
+
+.wb-time-option:focus-visible {
+    outline: 2px solid #2563eb; /* blue-600 */
+    outline-offset: 2px;
+}
+
+.wb-action-button:focus-visible {
+    outline: 2px solid #2563eb; /* blue-600 */
+    outline-offset: 2px;
+}
+
+/* High contrast mode support */
+@media (prefers-contrast: high) {
+    .wb-calendar-day-selected,
+    .wb-calendar-day-range-start,
+    .wb-calendar-day-range-end {
+        border-width: 3px;
+    }
+
+    .wb-calendar-day-disabled {
+        opacity: 0.3;
+    }
+}
+
+/* Reduced motion support */
+@media (prefers-reduced-motion: reduce) {
+    .wb-calendar-day-button,
+    .wb-calendar-nav-button,
+    .wb-time-option,
+    .wb-action-button {
+        transition: none;
+    }
+
+    .wb-calendar-day-selected,
+    .wb-calendar-day-hover:hover:not(:disabled) {
+        transform: none;
+    }
+
+    .wb-action-button:hover {
+        transform: none;
+    }
+}
